@@ -1,0 +1,57 @@
+{
+ "ops": {
+  "listSavedViews": {
+   "file": "apps/api/test/features/F7/saved-views-create.test.ts",
+   "reason": "保存した条件の一覧は、作った人・見えるグループ・消した物の組み合わせで答えが変わる。生成の試験の種ではグループの席と保存した条件を作れない（K-475）",
+   "covers": {
+    "test_get_saved_views_ok": "K475-API-001",
+    "test_get_saved_views_rejected_401": "K475-API-024",
+    "test_get_saved_views_rejected_422": "K475-API-007",
+    "test_get_saved_views_rate_limited": "K475-API-025",
+    "test_get_saved_views_unavailable": "K475-API-030",
+    "test_get_saved_views_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_saved_views_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_saved_views_rejected_403": "役が合わない人（取引先・運営）の止めは入口の共通（op.ts）。この口は呼んだ本人の物と見えるグループの物を返すだけで、権限の無い人も自分の一覧は読める"
+   }
+  },
+  "createSavedView": {
+   "file": "apps/api/test/features/F7/saved-views-create.test.ts",
+   "reason": "保存は、見えるグループ・同じ名前・50 件の数・同時の 2 回の組み合わせで答えが変わる。生成の試験の種ではグループの席を作れない（K-475）",
+   "covers": {
+    "test_post_saved_views_ok": "K475-API-012",
+    "test_post_saved_views_unavailable": "K475-API-029",
+    "test_post_saved_views_shape": "K475-API-012",
+    "test_post_saved_views_rejected_401": "K475-API-024",
+    "test_post_saved_views_not_found": "K475-API-018",
+    "test_post_saved_views_conflict": "K475-API-020",
+    "test_post_saved_views_conflict_2": "K475-API-021",
+    "test_post_saved_views_rejected_422": "K475-API-014",
+    "test_post_saved_views_rejected_422_2": "K475-API-015",
+    "test_post_saved_views_rate_limited": "K475-API-025",
+    "test_post_saved_views_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_saved_views_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_saved_views_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    }
+   },
+   "na": {
+    "test_post_saved_views_rejected_403": "役が合わない人の止めは入口の共通（op.ts）。見えないグループは 403 でなく 404 E-VWS-004（K475-API-018）"
+   }
+  }
+ }
+}

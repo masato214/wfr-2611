@@ -190,6 +190,13 @@
    "outputs": [
     "packages/db/src/migrations.generated.ts"
    ]
+  },
+  {
+   "name": "口の文書の断片（08_api/phase1/<名前>.d/ → 08_api/phase1/合わせた/<名前>.md・K-1112）",
+   "run": "python3 scripts/ci/api_doc_d.py",
+   "outputs": [
+    "08_api/phase1/合わせた/*.md"
+   ]
   }
  ],
  "checked_elsewhere": [

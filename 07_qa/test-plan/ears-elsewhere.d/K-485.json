@@ -1,0 +1,34 @@
+{
+ "ops": {
+  "takeoverActionRun": {
+   "file": "apps/api/test/features/F7/stopped-takeover.test.ts",
+   "reason": "自分で直すは、担当者・実行の状態・新しい実行の有無・PC の仕事の状態で答えが変わる。生成の試験の種では担当者と止まった実行の組を作れない（K-485）",
+   "covers": {
+    "test_post_action_runs_id_takeover_ok": "K485-API-012",
+    "test_post_action_runs_id_takeover_shape": "K485-API-012",
+    "test_post_action_runs_id_takeover_rejected_401": "K485-API-024",
+    "test_post_action_runs_id_takeover_rejected_403": "K485-API-015",
+    "test_post_action_runs_id_takeover_not_found": "K485-API-016",
+    "test_post_action_runs_id_takeover_conflict": "K485-API-017",
+    "test_post_action_runs_id_takeover_conflict_2": "K485-API-019",
+    "test_post_action_runs_id_takeover_conflict_3": "K485-API-021",
+    "test_post_action_runs_id_takeover_rejected_422": "K485-API-023",
+    "test_post_action_runs_id_takeover_rate_limited": "K485-API-024",
+    "test_post_action_runs_id_takeover_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_action_runs_id_takeover_session_unresolved": "K485-API-025",
+    "test_post_action_runs_id_takeover_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_action_runs_id_takeover_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  }
+ }
+}

@@ -1460,6 +1460,41 @@ components:
   list-detail-side-title: # 右に開く詳細の題名（h2・18px・700・余白は詳細の題名の行と同じ）
     typography: "{typography.h2}"
     fontWeight: 700
+  # 段 5 の下絵 v2（features/F4/doc の doc.css・extra.css・thread.css・K-431）の線・輪郭・目に見えない名前・入力の印の値。CSS は var(--k-c-f4d-…) だけを読む
+  f4d-rule:             # 区切りと箱の線（1px・line）。border・border-top・border-bottom・border-left に同じ値で当てる
+    border: "1px solid {colors.line}"
+  f4d-rule-soft:        # 淡い区切りの線（1px・line-soft）
+    border: "1px solid {colors.line-soft}"
+  f4d-rule-strong:      # 濃い枠の線（1px・line-strong）：本文の欄・色の見本の四角
+    border: "1px solid {colors.line-strong}"
+  f4d-rule-warning:     # 渡しの箱の線（1px・淡い橙の線）
+    border: "1px solid {state.warning-line}"
+  f4d-quote:            # 引用の左の線（3px・line-strong）
+    border: "3px solid {colors.line-strong}"
+  f4d-log:              # 記録の左の線（3px・紺の淡い線）と行の間（2）
+    border: "3px solid {colors.primary-line}"
+    gap: "2px"
+  f4d-ring:             # 押せる物の輪郭（2px・primary）。outline に当てる
+    border: "2px solid {colors.primary}"
+  f4d-ring-done:        # 完了のボタンの輪郭（2px・済の色）
+    border: "2px solid {state.success}"
+  f4d-ring-out:         # 輪郭の外への離し（outline-offset 2px）
+    width: "2px"
+  f4d-ring-in:          # 輪郭の内への入れ（outline-offset -2px）
+    width: "-2px"
+  f4d-ring-near:        # 色の見本の四角の輪郭の離し（outline-offset 1px）
+    width: "1px"
+  f4d-sr:               # 目に見えない名前（読み上げだけ・幅と高さ 1）
+    width: "1px"
+    height: "1px"
+  f4d-caret:            # 本文の入力の印（幅 2・高さは字と同じ 1em・左 1）
+    width: "2px"
+    height: "1em"
+    margin: "0 0 0 1px"
+  f4d-sample-ink:       # 下絵の本文の見本の字の色（利用者が付ける色の見本。正本の進行中の色から選ぶ・PM 2026-11-23）
+    textColor: "{state.progress}"
+  f4d-sample-mark:      # 下絵の本文の見本の背景の色（同上。正本の注意の淡い面から選ぶ）
+    backgroundColor: "{state.warning-container}"
 # 暗いテーマ（D-128.55 の「見た目：システム・明るい・暗い」・2026-11-03 高本さん了承・K-24）。明るいテーマと同じ名前を全部持つ。
 # 文字と地の組み合わせ 41 組を WCAG で確かめた（全部 AA 以上・最低 6.36:1）。値を変えたら 04_design/gen_tokens.py の確かめが赤になる
 dark:

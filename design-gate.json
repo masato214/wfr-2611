@@ -306,6 +306,8 @@
     "pc-pill": ".k-pc-pill",
     "pc-detail": ".k-pc-detail",
     "pc-fix": ".k-pc-fix",
+    "f4d-sample-ink": ".k-f4d-sample-ink",
+    "f4d-sample-mark": ".k-f4d-sample-mark",
     "pc-more": ".k-pc-more",
     "pc-usage": ".k-pc-card.k-pc-usage",
     "pc-bar": ".k-pc-bar",
@@ -525,6 +527,58 @@
     {
       "part": "list-late",
       "reason": "チケットの一覧の部品（K-251・features/F4/ticket-list/ticket-list.css）。値は 外の余白（margin）と縦の位置（vertical-align） で使い、D5 が比べる性質に無い（D5 は width・height・gap など素の性質を比べる）。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-rule",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-rule-soft",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-rule-strong",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-rule-warning",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-quote",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-log",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-ring",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-ring-done",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-ring-out",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-ring-in",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-ring-near",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-sr",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
+    },
+    {
+      "part": "f4d-caret",
+      "reason": "段 5 の下絵 v2 の値だけの部品（K-431・features/F4/doc の doc.css・extra.css・thread.css）。線・輪郭・その離し・目に見えない名前・入力の印の値を、border・border-top・border-bottom・border-left・outline・outline-offset・width・height・margin・gap の多くの規則が var(--k-c-f4d-…) で読む。1 つの規則に結べないので D5 の比べる規則を持たない。CSS はこのトークンだけを読む"
     },
     {
       "part": "search-focus",

@@ -19,6 +19,16 @@ export const fromCatalog = (code: string, status: number, o: { field?: string; m
 /** 取引先のルールにするのは取引先の画面ができてから（段 12・代表の答え ㉒） */
 export const CLIENT_RULE_LATER = "取引先の画面ができてから使えます";
 
+/** action が無い・知らない言葉（改める・取り消すの口が関数を呼ぶ前に使う・K-391）。入口の zod は enum を読まないので口が自分で断る */
+export const badAction = (): HookReply => ({
+  status: 422,
+  body: {
+    error: "validation_failed",
+    code: "VALIDATION_ERROR",
+    details: [{ field: "action", message: "revise・cancel のどちらかを選んでください" }],
+  },
+});
+
 /** 指した人・書き込みが見つからないときの details の文（欄ごと） */
 export const DECIDER_NOT_FOUND = "決めた人は、この会社のメンバーから選んでください";
 export const SOURCE_NOT_FOUND = "元の書き込みが見つかりません。やり取りを読み直してください";
@@ -37,6 +47,10 @@ export function replyOf(r: { error?: unknown }, where: string): HookReply {
   if (word === "not_member" || word === "not_writable")
     return { status: 403, body: { error: "forbidden", code: "FORBIDDEN" } };
   if (word === "text_empty") return fromCatalog("E-VAL-042", 422, { field: "text" });
+  // 改める・取り消す（K-391）：別の人が先に改めた／取り消した（読み直してもう一度・㉒）、取り消す理由が空
+  if (word === "superseded") return fromCatalog("E-CONF-031", 409);
+  if (word === "cancelled") return fromCatalog("E-CONF-033", 409);
+  if (word === "reason_empty") return fromCatalog("E-VAL-045", 422, { field: "reason" });
   // 指した人・書き込みが無い・見えない（同じ会社の今のメンバーでない・このチケットの消していない書き込みでない）は 404（形の誤りではない・代表の答え answer=431fc50df51b・f0f290e785a9）
   if (word === "bad_decider")
     return fromCatalog("E-PAGE-001", 404, { field: "decided_by_member_id", message: DECIDER_NOT_FOUND });

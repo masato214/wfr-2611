@@ -605,13 +605,13 @@ describe("K-62 AI に任せる：入力・失敗・操作の揺れ・守り（�
   it("K62-API-052 失敗：任せる関数を呼べない（権限が外れた）：503・E-PAGE-003。何も積まない（fail-closed・K62-API-031 と同じ決まり）", async () => {
     const t = await k.ticket(owner);
     // 試験が外した権限は finally で必ず戻す（G-10）
-    await k.f.admin.query("revoke execute on function app.ticket_delegate(uuid) from kaname_app");
+    await k.f.admin.query("revoke execute on function app.ticket_delegate(uuid, text) from kaname_app");
     try {
       const r = await k.delegate(owner, t);
       expect(r.status).toBe(503);
       expect((await json(r)).code).toBe("E-PAGE-003");
     } finally {
-      await k.f.admin.query("grant execute on function app.ticket_delegate(uuid) to kaname_app");
+      await k.f.admin.query("grant execute on function app.ticket_delegate(uuid, text) to kaname_app");
     }
     expect(await jobsOf(t)).toBe(0);
     expect(await k.stageOf(t)).toBe("todo");

@@ -1,0 +1,27 @@
+{
+ "ops": {
+  "listNotifications": {
+   "file": "apps/api/test/features/F7/notifications-list.test.ts",
+   "reason": "知らせの一覧は、行の守り（自分宛て）と種類の表とチケットの見え方の組み合わせで答えが変わる。生成の試験の種では知らせの行も人も作れない（K-461）",
+   "covers": {
+    "test_get_notifications_ok": "K461-API-001",
+    "test_get_notifications_rejected_401": "K461-API-017",
+    "test_get_notifications_rejected_403": "K461-API-029",
+    "test_get_notifications_rejected_422": "K461-API-006",
+    "test_get_notifications_conflict": "K461-API-011",
+    "test_get_notifications_rate_limited": "K461-API-018",
+    "test_get_notifications_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_notifications_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_notifications_mfa_pending": "止めは全部の口で同じ 1 か所の入口（op.ts）。口ごとの止めは作った口の生成の試験 mfa_pending が見る（K-321）"
+   }
+  }
+ }
+}

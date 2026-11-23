@@ -4,7 +4,7 @@
  "frozen_at": "2026-11-23",
  "summary": {
   "total_screens": 37,
-  "total_apis": 378,
+  "total_apis": 377,
   "coverage_rate": 1.0,
   "uncovered_screens": [],
   "static_screens": [
@@ -886,11 +886,6 @@
      "role": "action",
      "endpoint": "POST /api/v1/clones/me/activity/export",
      "act": "A53"
-    },
-    {
-     "role": "action",
-     "endpoint": "POST /api/v1/action_runs/:id/retry",
-     "act": "A57"
     },
     {
      "role": "action",
@@ -2380,7 +2375,7 @@
     },
     {
      "role": "action",
-     "endpoint": "PATCH /api/v1/tickets/:id/sections/:key",
+     "endpoint": "PATCH /api/v1/tickets/:id/body",
      "act": "A101"
     },
     {

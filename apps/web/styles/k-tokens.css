@@ -1198,6 +1198,25 @@
   --k-c-list-detail-side-title-text: var(--k-text-h2);
   --k-c-list-detail-side-title-lh: var(--k-lh-h2);
   --k-c-list-detail-side-title-fw: 700;
+  --k-c-f4d-rule-border: 1px solid var(--k-line);
+  --k-c-f4d-rule-soft-border: 1px solid var(--k-line-soft);
+  --k-c-f4d-rule-strong-border: 1px solid var(--k-line-strong);
+  --k-c-f4d-rule-warning-border: 1px solid var(--k-st-warning-line);
+  --k-c-f4d-quote-border: 3px solid var(--k-line-strong);
+  --k-c-f4d-log-border: 3px solid var(--k-primary-line);
+  --k-c-f4d-log-gap: 2px;
+  --k-c-f4d-ring-border: 2px solid var(--k-primary);
+  --k-c-f4d-ring-done-border: 2px solid var(--k-st-success);
+  --k-c-f4d-ring-out-width: 2px;
+  --k-c-f4d-ring-in-width: -2px;
+  --k-c-f4d-ring-near-width: 1px;
+  --k-c-f4d-sr-width: 1px;
+  --k-c-f4d-sr-height: 1px;
+  --k-c-f4d-caret-width: 2px;
+  --k-c-f4d-caret-height: 1em;
+  --k-c-f4d-caret-margin: 0 0 0 1px;
+  --k-c-f4d-sample-ink-fg: var(--k-st-progress);
+  --k-c-f4d-sample-mark-bg: var(--k-st-warning-container);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {

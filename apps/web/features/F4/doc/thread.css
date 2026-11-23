@@ -1,0 +1,108 @@
+/* 詳細の右のパネル「やり取り」の下絵（段 7 の k-talk-* と同じ形・値は正本のトークンだけ） */
+.k-f4d-talk {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.k-f4d-talk-thread {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--k-s-md) var(--k-s-sm);
+}
+.k-f4d-talk-day {
+  display: flex;
+  align-items: center;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm) 0 0;
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-label-md);
+}
+.k-f4d-talk-day::before,
+.k-f4d-talk-day::after {
+  content: "";
+  flex: 1;
+  border-top: var(--k-c-f4d-rule-soft-border);
+}
+.k-f4d-talk-avatar {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: var(--k-s-lg);
+  height: var(--k-s-lg);
+  border-radius: var(--k-r-full);
+  background: var(--k-d-lavender);
+  color: var(--k-on-primary);
+  font-size: var(--k-text-label-xs);
+  font-weight: var(--k-fw-label-xs);
+}
+.k-f4d-talk-avatar[data-size="sm"] {
+  width: var(--k-s-md);
+  height: var(--k-s-md);
+}
+.k-f4d-talk-avatar[data-tone="indigo"] {
+  background: var(--k-d-indigo);
+}
+.k-f4d-talk-avatar[data-tone="teal"] {
+  background: var(--k-d-teal);
+}
+.k-f4d-talk-post {
+  display: flex;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm) 0;
+}
+.k-f4d-talk-main {
+  flex: 1;
+  min-width: 0;
+}
+.k-f4d-talk-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--k-s-sm);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4d-talk-head b {
+  font-weight: var(--k-fw-label-md);
+}
+.k-f4d-talk-head time,
+.k-f4d-talk-line time {
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-label-md);
+}
+.k-f4d-talk-main p {
+  margin: 0;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  overflow-wrap: anywhere;
+}
+.k-f4d-talk-line {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-xs) 0 var(--k-s-xs) var(--k-s-xs);
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4d-talk-line > span:not(.k-f4d-talk-avatar) {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.k-f4d-talk-line b {
+  color: var(--k-on-surface);
+  font-weight: var(--k-fw-label-md);
+}
+.k-f4d-talk-composer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm) var(--k-s-md) var(--k-s-md);
+  border-top: var(--k-c-f4d-rule-soft-border);
+}
+.k-f4d-talk-send {
+  display: flex;
+  justify-content: flex-end;
+}

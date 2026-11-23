@@ -13111,33 +13111,6 @@
      "act": "A57",
      "role": "action",
      "method": "POST",
-     "path_draft": "/api/action_runs/:id/retry",
-     "table": "action_runs",
-     "operation_id": "retryActionRun",
-     "auth": "session（会社・層・権限）",
-     "related_entities": [
-      "E-039"
-     ],
-     "choke_points": [
-      "C2"
-     ],
-     "source": [
-      "D-125.143",
-      "D-125.76",
-      "D-125.167",
-      "D-068",
-      "D-066",
-      "D-013.9",
-      "D-030.9",
-      "D-066.9",
-      "D-068.7",
-      "D-104.15"
-     ]
-    },
-    {
-     "act": "A57",
-     "role": "action",
-     "method": "POST",
      "path_draft": "/api/action_runs/:id/takeover",
      "table": "action_runs",
      "operation_id": "takeoverActionRun",
@@ -13675,33 +13648,6 @@
       "D-062.6",
       "D-125.152",
       "D-126.18"
-     ]
-    },
-    {
-     "act": "A57",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/action_runs/:id/retry",
-     "table": "action_runs",
-     "operation_id": "retryActionRun",
-     "auth": "session（会社・層・権限）",
-     "related_entities": [
-      "E-039"
-     ],
-     "choke_points": [
-      "C2"
-     ],
-     "source": [
-      "D-125.143",
-      "D-125.76",
-      "D-125.167",
-      "D-068",
-      "D-066",
-      "D-013.9",
-      "D-030.9",
-      "D-066.9",
-      "D-068.7",
-      "D-104.15"
      ]
     },
     {
@@ -38161,9 +38107,9 @@
      "act": "A101",
      "role": "action",
      "method": "PATCH",
-     "path_draft": "/api/tickets/:id/sections/:key",
+     "path_draft": "/api/tickets/:id/body",
      "table": "ticket_sections",
-     "operation_id": "updateTicketSection",
+     "operation_id": "updateTicketBody",
      "auth": "session（会社・層・権限）",
      "related_entities": [
       "E-107",
@@ -40149,9 +40095,9 @@
      "act": "A101",
      "role": "action",
      "method": "PATCH",
-     "path_draft": "/api/tickets/:id/sections/:key",
+     "path_draft": "/api/tickets/:id/body",
      "table": "ticket_sections",
-     "operation_id": "updateTicketSection",
+     "operation_id": "updateTicketBody",
      "auth": "session（会社・層・権限）",
      "related_entities": [
       "E-107",

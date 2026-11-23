@@ -24,7 +24,7 @@ interface PreviewRow {
   group_name: string | null;
   role: string;
   message: string | null;
-  email: string;
+  email: string | null;
   expires_at: Date;
   account_exists: boolean;
   signed_email: string | null;

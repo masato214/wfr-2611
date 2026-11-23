@@ -101,7 +101,7 @@ describe("K-326 本物の差し替え", () => {
     expect(by.get("delegateHooks")?.replaces ?? []).toContain("getTicket");
     expect(by.get("ticketHooks")?.replaces ?? []).not.toContain("getTicket");
     const withReplaces = HOOK_MODULES.filter((m) => (m.replaces ?? []).length > 0).map((m) => m.name);
-    expect(withReplaces).toEqual(["delegateHooks"]);
+    expect([...withReplaces].sort()).toEqual(["delegateHooks", "stoppedHooks"]); // stoppedHooks（K-485）は getActionRun・listTicketRuns に reason_kind を足す
   });
 });
 

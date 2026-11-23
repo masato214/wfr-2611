@@ -47,7 +47,7 @@ const suspendWorkspace = (u: User) =>
 const leave = (u: User) => h.admin.query("update members set deleted_at = now() where id = $1", [u.memberId]);
 const membership = (u: User, status: "suspended" | "left") =>
   h.admin.query(
-    "insert into tenant_memberships (tenant_id, member_id, auth_user_id, role, status) values ($1, $2, $3, 'member', $4)",
+    "insert into tenant_memberships (tenant_id, member_id, auth_user_id, role, status) values ($1, $2, $3, 'member', $4) on conflict (tenant_id, member_id) do update set role = 'member', status = excluded.status, deleted_at = null", // 会社を作った人は admin の行を持つ（D-148.49）
     [u.tenantId, u.memberId, u.userId, status],
   );
 /** 認証側（kaname_auth.session）と業務側（生きている画面の sessions）のセッションの数 */

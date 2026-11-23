@@ -1,0 +1,12 @@
+{
+ "data_links": [
+  {"paths": ["apps/api/src/hooks/scope-overview.ts", "apps/api/src/features/F7/overview/**"],
+   "tests": ["apps/api/test/features/F7/scope-overview.test.ts", "apps/api/test/features/contract/k144-contract.test.ts"]},
+  {"paths": ["apps/api/test/features/F7/scope-overview.test.ts", "apps/api/test/features/F1/terms.test.ts", "apps/api/test/features/contract/k144-contract.test.ts"],
+   "tests": ["apps/api/test/generated/get_scopes_id_overview.test.ts"]}
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F7/scope-overview.test.ts": "この葉の hooks のファイル（apps/api/src/hooks/scope-overview.ts）を最初の要求の前に動的 import で読む（data_links で結ぶ・K-477）",
+  "apps/api/test/features/contract/k144.d/K-477.ts": "この葉の hooks のファイルを本体の準備の中で動的 import で読む（data_links で結ぶ・k144.d の README の決まり・K-477）"
+ }
+}

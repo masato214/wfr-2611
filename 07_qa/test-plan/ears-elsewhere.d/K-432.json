@@ -1,0 +1,35 @@
+{
+ "ops": {
+  "updateTicketBody": {
+   "file": "apps/api/test/features/F4/ticket-body-update.test.ts",
+   "reason": "本文を書き終えるは、本物の DB の版の合わせ・完了したチケット・書ける人の判定・本文の行と版の行とやり取りと証跡の 1 つの取引で答えが変わる。生成の試験の偽のセッションでは作れない（K-432）",
+   "covers": {
+    "test_patch_tickets_id_body_ok": "K432-API-001",
+    "test_patch_tickets_id_body_rejected_401": "K432-API-017",
+    "test_patch_tickets_id_body_rejected_403": "K432-API-015",
+    "test_patch_tickets_id_body_not_found": "K432-API-016",
+    "test_patch_tickets_id_body_not_found_2": "K432-API-016",
+    "test_patch_tickets_id_body_rejected_422": "K432-API-011",
+    "test_patch_tickets_id_body_conflict": "K432-API-004",
+    "test_patch_tickets_id_body_conflict_2": "K432-API-014",
+    "test_patch_tickets_id_body_session_unresolved": "K432-API-018",
+    "test_patch_tickets_id_body_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_tickets_id_body_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_patch_tickets_id_body_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_tickets_id_body_shape": "K432-API-001"
+   },
+   "na": {
+    "test_patch_tickets_id_body_rate_limited": "回数は入口の共通の数えで、体を受ける口の型の確かめは K144-API の共通の試験が持つ"
+   }
+  }
+ }
+}

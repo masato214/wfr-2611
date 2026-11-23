@@ -146,11 +146,11 @@ describe("K-429 一覧の問い合わせは契約の形だけを受ける（limi
     expect(await k.n("select count(*) as n from action_runs")).toBe(before);
   });
 
-  it("K429-API-007 入力 × sort が契約の enum の列名（27 個・契約の文字から読む）と、空の sort：どれも 200（契約が許す形を断らない）", async () => {
+  it("K429-API-007 入力 × sort が契約の enum の列名（28 個・契約の文字から読む・K-485 が taken_over_at を足した）と、空の sort：どれも 200（契約が許す形を断らない）", async () => {
     const t = await k.ticket(owner);
     await delegateOk(k, owner, t);
     const names = contractSortEnum();
-    expect(names.length, "契約の enum を読めた").toBe(27);
+    expect(names.length, "契約の enum を読めた").toBe(28);
     expect(names).toContain("created_at");
     for (const name of names) {
       const r = await runs(owner, t, `?sort=${name}`);

@@ -3890,6 +3890,10 @@
     {
      "name": "bridge_job_id",
      "note": "本人の PC で動いた仕事。成果物は artifacts.source_job_id で結ぶ ← D-121.2"
+    },
+    {
+     "name": "taken_over_at",
+     "note": "止まった・動いている実行を担当者が自分で進めることにした時刻。止まった帯を引っ込める印。止まった理由の文は書き換えない ← D-151.17・K-485"
     }
    ],
    "relations": [
@@ -7735,6 +7739,10 @@
      "note": null
     },
     {
+     "name": "read_at",
+     "note": "読んだ時刻・空＝未読 ← D-151.2。鈴が読むのはこの列だけで、sent_at・failed_at は段 9 のメールの印のまま"
+    },
+    {
      "name": "retry_count",
      "note": null
     }
@@ -7757,14 +7765,13 @@
    },
    "access_control_policies": [
     {
-     "name": "notifications_tenant_read",
+     "name": "notifications_self_read",
      "operation": "select",
      "role": "member",
-     "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid",
-     "rationale": "会社の中・見える層だけ（担当者・閲覧のみも自分の範囲は見える）",
+     "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND member_id = current_setting('app.user_id', true)::uuid",
+     "rationale": "自分宛ての知らせだけ（同じ会社の他の人宛ては、権限のある人にも見せない）",
      "source": [
-      "D-026.1",
-      "D-058.5",
+      "D-151.3",
       "D-073.1"
      ]
     },
@@ -7773,21 +7780,10 @@
      "operation": "insert,update,delete",
      "role": "member",
      "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND member_id = current_setting('app.user_id', true)::uuid",
-     "rationale": "本人のもの（個人の範囲）は権限なしで自由",
+     "rationale": "自分宛ての知らせだけ書く・読んだ印を付ける（他人宛てを足せない・直せない）",
      "source": [
+      "D-151.3",
       "D-073.1"
-     ]
-    },
-    {
-     "name": "notifications_permission_write",
-     "operation": "insert,update,delete",
-     "role": "member",
-     "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND has_permission(current_setting('app.user_id', true)::uuid, 'notifications', NULL, 'edit')",
-     "rationale": "権限＝誰に×何に×どの層で×できること",
-     "source": [
-      "D-073.1",
-      "D-073.2",
-      "D-073.3"
      ]
     },
     {
@@ -7795,25 +7791,22 @@
      "operation": "select",
      "role": "ops",
      "predicate": "current_setting('app.role', true) = 'ops' AND EXISTS (SELECT 1 FROM support_access_grants g WHERE g.tenant_id = notifications.tenant_id AND g.expires_at > now() AND g.revoked_at IS NULL)",
-     "rationale": "運営は既定で読めない。規約で先に許可をもらい、中を見るを持つ運営の人が理由を書いて開いた 1 時間だけ（見るだけ）。したことは両側の証跡へ",
+     "rationale": "運営は理由つき・1 時間・見るだけの許可があるときだけ（D-128.68）",
      "source": [
-      "D-074.5",
-      "D-125.128",
-      "D-128.68",
-      "D-128.108",
-      "D-077.7"
+      "D-128.68"
      ]
     }
    ],
    "legacy_drift_notes": null,
-   "note": "**★新設（D-043・C6）。**送出の outbox。重複抑止・再送・証跡は関門 C6 の責務",
+   "note": "**★新設（D-043・C6）。**送出の outbox。重複抑止・再送・証跡は関門 C6 の責務。鈴の一覧は契約の口 `listNotifications`（自分宛て・未読は全部・読んだものは読んだ時刻から 30 日・K-461）。**守り：読むのも書くのも自分宛てだけ**（`notifications_self_read`・`notifications_self_only_write`・D-151.3。権限のある人も他人宛ての行に触れない。書き手は security definer の関数で守りの外）。索引：未読だけ（`notifications_inbox_unread_idx`）と新しい順（`notifications_inbox_idx`）",
    "status": "decided",
    "decided_at": "2026-11-23",
    "source": [
     "D-043",
     "D-069",
     "D-075",
-    "D-076"
+    "D-076",
+    "D-151.3"
    ]
   },
   {
@@ -11738,7 +11731,7 @@
     }
    ],
    "legacy_drift_notes": null,
-   "note": "**★新設（D-125.17・D-125.79）。確認項目の形は K-434（D-150.39）で直した**",
+   "note": "**★新設（D-125.17・D-125.79）。確認項目の形は K-434（D-150.39）で直した。付ける・外す・直す・外すは関数 `app.test_spec_update`・`app.test_spec_delete`、機械・AI が付ける道は `app.test_spec_check_by_ai`（K-435）**",
    "status": "decided",
    "decided_at": "2026-11-23",
    "source": [
@@ -13959,7 +13952,7 @@
     }
    ],
    "legacy_drift_notes": null,
-   "note": "**★新設（D-128.83）。**検索条件と列の表示設定",
+   "note": "**★新設（D-128.83）。**検索条件と列の表示設定。同じ名前は 1 人 1 つ（消していない物の中・大文字小文字を区別しない・一意の索引 `saved_views_name_uq`）・1 人 50 件まで（口で守る・K-475）",
    "status": "decided",
    "decided_at": "2026-11-23",
    "source": [

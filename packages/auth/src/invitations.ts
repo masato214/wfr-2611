@@ -49,7 +49,8 @@ export async function acceptInvitation(
 export interface InvitationForAccept {
   invitationId: string;
   tenantId: string;
-  email: string;
+  /** 宛てのメール。空＝招待のリンク（K-421） */
+  email: string | null;
   state: "ok" | "expired" | "revoked" | "used";
   workspaceSuspended: boolean;
 }
@@ -57,7 +58,7 @@ export async function invitationForAccept(appPool: pg.Pool, token: string): Prom
   const r = await appPool.query<{
     invitation_id: string;
     tenant_id: string;
-    email: string;
+    email: string | null;
     state: InvitationForAccept["state"];
     workspace_suspended: boolean;
   }>("select * from app.invitation_for_accept($1)", [hashToken(token)]);

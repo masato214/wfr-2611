@@ -233,6 +233,7 @@
   "D-127.6",
   "D-127.8",
   "D-127.9",
+  "D-128.10",
   "D-128.100",
   "D-128.101",
   "D-128.102",
@@ -318,6 +319,7 @@
   "D-128.178",
   "D-128.179",
   "D-128.20",
+  "D-128.22",
   "D-128.23",
   "D-128.24",
   "D-128.25",
@@ -741,12 +743,12 @@
  "inputs": {
   "tickets": 218,
   "l1_rows": 5094,
-  "ears_endpoints": 378,
-  "ears_tests": 4145,
+  "ears_endpoints": 377,
+  "ears_tests": 4171,
   "entities": 146,
-  "policies": 422,
-  "access_cases": 1578,
-  "errors": 254,
+  "policies": 421,
+  "access_cases": 1574,
+  "errors": 279,
   "journey_rows": 88,
   "critical_tasks": 88
  },
@@ -1614,7 +1616,7 @@
   {
    "id": 65,
    "name": "CI の形の試験（DB は組の中で・重い検査もチケットの範囲だけ・JUnit の記録・K-172／組ごとの Linux の VM・K-173）",
-   "script": "python3 scripts/ci/k172_ci_shape_test.py && python3 scripts/ci/k173_vm_test.py && python3 scripts/ci/k174_flow_config_test.py && python3 scripts/ci/k175_flow_config_test.py && python3 scripts/ci/k176_web_junit_test.py && python3 scripts/ci/k177_web_scope_test.py && python3 scripts/ci/k178_flow_config_test.py && python3 scripts/ci/k186_web_artifact_test.py && python3 scripts/ci/k187_cut_take_test.py && python3 scripts/ci/k188_human_sheet_test.py && python3 scripts/ci/k191_regen_all_test.py && python3 scripts/ci/k192_scope_deps_test.py && python3 scripts/ci/k193_hook_timeout_test.py && python3 scripts/ci/k195_runner_chrome_test.py && python3 scripts/ci/k196_results_on_mainline_test.py && python3 scripts/ci/k200_staging_health_test.py && python3 scripts/ci/k206_author_gate_test.py && python3 scripts/ci/k204_staging_workflow_test.py && python3 scripts/ci/k97_bridge_build_test.py && python3 scripts/ci/k65_staging_spec_test.py && python3 scripts/ci/k208_staging_expect_test.py && python3 scripts/ci/k210_gate_holes_test.py && python3 scripts/ci/k245_g27_reach_test.py && python3 scripts/ci/k213_design_parent_test.py && python3 scripts/ci/k212_function_region_test.py && python3 scripts/ci/k246_function_config_test.py && python3 scripts/ci/fidelity_config.py --selftest && python3 scripts/ci/k216_fidelity_config_test.py && node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit/spec-k216-mjs.xml scripts/ci/k216_fidelity_compare.test.mjs && python3 scripts/ci/k219_canvas_states_test.py && python3 scripts/ci/k257_canvas_boards_test.py && python3 scripts/ci/k258_web_defer_test.py && python3 scripts/ci/k232_fidelity_doc_test.py && python3 scripts/ci/k262_staging_edge_test.py && python3 scripts/ci/k237_perf_ledger_test.py && python3 scripts/ci/k237_staging_perf_test.py && python3 scripts/ci/k330_cut_check_test.py && python3 scripts/ci/k323_spec_split_test.py && python3 scripts/ci/k325_registries_test.py && python3 scripts/ci/k326_ts_registries_test.py && python3 scripts/ci/k327_migrations_gen_test.py && python3 scripts/ci/k328_secrets_parents_test.py && python3 scripts/ci/k343_test_timeout_test.py && python3 scripts/ci/k376_gate_lists_test.py && python3 scripts/ci/k377_fidelity_removed_test.py && python3 scripts/ci/k379_bridge_gate_test.py && python3 scripts/ci/k425_decision_log_test.py && python3 scripts/ci/k430_decision_log_test.py && python3 scripts/ci/k601_decision_log_test.py && python3 scripts/ci/k622_spec_sync_tools_test.py && python3 scripts/ci/k623_decisions_registered_test.py && python3 scripts/ci/k624_d6_mock_only_test.py && python3 scripts/ci/k627_db_fresh_run_test.py && python3 scripts/ci/k631_web_types_test.py && python3 scripts/ci/k638_contract_test.py && python3 scripts/ci/k639_contract_test.py && python3 scripts/ci/k640_runs_on_test.py && python3 scripts/ci/k641_hosted_tools_test.py && python3 scripts/ci/k643_merge_not_impl_test.py && python3 scripts/ci/k644_migrate_auth_test.py && python3 scripts/ci/k673_decision_log_test.py && python3 scripts/ci/k780_decision_log_test.py && python3 scripts/ci/k248_scope_reach_test.py",
+   "script": "python3 scripts/ci/k172_ci_shape_test.py && python3 scripts/ci/k173_vm_test.py && python3 scripts/ci/k174_flow_config_test.py && python3 scripts/ci/k175_flow_config_test.py && python3 scripts/ci/k176_web_junit_test.py && python3 scripts/ci/k177_web_scope_test.py && python3 scripts/ci/k178_flow_config_test.py && python3 scripts/ci/k186_web_artifact_test.py && python3 scripts/ci/k187_cut_take_test.py && python3 scripts/ci/k188_human_sheet_test.py && python3 scripts/ci/k191_regen_all_test.py && python3 scripts/ci/k192_scope_deps_test.py && python3 scripts/ci/k193_hook_timeout_test.py && python3 scripts/ci/k195_runner_chrome_test.py && python3 scripts/ci/k196_results_on_mainline_test.py && python3 scripts/ci/k200_staging_health_test.py && python3 scripts/ci/k206_author_gate_test.py && python3 scripts/ci/k204_staging_workflow_test.py && python3 scripts/ci/k97_bridge_build_test.py && python3 scripts/ci/k65_staging_spec_test.py && python3 scripts/ci/k208_staging_expect_test.py && python3 scripts/ci/k210_gate_holes_test.py && python3 scripts/ci/k245_g27_reach_test.py && python3 scripts/ci/k213_design_parent_test.py && python3 scripts/ci/k212_function_region_test.py && python3 scripts/ci/k246_function_config_test.py && python3 scripts/ci/fidelity_config.py --selftest && python3 scripts/ci/k216_fidelity_config_test.py && node --test --test-reporter=spec --test-reporter-destination=stdout --test-reporter=junit --test-reporter-destination=junit/spec-k216-mjs.xml scripts/ci/k216_fidelity_compare.test.mjs && python3 scripts/ci/k219_canvas_states_test.py && python3 scripts/ci/k257_canvas_boards_test.py && python3 scripts/ci/k258_web_defer_test.py && python3 scripts/ci/k232_fidelity_doc_test.py && python3 scripts/ci/k262_staging_edge_test.py && python3 scripts/ci/k237_perf_ledger_test.py && python3 scripts/ci/k237_staging_perf_test.py && python3 scripts/ci/k330_cut_check_test.py && python3 scripts/ci/k323_spec_split_test.py && python3 scripts/ci/k325_registries_test.py && python3 scripts/ci/k326_ts_registries_test.py && python3 scripts/ci/k327_migrations_gen_test.py && python3 scripts/ci/k328_secrets_parents_test.py && python3 scripts/ci/k343_test_timeout_test.py && python3 scripts/ci/k376_gate_lists_test.py && python3 scripts/ci/k377_fidelity_removed_test.py && python3 scripts/ci/k379_bridge_gate_test.py && python3 scripts/ci/k425_decision_log_test.py && python3 scripts/ci/k430_decision_log_test.py && python3 scripts/ci/k601_decision_log_test.py && python3 scripts/ci/k622_spec_sync_tools_test.py && python3 scripts/ci/k623_decisions_registered_test.py && python3 scripts/ci/k624_d6_mock_only_test.py && python3 scripts/ci/k625_layer_ledgers_test.py && python3 scripts/ci/k626_p_audit_closed_test.py && python3 scripts/ci/k627_db_fresh_run_test.py && python3 scripts/ci/k631_web_types_test.py && python3 scripts/ci/k638_contract_test.py && python3 scripts/ci/k639_contract_test.py && python3 scripts/ci/k640_runs_on_test.py && python3 scripts/ci/k641_hosted_tools_test.py && python3 scripts/ci/k643_merge_not_impl_test.py && python3 scripts/ci/k644_migrate_auth_test.py && python3 scripts/ci/k673_decision_log_test.py && python3 scripts/ci/k780_decision_log_test.py && python3 scripts/ci/k1116_fuzz_contract_test.py && python3 scripts/ci/k1120_body_append_tree_test.py && python3 scripts/ci/k248_scope_reach_test.py",
    "job": "spec",
    "blocking": true
   },
@@ -1662,6 +1664,14 @@
    "id": 72,
    "name": "画面の CSS の生の長さ（大きさ・余白・間・行の高さ・影・枠の太さが正本のトークンを通る・D8・台帳は減らすだけ・K-261）",
    "script": "python3 scripts/ci/design_gate.py --design 04_design/DESIGN-kaname.md --mocks apps/web/components/k apps/web/features --css apps/web/styles/k-tokens.css --part --no-components --raw-lengths --ledger-base-ref \"$CI_BASE\" && python3 scripts/ci/k261_raw_lengths_test.py",
+   "env": "          CI_BASE: ${{ steps.scope.outputs.base }}\n",
+   "job": "spec",
+   "blocking": true
+  },
+  {
+   "id": 74,
+   "name": "共通の台帳の本体に葉が直に行を足さない（足す分は葉ごとのファイル .d・猶予の台帳は減らすだけ・K-1112）",
+   "script": "python3 scripts/ci/body_append_gate.py --base-ref \"$CI_BASE\" && python3 scripts/ci/api_doc_d.py --check && python3 scripts/ci/k1112_body_append_test.py",
    "env": "          CI_BASE: ${{ steps.scope.outputs.base }}\n",
    "job": "spec",
    "blocking": true

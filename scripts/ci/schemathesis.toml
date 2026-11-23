@@ -34,3 +34,17 @@ checks.positive_data_acceptance.expected-statuses = ["2xx", "3xx", "401", "403",
 [[operations]]
 include-operation-id = "setMyPassword"
 checks.positive_data_acceptance.expected-statuses = ["2xx", "3xx", "401", "403", "404", "409", "422", "429", "5xx"]
+
+# K-475：保存した検索条件を作る口の条件（filters）の欄の名前（英数字と _ の 40 字まで）は、OpenAPI 3.0.3 に書く場所が無い（x-unexpressible-422）。
+#   形どおりの入力（変な字の欄の名前）を 422 で断るのを受け付けとして数えない（ST202 にしない）
+[[operations]]
+include-operation-id = "createSavedView"
+checks.positive_data_acceptance.expected-statuses = ["2xx", "3xx", "401", "403", "404", "409", "422", "429", "5xx"]
+
+# K-1116：PC の確かめに答える口は、PC がコードを頼んだ（確かめを始めた）後だけ受け、頼まれていなければ 404 E-CRED-014（K-355 の決め・契約にもある）。
+#   設定を作った（POST /credentials）だけでは頼まれていないので、schemathesis が自分で引いた線で作った直後に叩くと必ず 404 になり、
+#   「作った物が引けない」（ST302・ensure_resource_availability）と数える。この口に限って外す（答えの 404 は credential-login-check.test.ts の K355-API-013 が見る）。
+#   schemathesis 4.33 の stateful は、答えの確かめをその口の設定で組む（engine/run/stateful/_executor.py の checks_config_for(operation=…)）
+[[operations]]
+include-operation-id = "answerCredentialLoginCheck"
+checks.ensure_resource_availability.enabled = false

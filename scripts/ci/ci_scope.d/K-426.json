@@ -1,0 +1,5 @@
+{
+ "reads_ok": {
+  "packages/db/test/k426_function_execute_private.test.ts": "この葉の migration のファイルを読み、取引の中でもう一度当てる（migration の道で db の組に当たる）と、口の文（apps/api/src・packages/auth/src・packages/contracts/src・packages/db/src）を読んで app の関数の名前を集める（DB の試験なので db の組で流れる）・K-426"
+ }
+}

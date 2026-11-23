@@ -1,0 +1,332 @@
+/* 段 5 の下絵に足した状態（2026-11-22）の見た目。値は正本のトークン（--k-*）だけ。生の色・大きさを書かない。
+   本文の道具の小さな画面・作る面の頭／グループ／つながり・確認項目をその場で直す・詳細で値をその場で直す・本文を直す帯・戻せなかった項目 */
+
+/* ---- 本文の道具の帯：押せない形・開いている印・小さな画面の置き場 ---- */
+.k-f4d-bar button[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4d-bar button[aria-expanded="true"] {
+  background: var(--k-select);
+}
+.k-f4d-ed2 {
+  position: relative;
+  min-width: 0;
+}
+.k-f4d-ed2 > .k-f4d-editor {
+  overflow: visible;
+}
+.k-f4d-ed2 .k-f4d-bar {
+  border-radius: var(--k-r-md) var(--k-r-md) 0 0;
+}
+.k-f4d-barwrap {
+  position: relative;
+}
+.k-f4d-pop {
+  position: absolute;
+  top: 100%;
+  z-index: var(--k-c-popup-layer-z);
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  margin-top: var(--k-s-xs);
+  padding: var(--k-s-sm);
+  max-width: calc(100% - var(--k-s-md));
+  min-width: 0;
+  background: var(--k-card);
+  color: var(--k-on-surface);
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-field);
+  box-shadow: var(--k-c-dialog-shadow);
+}
+.k-f4d-pop[data-at="end"] {
+  right: var(--k-s-sm);
+}
+.k-f4d-pop[data-at="start"] {
+  left: var(--k-s-sm);
+}
+.k-f4d-pop-link {
+  width: calc(var(--k-c-create-aside-width) * 1.3);
+}
+.k-f4d-pop-title {
+  margin: 0;
+  font-size: var(--k-text-body-md);
+  font-weight: var(--k-fw-label-md);
+}
+.k-f4d-pop-acts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--k-s-sm);
+}
+.k-f4d-menu {
+  min-width: calc(var(--k-c-create-aside-width) * 0.6);
+  padding: var(--k-s-xs);
+  gap: 0;
+}
+.k-f4d-menu button {
+  display: flex;
+  align-items: center;
+  gap: var(--k-s-sm);
+  min-height: var(--k-c-dialog-button-height);
+  padding: 0 var(--k-s-sm);
+  border: 0;
+  border-radius: var(--k-r-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: var(--k-text-body);
+  text-align: left;
+  cursor: pointer;
+}
+.k-f4d-menu-group + .k-f4d-menu-group {
+  margin-top: var(--k-s-xs);
+  padding-top: var(--k-s-xs);
+  border-top: var(--k-c-f4d-rule-border);
+}
+.k-f4d-menu button[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4d-menu button[data-active="true"] {
+  background: var(--k-select);
+}
+.k-f4d-menu button:focus-visible {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-in-width);
+}
+.k-f4d-colors {
+  width: calc(var(--k-c-create-aside-width) * 0.9);
+}
+.k-f4d-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-xs);
+}
+.k-f4d-swatchbtn {
+  flex: none;
+  width: var(--k-c-dialog-button-height);
+  height: var(--k-c-dialog-button-height);
+  padding: 0;
+  border: var(--k-c-f4d-rule-strong-border);
+  border-radius: var(--k-r-sm);
+  overflow: hidden;
+  cursor: pointer;
+}
+.k-f4d-swatch-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.k-f4d-swatchbtn[aria-pressed="true"] {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-near-width);
+}
+.k-f4d-swatchbtn:focus-visible {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-near-width);
+}
+.k-f4d-othercolor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-s-sm);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4d-sel {
+  background: var(--k-select);
+}
+.k-f4d-doc th[data-caret="true"] {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-in-width);
+}
+.k-f4d-editnote {
+  margin: 0;
+  padding: var(--k-s-sm) var(--k-s-md);
+  border-top: var(--k-c-f4d-rule-soft-border);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+
+/* ---- 作る面：頭（作り方・保存の状態・下書きのまま閉じる）・グループ・足したつながり ---- */
+.k-f4d-headfull {
+  flex-wrap: wrap;
+  row-gap: var(--k-s-sm);
+}
+.k-f4d-headfull h1 {
+  white-space: nowrap;
+}
+.k-f4d-head-acts {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-sm);
+}
+.k-f4d-kind-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-sm);
+}
+.k-f4d-kind-row > * {
+  flex: 1 1 calc(var(--k-c-create-aside-width) * 0.6);
+  min-width: 0;
+}
+.k-f4d-chosen {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-md);
+  background: var(--k-card);
+  min-width: 0;
+}
+.k-f4d-chosen-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-xs) var(--k-s-sm);
+  padding: var(--k-s-xs) var(--k-s-sm);
+  border-bottom: var(--k-c-f4d-rule-soft-border);
+  font-size: var(--k-text-body);
+  min-width: 0;
+}
+.k-f4d-chosen-row:last-child {
+  border-bottom: 0;
+}
+.k-f4d-chosen-kind {
+  flex: none;
+  padding: 0 var(--k-s-sm);
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-sm);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-chosen-no {
+  flex: none;
+  font-weight: var(--k-fw-label-md);
+}
+.k-f4d-chosen-title {
+  flex: 1 1 calc(var(--k-c-create-aside-width) * 0.5);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.k-f4d-chosen-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  min-width: 0;
+}
+
+/* ---- 項目の値・確認項目の文をその場で直す ---- */
+.k-f4d-valbtn,
+.k-f4d-spec-btn {
+  border: 0;
+  background: none;
+  padding: 0 var(--k-s-xs);
+  margin: 0 calc(var(--k-s-xs) * -1);
+  border-radius: var(--k-r-sm);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+.k-f4d-valbtn:hover,
+.k-f4d-spec-btn:hover:not([aria-disabled="true"]) {
+  background: var(--k-select);
+}
+.k-f4d-valbtn:focus-visible,
+.k-f4d-spec-btn:focus-visible {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-out-width);
+}
+.k-f4d-spec-btn {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.k-f4d-spec-btn[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4d-spec-list li[data-done="true"] .k-f4d-spec-btn {
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-spec-edit {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.k-f4d-spec-box[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4d-editcell {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+  min-width: 0;
+}
+.k-f4d-editcell .k-input,
+.k-f4d-editcell .k-select-trigger {
+  max-width: 100%;
+}
+.k-f4d-reqrow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+  min-width: 0;
+}
+
+/* ---- 詳細：本文を直す入口・知らせの帯・題の行の「…」 ---- */
+.k-f4d-enter {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 0 var(--k-s-xs);
+}
+.k-f4d-notice {
+  margin: var(--k-s-sm) var(--k-s-lg);
+}
+.k-f4d-notice + .k-f4d-notice {
+  margin-top: 0;
+}
+.k-f4d-savefail {
+  color: var(--k-error);
+}
+
+/* ---- 版と差分：戻せなかった項目 ---- */
+.k-f4d-skipwrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+}
+.k-f4d-skipped {
+  margin: 0;
+  padding: var(--k-s-sm) var(--k-s-md);
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+  background: var(--k-st-warning-container);
+  color: var(--k-st-on-warning-container);
+  border-radius: var(--k-r-md);
+  font-size: var(--k-text-body);
+  overflow-wrap: anywhere;
+}
+.k-f4d-editcell .k-field > .k-label,
+.k-f4d-editcell .k-field > .k-label-row,
+.k-f4d-spec-edit .k-field > .k-label {
+  position: absolute;
+  width: var(--k-c-f4d-sr-width);
+  height: var(--k-c-f4d-sr-height);
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+/* 本文の見本の色（下絵）：利用者が付ける色の見本を、正本の色のトークンで描く（生の値を書かない・PM 2026-11-23） */
+.k-f4d-sample-ink {
+  color: var(--k-c-f4d-sample-ink-fg);
+}
+.k-f4d-sample-mark {
+  background-color: var(--k-c-f4d-sample-mark-bg);
+}

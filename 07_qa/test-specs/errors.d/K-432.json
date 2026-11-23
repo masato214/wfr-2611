@@ -1,0 +1,60 @@
+{
+ "errors": [
+  {
+   "id": "E-SEC-004",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "今の版と送った版が違う（先に別の人が直した・同じ版を持った 2 つの画面が同時に書き終えた後の方）",
+   "false_when": "送った版が今の版と同じ",
+   "message": "先に直されました。読み直してから、もう一度直してください",
+   "action": "読み直してもう一度",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの詳細を開く",
+    "steps": [
+     "2 つの画面で同じ本文を直し、先に 1 つ目の画面で書き終えてから、2 つ目の画面でも書き終える"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.13"
+   ]
+  },
+  {
+   "id": "E-SEC-005",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "完了したチケットの本文を直そうとした",
+   "false_when": "完了していないチケット",
+   "message": "このチケットは完了しています。完了したチケットの本文は変えられません",
+   "action": "新しいチケットで書く",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの詳細を開く",
+    "steps": [
+     "完了したチケットの本文を直して書き終える"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.30"
+   ]
+  }
+ ]
+}

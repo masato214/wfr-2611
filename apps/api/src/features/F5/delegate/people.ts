@@ -17,6 +17,11 @@ const fromCatalog = (code: string, status: number, extra: Record<string, unknown
   status,
   body: { ...kanameError(code).toJSON(), ...extra },
 });
+/** 体から detail を外す（E-CONF-020 は {error, code, message, action, undo, support_code} だけ） */
+const noDetail = (r: HookReply): HookReply => ({
+  ...r,
+  body: Object.fromEntries(Object.entries(r.body as Record<string, unknown>).filter(([k]) => k !== "detail")),
+});
 const down = (where: string, e: unknown): HookReply => {
   console.error(`[delegate] ${where}：止める側に倒した（${(e as Error)?.name ?? "Error"}）`);
   return fromCatalog("E-PAGE-003", 503);
@@ -32,7 +37,10 @@ export function peopleHooks(pool: pg.Pool, base: Record<string, Hook>): Record<s
       before: async (a: HookArgs) => {
         let r: Record<string, unknown> | undefined;
         try {
-          r = await inTenant<Record<string, unknown>>(a, "select app.ticket_delegate($1) as v", [a.id]);
+          r = await inTenant<Record<string, unknown>>(a, "select app.ticket_delegate($1, $2) as v", [
+            a.id,
+            typeof a.input["no_spec_reason"] === "string" ? a.input["no_spec_reason"] : null,
+          ]);
         } catch (e) {
           return down("任せる", e);
         }
@@ -49,6 +57,13 @@ export function peopleHooks(pool: pg.Pool, base: Record<string, Hook>): Record<s
             return fromCatalog("E-CONF-014", 409);
           case "NO_PC":
             return fromCatalog("E-CONN-001", 409, { href: SETUP_BRIDGE });
+          case "NO_SPEC":
+            return noDetail(fromCatalog("E-CONF-020", 409));
+          case "REASON_INVALID":
+            return {
+              status: 422,
+              body: { error: "validation_failed", code: "VALIDATION_ERROR", details: [{ field: "no_spec_reason" }] },
+            };
           case "NOT_FOUND":
             return notFound();
           default:

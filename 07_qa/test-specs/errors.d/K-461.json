@@ -1,0 +1,32 @@
+{
+ "errors": [
+  {
+   "id": "E-NTF-001",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "notifications"
+   },
+   "when": "知らせの一覧の続きの鍵が、形（base64url の 1〜200 字）には合うが今の状態では読めない（JSON でない・時刻や id の形でない・古い・壊れた）",
+   "false_when": "口が出した鍵（形に合わない鍵は入口が 422 にする）",
+   "message": "お知らせの続きを読めませんでした。最初から読み直してください",
+   "action": "最初から読み直す（続きの鍵を付けずに開き直す）",
+   "undo": false,
+   "layers": [
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "鈴を押して知らせの一覧を開く",
+    "steps": [
+     "続きの鍵に壊れた文字列を入れて GET /api/v1/notifications を呼ぶ"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-151.4"
+   ]
+  }
+ ]
+}

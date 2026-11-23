@@ -1,0 +1,140 @@
+/* 子チケット・つながり（段 5・K-452・キャンバス TdLink）の部品。値は正本のトークン（--k-*）だけを読む。生の大きさ・色を書かない。
+   外側のカードと頭の行は詳細のカード（.k-detail-links・.k-detail-links-head）のまま。ここは中の並びと小窓の中 */
+
+.k-detail-links-head .k-f4-links-count {
+  margin-left: auto;
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4-links-body {
+  display: grid;
+  gap: var(--k-s-md);
+  min-width: 0;
+  padding: 0 var(--k-s-md) var(--k-s-md);
+}
+.k-f4-links-group {
+  display: grid;
+  gap: var(--k-s-xs);
+  min-width: 0;
+}
+.k-f4-links-group h3 {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  font-weight: var(--k-fw-label-md);
+  color: var(--k-on-surface-variant);
+}
+.k-f4-links-list {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.k-f4-links-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-xs) var(--k-s-sm);
+  padding: var(--k-s-sm) 0;
+  border-top: var(--k-c-doc-toolbar-border-bottom);
+  min-width: 0;
+}
+.k-f4-links-no {
+  flex: none;
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4-links-link {
+  color: var(--k-primary);
+  text-decoration: underline;
+}
+.k-f4-links-hidden {
+  color: var(--k-on-surface-variant);
+}
+.k-f4-links-dialog-notice {
+  min-width: 0;
+  margin-bottom: var(--k-s-sm);
+}
+.k-f4-links-title {
+  flex: 1 1 var(--k-c-create-pick-width);
+  min-width: 0;
+  color: var(--k-on-surface);
+  overflow-wrap: anywhere;
+}
+.k-f4-links-empty {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+
+/* ---- 小窓の中 ---- */
+.k-f4-links-types {
+  display: grid;
+  gap: var(--k-s-xs);
+}
+.k-f4-links-types small {
+  display: block;
+  color: var(--k-on-surface-variant);
+}
+.k-f4-links-cands {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: var(--k-c-dialog-group-border);
+  border-radius: var(--k-r-field);
+}
+.k-f4-links-cands > li + li {
+  border-top: var(--k-c-doc-toolbar-border-bottom);
+}
+.k-f4-links-cand {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-xs) var(--k-s-sm);
+  width: 100%;
+  padding: var(--k-s-sm);
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.k-f4-links-cand:hover {
+  background: var(--k-surface-variant);
+}
+.k-f4-links-cand[aria-pressed="true"] {
+  background: var(--k-primary-soft);
+}
+.k-f4-links-cand[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4-links-note {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4-links-none {
+  margin: 0;
+  padding: var(--k-s-md);
+  border: var(--k-c-state-empty-border);
+  border-radius: var(--k-r-md);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+  text-align: center;
+}
+
+/* ---- 小窓のタブ：幅が狭いときは折り返し、字を収める（375 で小窓の外へはみ出さない） ---- */
+.k-f4-links-tabs .k-tabs-list {
+  flex-wrap: wrap;
+  overflow-x: visible;
+}
+.k-f4-links-tabs .k-tab {
+  flex: 1 1 auto;
+  padding: 0 var(--k-s-sm);
+  white-space: normal;
+}

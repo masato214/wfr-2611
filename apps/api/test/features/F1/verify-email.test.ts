@@ -1308,7 +1308,16 @@ describe("K-52 片付けが落ちたとき・片付ける相手の見分け（3 
   const scrub = async (tenantId: string | null, userId: string | null) => {
     if (tenantId) {
       await admin.query("update tenants set half_made_at = coalesce(half_made_at, now()) where id = $1", [tenantId]);
-      for (const table of ["sessions", "notifications", "terms_consents", "clones", "permissions", "members", "scopes"])
+      for (const table of [
+        "sessions",
+        "notifications",
+        "terms_consents",
+        "clones",
+        "tenant_memberships",
+        "permissions",
+        "members",
+        "scopes",
+      ])
         await admin.query(`delete from ${table} where tenant_id = $1`, [tenantId]);
     }
     if (userId) await admin.query('delete from kaname_auth."user" where id = $1', [userId]);

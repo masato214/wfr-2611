@@ -43,8 +43,9 @@ const requester = async (tag: string, o: { keepOwner?: boolean } = {}) => {
   const u = await h.makeUser(tag, { twoFactor: true });
   if (!o.keepOwner) {
     await h.admin.query("update members set role_id = null where id = $1", [u.memberId]);
+    // 会社を作った人は admin の所属の行を持つ（D-148.49）。あれば member に直し、無ければ足す
     await h.admin.query(
-      "insert into tenant_memberships (tenant_id, member_id, auth_user_id, role, status) values ($1, $2, $3, 'member', 'active')",
+      "insert into tenant_memberships (tenant_id, member_id, auth_user_id, role, status) values ($1, $2, $3, 'member', 'active') on conflict (tenant_id, member_id) do update set role = 'member', status = 'active', deleted_at = null",
       [u.tenantId, u.memberId, u.userId],
     );
   }

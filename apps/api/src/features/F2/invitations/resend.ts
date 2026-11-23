@@ -31,7 +31,7 @@ interface RecordRow {
   member_id: string;
   email: string;
   invitation_id: string;
-  invitee_email: string;
+  invitee_email: string | null;
   invited_at: Date;
   expires_at: Date;
   workspace_name: string | null;

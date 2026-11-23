@@ -5,14 +5,14 @@
   "D-128.129"
  ],
  "counts": {
-  "api": 378,
-  "api_built": 87,
+  "api": 377,
+  "api_built": 100,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
   "db": 149,
   "ui": 19,
   "packages": 13,
-  "errors": 254,
+  "errors": 279,
   "stack": 56,
   "env": 41
  },
@@ -50,23 +50,6 @@
    ]
   },
   {
-   "op": "retryActionRun",
-   "method": "POST",
-   "path": "/api/v1/action_runs/:id/retry",
-   "what": "作成・実行（action_runs）— 止まった理由を見て一手を打つ（PC が閉じている・壊れた",
-   "flows": [
-    "F7"
-   ],
-   "only_later_phase": false,
-   "tables": [
-    "action_runs"
-   ],
-   "status": "契約だけ（501）",
-   "owner_tickets": [
-    "K-67"
-   ]
-  },
-  {
    "op": "stopActionRun",
    "method": "POST",
    "path": "/api/v1/action_runs/:id/stop",
@@ -95,9 +78,10 @@
    "tables": [
     "action_runs"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-67"
+    "K-67",
+    "K-485"
    ]
   },
   {
@@ -1928,9 +1912,10 @@
    "tables": [
     "invitations"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-70"
+    "K-70",
+    "K-421"
    ]
   },
   {
@@ -3391,7 +3376,7 @@
    "op": "listNotifications",
    "method": "GET",
    "path": "/api/v1/notifications",
-   "what": "取得（notifications）— 知らせを見てチケットへ行く",
+   "what": "取得（notifications）— 自分宛ての知らせを新しい順に見る（未読だけ・人で絞る・20 件ずつ・読んだものは 30 日分）",
    "flows": [
     "F7"
    ],
@@ -3399,9 +3384,9 @@
    "tables": [
     "notifications"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-67"
+    "K-461"
    ]
   },
   {
@@ -4523,7 +4508,7 @@
    "op": "listSavedViews",
    "method": "GET",
    "path": "/api/v1/saved_views",
-   "what": "取得（saved_views）— 見え方を切り替える（一覧と詳細・カレンダー・ガント）",
+   "what": "取得（saved_views）— 保存した検索条件を名前の順に開く（自分の物と、見えるグループの全員向けの物）",
    "flows": [
     "F7"
    ],
@@ -4531,9 +4516,10 @@
    "tables": [
     "saved_views"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-67"
+    "K-67",
+    "K-475"
    ]
   },
   {
@@ -4548,9 +4534,10 @@
    "tables": [
     "saved_views"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-67"
+    "K-67",
+    "K-475"
    ]
   },
   {
@@ -4646,9 +4633,10 @@
    "tables": [
     "tickets"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-67"
+    "K-67",
+    "K-477"
    ]
   },
   {
@@ -4713,9 +4701,9 @@
    "tables": [
     "test_specs"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-59"
+    "K-435"
    ]
   },
   {
@@ -4730,9 +4718,9 @@
    "tables": [
     "test_specs"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-59"
+    "K-435"
    ]
   },
   {
@@ -4764,9 +4752,9 @@
    "tables": [
     "ticket_decisions"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-66"
+    "K-391"
    ]
   },
   {
@@ -4931,9 +4919,9 @@
    "tables": [
     "ticket_messages"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-66"
+    "K-386"
    ]
   },
   {
@@ -4948,9 +4936,9 @@
    "tables": [
     "ticket_messages"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-66"
+    "K-386"
    ]
   },
   {
@@ -4965,9 +4953,9 @@
    "tables": [
     "ticket_messages"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-66"
+    "K-386"
    ]
   },
   {
@@ -5177,6 +5165,24 @@
    "status": "契約だけ（501）",
    "owner_tickets": [
     "K-59"
+   ]
+  },
+  {
+   "op": "updateTicketBody",
+   "method": "PATCH",
+   "path": "/api/v1/tickets/:id/body",
+   "what": "更新（tickets）— チケットの中身（区画）を書く・直す",
+   "flows": [
+    "F4"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "ticket_sections"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-59",
+    "K-432"
    ]
   },
   {
@@ -5452,23 +5458,6 @@
    "status": "作った",
    "owner_tickets": [
     "K-62"
-   ]
-  },
-  {
-   "op": "updateTicketSection",
-   "method": "PATCH",
-   "path": "/api/v1/tickets/:id/sections/:key",
-   "what": "更新（tickets）— チケットの中身（区画）を書く・直す",
-   "flows": [
-    "F4"
-   ],
-   "only_later_phase": false,
-   "tables": [
-    "ticket_sections"
-   ],
-   "status": "契約だけ（501）",
-   "owner_tickets": [
-    "K-59"
    ]
   },
   {

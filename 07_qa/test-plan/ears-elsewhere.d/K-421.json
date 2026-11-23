@@ -1,0 +1,33 @@
+{
+ "ops": {
+  "createInvitationLink": {
+   "file": "apps/api/test/features/F10/invite-link.test.ts",
+   "reason": "招待のリンクは、グループ・役割・本人確認の取り直し・招く権限と、作ったリンクで参加できるかの組み合わせで答えが決まる。生成の試験の種では作れない（K-421）",
+   "covers": {
+    "test_post_invitations_link_ok": "K421-API-001",
+    "test_post_invitations_link_shape": "K421-API-001",
+    "test_post_invitations_link_rejected_401": "K421-API-004",
+    "test_post_invitations_link_rejected_403": "K421-API-004",
+    "test_post_invitations_link_rejected_422": "K421-API-005",
+    "test_post_invitations_link_not_found": "K421-API-002",
+    "test_post_invitations_link_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_invitations_link_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_invitations_link_session_unresolved": "K421-API-016",
+    "test_post_invitations_link_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_invitations_link_rate_limited": "上限は入口の共通（op.ts の limits）で、口ごとの上限の数を契約に持たない。上限の 429 は入口の共通の試験が見る（K-419 の招く口と同じ扱い）",
+    "test_post_invitations_link_mfa_pending": "2 段階を付けるまで進めない（K-308）は入口の共通の決まり（MFA_OPEN_OPS に無い口は全部 403）。口ごとに見ない（K-419 と同じ扱い）"
+   }
+  }
+ }
+}

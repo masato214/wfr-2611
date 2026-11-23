@@ -1,0 +1,142 @@
+/* 期限を決める小窓（K-444・段 5 の下絵）。値は --k-* のトークンだけを読む。小窓の枠・頭・足は components/k の Dialog のまま */
+
+/* すぐ決める 4 つ（今日・明日・今週の金曜・来週の月曜）：幅が細いときは 2 列 */
+.k-f4-due-quick {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--k-s-xs);
+  min-width: 0;
+}
+.k-f4-due-q {
+  display: grid;
+  gap: 0;
+  min-height: var(--k-c-dialog-button-height);
+  padding: var(--k-s-xs) var(--k-s-sm);
+  background: var(--k-c-input-bg);
+  border: var(--k-c-create-options-border);
+  border-radius: var(--k-r-field);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.k-f4-due-q > small {
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4-due-q:hover {
+  background: var(--k-select);
+}
+.k-f4-due-q[aria-pressed="true"] {
+  border-color: var(--k-primary);
+  background: var(--k-primary-soft);
+}
+
+/* カレンダー：月の頭（前の月・今の月・次の月）・曜日・日の格子 */
+.k-f4-due-cal {
+  display: grid;
+  gap: var(--k-s-xs);
+  min-width: 0;
+}
+.k-f4-due-month {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: var(--k-fw-label-md);
+}
+.k-f4-due-nav {
+  display: inline-grid;
+  place-items: center;
+  width: var(--k-c-dialog-close-width);
+  height: var(--k-c-dialog-close-height);
+  padding: 0;
+  border: 0;
+  border-radius: var(--k-r-md);
+  background: transparent;
+  color: var(--k-on-surface-variant);
+  cursor: pointer;
+}
+.k-f4-due-nav:hover {
+  background: var(--k-surface-variant);
+  color: var(--k-on-surface);
+}
+.k-f4-due-nav[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4-due-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: var(--k-s-xs) 0;
+  min-width: 0;
+}
+.k-f4-due-wd {
+  text-align: center;
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4-due-day {
+  min-height: var(--k-c-dialog-button-height);
+  padding: 0;
+  border: 0;
+  border-radius: var(--k-r-md);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.k-f4-due-day:hover {
+  background: var(--k-select);
+}
+.k-f4-due-day[aria-current="date"] {
+  color: var(--k-primary);
+  font-weight: var(--k-fw-label-md);
+  text-decoration: underline;
+}
+.k-f4-due-day[aria-pressed="true"] {
+  background: var(--k-primary);
+  color: var(--k-on-primary);
+}
+.k-f4-due-day[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4-due-day[aria-disabled="true"]:hover {
+  background: transparent;
+}
+.k-f4-due-blank {
+  min-height: var(--k-c-dialog-button-height);
+}
+
+/* 時刻の行（まだ使えない・押せない形）と、変えるときの注記 */
+.k-f4-due-time {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-s-sm);
+  padding: var(--k-c-input-pad);
+  border: var(--k-c-input-border);
+  border-radius: var(--k-c-input-radius);
+  background: var(--k-c-input-bg);
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4-due-note {
+  margin: 0;
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+}
+
+/* 作る面の振り分けの行の「期限」の欄（押すと小窓） */
+.k-f4-due-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--k-c-dialog-select-height);
+  text-align: left;
+  cursor: pointer;
+}
+.k-f4-due-field[data-empty="true"] {
+  color: var(--k-on-surface-variant);
+}
