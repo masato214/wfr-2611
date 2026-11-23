@@ -244,7 +244,7 @@ def check_components(src: dict, cfg: dict, files: list[Path], vars_: dict) -> tu
     return bad, by_part, len([c for c in comps if c not in sels])
 
 
-SKIP_DIRS = {"node_modules", ".next", ".turbo", "dist", "build", "coverage", "test-results", "playwright-report"}
+SKIP_DIRS = {"node_modules", ".next", ".next-prod", ".turbo", "dist", "build", "coverage", "test-results", "playwright-report"}
 GENERATED = {"k-tokens.css", "tokens.css"}
 USAGE_EXT = {".css", ".ts", ".tsx", ".js", ".mjs", ".html"}
 
