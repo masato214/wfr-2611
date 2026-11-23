@@ -24,6 +24,7 @@
     "apps/api/test/generated/post_clones_me_activity_export.test.ts",
     "11_tickets/K-59.md",
     "11_tickets/K-61.md",
+    "11_tickets/K-435.md",
     "scripts/ci/flow_db_gate.py"
    ],
    "tests": [
