@@ -237,6 +237,17 @@
   },
   {
    "method": "POST",
+   "path": "/api/v1/auth/ops-setup",
+   "implementation_path": "apps/api/src/routes/sessions.ts::startOpsSetup",
+   "screen_ids_referencing": [
+    "ops-team"
+   ],
+   "acts": [
+    "A134"
+   ]
+  },
+  {
+   "method": "POST",
    "path": "/api/v1/auth/password/forgot",
    "implementation_path": "apps/api/src/routes/security_events.ts::requestPasswordReset",
    "screen_ids_referencing": [

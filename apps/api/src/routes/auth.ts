@@ -7,6 +7,7 @@ export function register(app: Hono<Vars>, deps: ContractDeps): void {
   app.get("/api/v1/auth/invitations/:token", op(deps, "getInvitation"));
   app.post("/api/v1/auth/invitations/:token/accept", op(deps, "acceptInvitation"));
   app.post("/api/v1/auth/invitations/:token/resend-request", op(deps, "requestInvitationResend"));
+  app.post("/api/v1/auth/ops-setup", op(deps, "startOpsSetup"));
   app.post("/api/v1/auth/password/forgot", op(deps, "requestPasswordReset"));
   app.post("/api/v1/auth/password/reset", op(deps, "resetPassword"));
   app.post("/api/v1/auth/recovery/admin-request", op(deps, "requestAdminRecovery"));

@@ -4,7 +4,7 @@
  "frozen_at": "2026-11-23",
  "summary": {
   "total_screens": 37,
-  "total_apis": 369,
+  "total_apis": 370,
   "coverage_rate": 1.0,
   "uncovered_screens": [],
   "static_screens": [
@@ -3191,6 +3191,11 @@
     {
      "role": "action",
      "endpoint": "DELETE /api/v1/ops/members/:id",
+     "act": "A134"
+    },
+    {
+     "role": "action",
+     "endpoint": "POST /api/v1/auth/ops-setup",
      "act": "A134"
     }
    ],

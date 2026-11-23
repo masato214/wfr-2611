@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "v3.1",
-  "created_at": "2026-11-22",
+  "created_at": "2026-11-23",
   "_doc": "05_flow/build_functional.py が flow.json・ER図・モック・errors.json から生成。手で直さない。",
   "source": [
    "D-053.1",
@@ -152,7 +152,7 @@
    "legacy_drift_notes": null,
    "note": "契約の単位。切り替える前の確認は `app.onboard_golive`（会社モデル・Bridge・承認のルール・AI社員ごとのログイン情報と目標を本物の記録から）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-076"
    ]
@@ -279,7 +279,7 @@
    "legacy_drift_notes": null,
    "note": "**4 層の実体**（運営／会社／部署／個人）。層は省略可",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-026"
    ]
@@ -341,7 +341,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（human / ai_employee / clone / 将来 guest） ← E20",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -492,7 +492,7 @@
    "legacy_drift_notes": null,
    "note": "**人間と AI が同じ席に座る**。はじめの設定の進み具合は人ごと（Bridge はその人の PC・ログイン情報はその人が預ける）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-037",
     "D-110",
@@ -552,7 +552,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（`<common>`）。はじめの設定の段の名前。1 PCをつなぐ／2 話す／3 たたき台／4 ログイン情報／5 テスト／6 本番へ（D-089）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-089"
    ]
@@ -645,7 +645,7 @@
    "legacy_drift_notes": null,
    "note": "各個人の写し。1 人 1 体",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073"
    ]
@@ -754,7 +754,7 @@
    "legacy_drift_notes": null,
    "note": "← E19（出どころ）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-110"
    ]
@@ -815,7 +815,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（numeric / state / habit）← **E14**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -910,7 +910,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設マスタ。顧客が作れる。**運営が列挙しない（円・件・%・時間・回・独自スコア…）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-110"
    ]
@@ -972,7 +972,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設マスタ。**親への積み上がり方 = `sum`（そのまま足す）/ `convert`（変換して足す）/ `none`（足さない）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -1115,7 +1115,7 @@
    "legacy_drift_notes": null,
    "note": "`origin` = 配られた／自主。**`rollup_kind` は「この目標が親にどう積み上がるか」**。`rollup_spec` は変換の定義（式・係数）を入れる**開いた器**。中身は目標設定スキルが決める",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-032",
     "D-034",
@@ -1209,7 +1209,7 @@
    "legacy_drift_notes": null,
    "note": "**`rollup_kind = sum` のときだけ使う。** 未配分＝親の target − 子の合計",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-058"
    ]
@@ -1300,7 +1300,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設。`rollup_kind = none` のとき、どの仮説で親に効くかを繋ぐ。**効いたかは `validations` で検証する",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -1399,7 +1399,7 @@
    "legacy_drift_notes": null,
    "note": "期中変更の履歴。会社のデータなので `<common>`（tenant_id で分離。全員が読めるマスタではない）。**目標の名前は版に持ち、画面は今の版（goals.version と同じ版）の名前を出す（D-108.1）**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-061",
     "D-108.1",
@@ -1492,7 +1492,7 @@
    "legacy_drift_notes": null,
    "note": "**目標とタスクの間の層**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-035"
    ]
@@ -1587,7 +1587,7 @@
    "legacy_drift_notes": null,
    "note": "施策",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -1678,7 +1678,7 @@
    "legacy_drift_notes": null,
    "note": "検証",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -1777,7 +1777,7 @@
    "legacy_drift_notes": null,
    "note": "`kind` = funnel / transaction ← **E4**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-038",
     "D-110"
@@ -1889,7 +1889,7 @@
    "legacy_drift_notes": null,
    "note": "`is_filterable=true` の項目に**式インデックスを自動生成**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -1988,7 +1988,7 @@
    "legacy_drift_notes": null,
    "note": "`rules` ← **E18**（値域・状態遷移・しきい値・期限）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -2083,7 +2083,7 @@
    "legacy_drift_notes": null,
    "note": "`kind` = list / kanban / calendar / chart ← **E17**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -2194,7 +2194,7 @@
    "legacy_drift_notes": null,
    "note": "**太字＝固定列**（目標の集計に使う）。それ以外は `data`",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -2297,7 +2297,7 @@
    "legacy_drift_notes": null,
    "note": "← **E9**。`visibility` で中身非公開の配布に対応",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-110"
    ]
@@ -2392,7 +2392,7 @@
    "legacy_drift_notes": null,
    "note": "**改訂履歴＝堀の実体**。会社のデータなので `<common>`",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -2499,7 +2499,7 @@
    "legacy_drift_notes": null,
    "note": "`status` = learning / mastered / needs_review",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -2594,7 +2594,7 @@
    "legacy_drift_notes": null,
    "note": "**`intent_ja` が顧客に見える日本語**。`locator` は隠す",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -2656,7 +2656,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（rule / preference / example）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -2768,7 +2768,7 @@
    "legacy_drift_notes": null,
    "note": "`kind` の rule＝**決まり（上の層ほど強い）**・preference／example＝**好み・やり方（本人に近い層ほど強い）**（D-105.8）。個人の範囲は自分のAI が自動で入れる（D-105.5）。本文に **PGroonga** の索引。意味の検索用のベクトルは `search_embeddings` に持つ（D-098.10）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-060",
     "D-098.10",
@@ -2864,7 +2864,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-105.2・D-105.3・D-105.4）。本人だけが読む。**記憶のまとめ。毎朝本人が「今日」で押して始める（時間で勝手に動かさない）。押さない日は溜まり、次に押したときに `from_on`〜`to_on` をまとめる。読むのは会話（`incognito` を除く）と、その日の承認・差し戻し",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-105",
     "D-105.2",
@@ -2969,7 +2969,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-105.6・D-105.9）。**上げる候補。上げ先は自分のAI が選び、本人が変えて送る。OK までは送った人の個人の記憶として効く。確認者がいない層は 1 つ上の層へ、最後は会社の代表（D-105.6）。決まったら束の全員に知らせる",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-105",
     "D-105.6",
@@ -3044,7 +3044,7 @@
    "legacy_drift_notes": null,
    "note": "**段階 1 は作らない**（入れる境を越えたら・D-099.2）。**マスタ（運営）**。検索用のベクトルを作るモデル。使用中は 1 つ。替えるときは building で足し、そろったら active に切り替えて古いものを retired（D-098.4・D-098.5・D-099.4・D-099.6）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-098.4",
     "D-098.5",
@@ -3142,7 +3142,7 @@
    "legacy_drift_notes": null,
    "note": "**段階 1 は作らない**（入れる境を越えたら・D-099.2）。**検索用のベクトル**（D-098.4）。作るのは本人の PC（Bridge）。PC が無い会社だけ段階 2 のサーバーで同じモデル（D-099.3）。次元はモデルごと（`vector` に次元を付けず、モデルごとに `(embedding::vector(dim))` の HNSW 部分索引）。本文が直されたら `content_hash` が変わった行だけ作り直す（D-098.6）。見えるかは元の行の行レベルの制御で決まる（D-098.3）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-098.3",
     "D-098.4",
@@ -3301,7 +3301,7 @@
    "legacy_drift_notes": null,
    "note": "`status` は **今日／あとで／詰まっている／終わった の 4 つだけ**（優先度フラグは持たない）。詰まっているは理由必須（D-068）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-068"
    ]
@@ -3395,7 +3395,7 @@
    "legacy_drift_notes": null,
    "note": "★新設。引き継いでもらう（push）も引き継ぐ（pull）もここ（画面の言葉は D-068）。**`tasks.goal_id` は変えない**（誰の目標かは変わらない）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-058",
     "D-061",
@@ -3510,7 +3510,7 @@
    "legacy_drift_notes": null,
    "note": "★新設（D-068）。1 人 1 日 1 行。見込みの合計は `tasks.estimate_minutes` から集計",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-068"
    ]
@@ -3609,7 +3609,7 @@
    "legacy_drift_notes": null,
    "note": "`on_missed` = catch_up / latest_only / skip ← **E6**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -3704,7 +3704,7 @@
    "legacy_drift_notes": null,
    "note": "`mode` = auto / approve / off。`is_locked` ＝ **運営の安全ルール（上書き不可）** ← **E8**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-060"
    ]
@@ -3808,7 +3808,7 @@
    "legacy_drift_notes": null,
    "note": "**すべての提案の入口**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -3967,7 +3967,7 @@
    "legacy_drift_notes": null,
    "note": "**`choke_point_id` を記録**（どの関門を通ったか）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-062"
    ]
@@ -4062,7 +4062,7 @@
    "legacy_drift_notes": null,
    "note": "`verdict` = api / allowed / unspecified / **forbidden** / **bank**。forbidden と bank の `domain` は、仕事を渡すたびに Bridge が本人の Claude Code に「使わない道具」とフックの一覧として渡す（D-107.1〜D-107.3）。見抜けない形は `notes` に書く（D-107.6）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-013",
     "D-041",
@@ -4129,7 +4129,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（password_totp / oauth2 / api_key / basic / email_otp / saml）← **E15**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -4256,7 +4256,7 @@
    "legacy_drift_notes": null,
    "note": "**実体は持たない。vault の参照 ID のみ**。一覧は契約の口 `listCredentials`（名前と使い方だけ・K-351）。前の一覧 `app.my_credentials`（サービス名・台帳の可否・状態だけ・D-108.3）は前の道すじを消すまで残る。名前の一意：ワークスペースは会社の中で 1 つ・個人は持ち主の中で 1 つ（消した物・失効した物は数えない）。守り：個人の物は持ち主だけが読む・書く／ワークスペースの物は同じ会社の人が読み、書くのは `credentials` のワークスペース全体の edit を持つ人だけ（D-128.57 ①）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-004",
     "D-017",
@@ -4383,7 +4383,7 @@
    "legacy_drift_notes": null,
    "note": "人↔AI・人↔人・AI↔AI を区別しない。**会話は人が「新しく話す」で分け、一覧から戻る（D-104.1）。1 会話＝本人の Claude Code の 1 セッション**。一覧の探すは `title` と `messages.body` の PGroonga。領域・対象の列は残すが一覧の整理には使わない（D-062.5 を D-104.1 で改めた）。Bridge 経路の文脈は二重に持たない（← D-090.1）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-062.5",
     "D-090.1",
@@ -4521,7 +4521,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-090.2・D-090.4・D-090.5）。**自分のAIに言ったことの並び。Bridge が 1 件ずつ取り（`app.bridge_take_job`・`for update skip locked`）、結末を返す（`app.bridge_finish_job`）。**止まったものは `stopped` のまま残り、自動で再開しない。**続けるかは次に送る文で決まる（D-104.15。ボタンで選ばせない）。**動いている間に送った文は `queued` の行として順番待ちに並び、取り消すと `cancelled`（D-104.9）。止めずに直す文は `bridge_job_events(kind=steer)` で動いている仕事に渡す**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-090",
     "D-090.2",
@@ -4584,7 +4584,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（`<common>`）。待っている／動いている／終わった／止まった（人が選ぶまでそのまま）／やめた（D-090.4）／**確認待ち**（本人が許可するまで・D-093.3）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-090",
     "D-090.4",
@@ -4672,7 +4672,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-093.2・D-093.3・D-093.4・D-093.7・D-093.8）。**公式 CLI の 1 行 1 イベントのうち、人に見せるものと本人の答え。`init` で会話の id を先に覚える（落ちても続きから）。確認の答えは `audit_events`（`bridge.tool_allowed`／`tool_denied`・関門 C5）にも出す。書くのは `app.bridge_progress` / `app.bridge_ask` / `app.agent_answer`、読むのは `app.agent_state`。**仕事の記録（D-100.1・D-100.2）**：道具の呼び出しと使った量を残す。**中身の全文（ファイルの中身・道具の返り値）は残さない**（D-100.3）。会話に出すのは progress だけ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-093.2",
     "D-093.3",
@@ -4760,7 +4760,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-104.14）。本人だけが読む。**許可の決まり。本人が「いつも」にした道具と対象。Bridge が仕事を渡すときに Claude Code の許可の一覧として渡す。設定で一覧・取り消し。選んでいるモードは `members.agent_permission_mode`。**全部許可でも、サービス台帳で禁止・銀行のドメインは許可の一覧より強く止める（D-107.2）**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-104",
     "D-104.14",
@@ -4837,7 +4837,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-104.16）。本人だけが読む。**自分のAIの使用量。Bridge が Claude Code から受けた使用量を最新だけ残す（会員ごと・枠ごとに 1 行を上書き）。近い・達したら会話に案内",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-104",
     "D-104.16"
@@ -4966,7 +4966,7 @@
    "legacy_drift_notes": null,
    "note": "**会話の部品 1 組を列で持つ ← D-066**。受領・取り消しは `action_runs` / `audit_events` の実体があるときだけ描く",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-066",
     "D-104"
@@ -5096,7 +5096,7 @@
    "legacy_drift_notes": null,
    "note": "`format` = pdf / pptx / xlsx / docx / md / html / csv ← **E13**。会話から書き出した資料も成果物に入る（手元に落とすのは自由、外に出すときだけ承認）。`storage_ref` は今の版の置き場（版の表と同じ値）。**直す・戻す・読むは `app.artifact_*` の関数を通す**（生の select をしない）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-104",
     "D-106"
@@ -5210,7 +5210,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-106.3・D-106.4）。**直すと 1 行増える。戻すのも新しい行（消さない）。`(artifact_id, version)` は一意。中身は置き場（関門 C4）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-106",
     "D-106.3",
@@ -5313,7 +5313,7 @@
    "legacy_drift_notes": null,
    "note": "**追記専用**（UPDATE / DELETE を許可しない）。パーティション",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-107",
     "D-110"
@@ -5371,7 +5371,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（web / bridge / api。sessions.kind_id）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -5428,7 +5428,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（logout / password_changed / permission_changed / member_left / suspended / tenant_closed / invite_revoked / expired / admin。sessions.revoke_reason_id）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-010"
    ]
@@ -5519,7 +5519,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-073.4）。層は会社ごと。**運営／会社／個人は固定、その間の層（部署・事業…）は会社が 0〜n 個作る。`scopes.layer_id` が指す。画面に「部署」を固定名で書かない",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073",
     "D-073.4"
@@ -5582,7 +5582,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（memory / rule / goal / duty / ledger / ai_employee / template / procedure / member / plan …＝権限の「何に」）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073"
    ]
@@ -5644,7 +5644,7 @@
    "legacy_drift_notes": null,
    "note": "**マスタ**（view / edit / create / delete / allocate / approve / invite ＝「できること」）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073"
    ]
@@ -5755,7 +5755,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-073.1〜D-073.3）。権限＝誰に×何に×どの層で×できること。**本人のもの（`owner_member_id = app.user_id` の個人の範囲）は権限なしで自由＝RLS の predicate `self_only` で表し、行を作らない。R3（担当者）・R4（閲覧のみ）も `abilities=view` の行で「見える」を持つ（見えないのが既定ではない）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073",
     "D-073.1",
@@ -5870,7 +5870,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-074.1・D-076.13）。**出来事 7 つの実体。画面の依存表（G16）はここから",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-074",
     "D-074.1",
@@ -5972,7 +5972,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設。**オブジェクトごとの「何が起きるか」と引き継ぎ先の決定。全部 done になるまで出来事は終わらない（引き継ぎ先を決めるまで消せない）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-074",
     "D-076.13"
@@ -6100,7 +6100,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-076.1・G-14）。**端末の一覧。退会・停止・権限変更・パスワード変更で **全行を即 revoked** にし、API と Bridge はこの表を見て拒否する（発行済みトークンの有効期限に頼らない） / **`health`** / **`health_at`**（Bridge が返した自己診断。Bridge の中で完結させない ← D-090.7）。`last_seen_at` は生存の知らせで動き、75 秒来なければ画面は「切れています」← D-090.8 / **`browser`**（chrome／dedicated／off。この端末で AI が使うブラウザ。Kaname が正本で、PC の画面か Bridge の窓で変える ← D-120.1） / **`country`**（国。配布先の印 x-vercel-ip-country）・**`device`**（ブラウザの種類／OS）・**`last_ip`**（記録だけ）。国か端末が変わったら閉じる・同じ国の中の IP の変化は security_events に記録だけ。操作が無い 12 時間・最長 7 日は画面のセッションだけ（Bridge は時間では切らない）← D-128.120・D-128.121 / Bridge の行（K-57・0089）：**`device_token_hash`**（PC の印 kpc_… の sha256。印そのものは持たない・一意）・**`alive_at`**（最初の生きている知らせが届いた時刻。届くまで「つながっています」と言わない ← D-090）・**`bridge_version`**・**`machine_id`**（同じ人の同じ印でつなぎ直したときだけ前の行を切る。古い Bridge は空 ← D-128.174） / **`mfa_pending`**（付けるまで進めない印。パスキーも 2 段階も無い人の画面のセッションに立て、入り方がそろったら全部のワークスペースで下ろす。Bridge には立てない ← D-128.141・K-308・0113）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-074",
     "D-076",
@@ -6190,7 +6190,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-074.5・D-125.128 で改めた）。**運営は既定で顧客データを見られない。規約で先に許可をもらい（D-125.128）、「中を見る」を持つ運営の人が理由を書いて開いたときだけ、この行（1 時間・見るだけ・D-128.68）を根拠に読める。したことは運営側 `ops_audit_events` と会社側 `audit_events` の両方に残る（D-128.108）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-074",
     "D-074.5",
@@ -6286,7 +6286,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-074.3）。**退会後も法令で残す記録（請求の記録 7 年 等）。消去バッチはこの表の行を除外する",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-074",
     "D-074.3",
@@ -6379,7 +6379,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-074.3）。**猶予（30 日・復元可）の後の完全消去で自動生成し、会社の代表に送る",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-074",
     "D-074.3",
@@ -6457,7 +6457,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-037・D-076.10・D-077.4）。運営配布物のマスタ。**`ai_employees.provisioning_id` はここを指す。目標スキル（D-063）も配布物の一種。`is_locked`＝上書き不可の安全ルール",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-037",
     "D-063",
@@ -6544,7 +6544,7 @@
    "legacy_drift_notes": null,
    "note": "版。会社側は版を上げるまで変わらない（D-076.10）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073.7",
     "D-074.4",
@@ -6651,7 +6651,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-077.6）。**会社の詳細「配布したもの」＝この会社が使っている配布物・版・上書き。運営はマスタを直し、ここは 1 社への配布の状態",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073.7",
     "D-074.4",
@@ -6724,7 +6724,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-076.5）。**サービス台帳の可否は版で持ち、全社に効く。禁止に変えたら使っている会社に自動でお知らせ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073.7",
     "D-074.4",
@@ -6829,7 +6829,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-076.5）。**会社からの「このサービスは触れるか」の申請",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073.7",
     "D-074.4",
@@ -6948,7 +6948,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-027・D-074.4・D-077.3）。**会社が明示的に公開したものの審査。承認・却下は会社の詳細の「審査」で行う。公開時の出どころは業種名だけ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-027",
     "D-073.7",
@@ -7015,7 +7015,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-073.7・D-074.4）。**運営メンバーと権限。運営の権限も 誰に×何に×できること",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073",
     "D-073.7",
@@ -7111,7 +7111,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-074.4・D-077.7）。追記専用。**運営が「どの会社に何をしたか」。同じ行を対象会社の `audit_events` にも書く（顧客が自分の証跡で見られる）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073.7",
     "D-074",
@@ -7214,7 +7214,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-075.6）。追記専用。**セキュリティの出来事。会社側「できること・できないこと」と運営側「運営の証跡」の両方から読む",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-073.7",
     "D-074.4",
@@ -7328,7 +7328,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-075.1・D-077.1）。**まず自分のAIが答え、解けなければ運営へ。やりとりの本文は `conversations` / `messages`（同じ部品）。運営に届くのは構成と型だけで台帳の中身は送らない",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -7408,7 +7408,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-075.2・D-077.8）。**全体のお知らせも会社ごとのお知らせも同じ表（`target_tenant_id` の有無）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -7513,7 +7513,7 @@
    "legacy_drift_notes": null,
    "note": "会社側「お知らせ」の既読",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -7582,7 +7582,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-075.2・D-076.9）。**稼働状況。会社側は自分の Bridge・経路の状態を `sessions` と `action_runs` から足して表示",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -7687,7 +7687,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-075.3・D-043）。**通知の届け先。関門 C6 が宛先解決に読む",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-043",
     "D-069",
@@ -7796,7 +7796,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-043・C6）。**送出の outbox。重複抑止・再送・証跡は関門 C6 の責務。鈴の一覧は契約の口 `listNotifications`（自分宛て・未読は全部・読んだものは読んだ時刻から 30 日・K-461）。**守り：読むのも書くのも自分宛てだけ**（`notifications_self_read`・`notifications_self_only_write`・D-151.3。権限のある人も他人宛ての行に触れない。書き手は security definer の関数で守りの外）。索引：未読だけ（`notifications_inbox_unread_idx`）と新しい順（`notifications_inbox_idx`）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-043",
     "D-069",
@@ -7872,7 +7872,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-076.6・D-077.5）。マスタ。**「配るもの」の画面で版管理。段階 2 の注記（注 7）から段階 1 に繰り上げ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -7947,7 +7947,7 @@
    "legacy_drift_notes": null,
    "note": "価格・上限の版",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -8068,7 +8068,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-075.4）。**会社の契約。休止（D-076.13）は `status=suspended`。請求先は会社の設定（D-076.2）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -8192,7 +8192,7 @@
    "legacy_drift_notes": null,
    "note": "下げるときは `account_events(kind=plan_change)` を作って依存を片づけてから",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -8285,7 +8285,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-075.5）。**上限に近いものを自分のAIが先に言う。上限超過は止まるだけで消えない",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -8408,7 +8408,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-075.4）。段階 1 は請求書払い。**カードは段階 2（D-002）で `payments.method` が増えるだけ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-002",
     "D-069",
@@ -8522,7 +8522,7 @@
    "legacy_drift_notes": null,
    "note": "入金の記録は運営が会社の詳細で行う（D-077.1）。未収 30 日超で休止の案内",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-075",
@@ -8629,7 +8629,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-069.3・D-069.4）。**エラー一覧の 1 件が「出た」記録。文言と次の一手は errors.json が正本",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-069",
     "D-069.3",
@@ -8727,7 +8727,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-076.3・D-025）。**形式を問わず受け取り自分のAIが読む。本番の台帳には人が押してから入る（3 経路の (3)）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-025",
     "D-026",
@@ -8830,7 +8830,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-076.4・D-041）。**正規連携（freee / Google …）。資格情報は `credentials` 経由で vault 参照だけ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-026",
     "D-041",
@@ -8945,7 +8945,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-026・D-037）。**招待。取り消しで `token_hash` は即無効（G-14） / 下見は DB の関数 `app.invitation_preview2`（読むだけ・状態は used ＞ revoked ＞ expired ＞ ok）← D-128.62・D-128.63・K-331・0114 / 送り直しの頼みは `app.invitation_resend_targets`（宛て＝招いた人か管理者）・`app.invitation_resend_record`（知らせの行・前の回に送れなかった宛てだけを送り直す）・`app.invitation_resend_mark`（届いた／届かなかった印）・`app.invitation_resend_stamp`（全員に届いたときだけ頼んだ時刻）。どれもトークンで引く ← D-128.63・K-334・20261119051731",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-026",
     "D-037",
@@ -9027,7 +9027,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-088.2）。**保留の申し込み。「はじめる」ではここに 1 行置くだけで、会社も利用者も作らない。リンクを押した時点で作る。会社のデータではない（まだ会社が無い）ので `public` ではなく スキーマ `kaname_auth` に置き、触れるのは認証の接続だけ。平文のパスワードは持たず 30 分で失効し、確認が済んだら `consumed_at` を立てる（消すと「もう済んだ」と「期限切れ」が同じ見た目になる）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-026",
     "D-042",
@@ -9135,7 +9135,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-042）。**持ち出し。関門 C4 を通る。ダウンロード URL は期限つき署名",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-026",
     "D-042",
@@ -9241,7 +9241,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設。**添付の実体を 1 表に。`messages.attachments jsonb` は参照だけ持つ。**会話で付けた資料・画像（D-104.11）**もここ。実体は会社の置き場（関門 C4）で、Bridge は期限つきの署名 URL で受け取る（保存先の鍵は AI に見せない）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-026",
     "D-042",
@@ -9338,7 +9338,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-078.1）。**構築メタスキル 7 種・目標スキル・業務スキルのマスタ。顧客には名前・目的・版だけ見える。`distributions(kind=goal_skill)` はここへ移す",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-078",
     "D-078.1"
@@ -9433,7 +9433,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-078.2）。**出す前に運営がテストで動かす。前の版に戻せる",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-078",
     "D-078.2"
@@ -9506,7 +9506,7 @@
    "legacy_drift_notes": null,
    "note": "テストは外に出ない（`action_runs.mode_id = test` と同じ規則）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-078"
    ]
@@ -9613,7 +9613,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-078.3・D-078.4）。**会社の詳細「配布したもの」と AI社員の 1 体「使えるスキル」はここを読む。会社の権限者が `enabled=false` にできる。AI社員を消す → 行が消える（D-078.7）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-078",
     "D-078.3",
@@ -9717,7 +9717,7 @@
    "legacy_drift_notes": null,
    "note": "**★段階 2（D-082.1・D-082.2）。**会社が選んだ支払い方法。カードの実体は Stripe。番号は持たない",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-082",
     "D-082.1",
@@ -9819,7 +9819,7 @@
    "legacy_drift_notes": null,
    "note": "**★段階 2（D-082.3・D-082.4）。**Stripe の webhook の写し。同じ出来事は二度処理しない（stripe_event_ref に unique）。失敗 → 猶予 → 休止の判定の元",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-082",
     "D-082.3",
@@ -9936,7 +9936,7 @@
    "legacy_drift_notes": null,
    "note": "**★段階 2（D-083.1・D-083.4・D-083.6）。**会社ごとの AI の経路。運営マネージドの許可は運営が書く",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-082",
     "D-083",
@@ -10010,7 +10010,7 @@
    "legacy_drift_notes": null,
    "note": "**★段階 2（D-083.2・D-004）。マスタ。**3 社で揃えた能力表。揃わない能力はどの経路でも出さない",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-004",
     "D-082",
@@ -10123,7 +10123,7 @@
    "legacy_drift_notes": null,
    "note": "**★段階 2（D-084.3）。**アプリのプッシュ通知の届け先。失効は即時（G-14）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-082",
     "D-084",
@@ -10202,7 +10202,7 @@
    "legacy_drift_notes": null,
    "note": "**★段階 2（D-085.1・D-085.2）。**成果物から生成した開示資料の版。変わったらお知らせ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-082",
     "D-085",
@@ -10281,7 +10281,7 @@
    "legacy_drift_notes": null,
    "note": "**★段階 2（D-085.2・D-042）。**顧客のデータを触る外部の会社。変更は事前通知",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-042",
     "D-082",
@@ -10543,7 +10543,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.27・D-127.1）。**`tasks` を置き換える。本文は区画（`ticket_sections`）に分けて持つ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.27",
@@ -10641,7 +10641,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.27・D-125.53）。**区画ごとに版を持つ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.27",
@@ -10743,7 +10743,7 @@
    "legacy_drift_notes": null,
    "note": "版と差分（TdVersions）・戻す。追記だけ（直さない・消さない）。読めるのは元のチケットを読める人（D-128.115）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -10833,7 +10833,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.30）。**タスク・QA・課題・会議。会社が足す（上限 10）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.30",
@@ -10927,7 +10927,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.52・D-128.48）。**ワークスペースの管理 › 決まり › チケットの形",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.52",
@@ -11010,7 +11010,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.38）。**会社が直せる段は上限 8",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.38",
@@ -11096,7 +11096,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.67）。**会社が足す軸は上限 5。**凍結（K-563・会社の項目へ移した）**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.67",
@@ -11182,7 +11182,7 @@
    "legacy_drift_notes": null,
    "note": "値の並び・色。**凍結（K-563・会社の項目へ移した）**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128"
@@ -11262,7 +11262,7 @@
    "legacy_drift_notes": null,
    "note": "チケットに付けた分類。読めるのは元のチケットを読める人（D-128.115）。**凍結（K-563・会社の項目へ移した）**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -11360,7 +11360,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（K-563・D-150.36・D-150.37）。**会社が足す項目。分類の軸は「1 つ選ぶ」の項目に移した（項目の id＝軸の id）。数に上限なし",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -11439,7 +11439,7 @@
    "legacy_drift_notes": null,
    "note": "どの種別で出すか。行が無い項目は全部の種別（K-563）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128"
@@ -11527,7 +11527,7 @@
    "legacy_drift_notes": null,
    "note": "チケットごとの会社の項目の値（子表。項目の定義はマスタ `custom_fields`）。読めるのは元のチケットを読める人（K-563）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128"
@@ -11603,7 +11603,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.70・D-125.71）。**渡すときに一緒に切り替えるもの",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.70",
@@ -11729,7 +11729,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.17・D-125.79）。確認項目の形は K-434（D-150.39）で直した。付ける・外す・直す・外すは関数 `app.test_spec_update`・`app.test_spec_delete`、機械・AI が付ける道は `app.test_spec_check_by_ai`（K-435）**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.17",
@@ -11840,7 +11840,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.18・D-126.24）。**① はサーバー、② は本人の PC（Bridge）、③ は人",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.18",
@@ -11962,7 +11962,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.40・D-125.63）**。決めたことの 2000 字の決まりを外し、空白だけを断る決まりにした（D-130.1・K-390）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.40",
@@ -12097,7 +12097,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.29・D-125.131・D-128.45）。**チケットのスレッド。足した 4 列は K-383",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.131",
@@ -12200,7 +12200,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.28・D-125.35）。**外は URL・題名・時刻だけ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.28",
@@ -12341,7 +12341,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.108・D-128.50〜.52）**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.108",
@@ -12478,7 +12478,7 @@
    "legacy_drift_notes": null,
    "note": "公開するたびに増える",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128"
@@ -12562,7 +12562,7 @@
    "legacy_drift_notes": null,
    "note": "つながり・被リンク（D-128.52）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -12688,7 +12688,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.121・D-128.53・D-128.54）**",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.121",
@@ -12767,7 +12767,7 @@
    "legacy_drift_notes": null,
    "note": "担当グループ（いくつでも ← D-128.54）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -12870,7 +12870,7 @@
    "legacy_drift_notes": null,
    "note": "先方の人",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128"
@@ -13015,7 +13015,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.123）。**やり取りは `conversations` に置く",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.123",
@@ -13140,7 +13140,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.124）。**OK がそのチケットの完了の条件",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.124",
@@ -13225,7 +13225,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.150・D-128.46）。**1 人のアカウントが複数のワークスペースに入る。行は本人と、その tenant の管理者だけが読める",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.150",
@@ -13296,7 +13296,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.162）。**運営の表（tenant_id＝運営）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.162",
@@ -13380,7 +13380,7 @@
    "legacy_drift_notes": null,
    "note": "誰がどの版に同意したか。追記だけ（D-125.162）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.162",
@@ -13448,7 +13448,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.137・D-128.59〜.61）。**Better Auth の passkey の表を使う。置き場はログインの部品の側（kaname_auth）で、業務の表からは読めない（D-128.119）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.137",
@@ -13511,7 +13511,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-126.2・D-126.19）。**第1フェーズは汎用のブラウザ操作 1 つ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-126.19",
@@ -13594,7 +13594,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.50・D-128.80）。**前後（依存）と重複は持たない",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.50",
@@ -13720,7 +13720,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.70）。**`task_handovers` を置き換える",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.70",
@@ -13823,7 +13823,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-128.83）。**検索条件と列の表示設定。同じ名前は 1 人 1 つ（消していない物の中・大文字小文字を区別しない・一意の索引 `saved_views_name_uq`）・1 人 50 件まで（口で守る・K-475）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -13931,7 +13931,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-128.83・D-128.85）。**取り込んだものは下書き（`tickets.draft_import_id`）で入り、確定するまで取り込んだ人だけが見て直せる（D-128.119）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -14053,7 +14053,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-128.41・D-128.43・D-128.90）。**「覚えたいこと」。決めるまで使わない。例外の OK が要るものは承認待ちへ（D-128.89）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -14120,7 +14120,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-128.93）。**PC をつなぐ接続コード。1 回だけ。使うと `sessions(kind=bridge)` ができ、本人のセッションに結ばれる",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -14194,7 +14194,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-128.92）。**ワークスペースごと（tenant_id）。出来事ごとの届け先は `notification_preferences`（受け箱・メール。push は後のフェーズ）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -14291,7 +14291,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-128.72）。**作った人と決めた人は同じにできない（決められる人が 1 人のときだけ例外・本人確認）",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-128",
@@ -14384,7 +14384,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.115・D-128.95〜.97）。**1 人が複数のグループに入る（兼ねる）。グループごとに役割を分ける。ワークスペースの役割は `tenant_memberships.role`",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.115",
@@ -14441,7 +14441,7 @@
    "legacy_drift_notes": null,
    "note": "**★新設（D-125.117・D-128.97）。マスタ（製品の既定）。**役割の束の中身。ワークスペースとグループの役割から権限の行（`permissions.bundle_role`）を作る。会社が足す役割は後のフェーズ",
    "status": "decided",
-   "decided_at": "2026-11-22",
+   "decided_at": "2026-11-23",
    "source": [
     "D-125",
     "D-125.117",

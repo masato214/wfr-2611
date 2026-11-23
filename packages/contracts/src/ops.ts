@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml）。手で直さない。openapi:e12205b8dae7a584
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml）。手で直さない。openapi:2c9f63e69a76265b
 import type * as T from "./types.js";
 
 /** 口ごとの型：path の値・問い合わせ・入力・成功の答えの data */
@@ -24,6 +24,7 @@ export interface Ops {
   getInvitation: { params: { token: string }; query: never; body: never; data: T.InvitationPreview };
   acceptInvitation: { params: { token: string }; query: never; body: T.InvitationAcceptInput; data: T.InvitationAccepted };
   requestInvitationResend: { params: { token: string }; query: never; body: T.InvitationResendInput; data: T.InvitationResendResult };
+  startOpsSetup: { params: never; query: never; body: T.OpsSetupInput; data: T.OpsSetupSession };
   requestPasswordReset: { params: never; query: never; body: T.PasswordForgotInput; data: T.PasswordForgotAccepted };
   resetPassword: { params: never; query: never; body: T.PasswordResetInput; data: T.PasswordResetDone };
   requestAdminRecovery: { params: never; query: never; body: T.AdminRecoveryInput; data: T.AdminRecoveryResult };

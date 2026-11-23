@@ -2319,6 +2319,27 @@
     "test_get_ticket_fields_rejected_403": "読むだけの口で、会社のメンバーなら誰でも読める（行の守りの外の人は入口が 401・404 で止める。受けは K563-API-005・008）",
     "test_get_ticket_fields_upstream_failed": "外を呼ばない（AI も PC も呼ばない）"
    }
+  },
+  "startOpsSetup": {
+   "file": "apps/api/test/features/F12/ops-setup.test.ts",
+   "reason": "パスキーを付けるリンクは、命令（createFirstOps）が作った印とその人の運営の行がそろって初めて試せる。生成の試験の種では印を作れない（K-945）",
+   "covers": {
+    "test_post_auth_ops_setup_ok": "K945-API-006",
+    "test_post_auth_ops_setup_rejected_422": "K945-API-012",
+    "test_post_auth_ops_setup_conflict": "K945-API-010",
+    "test_post_auth_ops_setup_session_unresolved": "K945-API-018",
+    "test_post_auth_ops_setup_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_auth_ops_setup_rate_limited": "K945-API-015",
+    "test_post_auth_ops_setup_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_auth_ops_setup_shape": "K945-API-006"
+   },
+   "na": {}
   }
  }
 }

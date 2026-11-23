@@ -12272,6 +12272,17 @@ components:
       properties: {}
       additionalProperties: false
       x-operation: takeoverActionRun
+    OpsSetupInput:
+      type: object
+      properties:
+        token:
+          type: string
+          pattern: ^[A-Za-z0-9_-]{43}$
+      additionalProperties: false
+      x-operation: startOpsSetup
+      required:
+      - token
+      x-required-by: hooks
     ScopeOverview:
       type: object
       properties:
@@ -14331,6 +14342,12 @@ components:
         position:
           type: integer
       x-operation: listTicketFields
+    OpsSetupSession:
+      type: object
+      properties:
+        token:
+          type: string
+      x-operation: startOpsSetup
     Error:
       type: object
       properties:
@@ -16595,6 +16612,74 @@ paths:
                 $ref: '#/components/schemas/Error'
         '410':
           description: E-INV-002
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: E-PAGE-003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '413':
+          description: PAYLOAD_TOO_LARGE
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: RATE_LIMITED
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/auth/ops-setup:
+    post:
+      operationId: startOpsSetup
+      summary: 作成・実行（auth）— 運営の人を足し、できることを決める
+      tags:
+      - sessions
+      x-acts:
+      - A134
+      x-screens:
+      - ops-team
+      x-choke-points:
+      - C2
+      - C4
+      x-source:
+      - D-125.167
+      - D-128.70
+      x-permission: public
+      x-permission-scope: メールのリンクを持つ運営の人（パスキーを付けるだけのセッション）
+      x-step-up: false
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpsSetupInput'
+      responses:
+        '201':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/OpsSetupSession'
+                  meta:
+                    type: object
+        '422':
+          description: VALIDATION_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: E-PAGE-006
           content:
             application/json:
               schema:

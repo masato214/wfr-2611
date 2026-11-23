@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml＋endpoints.json）。手で直さない。openapi:e12205b8dae7a584
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml＋endpoints.json）。手で直さない。openapi:2c9f63e69a76265b
 export type EndpointKind = "list" | "get" | "create" | "update" | "delete";
 export interface EndpointDef {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -1168,6 +1168,55 @@ export const ENDPOINTS: readonly EndpointDef[] = [
     ],
     "screens": [
       "invite-accept"
+    ],
+    "perm": {
+      "word": "public",
+      "target": null,
+      "ability": null,
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/ops-setup",
+    "operationId": "startOpsSetup",
+    "table": "sessions",
+    "kind": "create",
+    "input": "OpsSetupInput",
+    "success": 201,
+    "output": "OpsSetupSession",
+    "outputList": false,
+    "generic": false,
+    "auth": "public",
+    "rateLimit": {
+      "perMinute": 10,
+      "key": "ip"
+    },
+    "uuidParams": [],
+    "chokePoints": [
+      "C2",
+      "C4"
+    ],
+    "errors": [
+      422,
+      409,
+      503,
+      413,
+      429,
+      503
+    ],
+    "acts": [
+      "A134"
+    ],
+    "screens": [
+      "ops-team"
     ],
     "perm": {
       "word": "public",
@@ -19643,4 +19692,4 @@ export const ENDPOINTS: readonly EndpointDef[] = [
     "ignoresScope": false
   }
 ];
-export const OPENAPI_HASH = "e12205b8dae7a584";
+export const OPENAPI_HASH = "2c9f63e69a76265b";

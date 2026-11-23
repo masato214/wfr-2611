@@ -1,7 +1,7 @@
 {
  "version": "v3",
  "skill": "api-design",
- "endpoints_count": 369,
+ "endpoints_count": 370,
  "ac_seeds": [
   {
    "endpoint": "POST /api/v1/acceptances/:id/remind",
@@ -769,6 +769,30 @@
     "D-125.152",
     "D-125.167",
     "D-126.18"
+   ]
+  },
+  {
+   "endpoint": "POST /api/v1/auth/ops-setup",
+   "feature_id": "F-016",
+   "screen_ids": [
+    "ops-team"
+   ],
+   "acts": [
+    "A134"
+   ],
+   "ears_ac_seed": [
+    "EVENT-DRIVEN: WHEN POST /api/v1/auth/ops-setup が「運営の人ごとに 問い合わせ・中を見る・お金・止める・お知らせ・配るもの・値段の案・値段を決める・運営の人 を付ける」として呼ばれたとき THEN Kaname は「運営の人はパスキーでしか入れない」を行い 2xx を返す",
+    "UNWANTED: IF 入力が決まりに合わないなら、Kaname は 422 を返し、リンクを使わない",
+    "UNWANTED: IF リンクの印が使えないなら、Kaname は 409 と E-PAGE-006 を返し、セッションを作らない",
+    "UNWANTED: IF セッションを作れないなら、Kaname は 503 と E-PAGE-003 を返し、運営として入れるセッションを残さない",
+    "UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない",
+    "UNWANTED: IF 10/min/ip を超えたら、Kaname は 429 と retry_after_sec を返す",
+    "UNWANTED: IF 入口でセッションを解く所が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、止める側に倒して副作用を起こさない",
+    "UBIQUITOUS: POST /api/v1/auth/ops-setup の副作用は関門 C2・C4 を経由し、認可 → ポリシー → 承認 → 副作用 → 記録 の順で行う"
+   ],
+   "source": [
+    "D-125.167",
+    "D-128.70"
    ]
   },
   {
