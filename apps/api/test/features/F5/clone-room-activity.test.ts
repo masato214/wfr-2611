@@ -369,7 +369,7 @@ describe("K-754 やったことと育ち具合を読む", () => {
     expect(t.id).toBeTruthy();
     for (const path of ["/clones/me/activity", "/clones/me/growth"])
       expect((await h.call(null, "GET", path)).status, path).toBe(401);
-    await h.f.admin.query("update members set suspended_at = now() where id = $1", [w.me.id]);
+    await h.f.admin.query("update members set suspended_at = now(), suspended_by = id where id = $1", [w.me.id]);
     for (const path of ["/clones/me/activity", "/clones/me/growth"]) {
       const r = await h.call(w.me, "GET", path);
       expect(r.status, path).toBe(403);
