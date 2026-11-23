@@ -24400,7 +24400,8 @@
     "@kaname/errors"
    ],
    "ci_wide": [
-    "db"
+    "db",
+    "shared"
    ],
    "changes": [
     "packages/db/migrations/20261128004400_ops_login.sql",
