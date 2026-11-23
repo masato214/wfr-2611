@@ -44,6 +44,8 @@ end $$;
 revoke all on function app.ops_setup_consume(text) from public;
 grant execute on function app.ops_setup_consume(text) to kaname_app;
 
+-- 入り方の検査の制約に 'ops_setup' を足して置き直す（K-944 の制約を広げるだけで、前からの保証は外さない）
+-- squawk-ignore ban-drop-constraint
 alter table sessions drop constraint if exists sessions_login_kind_ck;
 alter table sessions add constraint sessions_login_kind_ck check (login_kind in ('passkey', 'ops_setup'));
 

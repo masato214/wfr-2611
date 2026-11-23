@@ -4049,6 +4049,9 @@ components:
         last_ip:
           type: string
           nullable: true
+        login_kind:
+          type: string
+          nullable: true
         mfa_pending:
           type: boolean
         step_up_at:
@@ -18320,6 +18323,7 @@ paths:
           - kind_id
           - last_ip
           - last_seen_at
+          - login_kind
           - machine_id
           - member_id
           - mfa_pending
@@ -30735,6 +30739,7 @@ paths:
           - kind_id
           - last_ip
           - last_seen_at
+          - login_kind
           - machine_id
           - member_id
           - mfa_pending
