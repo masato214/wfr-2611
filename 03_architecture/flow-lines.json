@@ -13,6 +13,7 @@
   "checks",
   "clients",
   "conversations",
+  "custom_fields",
   "export_jobs",
   "invitations",
   "kind_sections",
@@ -31,6 +32,7 @@
   "tenants",
   "ticket_kinds",
   "ticket_messages",
+  "ticket_stages",
   "tickets"
  ],
  "tables": {
@@ -229,12 +231,16 @@
    "lines": []
   },
   "custom_fields": {
-   "writes": [],
+   "writes": [
+    "F9"
+   ],
    "reads": [
     "F4"
    ],
-   "boundary": false,
-   "lines": []
+   "boundary": true,
+   "lines": [
+    "F9→F4"
+   ]
   },
   "distributions": {
    "writes": [
@@ -814,12 +820,16 @@
    "lines": []
   },
   "ticket_stages": {
-   "writes": [],
+   "writes": [
+    "F9"
+   ],
    "reads": [
     "F4"
    ],
-   "boundary": false,
-   "lines": []
+   "boundary": true,
+   "lines": [
+    "F9→F4"
+   ]
   },
   "tickets": {
    "writes": [

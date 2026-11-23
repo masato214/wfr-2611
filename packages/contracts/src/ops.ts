@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml）。手で直さない。openapi:f1a661cccbd2e8fd
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml）。手で直さない。openapi:5df7c0693284ffef
 import type * as T from "./types.js";
 
 /** 口ごとの型：path の値・問い合わせ・入力・成功の答えの data */
@@ -296,7 +296,12 @@ export interface Ops {
   getShell: { params: never; query: never; body: never; data: T.Shell };
   updateTestSpec: { params: { id: string }; query: never; body: T.TestSpecUpdateInput; data: T.TestSpecItem };
   deleteTestSpec: { params: { id: string }; query: never; body: never; data: T.TestSpecItem };
+  listTicketFieldMaster: { params: never; query: { "cursor"?: string | number; "limit"?: string | number }; body: never; data: T.TicketFieldSetting[] };
   listTicketFields: { params: never; query: { "kind_id"?: string | number; "cursor"?: string | number; "limit"?: string | number }; body: never; data: T.TicketField[] };
+  createTicketField: { params: never; query: never; body: T.TicketFieldCreateInput; data: T.TicketFieldSetting };
+  updateTicketField: { params: { id: string }; query: never; body: T.TicketFieldUpdateInput; data: T.TicketFieldSetting };
+  deleteTicketField: { params: { id: string }; query: never; body: never; data: T.TicketFieldDeleted };
+  reorderTicketFields: { params: never; query: never; body: T.TicketFieldOrderInput; data: T.TicketFieldSetting[] };
   updateTicketDecision: { params: { id: string }; query: never; body: T.TicketDecisionUpdateInput; data: T.TicketDecisionChange };
   answerTicketHandover: { params: { id: string }; query: never; body: T.TicketHandoversInput; data: T.TicketHandovers };
   createTicketImport: { params: never; query: never; body: T.TicketImportsInput; data: T.TicketImports };
@@ -310,7 +315,11 @@ export interface Ops {
   updateTicketMessage: { params: { id: string }; query: never; body: T.TicketMessageEditInput; data: T.TimelineItem };
   deleteTicketMessage: { params: { id: string }; query: never; body: never; data: T.TimelineItem };
   starTicketMessage: { params: { id: string }; query: never; body: T.TicketMessageStarInput; data: T.TicketMessageStar };
-  listTicketStages: { params: never; query: { "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.TicketStages[] };
+  listTicketStages: { params: never; query: { "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.TicketStageSetting[] };
+  createTicketStage: { params: never; query: never; body: T.TicketStageCreateInput; data: T.TicketStageSetting };
+  updateTicketStage: { params: { id: string }; query: never; body: T.TicketStageUpdateInput; data: T.TicketStageSetting };
+  deleteTicketStage: { params: { id: string }; query: never; body: never; data: T.TicketStageDeleted };
+  reorderTicketStages: { params: never; query: never; body: T.TicketStageOrderInput; data: T.TicketStageSetting[] };
   listTickets: { params: never; query: { "view"?: string | number; "q"?: string | number; "scope_id"?: string | number; "kind_id"?: string | number; "stage_id"?: string | number; "assignee_id"?: string | number; "done"?: string | number; "due"?: string | number; "delegated"?: string | number; "approving"?: string | number; "due_from"?: string | number; "due_to"?: string | number; "start_from"?: string | number; "start_to"?: string | number; "overdue"?: string | number; "fire"?: string | number; "parent"?: string | number; "fields"?: string | number; "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.Tickets[] };
   createTicket: { params: never; query: never; body: T.TicketCreateInput; data: T.Tickets };
   getTicket: { params: { id: string }; query: never; body: never; data: T.TicketDetail };

@@ -8733,6 +8733,354 @@
     "D-152.14",
     "D-152.15"
    ]
+  },
+  {
+   "id": "E-STG-001",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "状態を足す・名前を直すとき、同じ会社に同じ名前の状態（仕組みの状態の名前も含む）が在る",
+   "false_when": "消した状態の名前・別の会社の同じ名前",
+   "message": "同じ名前の状態がすでにあります",
+   "action": "別の名前にする",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 状態を開く",
+    "steps": [
+     "状態を足す・名前を直すとき、同じ会社に同じ名前の状態（仕組みの状態の名前も含む）が在る操作をする"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.38",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-STG-002",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "作業の状態（仕組みの状態を除く）が 8 つある会社で状態を足す",
+   "false_when": "8 つ未満・仕組みの状態は数えない",
+   "message": "状態は 8 つまで足せます",
+   "action": "使っていない状態を消してから足す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 状態を開く",
+    "steps": [
+     "作業の状態（仕組みの状態を除く）が 8 つある会社で状態を足す操作をする"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.38",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-STG-003",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "始め（未着手）・終わり（完了）・仕組みの状態（確認中・承認待ち・実行中）を消す",
+   "false_when": "作業の状態（使っているチケットが無い物）",
+   "message": "この状態は仕組みが使うので、消せません",
+   "action": "消さずに名前や色を直す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 状態を開く",
+    "steps": [
+     "始め（未着手）・終わり（完了）・仕組みの状態（確認中・承認待ち・実行中）を消す操作をする"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.38",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-STG-004",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "仕組みの状態（確認中・承認待ち・実行中）の名前を変える",
+   "false_when": "色だけを直す・同じ名前のまま送る",
+   "message": "この状態の名前は変えられません",
+   "action": "色だけを直す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 状態を開く",
+    "steps": [
+     "仕組みの状態（確認中・承認待ち・実行中）の名前を変える操作をする"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.38",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-STG-005",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "その状態のチケット（消したチケットも数える）が在る状態を消す",
+   "false_when": "チケットが 1 枚も無い状態",
+   "message": "この状態のチケットがあるので、消せません",
+   "action": "チケットを別の状態に移してから消す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 状態を開く",
+    "steps": [
+     "その状態のチケット（消したチケットも数える）が在る状態を消す操作をする"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.38",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-STG-006",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "並べるとき、渡した並びが今の状態の全部と合わない（足りない・余る・重なる・消した状態・別の会社の状態）",
+   "false_when": "今の状態の全部を 1 つずつ渡した並び",
+   "message": "並びが古くなっています。開き直してください",
+   "action": "開き直してから並べる",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 状態を開く",
+    "steps": [
+     "並べるとき、渡した並びが今の状態の全部と合わない（足りない・余る・重なる・消した状態・別の会社の状態）操作をする"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.38",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-STG-007",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "並べるとき、始めの状態が先頭でない・終わりの状態が最後でない",
+   "false_when": "始めが先頭・終わりが最後の並び",
+   "message": "始めの状態は先頭に、終わりの状態は最後に置きます",
+   "action": "始めを先頭・終わりを最後にして並べる",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 状態を開く",
+    "steps": [
+     "並べるとき、始めの状態が先頭でない・終わりの状態が最後でない操作をする"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.38",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-FMS-001",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "項目を足す・名前を直すとき、同じ会社に同じ名前の項目（消していない物）が在る",
+   "false_when": "消した項目の名前・別の会社の同じ名前",
+   "message": "同じ名前の項目がすでにあります",
+   "action": "別の名前にする",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "項目を足す・名前を直すとき、同じ会社に同じ名前の項目（消していない物）が在るように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-FMS-004",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "1 つの項目の選ぶ物に同じ名前が 2 つある（前後の空白を落として比べる）",
+   "false_when": "名前がみな違う選ぶ物",
+   "message": "同じ名前の選ぶ物があります",
+   "action": "選ぶ物の名前を変える",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "1 つの項目の選ぶ物に同じ名前が 2 つある（前後の空白を落として比べる）ように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-FMS-002",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "項目の型を変えるとき、その項目に値が 1 つでも入っている（消していない値の行）",
+   "false_when": "値が 0 件・同じ型のまま",
+   "message": "値が入っている項目は、型を変えられません",
+   "action": "型はそのままにするか、新しい項目を足す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "項目の型を変えるとき、その項目に値が 1 つでも入っている（消していない値の行）ように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-FMS-003",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "項目を並べるとき、渡した並びが今の生きている項目の全部と合わない（足りない・余る・重なる・消した項目・別の会社の項目）",
+   "false_when": "今の全部の項目をちょうど 1 回ずつ渡す",
+   "message": "並びが今の項目と合いません",
+   "action": "画面を開き直してから並べる",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "項目を並べるとき、渡した並びが今の生きている項目の全部と合わない（足りない・余る・重なる・消した項目・別の会社の項目）ように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-FMS-005",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "選ぶ型でない項目に、型を変えずに選ぶ物だけを送る",
+   "false_when": "選ぶ型の項目・選ぶ型へ変えるときに一緒に送る",
+   "message": "選ぶ型でない項目には、選ぶ物を付けられません",
+   "action": "型を選ぶ型に変えてから選ぶ物を足す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "選ぶ型でない項目に、型を変えずに選ぶ物だけを送るように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
   }
  ],
  "meta": {

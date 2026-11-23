@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml＋endpoints.json）。手で直さない。openapi:f1a661cccbd2e8fd
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml＋endpoints.json）。手で直さない。openapi:5df7c0693284ffef
 export type EndpointKind = "list" | "get" | "create" | "update" | "delete";
 export interface EndpointDef {
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
@@ -15530,6 +15530,54 @@ export const ENDPOINTS: readonly EndpointDef[] = [
   },
   {
     "method": "GET",
+    "path": "/api/v1/ticket-field-master",
+    "operationId": "listTicketFieldMaster",
+    "table": "custom_fields",
+    "kind": "list",
+    "input": null,
+    "success": 200,
+    "output": "TicketFieldSetting",
+    "outputList": true,
+    "generic": false,
+    "auth": "member",
+    "rateLimit": {
+      "perMinute": 120,
+      "key": "user"
+    },
+    "uuidParams": [],
+    "chokePoints": [],
+    "errors": [
+      401,
+      403,
+      422,
+      503,
+      429,
+      403,
+      403,
+      503
+    ],
+    "acts": [
+      "A118"
+    ],
+    "screens": [
+      "masters"
+    ],
+    "perm": {
+      "word": "admin",
+      "target": "custom_fields",
+      "ability": "view",
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "GET",
     "path": "/api/v1/ticket-fields",
     "operationId": "listTicketFields",
     "table": "custom_fields",
@@ -15568,6 +15616,223 @@ export const ENDPOINTS: readonly EndpointDef[] = [
       "word": "read",
       "target": null,
       "ability": null,
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/ticket-fields",
+    "operationId": "createTicketField",
+    "table": "custom_fields",
+    "kind": "create",
+    "input": "TicketFieldCreateInput",
+    "success": 201,
+    "output": "TicketFieldSetting",
+    "outputList": false,
+    "generic": false,
+    "auth": "member",
+    "rateLimit": {
+      "perMinute": 30,
+      "key": "user"
+    },
+    "uuidParams": [],
+    "chokePoints": [
+      "C2"
+    ],
+    "errors": [
+      401,
+      403,
+      409,
+      422,
+      404,
+      409,
+      503,
+      413,
+      429,
+      403,
+      403,
+      503
+    ],
+    "acts": [
+      "A118"
+    ],
+    "screens": [
+      "masters"
+    ],
+    "perm": {
+      "word": "admin",
+      "target": "custom_fields",
+      "ability": "edit",
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/ticket-fields/:id",
+    "operationId": "updateTicketField",
+    "table": "custom_fields",
+    "kind": "update",
+    "input": "TicketFieldUpdateInput",
+    "success": 200,
+    "output": "TicketFieldSetting",
+    "outputList": false,
+    "generic": false,
+    "auth": "member",
+    "rateLimit": {
+      "perMinute": 30,
+      "key": "user"
+    },
+    "uuidParams": [
+      "id"
+    ],
+    "chokePoints": [
+      "C2"
+    ],
+    "errors": [
+      401,
+      403,
+      404,
+      422,
+      409,
+      409,
+      409,
+      409,
+      503,
+      413,
+      429,
+      403,
+      403,
+      503
+    ],
+    "acts": [
+      "A118"
+    ],
+    "screens": [
+      "masters"
+    ],
+    "perm": {
+      "word": "admin",
+      "target": "custom_fields",
+      "ability": "edit",
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/ticket-fields/:id",
+    "operationId": "deleteTicketField",
+    "table": "custom_fields",
+    "kind": "delete",
+    "input": null,
+    "success": 200,
+    "output": "TicketFieldDeleted",
+    "outputList": false,
+    "generic": false,
+    "auth": "member",
+    "rateLimit": {
+      "perMinute": 30,
+      "key": "user"
+    },
+    "uuidParams": [
+      "id"
+    ],
+    "chokePoints": [
+      "C2"
+    ],
+    "errors": [
+      401,
+      403,
+      404,
+      422,
+      503,
+      429,
+      403,
+      403,
+      503
+    ],
+    "acts": [
+      "A118"
+    ],
+    "screens": [
+      "masters"
+    ],
+    "perm": {
+      "word": "admin",
+      "target": "custom_fields",
+      "ability": "edit",
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/ticket-fields/order",
+    "operationId": "reorderTicketFields",
+    "table": "custom_fields",
+    "kind": "create",
+    "input": "TicketFieldOrderInput",
+    "success": 200,
+    "output": "TicketFieldSetting",
+    "outputList": true,
+    "generic": false,
+    "auth": "member",
+    "rateLimit": {
+      "perMinute": 30,
+      "key": "user"
+    },
+    "uuidParams": [],
+    "chokePoints": [
+      "C2"
+    ],
+    "errors": [
+      401,
+      403,
+      409,
+      422,
+      503,
+      413,
+      429,
+      403,
+      403,
+      503
+    ],
+    "acts": [
+      "A118"
+    ],
+    "screens": [
+      "masters"
+    ],
+    "perm": {
+      "word": "admin",
+      "target": "custom_fields",
+      "ability": "edit",
       "scope": "workspace",
       "adminOnly": false,
       "cap": null,
@@ -16297,7 +16562,7 @@ export const ENDPOINTS: readonly EndpointDef[] = [
     "kind": "list",
     "input": null,
     "success": 200,
-    "output": "TicketStages",
+    "output": "TicketStageSetting",
     "outputList": true,
     "generic": false,
     "auth": "member",
@@ -16326,6 +16591,223 @@ export const ENDPOINTS: readonly EndpointDef[] = [
       "word": "read",
       "target": null,
       "ability": null,
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/ticket_stages",
+    "operationId": "createTicketStage",
+    "table": "ticket_stages",
+    "kind": "create",
+    "input": "TicketStageCreateInput",
+    "success": 201,
+    "output": "TicketStageSetting",
+    "outputList": false,
+    "generic": false,
+    "auth": "member",
+    "rateLimit": {
+      "perMinute": 30,
+      "key": "user"
+    },
+    "uuidParams": [],
+    "chokePoints": [
+      "C2"
+    ],
+    "errors": [
+      401,
+      403,
+      409,
+      422,
+      409,
+      503,
+      413,
+      429,
+      403,
+      403,
+      503
+    ],
+    "acts": [
+      "A118"
+    ],
+    "screens": [
+      "masters"
+    ],
+    "perm": {
+      "word": "admin",
+      "target": "ticket_stages",
+      "ability": "edit",
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/ticket_stages/:id",
+    "operationId": "updateTicketStage",
+    "table": "ticket_stages",
+    "kind": "update",
+    "input": "TicketStageUpdateInput",
+    "success": 200,
+    "output": "TicketStageSetting",
+    "outputList": false,
+    "generic": false,
+    "auth": "member",
+    "rateLimit": {
+      "perMinute": 30,
+      "key": "user"
+    },
+    "uuidParams": [
+      "id"
+    ],
+    "chokePoints": [
+      "C2"
+    ],
+    "errors": [
+      401,
+      403,
+      404,
+      422,
+      409,
+      409,
+      503,
+      413,
+      429,
+      403,
+      403,
+      503
+    ],
+    "acts": [
+      "A118"
+    ],
+    "screens": [
+      "masters"
+    ],
+    "perm": {
+      "word": "admin",
+      "target": "ticket_stages",
+      "ability": "edit",
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/ticket_stages/:id",
+    "operationId": "deleteTicketStage",
+    "table": "ticket_stages",
+    "kind": "delete",
+    "input": null,
+    "success": 200,
+    "output": "TicketStageDeleted",
+    "outputList": false,
+    "generic": false,
+    "auth": "member",
+    "rateLimit": {
+      "perMinute": 30,
+      "key": "user"
+    },
+    "uuidParams": [
+      "id"
+    ],
+    "chokePoints": [
+      "C2"
+    ],
+    "errors": [
+      401,
+      403,
+      404,
+      422,
+      409,
+      409,
+      503,
+      429,
+      403,
+      403,
+      503
+    ],
+    "acts": [
+      "A118"
+    ],
+    "screens": [
+      "masters"
+    ],
+    "perm": {
+      "word": "admin",
+      "target": "ticket_stages",
+      "ability": "edit",
+      "scope": "workspace",
+      "adminOnly": false,
+      "cap": null,
+      "stepUp": null,
+      "row": null
+    },
+    "termsOpen": false,
+    "mfaOpen": false,
+    "ignoresScope": false
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/ticket_stages/order",
+    "operationId": "reorderTicketStages",
+    "table": "ticket_stages",
+    "kind": "create",
+    "input": "TicketStageOrderInput",
+    "success": 200,
+    "output": "TicketStageSetting",
+    "outputList": true,
+    "generic": false,
+    "auth": "member",
+    "rateLimit": {
+      "perMinute": 30,
+      "key": "user"
+    },
+    "uuidParams": [],
+    "chokePoints": [
+      "C2"
+    ],
+    "errors": [
+      401,
+      403,
+      409,
+      422,
+      409,
+      503,
+      413,
+      429,
+      403,
+      403,
+      503
+    ],
+    "acts": [
+      "A118"
+    ],
+    "screens": [
+      "masters"
+    ],
+    "perm": {
+      "word": "admin",
+      "target": "ticket_stages",
+      "ability": "edit",
       "scope": "workspace",
       "adminOnly": false,
       "cap": null,
@@ -20107,4 +20589,4 @@ export const ENDPOINTS: readonly EndpointDef[] = [
     "ignoresScope": false
   }
 ];
-export const OPENAPI_HASH = "f1a661cccbd2e8fd";
+export const OPENAPI_HASH = "5df7c0693284ffef";

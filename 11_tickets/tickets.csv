@@ -3131,6 +3131,65 @@ K-680,"書き終える（公開・版が進む・必ず守るは 2,000 字まで
 - [ ] 契約の口 1 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-680.json` の covers）
 - [ ] 共有の試験 k144-contract.test.ts の回で、入口の uuid の行 K144-API-107（`publishKnowledgePage` の道の id・この葉の葉のファイル `k144.d/K-680.ts`・carry・2026-11-23 に K-675 の葉のファイルから移した）が通る
 - [ ] 手元の CI（このチケットの範囲）が緑"
+K-705,状態（作業の段）を足す・直す（名前・色）・並べる・消す（書く口 4 本と DB の関数 4 本・色の列 color_key・listTicketStages の答えを決める・始めと終わりと仕組みの状態は消せない）（K-69 の葉）,タスク,K-69,未着手,実装,2026-11-26,F9・チケットの設定,"会社の管理者が「チケットの設定 › 状態」で、チケットの状態（作業の段）を足す・直す（名前・色）・並べる・消すための口と DB の関数を作る（切り方 0.13・下絵 v2 の set-stages）。**始めの状態（key が `todo`）と終わりの状態（key が `done`）と仕組みの状態（確認中・承認待ち・実行中）は消せない**。始めと終わりは名前と色を直せる（key は変えないので、作る・完了にする仕組みが探せる）。仕組みの状態は色だけ直せる。
+
+状態に色の列は無かったので `color_key`（見分けの色 8 つの鍵・土台-settings.md の 2 章）を足し、今ある行には key から初めの色を入れる。読む口 `listTicketStages`（今は表の行をそのまま返し、画面はまだ使っていない）の答えを、画面が使う形（`TicketStageSetting`）に決める。
+
+設計の全体は **`07_functional/段10-F9/土台-settings.md`**。この葉は状態の書く 4 本と `listTicketStages` の答えを持つ（`listTicketStages` の口の持ち主は K-59 のまま：頭の `apis:` には書かない。生成の試験 `get_ticket_stages.test.ts` は、この葉の `ears-elsewhere.d` で結ぶと作り手が作り直すので、作る段の初めに `tests:` に足した）。","- [ ] 下の表の 25 行（K705-API-001〜022・K705-DB-001〜003）が緑：`apps/api/test/features/F9/ticket-stages-write.test.ts`
+- [ ] 契約の口 4 本が 501 でない。`listTicketStages` の答えが `TicketStageSetting`（鍵 6）で、生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-705.json` の covers）
+- [ ] 共有の試験 k144-contract.test.ts の回で、入口の uuid の行 K144-API-972・973（`updateTicketStage`・`deleteTicketStage` の道の id）が通る
+- [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
+K-706,項目のマスタを読む口 listTicketFieldMaster と、項目を足す口 createTicketField（読む口 1 本・書く口 1 本・DB の関数 2 本と選ぶ物の組み立ての関数）（K-69 の葉）,タスク,K-69,未着手,実装,2026-11-27,F9・チケットの設定,"会社の管理者が「チケットの設定 › 項目」で、会社が足す項目（段 5 の `custom_fields`）の一覧を読み、項目を足すための口と DB の関数を作る（切り方 0.13・下絵 v2 の set-fields・段 5 K-563 の「マスタの口と画面は段 10」）。型は 7 つ（1 行・複数行・数・日付・1 つ選ぶ・複数選ぶ・チェック）・必須か・説明・選ぶ物・どの種別で出すか。**直す・並べる・消すは K-717**（この葉に依存する）。
+
+段 5 の読む口 `listTicketFields` の答えは鍵ちょうど 7 の約束（K-563・K-560 の試験が数える）で、「どの種別で出すか」と「値が入っている数」を持たない。そのため**マスタの画面が読む口 `listTicketFieldMaster`（管理者だけ）をこの葉で新しく足す**。表・段 5 の読む口・値を書く口（K-564）は作らない。
+
+設計の全体は **`07_functional/段10-F9/土台-settings.md`**。この葉は読む 1 本と足す 1 本を持つ。","- [ ] 下の表の 14 行（K706-API-001〜013・K706-DB-001）が緑：`apps/api/test/features/F9/ticket-fields-write.test.ts`
+- [ ] 契約の口 2 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-706.json` の covers）
+- [ ] 段 5 の読む口 `listTicketFields`（鍵 7・種別を指す）が、足した項目を同じ id・順で返す（K706-API-002・003 の突き合わせ）。`listTicketKinds.fields` は K-560 の物でこの葉は見ない
+- [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
+K-717,項目を直す・並べる・消す（updateTicketField・deleteTicketField・reorderTicketFields・DB の関数 3 本・型を変える制限）（K-706 の分け・K-69 の葉）,タスク,K-69,未着手,実装,2026-11-30,F9・チケットの設定,"会社の管理者が「チケットの設定 › 項目」で、会社が足した項目を直す・並べる・消すための口と DB の関数を作る（K-706 の分け。マスタを読む・足すは K-706）。直す＝名前・必須・説明・選ぶ物・どの種別で出すか（・型。ただし値が入っている間は変えられない）。消す＝値が入っていても消せる（見えなくなるだけ・確かめの小窓は画面 K-709）。
+
+設計の全体は **`07_functional/段10-F9/土台-settings.md`**。TicketFieldSetting の形・断る番号・権限・置き場はそこと K-706 のとおり。この葉は K-706 が作る関数（選ぶ物の組み立て・種別の行の入れ替え）と断りの言葉の表を使う。","- [ ] 下の表の 17 行（K717-API-001〜016・K717-DB-001）が緑：`apps/api/test/features/F9/ticket-fields-edit.test.ts`
+- [ ] 契約の口 3 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-717.json` の covers）
+- [ ] 共有の試験 k144-contract.test.ts の回で、入口の uuid の行 K144-API-974・975（`updateTicketField`・`deleteTicketField` の道の id）が通る
+- [ ] 段 5 の読む口 `listTicketFields`（鍵 7）と `listTicketKinds` の各種別の `fields` が、直した・消した項目を同じに返す（K717-API-001・006）
+- [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
+K-718,Bridge：AI に見せる道具 knowledge_open（ナレッジのページを開く）を足す（道具の定義・仕事の種類ごとの出し分け・進み具合の字・見つからないの文）（K-698 の分け・K-69 の葉）,タスク,K-69,未着手,実装,2026-12-04,F9・ナレッジ,"K-698 が足す契約の道具 `knowledge_open`（ナレッジのページを開く）を、**自分のAI（本人の Claude Code）に見せる**。Bridge の道具のサーバー（`kaname-tools.ts` の台本・MCP の「kaname」）に定義を足し、仕事の種類ごとの出し分け・進み具合の字・見つからないときの文を決める。契約の口・DB・道具の鍵の扱いは K-62 のまま（K-698）。
+
+- 道具の定義：名前 `knowledge_open`・入力は `page_id`（文字・必須）だけ。説明は AI が読む（「ナレッジの目次に並んだページを、ページの id を渡して開いて読む」）
+- 出し分け：**チケットの仕事は `ticket_read` と `knowledge_open`**・**会話の仕事は `ticket_read` 以外の全部（`knowledge_open` を含む）**・ログインの試しは何も出さない。手元の口（`tool-relay.ts`）は渡された道具の名前の一覧で通すので、口は変えない
+- 見つからない（契約の口が 404）：AI に「そのページは見つかりません」とだけ返す。在るかどうか・見えない訳を書かない（K-698 の「同じ答え」を守る）。ほかの失敗は前のまま（「Kaname に置けませんでした：…」）
+- 進み具合の字：「ナレッジを開いています」（内部の道具の名前を出さない）
+- **Bridge の版の約束（`BRIDGE_PROTOCOL`）は上げない**：古い Bridge は道具が見えないだけで、必ず守るは本文ごと届く（K-697 の `canOpen` が道具のある仕事だけ「開ける」と言う）。古い Bridge を断らない
+- 許可：`KANAME_TOOL_RULE = ""mcp__kaname""` は聞かずに使える道具（読むだけ・外に出ない）で、`knowledge_open` も同じ（前のまま・変えない）","- [ ] 下の表の 8 行（K718-BRG-001〜008）が緑：`apps/bridge/test/knowledge-tool.test.ts`
+- [ ] 前からの試験 `apps/bridge/test/tool-relay.test.ts`（K62-BRG-012）は「前からの試験を替えた所」のとおり替えた形（チケットの仕事の道具に `knowledge_open` が加わる）で緑。ほかの Bridge の試験は替えずに緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
+K-725,web の前の記憶の画面と呼び出しを外す：dev の見本の頁 /dev/memory（記憶のまとめ・確認待ち）と部品 components/ai/memory.tsx・lib/auth/ext.ts の記憶の関数を消し、残る設定の 3 部品は /dev/ai-settings に移す（K-69 の葉・K-712 より先）,タスク,K-69,未着手,実装,2026-11-26,F9・画面,"代表の決め 1・8（記憶は物として無くす。AI に覚えさせたいことは全部ナレッジのページで受ける）に従い、**web の前の記憶の画面と、旧い記憶の道への呼び出し**を外す。後の K-712 が旧い道（`apps/api` の `/agent/memory/…` 9 本と DB の関数）を消すとき、呼ぶ所が web に残っていて 404 になるのを防ぐので、**この葉が K-712 より先**。
+
+web と DB を 1 本で両方触らない決まり（`ticket-flow.yaml` の weight）なので、K-712 から分けた葉。
+
+見つけた物を全部出した（下の「前からの試験を替えた所」の 1 つ目）。5 ファイル：頁 1・部品 1・`ext.ts`・`index.ts`・生成物 `built-routes.ts`。
+
+| 物 | 扱い | 訳 |
+|---|---|---|
+| `app/(dev)/dev/memory/page.tsx`（頁 `/dev/memory`） | **消し、下半分を新しい頁 `/dev/ai-settings` に移す** | 頁は記憶の 2 部品（まとめ・確認待ち）と、記憶ではない 3 部品（いつも許可・使用量・通知）を並べた見本。前から 3 つの前からの試験（CHT-19-005・CHT-20-002・USH-08-012）が 3 部品の見本としてこの頁を開いている。記憶の名前の道に記憶でない物を残すと嘘になるので、頁の道を変える |
+| `components/ai/memory.tsx`（481 行・`MemoryDigest`・`MemoryReviews`） | **消す** | 旧い記憶の道 9 本を呼ぶ部品。呼ぶ所は上の頁だけ |
+| `components/ai/index.ts` の `export { MemoryDigest, MemoryReviews }` | **その 1 行を消す** | 上の部品を出していた |
+| `lib/auth/ext.ts` の記憶の関数 7（`memoryDigest`・`memoryDigestStart`・`memoryDigestUndo`・`memoryDigestPick`・`memoryEdit`・`memoryDelete`・`memoryReviews`）・上げる 2（`proposalSend`・`proposalDecide`）・型 4（`DigestItem`・`DigestResult`・`DigestStatus`・`Review`） | **消す** | 呼ぶ部品が消える。会話・成果物などの道（`/agent/…` 39 か所）の関数は残す |
+| `lib/built-routes.ts`（生成物） | **作り手で作り直す** | `/dev/memory` が消え `/dev/ai-settings` が入る。手で直さない |
+| `components/ai/conversation.tsx` の「覚えました」の行 | **字だけの行にする（`/ai/memory` へのリンクの枝を消す）** | `isBuilt(""/ai/memory"")` はいつも偽（その画面は作っていない）なので、リンクの枝は一度も動いたことが無い。残す「覚えました：…」は「覚えて」の印（K-712 が残す・代表に確認中）を受けた結果の表示 |
+| `components/ai/markdown.tsx` の `memory:` の種類（`kaname://memory/<id>`） | **残す** | 前の返事に残る `kaname://memory/…` のリンクを、いまは「記憶の画面は準備中です」と出す。消すと外のリンクとして開く（行き止まり）。AI に教える文（`apps/api/src/auth/conventions.ts`・`apps/bridge/src/conventions.ts`）から「記憶」を外すのは K-712 |
+| `scripts/ci/raw_length_ledger.json`（生の長さの台帳） | 記憶の部品 5 行（`memory.tsx`）と頁 1 行（`dev/memory/page.tsx`）を消す | 台帳は減らすだけ。ファイルが無いのに残ると「台帳を減らす」で赤になる。新しい頁は任意値の大きさを書かず、台帳に足さない |
+| `scripts/ci/chat_one.mjs` の「1 行の欄を作ってよいファイル」の一覧 | `components/ai/memory.tsx` を外す | 消えたファイルの名前が残るだけ（検査の意味は変わらない） |
+| `lib/nav.legacy.ts`・`routes.legacy.ts` の `clone-memory`（`/ai/memory`）・生成物 `lib/nav.ts` の第 2 ナビ「記憶」 | **この葉では変えない** | 前の外枠（`components/shell`・`/dev/shell`）の写しで、前の画面と一緒に外す側（D-128.78）。`nav.ts` の「記憶」は K-673 が第 2 ナビを直す。`tests/shell.spec.ts` の `clone-memory` は外枠の幅の試験で記憶の画面を開かない |
+| `07_qa/test-specs/screens/{today,clone-memory,clone-chat}.md` の行 12 | 「もう無い行」の節へ移す | 外した頁の試験の行。ID と当時の結果を残す（同じ ID を二度使わない）。「覚えて」の行（CHT-21-005）は今の行に残す |","- [ ] 下の表の 14 行（K725-API-001〜010・K725-UI-001〜004）が緑：`apps/web/test/k725-memory-ui-retire.test.ts`・`apps/web/tests/k/k725-memory-ui-retire.spec.ts`
+- [ ] `apps/web` の中に消した名前（`agent/memory`・`MemoryDigest`・`MemoryReviews`・`memoryDigest*`・`memoryEdit`・`memoryDelete`・`memoryReviews`・`dev/memory`・`proposalSend`・`proposalDecide`・`DigestItem`・`DigestResult`・`DigestStatus`）が 0 件。残る名前（`AlwaysAllowList`・`UsagePanel`・`NotifyToggles`・`agentMessagesBefore`・`覚えました：`）は在る
+- [ ] 前からの試験 `clone-chat.spec.ts`（carry）が新しい形で緑：記憶の 3 つの試験（CHT-21-001〜004・CHT-15-005・CHT-22-006 の 1 本／CHT-21-006／CHT-22-001〜005）を外し、`/dev/memory` を開く 3 か所を `/dev/ai-settings` に替えた（切る段で済み）。残す CHT-21-005（「覚えて」と言うと個人の記憶に入り「覚えました」が出る）・CHT-19-005・CHT-20-002・USH-08-012 が緑
+- [ ] `npx tsc --noEmit`（apps/web）が通る（`conversation.tsx` の使わなくなった import〔`Link`・`Route`・`Brain` のうち使われなくなった物〕を外す）・`python3 scripts/ci/design_gate.py … --raw-lengths` の D8（台帳）が緑・`python3 scripts/ci/gen_built_routes.py` の出力が `built-routes.ts` と同じ・`apps/web/tests/reachability.spec.ts`（作った道の一覧が生成物と同じ・USH-00-028）が緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
 K-780,段 6 の決定ログ §153（D-153.1〜33）と答えの記録を本線に入れる（文書だけ・K-61 の葉・段 6 の最初・依存なし）,タスク,K-61,未着手,実装,2026-11-27,F5・文書,"段 6（K-61・F5 AI に任せて、確かめて、終える）の決定 D-153.1〜33（止める・取り下げる・自分で直す・差し戻しで次を選ぶ・承認待ちの残り・書き出しは作らない ほか）を、決定ログの新しい節 §153 として本線に入れる。
 
 段 6 のほかの葉は `decisions:` に D-153.n を持つ。切る段の持ち込みの作り手（`scripts/tickets/build_index.py` の K4）は、始める時点の本線の決定ログにその決定が無いと止まる。前は口と DB の最初の葉 K-731 が決定ログも運んでいたので、依存の無い葉（K-741・K-761 など）が先に始まると止まった。だから決定ログだけを先に本線へ入れる、この葉を分けた（段 5 の K-430・段 8 の K-601・段 10 の K-673 と同じ。PM の決め 2026-11-23）。K-731 は決定ログを運ばなくなり、この葉に依存する。
@@ -3163,6 +3222,32 @@ K-1112,共通の台帳の本体（screen_api.py の表・08_api/phase1 の口の
 - [ ] screen_api.py の生成物（機能の分解・API の契約）が 1 バイトも変わらない（本体も .d も変えない）
 - [ ] 前からの試験は下の「前からの試験を替えた所」のとおりで緑
 - [ ] CI（このチケットの範囲）が緑"
+K-1114,直し：画面の試験を全部流す回（G48）で本線のまま赤になる 3 種を直す（登録の口の回数の上限に当たる準備・組み立てた画面の置き場を読む D8・文書の高さの丸めで 0.39px 被ると数える）・PM の直し,タスク,K-56,未着手,実装,2026-11-23,F6・CI,"K-1105 の CI（run 45106396961）で G48 が画面の試験を全部流し、K-1105 が触っていない画面の試験 39 本が赤だった。種類は 3 つで、どれも本線（claude/modest-lamport-77ue02 の先頭 eb836a1ac）のままで赤になる。段を本線に入れる全部の CI（画面の試験を全部流す回）で必ず赤になるので、ここで直す。
+
+| 種類 | 赤の本数 | 原因 | 分け |
+|---|---|---|---|
+| k357（K357-UI-001〜024） | 37 | 準備の `signupViaApi` が、別々の人を 1 つの届く元（IP）から続けて登録する。登録と確認の口は契約で IP ごと 1 分 10 回（`createSignup`・`verifySignup` の rateLimit）。全部を流す回では前の試験（k356 など）の登録と合わせて 1 分 10 回を超え、`sign-up 429 RATE_LIMITED` で準備が落ちる | 試験の誤り（準備が上限に当たる）。上限は本番の正しい守り |
+| K400-DS-002 | 1 | D8（生の長さ）は `apps/web` の下を全部読む。CI の web の組は画面を組み立ててから（`NEXT_DIST_DIR=.next-prod`）試験を流すので、組み立てた JS と CSS（`.next-prod`）の生の値を 4155 個数えて赤。読まない置き場（SKIP_DIRS）に `.next` はあるが `.next-prod` が無い | 検査の道具の不具合（本番の画面の不具合ではない） |
+| K138-SH-019 | 1 | チケットの詳細の幅 375 で、本文の最後の物（右の面の下の余白）の下端 840.39 ＞ 下のタブの上端 840。文書の高さ（scrollHeight）は整数に丸められ、本文の高さが端数（.39px）だと最後の 1px 未満までは送れない。字は 16px 上で終わっていて、見た目の被りは無い | 試験の誤り（測り方が 1px 未満の丸めを被りと数える） |
+
+PM の決め（作り方）：
+1. 登録の上限は変えない。試験の準備の道具が 1 人ごとに別の届く元（`x-forwarded-for`・10.x.x.x）で登録・確認・招待の受諾の口を呼ぶ（前からの道具 newcomer.ts・test-pc.ts・k336 と同じ形）。上限が残っていることはこの葉の試験 K1114-UI-002 が見る
+2. D8・D6（使われない段）・class_gate・chat_one（画面の試験から流れる会話の口の検査）・contract_shape_test の読まない置き場に `.next-prod` を足す
+3. 被りの測り方は 1px からを数える（同じ測り方の k220 も同じ類なので直す）","- [ ] 下の表の行（K1114-CI-001〜003・K1114-UI-001〜002）が緑
+- [ ] G48 で赤だった K357-UI-001〜024・K400-DS-002・K138-SH-019 が緑（替えた前からの試験と、替えない k357・k400）
+- [ ] 手元の CI（このチケットの範囲）が緑"
+K-1115,直し：切る段から 1 本を持ち込む台本（cut_take）が、重ねた元の行のすぐ下に足すだけの自分の行を「ぶつかる」と止める（K-581 の start --cut）・PM の直し,タスク,K-56,未着手,実装,2026-11-23,F6・CI,"段 5 の K-581（鎖の手前）を `flow.py start K-581 --cut c/段5` で始めると、持ち込みの台本 `scripts/tickets/cut_take.py` が共有の試験 `apps/api/test/features/contract/k144-contract.test.ts` で「本線の後からの変更とぶつかる」と止まる（followups.md の K-581 の行）。
+
+原因：台本は共有の試験を 3 方で合わせるとき、元の版を「切る段の枝と本線の分かれ目」にしている。K-581 の重ねた元 K-437 は分かれ目の後に本線へ入り、切る段の版では K-437 の行のすぐ下に K-581 の行がある。分かれ目から見ると、本線は「K-437 の行を足した」、切る段は「K-437 の行と K-581 の行を足した」になり、同じ所を別々に変えたとして git merge-file がぶつかる。中身は「本線の版に自分の行を足すだけ」で、本当のぶつかりではない。
+
+PM の決め（作り方）：
+1. 分かれ目を元にして合わせ、ぶつからなければ今のまま
+2. ぶつかったときだけ、元の版を「切る段の版から自分の印（行の末尾の `// K-xxx` と範囲）を外した物」にして合わせ直す。これで差は自分の行だけになり、本線の版にそれを足す
+3. 合わせ直すと、切る段で足した印の無い行（どのチケットの物でもない行）を本線が消したように見えて落ちることがある。そういう行があれば落とさずに止める。判定は、まだのチケットの印と範囲を外した後の切る段の版で見る（外した範囲の中身は数えない）。同じ字面の行（`});` など）を見落とさないよう、行ごとの数で比べる：切る段の版での数が、分かれ目の数と合わせた結果の数の大きい方を超える行を「落ちた」とする（空行は数えない）
+4. 2 回目の合わせもぶつかれば、今までどおり止める","- [ ] 下の表の行（K1115-CT-001〜005）が緑
+- [ ] 前からの K187-CT-001〜011 が緑のまま（`python3 scripts/ci/k187_cut_take_test.py` で 11 本。このファイルは替えない）
+- [ ] チケットの範囲の CI が緑
+- [ ] 取り込んだ後、K-581 の `flow.py start K-581 --cut c/段5` が止まらない（PM が確かめる）"
 K-1116,直し：契約 fuzz（G36）で出た前からの口の赤を直す（記憶を直す口に作る口の値域が漏れる・ログインのメールの形が部品の確かめより広い・PC の確かめに答える口の作った直後の確かめ）・PM の直し,タスク,K-56,未着手,実装,2026-11-23,F6・CI,"K-424（段 4・契約 fuzz の上限を外す葉）の CI の G36（回 wfq 45098922381・別名の回 wfr 45114016413）で、上限の 429 に隠れていた前からの口の赤が 4 種出た。K-424 は apps/api/src を変えない葉なので、ここで直す。本線の先頭 14896746c で 4 種をコードと契約で確かめた。
 
 | 種類 | 回の赤 | 原因（本線で確かめた） | どちらが正か | 直し |

@@ -721,7 +721,7 @@ class ContractShapeTest(unittest.TestCase):
         for base in bases:
             for f in sorted(base.rglob("*.ts*")):
                 rel = f.relative_to(ROOT).as_posix()
-                if "node_modules" in rel or "/.next/" in rel or "/dist/" in rel or re.search(r"(\.test\.|\.spec\.|/tests?/)", rel):
+                if "node_modules" in rel or "/.next/" in rel or "/.next-prod/" in rel or "/dist/" in rel or re.search(r"(\.test\.|\.spec\.|/tests?/)", rel):
                     continue
                 for i, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
                     if loose.search(line) or no_version.search(line):

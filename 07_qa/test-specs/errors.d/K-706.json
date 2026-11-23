@@ -1,0 +1,62 @@
+{
+ "errors": [
+  {
+   "id": "E-FMS-001",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "項目を足す・名前を直すとき、同じ会社に同じ名前の項目（消していない物）が在る",
+   "false_when": "消した項目の名前・別の会社の同じ名前",
+   "message": "同じ名前の項目がすでにあります",
+   "action": "別の名前にする",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "項目を足す・名前を直すとき、同じ会社に同じ名前の項目（消していない物）が在るように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-FMS-004",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "1 つの項目の選ぶ物に同じ名前が 2 つある（前後の空白を落として比べる）",
+   "false_when": "名前がみな違う選ぶ物",
+   "message": "同じ名前の選ぶ物があります",
+   "action": "選ぶ物の名前を変える",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "1 つの項目の選ぶ物に同じ名前が 2 つある（前後の空白を落として比べる）ように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
+  }
+ ]
+}

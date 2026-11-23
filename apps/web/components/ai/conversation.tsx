@@ -6,8 +6,6 @@
 //   返事への操作：自分＝直して送り直す・コピー／AI＝コピー・タスクにする・手元に落とす。一部を選ぶと「引用して続ける」（D-104.17）
 //   読んでいる途中で勝手に下へ飛ばない（上を読んでいる間は「いちばん下へ」と新しい返事の数・D-104.18）
 //   会話は読み上げソフトが順に読める記録（role=log）、作業中は aria-busy（D-104.20）
-import Link from "next/link";
-import type { Route } from "next";
 import {
   ArrowDown,
   Bot,
@@ -341,19 +339,11 @@ export function Conversation({
               {m.text}
             </p>
           ) : m.who === "memo" ? (
-            // 覚えました（D-105.1）。押すと記憶の画面で直せる
-            isBuilt("/ai/memory") ? (
-              <Link key={m.id} className="memline" href={"/ai/memory" as Route} data-who="memo">
-                <Brain />
-                <span>覚えました：{m.text}</span>
-                <span className="muted">直す</span>
-              </Link>
-            ) : (
-              <p key={m.id} className="memline" data-who="memo">
-                <Brain />
-                <span>覚えました：{m.text}</span>
-              </p>
-            )
+            // 覚えました（D-105.1）。字だけの行（記憶の画面は無い）
+            <p key={m.id} className="memline" data-who="memo">
+              <Brain />
+              <span>覚えました：{m.text}</span>
+            </p>
           ) : m.who === "me" ? (
             <Mine
               key={m.id}

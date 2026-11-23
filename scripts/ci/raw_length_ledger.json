@@ -330,14 +330,6 @@
    "reason": "app/ の頁と前の世代の外枠（D-128.78 で新しい画面に入れ替える側）。入れ替えるときに台帳から消える"
   },
   {
-   "file": "apps/web/app/(dev)/dev/memory/page.tsx",
-   "selector": "className",
-   "prop": "任意値",
-   "value": "max-w-[860px]",
-   "count": 1,
-   "reason": "app/ の頁と前の世代の外枠（D-128.78 で新しい画面に入れ替える側）。入れ替えるときに台帳から消える"
-  },
-  {
    "file": "apps/web/app/(dev)/dev/shell/page.tsx",
    "selector": "className",
    "prop": "任意値",
@@ -6118,46 +6110,6 @@
    "selector": "style 属性",
    "prop": "style",
    "value": "{{ maxWidth: \"100%\", display: \"block\" }}",
-   "count": 1,
-   "reason": "前の世代の画面の部品（D-128.78 で外す側）。外すときに台帳から消える"
-  },
-  {
-   "file": "apps/web/components/ai/memory.tsx",
-   "selector": "className",
-   "prop": "任意値",
-   "value": "md:text-[14px]",
-   "count": 1,
-   "reason": "前の世代の画面の部品（D-128.78 で外す側）。外すときに台帳から消える"
-  },
-  {
-   "file": "apps/web/components/ai/memory.tsx",
-   "selector": "className",
-   "prop": "任意値",
-   "value": "text-[16px]",
-   "count": 1,
-   "reason": "前の世代の画面の部品（D-128.78 で外す側）。外すときに台帳から消える"
-  },
-  {
-   "file": "apps/web/components/ai/memory.tsx",
-   "selector": "style 属性",
-   "prop": "style",
-   "value": "{{ background: \"transparent\", font: \"inherit\" }}",
-   "count": 1,
-   "reason": "前の世代の画面の部品（D-128.78 で外す側）。外すときに台帳から消える"
-  },
-  {
-   "file": "apps/web/components/ai/memory.tsx",
-   "selector": "style 属性",
-   "prop": "style",
-   "value": "{{ flexDirection: \"column\" }}",
-   "count": 1,
-   "reason": "前の世代の画面の部品（D-128.78 で外す側）。外すときに台帳から消える"
-  },
-  {
-   "file": "apps/web/components/ai/memory.tsx",
-   "selector": "style 属性",
-   "prop": "style",
-   "value": "{{ marginTop: 14 }}",
    "count": 1,
    "reason": "前の世代の画面の部品（D-128.78 で外す側）。外すときに台帳から消える"
   },

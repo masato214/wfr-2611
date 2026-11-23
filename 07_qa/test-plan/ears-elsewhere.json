@@ -2445,6 +2445,277 @@
      "mark": "K144-API-032"
     }
    }
+  },
+  "createTicketStage": {
+   "file": "apps/api/test/features/F9/ticket-stages-write.test.ts",
+   "reason": "状態を書く口は権限（ticket_stages の edit）・名前の一意・使っているチケットの数・仕組みの状態で答えが変わる。生成の試験の偽のセッションでは作れない（K-705）",
+   "covers": {
+    "test_post_ticket_stages_ok": "K705-API-002",
+    "test_post_ticket_stages_shape": "K705-API-002",
+    "test_post_ticket_stages_rejected_401": "K705-API-017",
+    "test_post_ticket_stages_rejected_403": "K705-API-017",
+    "test_post_ticket_stages_rate_limited": "K705-API-019",
+    "test_post_ticket_stages_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_ticket_stages_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_ticket_stages_conflict": "K705-API-005",
+    "test_post_ticket_stages_conflict_2": "K705-API-006",
+    "test_post_ticket_stages_rejected_422": "K705-API-003",
+    "test_post_ticket_stages_session_unresolved": "K705-API-021",
+    "test_post_ticket_stages_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    }
+   }
+  },
+  "updateTicketStage": {
+   "file": "apps/api/test/features/F9/ticket-stages-write.test.ts",
+   "reason": "状態を書く口は権限（ticket_stages の edit）・名前の一意・使っているチケットの数・仕組みの状態で答えが変わる。生成の試験の偽のセッションでは作れない（K-705）",
+   "covers": {
+    "test_patch_ticket_stages_id_ok": "K705-API-007",
+    "test_patch_ticket_stages_id_shape": "K705-API-007",
+    "test_patch_ticket_stages_id_rejected_401": "K705-API-017",
+    "test_patch_ticket_stages_id_rejected_403": "K705-API-017",
+    "test_patch_ticket_stages_id_rate_limited": "K705-API-019",
+    "test_patch_ticket_stages_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_ticket_stages_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_ticket_stages_id_not_found": "K705-API-010",
+    "test_patch_ticket_stages_id_rejected_422": "K705-API-007",
+    "test_patch_ticket_stages_id_conflict": "K705-API-005",
+    "test_patch_ticket_stages_id_conflict_2": "K705-API-008",
+    "test_patch_ticket_stages_id_session_unresolved": "K705-API-022",
+    "test_patch_ticket_stages_id_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    }
+   }
+  },
+  "deleteTicketStage": {
+   "file": "apps/api/test/features/F9/ticket-stages-write.test.ts",
+   "reason": "状態を書く口は権限（ticket_stages の edit）・名前の一意・使っているチケットの数・仕組みの状態で答えが変わる。生成の試験の偽のセッションでは作れない（K-705）",
+   "covers": {
+    "test_delete_ticket_stages_id_ok": "K705-API-011",
+    "test_delete_ticket_stages_id_shape": "K705-API-011",
+    "test_delete_ticket_stages_id_rejected_401": "K705-API-017",
+    "test_delete_ticket_stages_id_rejected_403": "K705-API-017",
+    "test_delete_ticket_stages_id_rate_limited": "K705-API-019",
+    "test_delete_ticket_stages_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_delete_ticket_stages_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_delete_ticket_stages_id_not_found": "K705-API-010",
+    "test_delete_ticket_stages_id_rejected_422": {
+     "file": "apps/api/test/features/contract/k144.d/K-705.ts",
+     "mark": "K144-API-973"
+    },
+    "test_delete_ticket_stages_id_conflict": "K705-API-012",
+    "test_delete_ticket_stages_id_conflict_2": "K705-API-013",
+    "test_delete_ticket_stages_id_session_unresolved": "K705-API-021"
+   }
+  },
+  "reorderTicketStages": {
+   "file": "apps/api/test/features/F9/ticket-stages-write.test.ts",
+   "reason": "状態を書く口は権限（ticket_stages の edit）・名前の一意・使っているチケットの数・仕組みの状態で答えが変わる。生成の試験の偽のセッションでは作れない（K-705）",
+   "covers": {
+    "test_post_ticket_stages_order_ok": "K705-API-014",
+    "test_post_ticket_stages_order_shape": "K705-API-014",
+    "test_post_ticket_stages_order_rejected_401": "K705-API-017",
+    "test_post_ticket_stages_order_rejected_403": "K705-API-017",
+    "test_post_ticket_stages_order_rate_limited": "K705-API-019",
+    "test_post_ticket_stages_order_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_ticket_stages_order_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_ticket_stages_order_conflict": "K705-API-015",
+    "test_post_ticket_stages_order_conflict_2": "K705-API-016",
+    "test_post_ticket_stages_order_rejected_422": "K705-API-015",
+    "test_post_ticket_stages_order_session_unresolved": "K705-API-021",
+    "test_post_ticket_stages_order_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    }
+   }
+  },
+  "listTicketStages": {
+   "file": "apps/api/test/features/F9/ticket-stages-write.test.ts",
+   "reason": "状態の一覧の答え（TicketStageSetting・lock・色）は会社の初めの段と仕組みの段・消した段で変わる。生成の試験の偽のセッションでは会社の段の行が作れない（K-705）",
+   "covers": {
+    "test_get_ticket_stages_ok": "K705-API-001",
+    "test_get_ticket_stages_shape": "K705-API-001",
+    "test_get_ticket_stages_rejected_401": "K705-API-017",
+    "test_get_ticket_stages_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ticket_stages_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_ticket_stages_rejected_403": "会社のメンバーなら誰でも読める口（権限の 403 は無い・前から同じ）",
+    "test_get_ticket_stages_rejected_422": "問い合わせは cursor・limit・sort を形だけ受けて動きを変えない（入口の共通の確かめ・一覧の口と同じ op.ts）",
+    "test_get_ticket_stages_rate_limited": "上限は入口の共通（op.ts・120/min/user）。書く口の上限は K705-API-019 が見る",
+    "test_get_ticket_stages_mfa_pending": "止めは全部の口で同じ 1 か所の入口（op.ts）。apps/api/test/features/F1/mfa-gate.test.ts が見る"
+   }
+  },
+  "listTicketFieldMaster": {
+   "file": "apps/api/test/features/F9/ticket-fields-write.test.ts",
+   "reason": "項目のマスタは権限（custom_fields の edit）・名前の一意・種別の行・値の数で答えが変わる。生成の試験の偽のセッションでは作れない（K-706）",
+   "covers": {
+    "test_get_ticket_field_master_ok": "K706-API-001",
+    "test_get_ticket_field_master_shape": "K706-API-001",
+    "test_get_ticket_field_master_rejected_401": "K706-API-009",
+    "test_get_ticket_field_master_rejected_403": "K706-API-009",
+    "test_get_ticket_field_master_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ticket_field_master_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_get_ticket_field_master_session_unresolved": "K706-API-012"
+   },
+   "na": {
+    "test_get_ticket_field_master_rejected_422": "問い合わせは cursor・limit を形だけ受けて動きを変えない（入口の共通の確かめ・一覧の口と同じ op.ts）",
+    "test_get_ticket_field_master_rate_limited": "上限は入口の共通（op.ts・120/min/user）。書く口の上限は K706-API-010 が見る",
+    "test_get_ticket_field_master_mfa_pending": "止めは全部の口で同じ 1 か所の入口（op.ts）。apps/api/test/features/F1/mfa-gate.test.ts が見る"
+   }
+  },
+  "createTicketField": {
+   "file": "apps/api/test/features/F9/ticket-fields-write.test.ts",
+   "reason": "項目のマスタは権限（custom_fields の edit）・名前の一意・種別の行・値の数で答えが変わる。生成の試験の偽のセッションでは作れない（K-706）",
+   "covers": {
+    "test_post_ticket_fields_ok": "K706-API-002",
+    "test_post_ticket_fields_shape": "K706-API-002",
+    "test_post_ticket_fields_rejected_401": "K706-API-009",
+    "test_post_ticket_fields_rejected_403": "K706-API-009",
+    "test_post_ticket_fields_conflict": "K706-API-008",
+    "test_post_ticket_fields_conflict_2": "K706-API-006",
+    "test_post_ticket_fields_rejected_422": "K706-API-004",
+    "test_post_ticket_fields_not_found": "K706-API-007",
+    "test_post_ticket_fields_session_unresolved": "K706-API-012",
+    "test_post_ticket_fields_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_ticket_fields_rate_limited": "K706-API-010",
+    "test_post_ticket_fields_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_ticket_fields_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   }
+  },
+  "updateTicketField": {
+   "file": "apps/api/test/features/F9/ticket-fields-edit.test.ts",
+   "reason": "項目を直す・消す・並べるは権限（custom_fields の edit）・名前の一意・値が入っているか・選ぶ物の id で答えが変わる。生成の試験の偽のセッションでは作れない（K-717）",
+   "covers": {
+    "test_patch_ticket_fields_id_ok": "K717-API-001",
+    "test_patch_ticket_fields_id_shape": "K717-API-001",
+    "test_patch_ticket_fields_id_rejected_401": "K717-API-009",
+    "test_patch_ticket_fields_id_rejected_403": "K717-API-009",
+    "test_patch_ticket_fields_id_not_found": "K717-API-003",
+    "test_patch_ticket_fields_id_rejected_422": "K717-API-003",
+    "test_patch_ticket_fields_id_conflict": "K717-API-014",
+    "test_patch_ticket_fields_id_conflict_2": "K717-API-004",
+    "test_patch_ticket_fields_id_conflict_3": "K717-API-015",
+    "test_patch_ticket_fields_id_conflict_4": "K717-API-005",
+    "test_patch_ticket_fields_id_session_unresolved": "K717-API-013",
+    "test_patch_ticket_fields_id_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_patch_ticket_fields_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_ticket_fields_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_patch_ticket_fields_id_rate_limited": "上限は口の共通の仕組み（op.ts・30/min/user）。書く口の上限は足す口の K706-API-010 が同じ仕組みで見る",
+    "test_patch_ticket_fields_id_mfa_pending": "止めは全部の口で同じ 1 か所の入口（op.ts）。apps/api/test/features/F1/mfa-gate.test.ts が見る"
+   }
+  },
+  "deleteTicketField": {
+   "file": "apps/api/test/features/F9/ticket-fields-edit.test.ts",
+   "reason": "項目を直す・消す・並べるは権限（custom_fields の edit）・名前の一意・値が入っているか・選ぶ物の id で答えが変わる。生成の試験の偽のセッションでは作れない（K-717）",
+   "covers": {
+    "test_delete_ticket_fields_id_ok": "K717-API-006",
+    "test_delete_ticket_fields_id_shape": "K717-API-006",
+    "test_delete_ticket_fields_id_rejected_401": "K717-API-009",
+    "test_delete_ticket_fields_id_rejected_403": "K717-API-009",
+    "test_delete_ticket_fields_id_not_found": "K717-API-003",
+    "test_delete_ticket_fields_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_delete_ticket_fields_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_delete_ticket_fields_id_session_unresolved": "K717-API-012"
+   },
+   "na": {
+    "test_delete_ticket_fields_id_rejected_422": "道の id の形は入口の共通の uuid の確かめ（共有の試験 k144 の K144-API-975 が見る）",
+    "test_delete_ticket_fields_id_rate_limited": "上限は口の共通の仕組み（op.ts・30/min/user）。書く口の上限は足す口の K706-API-010 が同じ仕組みで見る",
+    "test_delete_ticket_fields_id_mfa_pending": "止めは全部の口で同じ 1 か所の入口（op.ts）。apps/api/test/features/F1/mfa-gate.test.ts が見る"
+   }
+  },
+  "reorderTicketFields": {
+   "file": "apps/api/test/features/F9/ticket-fields-edit.test.ts",
+   "reason": "項目を直す・消す・並べるは権限（custom_fields の edit）・名前の一意・値が入っているか・選ぶ物の id で答えが変わる。生成の試験の偽のセッションでは作れない（K-717）",
+   "covers": {
+    "test_post_ticket_fields_order_ok": "K717-API-007",
+    "test_post_ticket_fields_order_shape": "K717-API-007",
+    "test_post_ticket_fields_order_rejected_401": "K717-API-009",
+    "test_post_ticket_fields_order_rejected_403": "K717-API-009",
+    "test_post_ticket_fields_order_conflict": "K717-API-008",
+    "test_post_ticket_fields_order_rejected_422": "K717-API-008",
+    "test_post_ticket_fields_order_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_ticket_fields_order_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_ticket_fields_order_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_ticket_fields_order_session_unresolved": "K717-API-012"
+   },
+   "na": {
+    "test_post_ticket_fields_order_rate_limited": "上限は口の共通の仕組み（op.ts・30/min/user）。書く口の上限は足す口の K706-API-010 が同じ仕組みで見る",
+    "test_post_ticket_fields_order_mfa_pending": "止めは全部の口で同じ 1 か所の入口（op.ts）。apps/api/test/features/F1/mfa-gate.test.ts が見る"
+   }
   }
  }
 }

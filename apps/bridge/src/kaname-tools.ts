@@ -23,6 +23,16 @@ export const TOOL_DEFS: ToolDef[] = [
     inputSchema: { type: "object", properties: {} },
   },
   {
+    name: "knowledge_open",
+    description:
+      "ナレッジの目次に並んだページを、ページの id を渡して開いて読む。必ず守るページ以外は、要るときにこれで開く（K-718）",
+    inputSchema: {
+      type: "object",
+      properties: { page_id: s("ページの id（ナレッジの目次にある id）") },
+      required: ["page_id"],
+    },
+  },
+  {
     name: "draft_read",
     description: "いまのたたき台（会社の目標・台帳・担当業務とAI社員）を読む。置く前・直す前に見る",
     inputSchema: { type: "object", properties: {} },
@@ -110,14 +120,15 @@ export const TOOL_DEFS: ToolDef[] = [
     },
   },
 ];
-/** 仕事の種類（K-62）。チケットの仕事は ticket_read だけ、会話の仕事は会話の道具（ticket_read 以外） */
+/** 仕事の種類（K-62）。チケットの仕事は ticket_read と knowledge_open、会話の仕事は ticket_read 以外の全部（knowledge_open を含む・K-718） */
 export type ToolJobKind = "ticket" | "chat" | "login_check";
-const TICKET_TOOL_NAMES = ["ticket_read"];
+const TICKET_TOOL_NAMES = ["ticket_read", "knowledge_open"];
 /** その仕事の種類で自分のAI に見せる道具（呼べない道具は見せない・K62-BRG-012）。手元の口の 403 が 2 層目 */
 export function toolDefsFor(kind: ToolJobKind | null | undefined): ToolDef[] {
   if (kind === "ticket") return TOOL_DEFS.filter((t) => TICKET_TOOL_NAMES.includes(t.name));
   if (kind === "login_check") return [];
-  return TOOL_DEFS.filter((t) => !TICKET_TOOL_NAMES.includes(t.name));
+  // 会話の仕事は ticket_read だけを除く（TICKET_TOOL_NAMES で除くと knowledge_open も消える）
+  return TOOL_DEFS.filter((t) => t.name !== "ticket_read");
 }
 
 /** 許可のモードに関わらず聞かずに使える道具（本人の会社のたたき台に書くだけ・外に出ない・D-110.4） */
@@ -144,6 +155,8 @@ async function call(id, name, input) {
       signal: AbortSignal.timeout(20000),
     });
     const j = await r.json().catch(() => ({}));
+    // ナレッジのページが無い・見えない（404）は訳を書かずに同じ 1 文だけ（K-698 の「同じ答え」を AI に届く所まで守る・K-718）
+    if (!r.ok && name === "knowledge_open" && r.status === 404) return reply(id, text("そのページは見つかりません", true));
     if (!r.ok) return reply(id, text("Kaname に置けませんでした：" + (j.message || ("Kaname が " + r.status)), true));
     reply(id, text(JSON.stringify(j.data ?? null)));
   } catch (e) {

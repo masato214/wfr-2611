@@ -10950,8 +10950,16 @@
      "note": null
     },
     {
+     "name": "key",
+     "note": "todo＝始め・done＝終わり・仕組みの段"
+    },
+    {
      "name": "name",
-     "note": null
+     "note": "同じ会社の消していない段で重ならない"
+    },
+    {
+     "name": "color_key",
+     "note": "見分けの色 8 つの鍵・key から初めの色"
     },
     {
      "name": "position",
@@ -11012,7 +11020,7 @@
     }
    ],
    "legacy_drift_notes": null,
-   "note": "**★新設（D-125.38）。**会社が直せる段は上限 8",
+   "note": "**★新設（D-125.38）。**会社が直せる段は上限 8。足す・直す・並べる・消すは K-705（始め・終わり・仕組みの段は消せない）",
    "status": "decided",
    "decided_at": "2026-11-23",
    "source": [

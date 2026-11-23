@@ -41929,6 +41929,221 @@
       "D-125.72",
       "D-125.167"
      ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/ticket_stages",
+     "table": "ticket_stages",
+     "operation_id": "createTicketStage",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-111",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "PATCH",
+     "path_draft": "/api/ticket_stages/:id",
+     "table": "ticket_stages",
+     "operation_id": "updateTicketStage",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-111",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "DELETE",
+     "path_draft": "/api/ticket_stages/:id",
+     "table": "ticket_stages",
+     "operation_id": "deleteTicketStage",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-111",
+      "E-106",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/ticket_stages/order",
+     "table": "ticket_stages",
+     "operation_id": "reorderTicketStages",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-111",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "data_fetch",
+     "method": "GET",
+     "path_draft": "/api/ticket-field-master",
+     "table": "custom_fields",
+     "operation_id": "listTicketFieldMaster",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-145",
+      "E-146",
+      "E-109"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/ticket-fields",
+     "table": "custom_fields",
+     "operation_id": "createTicketField",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-145",
+      "E-109",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "PATCH",
+     "path_draft": "/api/ticket-fields/:id",
+     "table": "custom_fields",
+     "operation_id": "updateTicketField",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-145",
+      "E-109",
+      "E-146",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "DELETE",
+     "path_draft": "/api/ticket-fields/:id",
+     "table": "custom_fields",
+     "operation_id": "deleteTicketField",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/ticket-fields/order",
+     "table": "custom_fields",
+     "operation_id": "reorderTicketFields",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
     }
    ],
    "required_apis": [
@@ -42265,6 +42480,221 @@
       "D-125.72",
       "D-125.167"
      ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/ticket_stages",
+     "table": "ticket_stages",
+     "operation_id": "createTicketStage",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-111",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "PATCH",
+     "path_draft": "/api/ticket_stages/:id",
+     "table": "ticket_stages",
+     "operation_id": "updateTicketStage",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-111",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "DELETE",
+     "path_draft": "/api/ticket_stages/:id",
+     "table": "ticket_stages",
+     "operation_id": "deleteTicketStage",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-111",
+      "E-106",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/ticket_stages/order",
+     "table": "ticket_stages",
+     "operation_id": "reorderTicketStages",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-111",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "data_fetch",
+     "method": "GET",
+     "path_draft": "/api/ticket-field-master",
+     "table": "custom_fields",
+     "operation_id": "listTicketFieldMaster",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-145",
+      "E-146",
+      "E-109"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/ticket-fields",
+     "table": "custom_fields",
+     "operation_id": "createTicketField",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-145",
+      "E-109",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "PATCH",
+     "path_draft": "/api/ticket-fields/:id",
+     "table": "custom_fields",
+     "operation_id": "updateTicketField",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-145",
+      "E-109",
+      "E-146",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "DELETE",
+     "path_draft": "/api/ticket-fields/:id",
+     "table": "custom_fields",
+     "operation_id": "deleteTicketField",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
+    },
+    {
+     "act": "A118",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/ticket-fields/order",
+     "table": "custom_fields",
+     "operation_id": "reorderTicketFields",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-144",
+      "E-052"
+     ],
+     "choke_points": [
+      "C2"
+     ],
+     "source": [
+      "D-125.66",
+      "D-125.67",
+      "D-125.70",
+      "D-125.81",
+      "D-125.167"
+     ]
     }
    ],
    "related_entities": [
@@ -42285,7 +42715,10 @@
     "E-106",
     "E-114",
     "E-119",
-    "E-067"
+    "E-067",
+    "E-144",
+    "E-145",
+    "E-146"
    ],
    "mock_path": null,
    "route": "/workspace/rules",

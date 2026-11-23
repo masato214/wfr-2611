@@ -5,14 +5,14 @@
   "D-128.129"
  ],
  "counts": {
-  "api": 377,
-  "api_built": 101,
+  "api": 386,
+  "api_built": 111,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
   "db": 149,
   "ui": 19,
   "packages": 13,
-  "errors": 279,
+  "errors": 291,
   "stack": 56,
   "env": 41
  },
@@ -4726,6 +4726,23 @@
    ]
   },
   {
+   "op": "listTicketFieldMaster",
+   "method": "GET",
+   "path": "/api/v1/ticket-field-master",
+   "what": "取得（custom_fields）— 会社の項目を並びの順に全部見る（型・必須・説明・選ぶ物・どの種別で出すか・値の数）",
+   "flows": [
+    "F9"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "custom_fields"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-706"
+   ]
+  },
+  {
    "op": "listTicketFields",
    "method": "GET",
    "path": "/api/v1/ticket-fields",
@@ -4740,6 +4757,74 @@
    "status": "作った",
    "owner_tickets": [
     "K-563"
+   ]
+  },
+  {
+   "op": "createTicketField",
+   "method": "POST",
+   "path": "/api/v1/ticket-fields",
+   "what": "作成・実行（ticket-fields）— 決まりを整える（守ること・承認を回すとき・やり方・チケッ",
+   "flows": [
+    "F9"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "custom_fields"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-706"
+   ]
+  },
+  {
+   "op": "updateTicketField",
+   "method": "PATCH",
+   "path": "/api/v1/ticket-fields/:id",
+   "what": "更新（ticket-fields）— 決まりを整える（守ること・承認を回すとき・やり方・チケッ",
+   "flows": [
+    "F9"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "custom_fields"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-717"
+   ]
+  },
+  {
+   "op": "deleteTicketField",
+   "method": "DELETE",
+   "path": "/api/v1/ticket-fields/:id",
+   "what": "削除（ticket-fields）— 決まりを整える（守ること・承認を回すとき・やり方・チケッ",
+   "flows": [
+    "F9"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "custom_fields"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-717"
+   ]
+  },
+  {
+   "op": "reorderTicketFields",
+   "method": "POST",
+   "path": "/api/v1/ticket-fields/order",
+   "what": "作成・実行（ticket-fields）— 決まりを整える（守ること・承認を回すとき・やり方・チケッ",
+   "flows": [
+    "F9"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "custom_fields"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-717"
    ]
   },
   {
@@ -4874,7 +4959,9 @@
     "tenant_distributions"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "applyKindTemplateUpdate",
@@ -4889,7 +4976,9 @@
     "kind_sections"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "deleteTicketLink",
@@ -4972,9 +5061,77 @@
    "tables": [
     "ticket_stages"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-59"
+    "K-705"
+   ]
+  },
+  {
+   "op": "createTicketStage",
+   "method": "POST",
+   "path": "/api/v1/ticket_stages",
+   "what": "作成・実行（ticket_stages）— 決まりを整える（守ること・承認を回すとき・やり方・チケッ",
+   "flows": [
+    "F9"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "ticket_stages"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-705"
+   ]
+  },
+  {
+   "op": "updateTicketStage",
+   "method": "PATCH",
+   "path": "/api/v1/ticket_stages/:id",
+   "what": "更新（ticket_stages）— 決まりを整える（守ること・承認を回すとき・やり方・チケッ",
+   "flows": [
+    "F9"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "ticket_stages"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-705"
+   ]
+  },
+  {
+   "op": "deleteTicketStage",
+   "method": "DELETE",
+   "path": "/api/v1/ticket_stages/:id",
+   "what": "削除（ticket_stages）— 決まりを整える（守ること・承認を回すとき・やり方・チケッ",
+   "flows": [
+    "F9"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "ticket_stages"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-705"
+   ]
+  },
+  {
+   "op": "reorderTicketStages",
+   "method": "POST",
+   "path": "/api/v1/ticket_stages/order",
+   "what": "作成・実行（ticket_stages）— 決まりを整える（守ること・承認を回すとき・やり方・チケッ",
+   "flows": [
+    "F9"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "ticket_stages"
+   ],
+   "status": "作った",
+   "owner_tickets": [
+    "K-705"
    ]
   },
   {
@@ -5873,7 +6030,9 @@
     "policies"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "updateEscalationRule",
@@ -5888,7 +6047,9 @@
     "policies"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "deleteEscalationRule",
@@ -5903,7 +6064,9 @@
     "policies"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "previewEscalationRule",
@@ -5918,7 +6081,9 @@
     "policies"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "uploadWorkspaceLogo",
@@ -6011,7 +6176,9 @@
     "policies"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "createWorkspaceRule",
@@ -6026,7 +6193,9 @@
     "policies"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "updateWorkspaceRule",
@@ -6041,7 +6210,9 @@
     "policies"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "deleteWorkspaceRule",
@@ -6056,7 +6227,9 @@
     "policies"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "getTicketShape",
@@ -6071,7 +6244,9 @@
     "ticket_kinds"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "saveTicketShape",
@@ -6086,7 +6261,9 @@
     "ticket_kinds"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   },
   {
    "op": "previewTicketShapeChange",
@@ -6101,7 +6278,9 @@
     "ticket_kinds"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-69"
+   ]
   }
  ],
  "legacy_routes": [
@@ -6428,11 +6607,13 @@
    "table": "custom_fields",
    "class": "skeleton",
    "why": "第1フェーズの口が使う（K-563）",
-   "writes": [],
+   "writes": [
+    "F9"
+   ],
    "reads": [
     "F4"
    ],
-   "boundary": false
+   "boundary": true
   },
   {
    "table": "daily_plans",
@@ -7471,11 +7652,13 @@
    "table": "ticket_stages",
    "class": "skeleton",
    "why": "第1フェーズの口が使う（08_api/endpoints.json）",
-   "writes": [],
+   "writes": [
+    "F9"
+   ],
    "reads": [
     "F4"
    ],
-   "boundary": false
+   "boundary": true
   },
   {
    "table": "ticket_thread_seen",
