@@ -4752,7 +4752,8 @@ export const CATALOG: Record<string, CatalogEntry> = {
     "support_code": "AUTH-022",
     "must_not": true,
     "layers": [
-      "API"
+      "API",
+      "DB"
     ],
     "where": {
       "screen": "login",

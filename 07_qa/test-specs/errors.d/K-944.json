@@ -13,7 +13,8 @@
    "action": "パスキーで入る",
    "undo": false,
    "layers": [
-    "API"
+    "API",
+    "DB"
    ],
    "must_not": true,
    "reproduce": {
