@@ -14,16 +14,19 @@
     "./signup": "./src/signup.ts",
     "./pending": "./src/pending.ts",
     "./device": "./src/device.ts",
-    "./reset": "./src/reset.ts"
+    "./reset": "./src/reset.ts",
+    "./ops-first": "./src/ops-first.ts"
   },
   "scripts": {
-    "type-check": "tsc -p tsconfig.json --noEmit"
+    "type-check": "tsc -p tsconfig.json --noEmit",
+    "ops:first": "tsx src/ops-first-cli.ts"
   },
   "dependencies": {
     "@better-auth/passkey": "1.7.15",
     "@better-auth/utils": "^0.5.1",
     "@kaname/config": "workspace:*",
     "@kaname/db": "workspace:*",
+    "@kaname/notify": "workspace:*",
     "@simplewebauthn/server": "13.3.3",
     "better-auth": "^1.7.15",
     "kysely": "^0.29.5",

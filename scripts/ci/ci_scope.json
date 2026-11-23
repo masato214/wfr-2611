@@ -1771,6 +1771,16 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/ops-setup.ts",
+    "apps/api/src/features/F12/ops-setup/**",
+    "packages/auth/src/ops-first*.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-setup.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/web/features/F6/progress/progress.css",
     "04_design/DESIGN-kaname.md",
     "apps/web/styles/k-tokens.css"

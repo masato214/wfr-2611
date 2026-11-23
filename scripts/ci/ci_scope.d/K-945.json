@@ -1,0 +1,5 @@
+{
+ "data_links": [
+  {"paths": ["apps/api/src/hooks/ops-setup.ts", "apps/api/src/features/F12/ops-setup/**", "packages/auth/src/ops-first*.ts"], "tests": ["apps/api/test/features/F12/ops-setup.test.ts"]}
+ ]
+}

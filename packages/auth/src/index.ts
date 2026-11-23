@@ -45,7 +45,8 @@ export interface Mail {
   subject: string;
   text: string;
   url: string;
-  kind: "verify" | "reset" | "new_device";
+  /** ops_setup：運営の人がパスキーを付けるリンク（K-945・命令 ops:first と運営の人を足す口）*/
+  kind: "verify" | "reset" | "new_device" | "ops_setup";
 }
 export type Mailer = (m: Mail) => Promise<void>;
 /** 2 段階の待ちの印の長さ（秒・K-301） */

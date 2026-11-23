@@ -79,8 +79,9 @@ export function createSessionResolver(auth: Auth, appPool: pg.Pool) {
     if (!row) return null; // 失効済み・会社に属していない・人が抜けた・見張りで閉じた
     // 運営の会社のセッション（K-944・D-156.2）：運営の人（生きている ops_members）のパスキーのセッションだけを運営として解く（2 層目）。
     //   運営の人でない・外された・入り方がパスキーでないセッションは解かない（401）。顧客の会社のセッションは null で、今までどおり下へ
-    if (row.ops !== null && row.ops !== "ops") return null;
-    if (row.ops === "ops")
+    //   パスキーを付けるだけのセッション（K-945・入り方 ops_setup）は 'setup'：同じ運営の文脈で、付けるまで進めない（mfaPending true・運営の口は 403 MFA_REQUIRED）
+    if (row.ops !== null && row.ops !== "ops" && row.ops !== "setup") return null;
+    if (row.ops === "ops" || row.ops === "setup")
       return {
         // 会社をまたぐ運営の文脈（tenantId null）。指す会社は入口（middleware/tenant.ts）が x-tenant-id で足す
         ctx: {
@@ -92,9 +93,9 @@ export function createSessionResolver(auth: Auth, appPool: pg.Pool) {
         },
         sessionId: row.session_id,
         authUserId: s.user.id,
-        // 同意し直しは顧客の規約の印・運営はパスキーを持つので、運営のセッションはどちらも止めない
+        // 同意し直しは顧客の規約の印なので運営のセッションは止めない。付けるまで進めないは、パスキーを付けるだけのセッション（setup）だけ立てる
         termsPending: false,
-        mfaPending: false,
+        mfaPending: row.ops === "setup",
         memberLeft: false,
       };
     return {

@@ -284,6 +284,9 @@ importers:
       '@kaname/db':
         specifier: workspace:*
         version: link:../db
+      '@kaname/notify':
+        specifier: workspace:*
+        version: link:../notify
       '@simplewebauthn/server':
         specifier: 13.3.3
         version: 13.3.3
