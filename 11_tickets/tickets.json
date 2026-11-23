@@ -24371,6 +24371,9 @@
    "choke_none": "",
    "tests": [
     "apps/api/test/k1106_db_down_503.test.ts",
+    "scripts/ci/contract_shape_test.py"
+   ],
+   "carry": [
     "apps/api/test/features/F1/password-reset.test.ts",
     "apps/api/test/features/F1/service-status.test.ts",
     "apps/api/test/features/F1/sign-in-code-claim.test.ts",
@@ -24383,10 +24386,8 @@
     "apps/api/test/features/F3/connect-pc.test.ts",
     "apps/api/test/features/F4/create-ticket.test.ts",
     "apps/api/test/features/F5/approve-complete-approve.test.ts",
-    "apps/api/test/k234_one_transaction.test.ts",
-    "scripts/ci/contract_shape_test.py"
+    "apps/api/test/k234_one_transaction.test.ts"
    ],
-   "carry": [],
    "depends_on": [
     "K-474"
    ],

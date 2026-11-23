@@ -1778,6 +1778,15 @@
    "tests": [
     "apps/web/tests/k/k1100-stage-locked.spec.ts"
    ]
+  },
+  {
+   "paths": [
+    "05_flow/screen_api.py",
+    "apps/api/src/**"
+   ],
+   "tests": [
+    "apps/api/test/k1106_db_down_503.test.ts"
+   ]
   }
  ],
  "reads_ok": {
