@@ -4,7 +4,7 @@
 //   成功の data の形は入口と同じ zod（packages/contracts/src/schemas.ts・z.strictObject。知らない欄も、null を許さない欄の null も赤）。
 //   契約そのもの（openapi の additionalProperties・format: uuid・応答の並び）は scripts/ci/contract_shape_test.py が見る。
 //   決まり（D-129.42）：uuid の欄は入口で正式な uuid の形を確かめ、違えば 422（欄の名前・理由 "uuid"）。中で 500 にしない。知らない項目も 422
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { randomBytes, randomUUID } from "node:crypto";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -490,6 +490,7 @@ export const UUID_PARAM_CASES = [
   ["K144-API-022", "getTicket", "path", "id"],
   ["K144-API-023", "updateConversation", "path", "id"],
   ["K144-API-024", "deleteConversation", "path", "id"],
+  ["K144-API-025", "updateMemory", "path", "id"],
   ["K144-API-026", "listMembers", "query", "scope_id"],
   ["K144-API-027", "listScopes", "query", "layer_id"],
   ["K144-API-028", "listAuditEvents", "query", "member_id"],
@@ -516,6 +517,7 @@ export const UUID_PARAM_CASES = [
 export const UNBUILT_UUID_CASE = ["answerAgentPermission", "path", "pid"] as const;
 const BODIES: Record<string, unknown> = {
   updateConversation: { title: "名前" },
+  updateMemory: { body: "覚えること" },
   // K-62 の口：必須の欄（REQUIRED_INPUTS）を入れて、正しい uuid では 422 にならない体（無い仕事・チケットは 404）
   reportJobProgress: { seq: 1, kind: "status", text: "見ています" },
   finishBridgeJob: { state: "stopped" },
@@ -669,9 +671,11 @@ export const REQUIRED_CASES = [
   ["claimPairingCode", ["code"]],
   ["saveMyTicketDraft", ["draft_id"]],
   ["createTicket", ["title", "scope_id", "kind_id", "assignee_member_id", "due_on"]],
+  ["updateMemory", ["body"]],
   ["createPairingCode", []],
   ["createConversation", []],
   ["updateConversation", []],
+  ["createMemory", []],
   ["returnApproval", ["note"]], // K-163（本物の承認待ちを別の会社に置いて叩く・下の fullBody）
 ] as const;
 // 類 F（回 9・Q5 回 8 追加-2）：配布物の受け取りの道の値 name。true は契約の値域（pattern）に合う名前で、口は 422 にしない（mac・win・英小文字だけでない名前）。
@@ -756,6 +760,17 @@ const fullBody = async (op: string): Promise<Sent> => {
       };
     case "createTicket":
       return { method: "POST", path: "/tickets", body: ticketBody(), headers: writer.auth };
+    case "updateMemory": {
+      const m = await f.req("POST", "/memories", { body: {}, headers: writer.auth });
+      expect(m.status, await m.clone().text()).toBe(201);
+      const id = ((await json(m)).data as { id: string }).id;
+      return {
+        method: "PATCH",
+        path: `/memories/${id}`,
+        body: { title: "題", body: "覚えること" },
+        headers: writer.auth,
+      };
+    }
     case "createPairingCode":
       return { method: "POST", path: "/bridge/pairing-codes", body: {}, headers: (await newPerson()).auth };
     case "createConversation":
@@ -766,6 +781,8 @@ const fullBody = async (op: string): Promise<Sent> => {
       const id = ((await json(c)).data as { id: string }).id;
       return { method: "PATCH", path: `/conversations/${id}`, body: { title: "会話の名前" }, headers: writer.auth };
     }
+    case "createMemory":
+      return { method: "POST", path: "/memories", body: { title: "題" }, headers: writer.auth };
     // K-163 ここから
     case "returnApproval":
       return {
@@ -794,6 +811,8 @@ describe("K-144 ⑯ 類 E（回 9）：口が「無い」ことで 422 にする
     for (const op of [
       "claimPairingCode",
       "createConversation",
+      "createMemory",
+      "updateMemory",
       "updateConversation",
       "returnApproval", // K-163
     ])
@@ -906,10 +925,21 @@ export const RANGE_CASES: RangeCase[] = [
   ["updateConversation", "title", "名前", true],
   ["updateConversation", "title", "   ", false],
   ["updateConversation", "title", "a\nb", true],
+  ["updateMemory", "body", "覚える", true],
+  ["updateMemory", "body", "  ", false],
+  ["createMemory", "confidence", "9.99", true],
+  ["createMemory", "confidence", "0", true],
+  ["createMemory", "confidence", "-9.5", true],
+  ["createMemory", "confidence", "10", false],
+  ["createMemory", "confidence", "99", false],
+  ["createMemory", "confidence", "abc", false],
 ];
-/** その欄で 422 にしたか */
-const rejects = async (_op: string, field: string, r: Response) =>
-  r.status === 422 && fields(await json(r)).some((x) => x === field || x.startsWith(`${field}.`));
+/** その欄で 422 にしたか（表の素の書き込み createMemory は DB の答えを欄 body で返す） */
+const rejects = async (op: string, field: string, r: Response) =>
+  r.status === 422 &&
+  fields(await json(r)).some(
+    (x) => x === field || x.startsWith(`${field}.`) || (op === "createMemory" && x === "body"),
+  );
 const valueOf = (v: unknown, code: string): unknown => {
   if (v === "@today") return jst(0);
   if (v === "@code:plain") return code;
@@ -927,6 +957,8 @@ describe("K-144 ⑱ 類 G（回 9 の続き）：契約に書ける体の値の�
       "createPairingCode",
       "createConversation",
       "updateConversation",
+      "createMemory",
+      "updateMemory",
     ])
       f.limits[op] = 10_000;
   });
@@ -949,10 +981,27 @@ describe("K-144 ⑱ 類 G（回 9 の続き）：契約に書ける体の値の�
     }
     expect(bad).toEqual([]);
   });
+
+  it("K144-API-038 表の素の書き込み（createMemory）の確かさ confidence が DB の桁（numeric(3,2)）を超える：500 にせず 422・欄 body。記憶は増えない。9.99 は 201", async () => {
+    const n = () => count("select count(*) as n from memories where tenant_id = $1", [T.tenantId]);
+    const before = await n();
+    for (const c of ["10", "99", "-9.999", "123.45"]) {
+      const r = await f.req("POST", "/memories", { body: { title: "確かさ", confidence: c }, headers: writer.auth });
+      statusInContract("createMemory", r);
+      expect(r.status, `${c}：${await r.clone().text()}`).toBe(422);
+      expect(fields(await json(r))).toContain("body");
+    }
+    expect(await n()).toBe(before);
+    const ok = await f.req("POST", "/memories", {
+      body: { title: "確かさ", confidence: "9.99" },
+      headers: writer.auth,
+    });
+    expect(ok.status).toBe(201);
+  });
 });
 
 describe("K-144 ⑲ 会話と記憶の口の成功の答え（回 9 の続き・類 C/D）：口が返すとおりの形が契約にある", () => {
-  it("K144-API-037 会話を作る・名前を変える・会話を消すの成功の答えが、契約の形（strict）に合う", async () => {
+  it("K144-API-037 会話を作る・名前を変える・記憶を直す・会話を消す・記憶を作るの成功の答えが、契約の形（strict）に合う", async () => {
     const c = await f.req("POST", "/conversations", { body: {}, headers: writer.auth });
     expect(c.status).toBe(201);
     await conforms("createConversation", c);
@@ -960,6 +1009,13 @@ describe("K-144 ⑲ 会話と記憶の口の成功の答え（回 9 の続き・
     const u = await f.req("PATCH", `/conversations/${id}`, { body: { title: "会話の名前" }, headers: writer.auth });
     expect(u.status).toBe(200);
     await conforms("updateConversation", u);
+    const m = await f.req("POST", "/memories", { body: { title: "題" }, headers: writer.auth });
+    expect(m.status).toBe(201);
+    await conforms("createMemory", m);
+    const mid = ((await json(m)).data as { id: string }).id;
+    const um = await f.req("PATCH", `/memories/${mid}`, { body: { body: "覚えること" }, headers: writer.auth });
+    expect(um.status).toBe(200);
+    await conforms("updateMemory", um);
     const d = await f.req("DELETE", `/conversations/${id}`, { headers: writer.auth });
     expect(d.status).toBe(200);
     await conforms("deleteConversation", d);
@@ -1060,6 +1116,125 @@ describe("K-144 ㉑ 長さの数え方（精査 R1 回 10 追加-2・D-130.1）�
   });
 });
 
+describe("K-144 ㉒ DB の答えを外に出さない（PM の判断 2026-11-09・op.ts の表の素の書き込みの 422）", () => {
+  it("K144-API-041 外部キー（23503）・形（22P02）・桁あふれ（22003）・check 違反（23514）の 422 は、どれも決まった文「入力内容を確認してください」（D-130.2）で、DB の文・表や制約の名前を答えに出さない。DB の答えの番号（23514 は制約の名前も）はログにだけ残す（文はログにも出さない＝K144-API-045）", async () => {
+    f.limits["createMemory"] = 10_000;
+    await f.admin.query(
+      "alter table memories add constraint k144_test_ck check (coalesce(title, '') <> 'k144-check') not valid",
+    );
+    const logs: string[] = [];
+    const spy = vi.spyOn(console, "error").mockImplementation((...a: unknown[]) => {
+      logs.push(
+        a
+          .map((x) => (x instanceof Error ? `${x.message} ${(x as { code?: string }).code ?? ""}` : String(x)))
+          .join(" "),
+      );
+    });
+    const messages: string[] = [];
+    const bad: string[] = [];
+    try {
+      for (const [pg, body, mark] of [
+        ["23503", { kind_id: "k144-無い種類" }, "kind_id"],
+        ["22P02", { confidence: "abc" }, "abc"],
+        ["22003", { confidence: "10" }, "numeric"],
+        ["23514", { title: "k144-check" }, "k144_test_ck"],
+      ] as const) {
+        const before = logs.length;
+        const r = await f.req("POST", "/memories", { body, headers: writer.auth });
+        const text = await r.clone().text();
+        if (r.status !== 422) bad.push(`${pg}：${r.status} ${text}`);
+        const d = (await json(r)).details ?? [];
+        const m = d.find((x) => x.field === "body")?.message ?? "";
+        messages.push(m);
+        for (const leak of [
+          "violates",
+          "constraint",
+          "foreign key",
+          "invalid input",
+          "numeric",
+          "memories",
+          "kind_id",
+          "k144_test_ck",
+          "syntax",
+          "overflow",
+          "fkey",
+          "_ck",
+        ])
+          if (text.includes(leak)) bad.push(`${pg}：答えに「${leak}」が出た（${text.slice(0, 120)}）`);
+        const logged = logs.slice(before).join("\n");
+        if (!logged.includes(pg)) bad.push(`${pg}：ログに DB の答え（${pg}）が残っていない`);
+        if (pg === "23514" && !logged.includes(mark)) bad.push(`23514：ログに制約の名前（${mark}）が残っていない`);
+      }
+    } finally {
+      spy.mockRestore();
+      await f.admin.query("alter table memories drop constraint if exists k144_test_ck");
+    }
+    expect(bad).toEqual([]);
+    expect(new Set(messages).size, `答えの文がそろっていない：${JSON.stringify(messages)}`).toBe(1);
+    expect(messages[0]).toBe("入力内容を確認してください"); // D-130.2
+  });
+
+  it("K144-API-045 表の素の書き込みの 422 のログ（テスター回 13・㊳）：DB の答えの番号と制約の名前だけが残り、DB の文（22P02 の文は送った値を含む）・DB の詳しい説明（Key (…)=(…)・Failing row contains）・送った値はログのどこにも出ない", async () => {
+    f.limits["createMemory"] = 10_000;
+    await f.admin.query(
+      "alter table memories add constraint k144_log_ck check (coalesce(title, '') <> 'k144送った題-check') not valid",
+    );
+    const logs: string[] = [];
+    const take =
+      (k: string) =>
+      (...a: unknown[]) =>
+        void logs.push(
+          `${k} ` +
+            a
+              .map((x) =>
+                x instanceof Error
+                  ? `${x.message} ${JSON.stringify(x, Object.getOwnPropertyNames(x))}`
+                  : typeof x === "string"
+                    ? x
+                    : JSON.stringify(x),
+              )
+              .join(" "),
+        );
+    const spies = (["error", "warn", "log", "info", "debug"] as const).map((k) =>
+      vi.spyOn(console, k).mockImplementation(take(k)),
+    );
+    const bad: string[] = [];
+    try {
+      for (const [pg, body, sent, constraint] of [
+        ["22P02", { confidence: "k144送った値abc" }, "k144送った値abc", null],
+        ["23503", { kind_id: "k144送った種類" }, "k144送った種類", null],
+        ["22003", { confidence: "99.5" }, "99.5", null],
+        ["23514", { title: "k144送った題-check" }, "k144送った題-check", "k144_log_ck"],
+      ] as const) {
+        const before = logs.length;
+        const r = await f.req("POST", "/memories", { body, headers: writer.auth });
+        if (r.status !== 422) bad.push(`${pg}：${r.status}（422 のはず）`);
+        const logged = logs.slice(before).join("\n");
+        if (!logged.includes(pg)) bad.push(`${pg}：ログに DB の答えの番号が無い`);
+        if (constraint && !logged.includes(constraint)) bad.push(`${pg}：ログに制約の名前（${constraint}）が無い`);
+        if (logged.includes(sent)) bad.push(`${pg}：ログに送った値（${sent}）が出た：${logged.slice(0, 200)}`);
+        for (const dbText of [
+          "invalid input",
+          "syntax",
+          "violates",
+          "out of range",
+          "overflow",
+          "Key (",
+          "Failing row",
+          "is not present",
+          "precision",
+        ])
+          if (logged.includes(dbText))
+            bad.push(`${pg}：ログに DB の文（「${dbText}」）が出た：${logged.slice(0, 200)}`);
+      }
+    } finally {
+      for (const s of spies) s.mockRestore();
+      await f.admin.query("alter table memories drop constraint if exists k144_log_ck");
+    }
+    expect(bad).toEqual([]);
+  });
+});
+
 // 送る量の守り（D-130.1）：1 回に送る内容全体で 1MB（1,048,576 バイト）まで
 const BODY_MAX = 1_048_576;
 /** ちょうど n バイトの JSON の体（{"x":"aaa…"}） */
@@ -1101,10 +1276,11 @@ describe("K-144 ㉓ 送る量の守り（D-130.1・PM の判断 2026-11-09）：
     const edge = writes.find((e) => e.operationId === "createSignup")!;
     const atLimit = await send(edge, bodyOfBytes(BODY_MAX));
     expect(atLimit.status, "1MB ちょうどは 413 にしない").not.toBe(413);
-    // 本物の口：413 でチケットを作らない（K-712 で記憶の口を外したので、体を受ける本物の口はチケットを作る口で見る）
-    const n = () => count("select count(*) as n from tickets where tenant_id = $1", [T.tenantId]);
+    // 本物の口（表の素の書き込み）：413 で記憶を作らない
+    f.limits["createMemory"] = 10_000;
+    const n = () => count("select count(*) as n from memories where tenant_id = $1", [T.tenantId]);
     const before = await n();
-    const big = await f.req("POST", "/tickets", {
+    const big = await f.req("POST", "/memories", {
       body: JSON.stringify({ title: "a".repeat(BODY_MAX) }),
       headers: writer.auth,
     });
@@ -1130,6 +1306,8 @@ describe("K-144 ㉔ 自由に書く欄の上限を外す（D-130.3・D-130.4・�
       "listMyTicketDrafts",
       "createConversation",
       "updateConversation",
+      "createMemory",
+      "updateMemory",
     ])
       f.limits[op] = 10_000;
   });
@@ -1197,6 +1375,24 @@ describe("K-144 ㉔ 自由に書く欄の上限を外す（D-130.3・D-130.4・�
       if (JSON.stringify(got?.body) !== JSON.stringify(jaDraft))
         bad.push("日本語の下書き 240KB：読む口から読み戻すと中身が違う（無い）");
       if (list.some((d) => d.draft_id === hugeId)) bad.push("下書き 1MB 超え：413 なのに残った");
+    }
+    // 記憶の本文と題
+    const m = await f.req("POST", "/memories", { body: { title: "題" }, headers: writer.auth });
+    expect(m.status).toBe(201);
+    const mid = ((await json(m)).data as { id: string }).id;
+    const body = noisy(5000);
+    const title = noisy(300);
+    const um = await f.req("PATCH", `/memories/${mid}`, { body: { body, title }, headers: writer.auth });
+    if (um.status !== 200) bad.push(`記憶 5000 字：${um.status} ${(await um.clone().text()).slice(0, 200)}`);
+    else {
+      await conforms("updateMemory", um);
+      const row = (
+        await f.admin.query<{ title: string; body: string }>("select title, body from memories where id = $1", [mid])
+      ).rows[0]!;
+      if (row.body !== body)
+        bad.push(`記憶の本文：読み戻すと ${[...row.body].length} 字（5000 字のはず・黙って切った）`);
+      if (row.title !== title)
+        bad.push(`記憶の題：読み戻すと ${[...row.title].length} 字（300 字のはず・黙って切った）`);
     }
     // 会話の名前
     const c = await f.req("POST", "/conversations", { body: {}, headers: writer.auth });

@@ -2328,8 +2328,14 @@
     "test_post_knowledge_pages_shape": "K679-API-001",
     "test_post_knowledge_pages_rejected_401": "K679-API-021",
     "test_post_knowledge_pages_rejected_403": "K679-API-003",
-    "test_post_knowledge_pages_rejected_422": "K675-API-003",
-    "test_post_knowledge_pages_rejected_422_2": "K675-API-004",
+    "test_post_knowledge_pages_rejected_422": {
+     "file": "apps/api/test/features/F9/knowledge-base.test.ts",
+     "mark": "K675-API-003"
+    },
+    "test_post_knowledge_pages_rejected_422_2": {
+     "file": "apps/api/test/features/F9/knowledge-base.test.ts",
+     "mark": "K675-API-004"
+    },
     "test_post_knowledge_pages_rate_limited": "K679-API-016",
     "test_post_knowledge_pages_terms_pending": {
      "file": "apps/api/test/features/F1/terms.test.ts",
@@ -2400,7 +2406,7 @@
      "mark": "K144-API-032"
     },
     "test_delete_knowledge_pages_id_draft_rejected_422": {
-     "file": "apps/api/test/features/contract/k144.d/K-675.ts",
+     "file": "apps/api/test/features/contract/k144.d/K-679.ts",
      "mark": "K144-API-106"
     },
     "test_delete_knowledge_pages_id_draft_session_unresolved_2": {

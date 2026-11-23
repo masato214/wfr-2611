@@ -655,14 +655,11 @@ describe("K-675 ナレッジの口の置き場", () => {
     }
   });
 
-  it("K675-API-021 共有の試験 k144 の葉のファイル：入口の uuid の行が K144-API-100〜111 の 12 個で、道に :id を持つ 12 本と 1 対 1", () => {
-    const text = readFileSync("apps/api/test/features/contract/k144.d/K-675.ts", "utf8");
-    const rows = [...text.matchAll(/\["(K144-API-\d{3})",\s*"(\w+)",\s*"path",\s*"id"\]/g)].map(
-      (m) => [m[1], m[2]] as const,
-    );
-    expect(rows.map((r) => r[0])).toEqual(Array.from({ length: 12 }, (_, i) => `K144-API-${100 + i}`));
-    const withId = LEAF_OPS.filter((o) => o[8].length > 0).map((o) => o[0]);
-    expect(rows.map((r) => r[1]).sort()).toEqual([...withId].sort());
+  it("K675-API-021 共有の試験 k144 の葉のファイル：この葉は入口の uuid の行を持たない（k144.d に K-675.ts が無い）。道に :id を持つ 12 本の行は、その口を作る葉が自分の k144.d/K-<番号>.ts に持つ（作っていない口の行を置くと契約の形の検査 SHAPE-017 が赤）", () => {
+    const files = readdirSync("apps/api/test/features/contract/k144.d");
+    expect(files.length).toBeGreaterThan(0);
+    expect(files).not.toContain("K-675.ts");
+    expect(LEAF_OPS.filter((o) => o[8].length > 0).map((o) => o[0])).toHaveLength(12);
   });
 
   it("K675-API-022 行に結ぶ確かめ（perm.row）：ページの口は knowledge_pages（読むは true・書くは消した行を通す (deleted_at is not null or app.kpage_writable(id))）、フォルダの口は入口で行を読まない（口が決める）", () => {

@@ -26,8 +26,8 @@ describe("DELETE /api/v1/knowledge_pages/:id/draft", () => {
   });
   it("test_delete_knowledge_pages_id_draft_rejected_422", () => {
     // UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）
-    // 本物の試験：apps/api/test/features/contract/k144.d/K-675.ts の「K144-API-106」（同じ CI の G3 で流れる）
-    expect(readFileSync("apps/api/test/features/contract/k144.d/K-675.ts", "utf8")).toContain("K144-API-106");
+    // 本物の試験：apps/api/test/features/contract/k144.d/K-679.ts の「K144-API-106」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/contract/k144.d/K-679.ts", "utf8")).toContain("K144-API-106");
   });
   it("test_delete_knowledge_pages_id_draft_conflict", () => {
     // UNWANTED: IF 捨てる下書きが無いなら、Kaname は 409 と E-KNW-030 を返し、ページもフォルダも変えない

@@ -35,8 +35,13 @@ const groupNeedsId: Rule = (v) => {
   if (v["shelf"] !== "group") return uuid("group_id", { nullable: true })(v);
   return typeof v["group_id"] === "string" && isUuid(v["group_id"]) ? null : "group_id";
 };
-const position: Rule = (v) =>
-  !has(v, "position") || (Number.isInteger(v["position"]) && (v["position"] as number) >= 0) ? null : "position";
+/** 並びの列は DB の int。契約の VALUE_RANGES（05_flow/screen_api.d/K-675.py の _POS_MAX）と同じ上限で、超える数は 422（DB の 22003 で 503 にしない） */
+const POSITION_MAX = 2147483647;
+const position: Rule = (v) => {
+  if (!has(v, "position")) return null;
+  const x = v["position"];
+  return Number.isInteger(x) && (x as number) >= 0 && (x as number) <= POSITION_MAX ? null : "position";
+};
 const bool =
   (k: string): Rule =>
   (v) =>

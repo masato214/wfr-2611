@@ -1115,7 +1115,7 @@ RESPONSES = {
     "getKnowledgeHome": ("KnowledgeHome", {"to_verify": "array", "proposals": "array", "recent": "array", "popular": "array", "count": "integer"}),
     "getKnowledgeTree": ("KnowledgeTree", {"company_name": "string", "company_nodes": "array", "groups": "array", "my_nodes": "array", "can_write": "object", "admin_counts": "object?", "truncated": "boolean"}),   # K-675（土台 3.1）
     "askKnowledge": ("KnowledgeAnswer", {"mode": "string", "answer": "string", "citations": "array", "hits": "array"}),
-    "getKnowledgePage": ("KnowledgePageDetail", {"id": "uuid", "title": "string", "desc": "string", "state": "string", "must": "boolean", "must_blocked": "string?", "place": "object", "acts": "array", "body": "object?", "draft": "object?", "request": "object?", "copied_from": "object?", "shared_from": "object?", "raise_to": "object?", "foot": "object"}),   # K-675（土台 3.1）
+    "getKnowledgePage": ("KnowledgePageDetail", {"id": "uuid", "title": "string", "desc": "string", "state": "string", "must": "boolean", "must_blocked": "string?", "place": "object", "acts": "string[]", "body": "object?", "draft": "object?", "request": "object?", "copied_from": "object?", "shared_from": "object?", "raise_to": "object?", "foot": "object"}),   # K-675（土台 3.1）
     "getKnowledgeUsage": ("KnowledgeUsage", {"reads_3m": "integer", "returns": "integer", "recent_tickets": "array", "hot_sections": "array"}),
     "getKnowledgeLinks": ("KnowledgeLinks", {"nodes": "array", "edges": "array", "unlinked_mentions": "array"}),
     "searchKnowledgeLinkTargets": ("KnowledgeLinkTarget", {"kind": "string", "id": "string", "title": "string", "place": "string"}),

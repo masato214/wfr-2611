@@ -307,6 +307,23 @@ describe("K-679 ページを作る・下書きを保存する・やめる", () =
     expect(dr[0]!["body"]).toEqual(bodyOf("先に書いている本文"));
   });
 
+  it("K679-API-026 別の人が下書き中に題名・説明だけ（本文なし）を保存しても 409 E-KNW-012（体は { error, code } だけ）：題名・説明も先の人の下書きの版も変わらず、証跡も増えない", async () => {
+    const w = await world("K679 別の人が書いている（題名だけ）");
+    const pid = await h.page({ scope: w.g1, owner: w.mgr1, title: "公開中", summary: "公開の説明" });
+    await addDraft(w, pid, 2, "先に書いている本文", w.mgr1);
+    const before = await liveDrafts(pid);
+    const audited = await allAudits(w);
+    const r = await save(w.mgr1b, pid, { title: "割り込みの題名", desc: "割り込みの説明" });
+    expect(r.status).toBe(409);
+    expect(await r.json()).toEqual({ error: "conflict", code: "E-KNW-012" });
+    expect(await prow(pid)).toMatchObject({ title: "公開中", summary: "公開の説明" });
+    const dr = await liveDrafts(pid);
+    expect(dr.length).toBe(1);
+    expect(dr[0]).toMatchObject({ id: before[0]!["id"], author_member_id: w.mgr1.id });
+    expect(dr[0]!["body"]).toEqual(bodyOf("先に書いている本文"));
+    expect(await allAudits(w)).toBe(audited);
+  });
+
   it("K679-API-012 保存：本文の形が合わない（知らない節・段落でない根）は 422（欄 doc）で何も保存しない（同じ要求の題名も変わらない）", async () => {
     const w = await world("K679 本文の形");
     const pid = await h.page({ scope: w.g1, owner: w.mgr1, title: "公開中" });
@@ -517,7 +534,7 @@ describe("K-679 ページを作る・下書きを保存する・やめる", () =
     await addDraft(w, pid, 2, "壊す前の下書き", w.mgr1);
     await h.ready();
     const fixPages = await breakWrites("knowledge_pages", w.co.tenantId);
-    let logs = "";
+    let logs: string;
     try {
       logs = await h.captureLogs(async () => {
         const c = await create(w.mgr1, { shelf: "group", group_id: w.g1, title: "秘密の題名" });

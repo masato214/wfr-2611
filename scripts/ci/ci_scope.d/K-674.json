@@ -1,0 +1,9 @@
+{
+ "data_links": [
+  {"paths": ["packages/db/migrations/20261125011400_knowledge_shelves.sql", "packages/db/policies/20261125011400_knowledge_shelves.sql"],
+   "tests": ["packages/db/test/knowledge_shelves.test.ts"]}
+ ],
+ "reads_ok": {
+  "packages/db/test/knowledge_shelves.test.ts": "migration packages/db/migrations/20261125011400_knowledge_shelves.sql を readFileSync で読み、同じ文をもう 1 度当てても壊れないことを確かめる（K-674）"
+ }
+}

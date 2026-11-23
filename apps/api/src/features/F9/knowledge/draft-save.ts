@@ -2,6 +2,7 @@
 //   見えない（無い・消した・別の会社・他人の自分の棚・他人の下書きのページ）→ 404・書けない → 403・本文の形が合わない → 422（欄 doc）。
 //   断る分は書く前に決める。本文（doc）は入口の揃え（NFKC・前後の空白）を当てず、画面が送ったままの doc を確かめる（PM の決め・K-432 と同じ扱い）。
 //   下書きの版：自分の物があれば直す・無ければ on conflict do nothing で入れ、戻りが空なら自分の物を読み直す（無ければ他人の下書き → 409 E-KNW-012）。
+//   本文なしの保存（題名・説明だけ）も、自分の下書きの版が無く他人の下書きの版があれば 409 E-KNW-012 で何も変えない（app.kn_page_other_draft）。
 //   題名・説明はページの列に直ちに書き、変わったときだけ証跡。本文だけの保存は証跡を残さない。ログに題名・本文を出さない
 import type pg from "pg";
 import { withTenant } from "@kaname/db/context";
@@ -20,6 +21,8 @@ const INSERT_VERSION_SQL = `insert into knowledge_page_versions (tenant_id, page
 const RETITLE_SQL = `update knowledge_pages set title = $2, summary = $3, updated_by = app.user_id()
  where id = $1 and tenant_id = app.tenant_id() and deleted_at is null returning updated_at`;
 
+const OTHER_DRAFT_SQL = `select app.kn_page_other_draft($1) as other`;
+
 interface SaveInput {
   title?: string;
   desc?: string;
@@ -30,6 +33,12 @@ interface SaveInput {
 async function rawDoc(a: HookArgs): Promise<unknown> {
   const raw = (await a.c.req.json().catch(() => ({}))) as Record<string, unknown> | null;
   return raw && typeof raw === "object" ? raw["doc"] : undefined;
+}
+
+/** 本文なしの保存で、自分の下書きの版が無く他人の下書きの版がある（他人の下書きは行の守りで見えないので DB の関数で見る） */
+async function blockedByOther(cl: pg.PoolClient, pageId: string): Promise<boolean> {
+  if (await readMyDraft(cl, pageId)) return false;
+  return (await cl.query<{ other: boolean }>(OTHER_DRAFT_SQL, [pageId])).rows[0]?.other === true;
 }
 
 /** 自分の下書きの版に本文を書く。他人の下書きに当たったら null */
@@ -68,6 +77,8 @@ export function createSaveKnowledgeDraft(appPool: pg.Pool): (a: HookArgs) => Pro
           const at = await writeDraft(cl, page, body);
           if (!at) return conflict("E-KNW-012");
           savedAt = at;
+        } else if (await blockedByOther(cl, page.id)) {
+          return conflict("E-KNW-012");
         }
         const title = input.title ?? page.title;
         const desc = input.desc ?? page.summary ?? "";

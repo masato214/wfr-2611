@@ -48,3 +48,10 @@ checks.positive_data_acceptance.expected-statuses = ["2xx", "3xx", "401", "403",
 [[operations]]
 include-operation-id = "answerCredentialLoginCheck"
 checks.ensure_resource_availability.enabled = false
+
+# K-679：下書きを保存する口の本文（doc）は、エディタの文書の形（一番外の type が doc・知っている節と印だけ・入れ子の決まり）を口の確かめ（validateDoc）が見て、
+#   外れたら 422（欄 doc）で断る。入れ子の木の決まりは契約の形（object）では書き切れないので、この口に限って「形どおりの入力」を 422 で断るのを
+#   受け付けとして数えない（ST202 にしない・K-161 と同じ形・PM の決め 2026-11-23）。確かめ方はゆるめない（断ることは knowledge-draft.test.ts が見る）
+[[operations]]
+include-operation-id = "saveKnowledgeDraft"
+checks.positive_data_acceptance.expected-statuses = ["2xx", "3xx", "401", "403", "404", "409", "422", "429", "5xx"]
