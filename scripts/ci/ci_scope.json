@@ -1782,6 +1782,7 @@
   {
    "paths": [
     "05_flow/screen_api.py",
+    "05_flow/screen_api.d/**",
     "apps/api/src/**"
    ],
    "tests": [
