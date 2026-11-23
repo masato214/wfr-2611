@@ -37,13 +37,14 @@ REQUIRED_INPUTS = {
     "findSimilarKnowledge": ["title"],
 }
 
+_POS_MAX = 2147483647   # 並びの列は int（knowledge_folders・knowledge_pages の position）。超える数は口の入口で 422（契約 fuzz ST202）
 _SHELF = {"enum": ["company", "group", "me"]}
 VALUE_RANGES = {
     "createKnowledgeFolder": {"shelf": _SHELF, "name": {"pattern": "\\S", "maxLength": 100}},
-    "updateKnowledgeFolder": {"name": {"pattern": "\\S", "maxLength": 100}, "position": {"minimum": 0}},
+    "updateKnowledgeFolder": {"name": {"pattern": "\\S", "maxLength": 100}, "position": {"minimum": 0, "maximum": _POS_MAX}},
     "createKnowledgePage": {"shelf": _SHELF, "title": {"pattern": "\\S", "maxLength": 200}, "desc": {"maxLength": 200}},
     "saveKnowledgeDraft": {"title": {"pattern": "\\S", "maxLength": 200}, "desc": {"maxLength": 200}},
-    "updateKnowledgePage": {"position": {"minimum": 0}},
+    "updateKnowledgePage": {"position": {"minimum": 0, "maximum": _POS_MAX}},
     "findSimilarKnowledge": {"title": {"pattern": "\\S", "maxLength": 200}, "desc": {"maxLength": 200}, "text": {"maxLength": 10000}},
 }
 

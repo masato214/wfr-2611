@@ -1771,6 +1771,15 @@
   },
   {
    "paths": [
+    "packages/db/migrations/20261125011400_knowledge_shelves.sql",
+    "packages/db/policies/20261125011400_knowledge_shelves.sql"
+   ],
+   "tests": [
+    "packages/db/test/knowledge_shelves.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/f9-knowledge-*.ts",
     "apps/api/src/features/F9/knowledge/**"
    ],
@@ -1950,8 +1959,9 @@
   "apps/api/test/features/F4/ticket-fields.test.ts": "読む口の hooks のファイル apps/api/src/hooks/ticket-fields-read.ts を動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-563",
   "apps/api/test/features/contract/k144.d/K-563.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-563",
   "apps/web/tests/k/k630-request-ref.spec.ts": "K-630 の試験。画面の型を確かめるため子プロセスで apps/web の tsc を流す（読む物は apps/web の画面のコードと型。web の組が流す）",
+  "packages/db/test/knowledge_shelves.test.ts": "migration packages/db/migrations/20261125011400_knowledge_shelves.sql を readFileSync で読み、同じ文をもう 1 度当てても壊れないことを確かめる（K-674）",
   "apps/api/test/features/F9/knowledge.harness.ts": "入っている葉の hooks のファイル apps/api/src/hooks/f9-knowledge-*.ts を readdirSync と動的 import で読む（まだ入っていない葉の物は無いので、在る物だけを差す）。読む物と使う試験は data_links で結ぶ・K-675",
-  "apps/api/test/features/F9/knowledge-base.test.ts": "契約の生成物 08_api/endpoints.json・07_qa/test-specs/errors.json と、葉のファイル k144.d/K-675.ts を readFileSync で読む。生成物と使う試験は同じ CI で作り直される・K-675",
+  "apps/api/test/features/F9/knowledge-base.test.ts": "契約の生成物 08_api/endpoints.json・07_qa/test-specs/errors.json を readFileSync で、置き場 k144.d の名前の一覧を readdirSync で読む。生成物と使う試験は同じ CI で作り直される・K-675",
   "apps/web/tests/k/k1100-stage-locked.spec.ts": "鍵の札の CSS apps/web/features/F6/progress/progress.css を読み、余白と間が正本のトークンだけを読むかを見る（K1100-UI-004）。正本と生成物の変更でも流れるよう data_links で結ぶ（K-1100）"
  },
  "web_select": {

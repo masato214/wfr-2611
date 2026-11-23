@@ -5,12 +5,6 @@
 import { isKnown } from "@kaname/errors";
 import type { HookReply } from "../../../contract/deps.js";
 
-/** 形の誤り（422・欄つき）。入口（op.ts）の形の確かめと同じ答え */
-export const invalid = (field: string, message: string): HookReply => ({
-  status: 422,
-  body: { error: "validation_failed", code: "VALIDATION_ERROR", details: [{ field, message }] },
-});
-
 /** 無い・見えない・消した・別の会社（入口の 404 と同じ体） */
 export const notFound = (): HookReply => ({ status: 404, body: { error: "not_found", code: "NOT_FOUND" } });
 
@@ -25,3 +19,10 @@ export const conflict = (code: string, detail?: Readonly<Record<string, unknown>
 
 /** DB が使えない（想定外の例外・取引が落ちた）。何も残さなかったとき */
 export const unavailable = (): HookReply => ({ status: 503, body: { error: "unavailable", code: "E-PAGE-003" } });
+
+/** 形の誤り（422・欄つき）。入口（op.ts）の形の確かめと同じ答え。
+ *  複数行の定義はファイルの最後に置く（契約の形の検査 SHAPE-010 は定義の次の 1 行も中身に数えるため、次の口の状態コードを拾わせない） */
+export const invalid = (field: string, message: string): HookReply => ({
+  status: 422,
+  body: { error: "validation_failed", code: "VALIDATION_ERROR", details: [{ field, message }] },
+});
