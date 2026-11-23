@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 369（作った 97・後のフェーズの行為だけ 20）・前の道すじ 26・表 148・画面の部品 19・共通の処理 13・エラー 263・部品 56・設定 41
+API 370（作った 97・後のフェーズの行為だけ 20）・前の道すじ 26・表 148・画面の部品 19・共通の処理 13・エラー 263・部品 56・設定 41
 
 ## 共通の処理
 
@@ -110,7 +110,7 @@ API 369（作った 97・後のフェーズの行為だけ 20）・前の道す�
 | `scope_memberships` | skeleton | F10 |  |  |
 | `scopes` | skeleton | F9 |  |  |
 | `security_events` | skeleton | F1,F10,F12 |  | ○ |
-| `sessions` | skeleton | F1,F10,F3 |  | ○ |
+| `sessions` | skeleton | F1,F10,F12,F3 |  | ○ |
 | `skill_test_runs` | skeleton | F9 |  |  |
 | `skill_versions` | skeleton | F12,F9 |  | ○ |
 | `skills` | skeleton | F9 | F12,F4 | ○ |
@@ -235,6 +235,7 @@ API 369（作った 97・後のフェーズの行為だけ 20）・前の道す�
 | `createRule` | POST /api/v1/rules | 作成・実行（rules）— 取引先を作り、担当者を招待する／ルールを置く（会社・層・個人・取引先） | F11,F9 | 契約だけ（501） | K-71 |
 | `requestAcceptance` | POST /api/v1/tickets/:id/acceptances | 作成・実行（tickets）— 成果物を確認してもらう（検収を頼む） | F11 | 契約だけ（501） | K-71 |
 | `updateTicketClientShare` | PATCH /api/v1/tickets/:id/client-share | 更新（tickets）— 成果物を確認してもらう（検収を頼む） | F11 | 契約だけ（501） | K-71 |
+| `startOpsSetup` | POST /api/v1/auth/ops-setup | 作成・実行（auth）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） | K-945 |
 | `listMyInquiries` | GET /api/v1/inquiries | 取得（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） |  |
 | `createInquiry` | POST /api/v1/inquiries | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） |  |
 | `getMyInquiry` | GET /api/v1/inquiries/:id | 取得（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） |  |

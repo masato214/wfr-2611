@@ -5,7 +5,7 @@
   "D-128.129"
  ],
  "counts": {
-  "api": 369,
+  "api": 370,
   "api_built": 97,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
@@ -366,6 +366,23 @@
    "status": "作った",
    "owner_tickets": [
     "K-334"
+   ]
+  },
+  {
+   "op": "startOpsSetup",
+   "method": "POST",
+   "path": "/api/v1/auth/ops-setup",
+   "what": "作成・実行（auth）— 運営の人を足し、できることを決める",
+   "flows": [
+    "F12"
+   ],
+   "only_later_phase": false,
+   "tables": [
+    "sessions"
+   ],
+   "status": "契約だけ（501）",
+   "owner_tickets": [
+    "K-945"
    ]
   },
   {
@@ -7031,6 +7048,7 @@
    "writes": [
     "F1",
     "F10",
+    "F12",
     "F3"
    ],
    "reads": [],

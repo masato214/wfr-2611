@@ -602,17 +602,24 @@
    "writes": [
     "F1",
     "F10",
+    "F12",
     "F3"
    ],
    "reads": [],
    "boundary": true,
    "lines": [
     "F1→F10",
+    "F1→F12",
     "F1→F3",
     "F10→F1",
+    "F10→F12",
     "F10→F3",
+    "F12→F1",
+    "F12→F10",
+    "F12→F3",
     "F3→F1",
-    "F3→F10"
+    "F3→F10",
+    "F3→F12"
    ]
   },
   "skill_test_runs": {
