@@ -2,7 +2,7 @@
 //   使えるリンクの印なら、パスキーを付けるだけのセッション（入り方 'ops_setup'）を返す。解決はこのセッションを role ops・mfaPending true で解き、
 //   運営の口には届かない（403 MFA_REQUIRED）。パスキーを付けたら、パスキーで入り直す（K-1003 の画面）。
 //   手順：印 → sha256 → app.ops_setup_consume（使った印を付ける・1 回だけ）→ 部品でセッションを作る（hook を通る）→ 入り方 'ops_setup' を書く
-//   断る番号：無い・使った・期限切れは同じ 409 E-PAGE-006（欄・details なし）。形と欄の違いは契約の入口が 422。DB の失敗は 503 E-PAGE-003。
+//   断る番号：無い・使った・期限切れは同じ 409 E-PAGE-006（欄・details なし）。印が無い・形が違うはこの口が 422、余計な欄は契約の入口が 422（strict）。DB の失敗は 503 E-PAGE-003。
 //   入り方を書けなければ、認証側のセッションを消してから 503（消すのも落ちたら「後片付け」と種類だけをログに出す。印と id は出さない）。
 import type pg from "pg";
 import type { Auth } from "@kaname/auth";
@@ -25,6 +25,17 @@ const kindOf = (e: unknown): string => {
 };
 const reply = (status: number, code: string): HookReply => ({ status, body: kanameError(code).toJSON() });
 const unusable = (): HookReply => reply(409, "E-PAGE-006");
+/** 印の形：32 バイトの乱数の base64url（43 字）。契約の値域（screen_api.d/K-945.py の VALUE_RANGES）と同じ字 */
+const TOKEN_SHAPE = /^[A-Za-z0-9_-]{43}$/;
+/** 印が無い・文字でない・形が違う（契約の形の 422。入口の zod は token を任意にして、無いときの答えを口に任せている・K144-SHAPE-021） */
+const badToken = (): HookReply => ({
+  status: 422,
+  body: {
+    error: "validation_failed",
+    code: "VALIDATION_ERROR",
+    details: [{ field: "token", message: "token が要る" }],
+  },
+});
 const down = (where: string, e: unknown): HookReply => {
   console.error(`[ops-setup] ${where}が落ちた（${kindOf(e)}）`);
   return reply(503, "E-PAGE-003");
@@ -33,7 +44,7 @@ const down = (where: string, e: unknown): HookReply => {
 export function createStartOpsSetup(d: OpsSetupDeps): (a: HookArgs) => Promise<HookReply> {
   return async (a) => {
     const token = (a.input as { token?: unknown }).token;
-    if (typeof token !== "string") return unusable(); // 契約の入口が形を確かめた後なので、ここには来ない
+    if (typeof token !== "string" || !TOKEN_SHAPE.test(token)) return badToken();
     let userId: string | null;
     try {
       const r = await d.appPool.query<{ u: string | null }>("select app.ops_setup_consume($1) as u", [
