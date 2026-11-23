@@ -2364,6 +2364,56 @@
     "test_get_clones_me_now_rejected_422": "入力を受けない GET",
     "test_get_clones_me_now_rate_limited": "上限は全部の口で同じ 1 か所の入口（op.ts・契約の rate_limit）が数える。この口は上限の振る舞いを自分で持たない（読むだけの口）"
    }
+  },
+  "reportBrowserState": {
+   "file": "apps/api/test/features/F5/job-extra.test.ts",
+   "reason": "ブラウザの様子は仕事を受け取った PC と仕事の状態で答えが変わる。生成の試験の種では動いている仕事を作れない（K-761）",
+   "covers": {
+    "test_post_bridge_jobs_id_browser_ok": "K761-API-001",
+    "test_post_bridge_jobs_id_browser_shape": "K761-API-001",
+    "test_post_bridge_jobs_id_browser_rejected_401": "K761-API-005",
+    "test_post_bridge_jobs_id_browser_rejected_403": "K761-API-004",
+    "test_post_bridge_jobs_id_browser_not_found": "K761-API-004",
+    "test_post_bridge_jobs_id_browser_rejected_422": "K761-API-003",
+    "test_post_bridge_jobs_id_browser_rejected_422_2": {
+     "file": "apps/api/test/features/contract/k144.d/K-761.ts",
+     "mark": "K144-API-926"
+    },
+    "test_post_bridge_jobs_id_browser_session_unresolved": "K761-API-005",
+    "test_post_bridge_jobs_id_browser_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_bridge_jobs_id_browser_rate_limited": "K761-API-005",
+    "test_post_bridge_jobs_id_browser_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_bridge_jobs_id_browser_upstream_failed": "外を呼ばない（出来事を DB に 1 行書くだけ。C2 の関数だけで、外のサービス・AI・置き場を呼ばない）"
+   }
+  },
+  "getFileForBridge": {
+   "file": "apps/api/test/features/F5/job-extra.test.ts",
+   "reason": "ファイルは仕事に付いた資料と仕事を受け取った PC で答えが変わる。生成の試験の種では資料を付けた仕事を作れない（K-761）",
+   "covers": {
+    "test_get_bridge_files_ref_ok": "K761-API-006",
+    "test_get_bridge_files_ref_shape": "K761-API-006",
+    "test_get_bridge_files_ref_rejected_401": "K761-API-008",
+    "test_get_bridge_files_ref_rejected_403": "K761-API-008",
+    "test_get_bridge_files_ref_rejected_422": "K761-API-009",
+    "test_get_bridge_files_ref_not_found": "K761-API-007",
+    "test_get_bridge_files_ref_upstream_failed": "K761-API-010",
+    "test_get_bridge_files_ref_session_unresolved": "K761-API-010",
+    "test_get_bridge_files_ref_rate_limited": "K761-API-010",
+    "test_get_bridge_files_ref_upstream_failed_2": "K761-API-010",
+    "test_get_bridge_files_ref_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
   }
  }
 }
