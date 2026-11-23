@@ -382,7 +382,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-945"
+    "K-945",
+    "K-985"
    ]
   },
   {
@@ -3462,7 +3463,9 @@
     "ops_members"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-985"
+   ]
   },
   {
    "op": "addOpsMember",
@@ -3477,7 +3480,9 @@
     "ops_members"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-985"
+   ]
   },
   {
    "op": "updateOpsMemberCaps",
