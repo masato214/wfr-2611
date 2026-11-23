@@ -24396,6 +24396,7 @@
    "affects": [
     "@kaname/api",
     "@kaname/auth",
+    "@kaname/contracts",
     "@kaname/db",
     "@kaname/errors"
    ],
