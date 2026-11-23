@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "v3.1",
-  "created_at": "2026-11-22",
+  "created_at": "2026-11-23",
   "_doc": "05_flow/build_functional.py が flow.json・ER図・モック・errors.json から生成。手で直さない。",
   "source": [
    "D-053.1",
@@ -892,7 +892,8 @@
     "E-DEL-012",
     "E-DEL-013",
     "E-DEL-014",
-    "E-CONF-020"
+    "E-CONF-020",
+    "E-TALK-040"
    ],
    "policies": [
     "C2",
@@ -2492,7 +2493,8 @@
     "E-DEL-012",
     "E-DEL-013",
     "E-DEL-014",
-    "E-CONF-020"
+    "E-CONF-020",
+    "E-TALK-040"
    ],
    "policies": [
     "C1",
@@ -5537,7 +5539,8 @@
     "E-DEL-012",
     "E-DEL-013",
     "E-DEL-014",
-    "E-CONF-020"
+    "E-CONF-020",
+    "E-TALK-040"
    ],
    "policies": [
     "C2",
@@ -8553,7 +8556,8 @@
     "E-DEL-012",
     "E-DEL-013",
     "E-DEL-014",
-    "E-CONF-020"
+    "E-CONF-020",
+    "E-TALK-040"
    ],
    "policies": [
     "C2",
@@ -9360,7 +9364,8 @@
     "E-DISC-001",
     "E-CHAT-002",
     "E-ART-001",
-    "E-ART-002"
+    "E-ART-002",
+    "E-TALK-040"
    ],
    "policies": [
     "権限（テナント・スコープ）",

@@ -1,0 +1,40 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/bridge-job-extra.ts",
+    "apps/api/src/features/F5/delegate/browser-state.ts",
+    "apps/api/src/features/F5/delegate/job-file.ts",
+    "packages/db/migrations/20261125024100_job_browser_file.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F5/job-extra.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/bridge/src/loop.ts"
+   ],
+   "tests": [
+    "apps/bridge/test/loop-browser-state.test.ts",
+    "apps/bridge/test/loop.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F5/job-extra.test.ts",
+    "apps/api/test/features/F5/talk-pc.kit.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/F1/terms.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_bridge_jobs_id_browser.test.ts",
+    "apps/api/test/generated/get_bridge_files_ref.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F5/talk-pc.kit.ts": "葉の hooks のファイルを最初の要求のときに動的 import する（準備で読まない・K-378 と同じ）",
+  "apps/api/test/features/contract/k144.d/K-761.ts": "k144 の置き場の葉のファイル。準備の中で F3/leaf-hooks.ts を動的 import し、hooks のファイルを最初の要求のときに読む（K-378）"
+ }
+}

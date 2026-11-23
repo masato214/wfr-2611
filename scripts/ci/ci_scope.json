@@ -1771,6 +1771,37 @@
   },
   {
    "paths": [
+    "05_flow/screen_api.py",
+    "05_flow/screen_api.d/**",
+    "08_api/endpoints.json",
+    "08_api/openapi.yaml",
+    "08_api/lint-mapping.json",
+    "08_api/retired-endpoints.json",
+    "08_api/phase1/01_チケット.md",
+    "08_api/phase1/03_分身の部屋.md",
+    "03_architecture/catalog.json",
+    "03_architecture/catalog.md",
+    "03_architecture/db-catalog.json",
+    "03_architecture/flow-lines.json",
+    "packages/contracts/src/registry.ts",
+    "packages/contracts/src/ops.ts",
+    "apps/api/src/routes/index.ts",
+    "apps/api/src/routes/tickets.ts",
+    "apps/api/src/routes/checks.ts",
+    "apps/api/test/generated/get_tickets_id_checks.test.ts",
+    "apps/api/test/generated/post_checks_id_human.test.ts",
+    "apps/api/test/generated/post_clones_me_activity_export.test.ts",
+    "11_tickets/K-59.md",
+    "11_tickets/K-61.md",
+    "11_tickets/K-435.md",
+    "scripts/ci/flow_db_gate.py"
+   ],
+   "tests": [
+    "apps/api/test/features/F5/checks-retire.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/clone-room.ts",
     "apps/api/src/features/F5/clone-room/**",
     "packages/db/migrations/20261125023300_clone_room_now.sql"
@@ -1789,6 +1820,38 @@
    "tests": [
     "apps/api/test/generated/get_clones_me.test.ts",
     "apps/api/test/generated/get_clones_me_now.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/bridge-job-extra.ts",
+    "apps/api/src/features/F5/delegate/browser-state.ts",
+    "apps/api/src/features/F5/delegate/job-file.ts",
+    "packages/db/migrations/20261125024100_job_browser_file.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F5/job-extra.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/bridge/src/loop.ts"
+   ],
+   "tests": [
+    "apps/bridge/test/loop-browser-state.test.ts",
+    "apps/bridge/test/loop.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F5/job-extra.test.ts",
+    "apps/api/test/features/F5/talk-pc.kit.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/F1/terms.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_bridge_jobs_id_browser.test.ts",
+    "apps/api/test/generated/get_bridge_files_ref.test.ts"
    ]
   },
   {
@@ -1965,6 +2028,8 @@
   "apps/api/test/features/F5/checks-retire.test.ts": "契約・生成物・目録・親の md を readFileSync で読み、git grep と flow_db_gate.py を spawnSync で動かす（K741-API-002〜010）・K-741",
   "apps/api/test/features/F5/clone-room.harness.ts": "hooks のファイル apps/api/src/hooks/clone-room.ts を動的 import で読む（準備で読まず最初の要求で 1 回）。読む物と使う試験は data_links で結ぶ・K-753",
   "apps/api/test/features/F5/clone-room-now.test.ts": "契約の断片 05_flow/screen_api.d/K-753.py・screen_api.py と hooks のファイルを readFileSync で読む（K753-API-021）",
+  "apps/api/test/features/F5/talk-pc.kit.ts": "葉の hooks のファイルを最初の要求のときに動的 import する（準備で読まない・K-378 と同じ）",
+  "apps/api/test/features/contract/k144.d/K-761.ts": "k144 の置き場の葉のファイル。準備の中で F3/leaf-hooks.ts を動的 import し、hooks のファイルを最初の要求のときに読む（K-378）",
   "apps/web/tests/k/k1100-stage-locked.spec.ts": "鍵の札の CSS apps/web/features/F6/progress/progress.css を読み、余白と間が正本のトークンだけを読むかを見る（K1100-UI-004）。正本と生成物の変更でも流れるよう data_links で結ぶ（K-1100）"
  },
  "web_select": {

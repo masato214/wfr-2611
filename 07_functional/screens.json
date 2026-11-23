@@ -3420,8 +3420,7 @@
      "operation_id": "reportBrowserState",
      "auth": "session（会社・層・権限）",
      "related_entities": [
-      "E-046",
-      "E-094"
+      "E-046"
      ],
      "choke_points": [
       "C2",
@@ -4740,8 +4739,7 @@
      "operation_id": "reportBrowserState",
      "auth": "session（会社・層・権限）",
      "related_entities": [
-      "E-046",
-      "E-094"
+      "E-046"
      ],
      "choke_points": [
       "C2",
@@ -5559,14 +5557,14 @@
     "E-046",
     "E-049",
     "E-080",
-    "E-094",
     "E-043",
     "E-050",
     "E-051",
     "E-106",
     "E-120",
     "E-042",
-    "E-052"
+    "E-052",
+    "E-094"
    ],
    "mock_path": "06_mockup/v1/v1-bridge-setup.html",
    "route": "/setup/bridge",

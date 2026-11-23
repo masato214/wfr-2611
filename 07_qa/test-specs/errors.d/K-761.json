@@ -1,0 +1,19 @@
+{
+ "errors": [
+  {
+   "id": "E-TALK-040",
+   "class": "external",
+   "where": {"screen": "clone-chat", "choke_point": "C4"},
+   "when": "PC が仕事に付いた資料を取りに来たが、置き場が資料の署名 URL を出せない（置き場の名前空間の外・置き場に届かない）",
+   "false_when": "置き場が署名 URL を出し、PC が資料を取れた",
+   "message": "資料の場所を出せませんでした。少し待ってから、もう一度お試しください",
+   "action": "待ってやり直す（PC は取れなかった資料を名前と理由で文に添えて続ける）",
+   "undo": false,
+   "layers": ["API", "C4"],
+   "must_not": false,
+   "reproduce": {"setup": "資料を付けた仕事を PC が受け取っている状態で、資料の置き場の場所を会社の名前空間の外にする", "steps": ["PC が GET /api/v1/bridge/files/<資料の id>?job_id=<仕事の id> を呼ぶ"], "needs": "置き場"},
+   "severity": "low",
+   "source": ["D-104.11", "D-153.16"]
+  }
+ ]
+}

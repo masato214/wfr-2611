@@ -158,4 +158,5 @@ export const MIGRATIONS = [
   "20261123085900_run_takeover.sql",
   "20261123100000_function_execute_private_after.sql",
   "20261125023300_clone_room_now.sql",
+  "20261125024100_job_browser_file.sql",
 ] as const;
