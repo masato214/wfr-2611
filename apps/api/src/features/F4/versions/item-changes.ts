@@ -32,6 +32,7 @@ export function createListTicketItemChanges(appPool: pg.Pool): NonNullable<Hook[
       console.error(`[ticket-body] 読めなかった（${(ex as Error)?.name ?? "Error"}）`);
       return unavailable();
     }
+    if (v["error"] === "not_found") return NOT_FOUND; // 無い版・無い点・本文の行が無い（入口を通った見えるチケット）は E-PAGE-001
     if (typeof v["error"] === "string") return bodyReply(v["error"]);
     return {
       status: 200,

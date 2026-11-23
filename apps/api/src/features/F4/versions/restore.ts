@@ -43,6 +43,7 @@ export function createRestoreTicketVersion(appPool: pg.Pool): NonNullable<Hook["
       return unavailable();
     }
     if (v["error"] === "same") return same();
+    if (v["error"] === "not_found") return NOT_FOUND; // 無い版・本文の行が無い（入口を通った見えるチケット）は E-PAGE-001
     if (v["ok"] !== true) return bodyReply(String(v["error"]));
     return {
       status: 201,
