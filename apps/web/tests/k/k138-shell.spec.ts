@@ -569,7 +569,9 @@ test("K138-SH-019 幅 375：本文を一番下まで送っても、本文の最�
       });
       return Math.max(...all.map((e) => e.getBoundingClientRect().bottom));
     });
-    expect(lastBottom, path).toBeLessThanOrEqual(tabsTop);
+    // 文書の高さ（scrollHeight）は整数に丸められ、字の行の高さで本文の高さが端数（例 .39px）になると最後の 1px 未満までは送れない。
+    // 被りは 1px からを数える（K-1114：G48 で 840.39 ＞ 840 が赤だった。最後の物は面の下の余白で、字は 16px 上で終わっていた）
+    expect(lastBottom, path).toBeLessThan(tabsTop + 1);
   }
 });
 

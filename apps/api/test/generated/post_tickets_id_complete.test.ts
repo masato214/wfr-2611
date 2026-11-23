@@ -25,14 +25,14 @@ describe("POST /api/v1/tickets/:id/complete", () => {
     expect(readFileSync("apps/api/test/features/F5/approve-complete-guard.test.ts", "utf8")).toContain("K63-API-025");
   });
   it("test_post_tickets_id_complete_conflict", () => {
-    // UNWANTED: IF 完了にできない状態（承認待ち・実行中・確認中・実施事項が変わった・もう完了・作業中でない）なら、Kaname は 409 とその理由（E-CONF-016・017・018・019）を返し、何も書かない
+    // UNWANTED: IF 完了にできない状態（承認待ち・実行中・確認中・もう完了・作業中でない）なら、Kaname は 409 とその理由（E-CONF-016・018・019）を返し、何も書かない
     // 本物の試験：apps/api/test/features/F5/approve-complete-complete.test.ts の「K63-API-032」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F5/approve-complete-complete.test.ts", "utf8")).toContain("K63-API-032");
   });
   it("test_post_tickets_id_complete_rejected_422", () => {
-    // UNWANTED: IF 実施事項が残っているか、終わっていない子があるなら、Kaname は 422 と項目ごとの理由（E-VAL-022・E-VAL-024）を返し、何も書かない
-    // 本物の試験：apps/api/test/features/F5/approve-complete-complete.test.ts の「K63-API-028」（同じ CI の G3 で流れる）
-    expect(readFileSync("apps/api/test/features/F5/approve-complete-complete.test.ts", "utf8")).toContain("K63-API-028");
+    // UNWANTED: IF 終わっていない子があるなら、Kaname は 422 と子ごとの理由（E-VAL-024）を返し、何も書かない
+    // 本物の試験：apps/api/test/features/F5/approve-complete-complete.test.ts の「K63-API-030」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F5/approve-complete-complete.test.ts", "utf8")).toContain("K63-API-030");
   });
   it("test_post_tickets_id_complete_rejected_422_2", () => {
     // UNWANTED: IF 完了の条件を確かめた印が無いか、入力の形が違うなら、Kaname は 422 と欄ごとの理由（E-VAL-023）を返し、何も書かない

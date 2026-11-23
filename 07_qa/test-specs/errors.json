@@ -6945,6 +6945,101 @@
    "support_code": "CONF-037"
   },
   {
+   "id": "E-CONF-031",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "decisions"
+   },
+   "when": "決定を改める・取り消すとき、読んだ後にほかの人が先にその決定を改めていた（改められた決定を改める・取り消す・同時に 2 人が改める・K-391）",
+   "false_when": "その決定がまだ生きている（改められても取り消されてもいない）",
+   "message": "この決定は、いま別の人が改めました。読み直してから、もう一度お試しください",
+   "action": "読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "作業中のチケットの決定を 2 人が開いている",
+    "steps": [
+     "1 人が決定を改める",
+     "もう 1 人が同じ決定を改める"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.63"
+   ],
+   "support_code": "CONF-031"
+  },
+  {
+   "id": "E-CONF-033",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "decisions"
+   },
+   "when": "決定を改める・取り消すとき、読んだ後にほかの人が先にその決定を取り消していた（取り消した決定を改める・取り消す・K-391）",
+   "false_when": "その決定がまだ生きている（取り消されていない）",
+   "message": "この決定は、いま別の人が取り消しました。読み直してから、もう一度お試しください",
+   "action": "読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "作業中のチケットの決定を 2 人が開いている",
+    "steps": [
+     "1 人が決定を取り消す",
+     "もう 1 人が同じ決定を改める"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.63"
+   ],
+   "support_code": "CONF-033"
+  },
+  {
+   "id": "E-VAL-045",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "decisions"
+   },
+   "when": "決定を取り消すとき、理由が無い・空・空白だけ（全角も）・制御文字だけ（K-391）",
+   "false_when": "取り消す理由に字がある（字数の上限は無い）",
+   "message": "取り消す理由を書いてください",
+   "action": "取り消す理由を書く",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "作業中のチケットの決定",
+    "steps": [
+     "決定を取り消す確かめで、理由を空のまま取り消す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.63"
+   ],
+   "support_code": "VAL-045"
+  },
+  {
    "id": "E-VAL-046",
    "class": "validation",
    "where": {
@@ -7179,6 +7274,91 @@
    ]
   },
   {
+   "id": "E-SPEC-020",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "版が今と違う（先にほかの人が同じ確認項目を変えた・同じ版から同時に 2 人が直した）",
+   "false_when": "送った版が今の版と同じ（付ける・外す・文を直すのどれも）",
+   "message": "別の人が先にこの確認項目を変えました。読み直してから、もう一度お試しください",
+   "action": "読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの詳細を 2 つの画面で開き、確認項目の欄を見る",
+    "steps": [
+     "片方の画面で確認項目にチェックを付け、もう片方の画面（読み直す前）で同じ項目の文を直して保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.39",
+    "D-150.56"
+   ]
+  },
+  {
+   "id": "E-SPEC-021",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "チェックが付いている確認項目の文を直そうとした",
+   "false_when": "チェックが付いていない確認項目の文を直す（チェックを外した後も直せる）",
+   "message": "チェックが付いている確認項目の文は直せません。チェックを外してから直してください",
+   "action": "チェックを外す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの詳細を開き、チェックが付いた確認項目を用意する",
+    "steps": [
+     "チェックが付いた確認項目の文を書き換えて保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.55"
+   ]
+  },
+  {
+   "id": "E-SPEC-022",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "ナレッジの「必ず守る」から入った確認項目の文を直そうとした・行を外そうとした",
+   "false_when": "ナレッジから入った項目のチェックの付け外し／手で足した項目・AI の項目の文の直しと行の取り外し",
+   "message": "ナレッジの「必ず守る」から入った確認項目は、文を直したり外したりできません。チェックの付け外しだけできます",
+   "action": "チェックを付け外しする",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "「必ず守る」のナレッジを写したチケットの詳細を開く",
+    "steps": [
+     "ナレッジから入った確認項目の文を書き換えるか、行を外す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "段 10 の代表の決め 2026-11-22"
+   ]
+  },
+  {
    "id": "E-LNK-001",
    "class": "conflict",
    "where": {
@@ -7273,6 +7453,34 @@
     "D-125.50",
     "D-128.80",
     "D-150.16"
+   ]
+  },
+  {
+   "id": "E-NTF-001",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "notifications"
+   },
+   "when": "知らせの一覧の続きの鍵が、形（base64url の 1〜200 字）には合うが今の状態では読めない（JSON でない・時刻や id の形でない・古い・壊れた）",
+   "false_when": "口が出した鍵（形に合わない鍵は入口が 422 にする）",
+   "message": "お知らせの続きを読めませんでした。最初から読み直してください",
+   "action": "最初から読み直す（続きの鍵を付けずに開き直す）",
+   "undo": false,
+   "layers": [
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "鈴を押して知らせの一覧を開く",
+    "steps": [
+     "続きの鍵に壊れた文字列を入れて GET /api/v1/notifications を呼ぶ"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-151.4"
    ]
   },
   {

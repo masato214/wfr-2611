@@ -4560,6 +4560,10 @@
     "type": "jsonb",
     "nullable": true
    },
+   "read_at": {
+    "type": "timestamp with time zone",
+    "nullable": true
+   },
    "retry_count": {
     "type": "integer",
     "nullable": true

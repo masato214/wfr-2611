@@ -1,0 +1,67 @@
+{
+ "ops": {
+  "updateTestSpec": {
+   "file": "apps/api/test/features/F4/test-spec-update.test.ts",
+   "reason": "チェックの付け外し・文の直しは、チケットが見えるか・書けるか・完了したか・版が合うか・チェックが付いているか・出どころで答えが変わり、DB の関数が行とやり取りと証跡を 1 つの取引で書く。生成の試験の偽のセッションでは作れない（K-435）",
+   "covers": {
+    "test_patch_test_specs_id_ok": "K435-API-001",
+    "test_patch_test_specs_id_shape": "K435-API-001",
+    "test_patch_test_specs_id_rejected_401": "K435-API-012",
+    "test_patch_test_specs_id_rejected_403": "K435-API-012",
+    "test_patch_test_specs_id_not_found": "K435-API-012",
+    "test_patch_test_specs_id_rejected_422": "K435-API-007",
+    "test_patch_test_specs_id_conflict": "K435-API-008",
+    "test_patch_test_specs_id_conflict_2": "K435-API-005",
+    "test_patch_test_specs_id_conflict_3": "K435-API-011",
+    "test_patch_test_specs_id_conflict_4": "K435-API-010",
+    "test_patch_test_specs_id_session_unresolved": "K435-API-014",
+    "test_patch_test_specs_id_rate_limited": "K435-API-015",
+    "test_patch_test_specs_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_test_specs_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_test_specs_id_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    }
+   },
+   "na": {
+    "test_patch_test_specs_id_upstream_failed": "外を呼ばない（C3 は契約の口の宣言に付いているだけ・AI も PC も呼ばない）"
+   }
+  },
+  "deleteTestSpec": {
+   "file": "apps/api/test/features/F4/test-spec-update.test.ts",
+   "reason": "行を外すは、チケットが見えるか・書けるか・完了したか・出どころで答えが変わり、DB の関数が行の印とやり取りと証跡を 1 つの取引で書く。生成の試験の偽のセッションでは作れない（K-435）",
+   "covers": {
+    "test_delete_test_specs_id_ok": "K435-API-016",
+    "test_delete_test_specs_id_shape": "K435-API-016",
+    "test_delete_test_specs_id_rejected_401": "K435-API-012",
+    "test_delete_test_specs_id_rejected_403": "K435-API-012",
+    "test_delete_test_specs_id_not_found": "K435-API-012",
+    "test_delete_test_specs_id_rejected_422": {
+     "file": "apps/api/test/features/contract/k144.d/K-435.ts",
+     "mark": "K144-API-523"
+    },
+    "test_delete_test_specs_id_conflict": "K435-API-011",
+    "test_delete_test_specs_id_conflict_2": "K435-API-010",
+    "test_delete_test_specs_id_session_unresolved": "K435-API-019",
+    "test_delete_test_specs_id_rate_limited": "K435-API-020",
+    "test_delete_test_specs_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_delete_test_specs_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_delete_test_specs_id_upstream_failed": "外を呼ばない（C3 は契約の口の宣言に付いているだけ・AI も PC も呼ばない）"
+   }
+  }
+ }
+}

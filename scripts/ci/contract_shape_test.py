@@ -23,6 +23,9 @@ import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "05_flow"))
+sys.path.insert(0, str(ROOT / "scripts" / "ci"))
+import email_patterns as _EP  # noqa: E402  登録・ログインのメールの形（K-1117）
+from portable_regex import walk as _portable  # noqa: E402  作り手が契約に書くときの直し（\s \S \d \w を JS と同じ字に・K-1117）。表の字はそのまま、比べる前に当てる
 
 
 def _load_screen_api():
@@ -48,7 +51,7 @@ VOCAB = {"string", "integer", "number", "boolean", "object", "array", "uuid", "u
 #   入口の zod は前から全部 .optional()（契約に required が 1 つも無かった）なので、必須の確かめと文言は口の振る舞いが持っている。
 #   ここに無い口の入力の形は required を持たない（条件つきで要る欄＝stepUp の code・種別ごとの必須の区画は required にしない）
 REQUIRED_INPUTS: dict[str, set[str]] = {
-    "completeTicket": {"todo_checked", "todo_version", "conditions_confirmed"},   # apps/api/src/features/F5/approve-complete/complete.ts（3 つとも必須・K-165）
+    "completeTicket": {"conditions_confirmed"},   # apps/api/src/features/F5/approve-complete/complete.ts（conditions_confirmed だけ必須・todo_* は任意で中身は見ない・K-566）
     "returnApproval": {"note"},                       # apps/api/src/features/F5/approve-complete/decide.ts（無い・空は 422 E-VAL-020・K-163）
     "createSignup": {"email", "name", "password"},     # apps/api/src/features/F1/sign-up/input.ts:40〜47（E-VAL-004・010・005。無いと空と同じ）。company_name は空でよい（D-125.135）
     "verifySignup": {"token"},                         # apps/api/src/features/F1/verify-email/index.ts:227（無い・空は 422 E-PAGE-006・K52-API-015）
@@ -116,7 +119,7 @@ VALUE_RANGES: dict[str, dict[str, dict]] = {
     "updateMemory": {"body": {"pattern": "\\S"}},          # apps/api/src/hooks/agent.ts:62〜63
     "createMemory": {"confidence": {"pattern": "^-?(?:[0-8](?:\\.[0-9]+)?|9(?:\\.(?:[0-9]{1,2}|(?:[0-8][0-9]|9[0-8])[0-9]+|99[0-4][0-9]*))?)$"}, "kind_id": {"enum": ["rule", "preference", "example", None]}},   # memories.confidence numeric(3,2)（10 以上は DB が断る）
     "createSignup": {   # apps/api/src/features/F1/sign-up/input.ts:37〜47
-        "email": {"pattern": "^\\s*[^@\\s]+@[^@\\s]+\\.[^@\\s]+\\s*$"},
+        "email": {"pattern": _EP.LOGIN_EMAIL},   # 部品の z.email() の形を前後の空白で挟んだ物（K-1117）
         "name": {"pattern": "\\S", "maxLength": 100},
         "company_name": {"maxLength": 100},
         "password": {"minLength": 12},
@@ -721,7 +724,7 @@ class ContractShapeTest(unittest.TestCase):
         for base in bases:
             for f in sorted(base.rglob("*.ts*")):
                 rel = f.relative_to(ROOT).as_posix()
-                if "node_modules" in rel or "/.next/" in rel or "/dist/" in rel or re.search(r"(\.test\.|\.spec\.|/tests?/)", rel):
+                if "node_modules" in rel or "/.next/" in rel or "/.next-prod/" in rel or "/dist/" in rel or re.search(r"(\.test\.|\.spec\.|/tests?/)", rel):
                     continue
                 for i, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
                     if loose.search(line) or no_version.search(line):
@@ -815,7 +818,7 @@ class ContractShapeTest(unittest.TestCase):
         for (op_id, pname), pat in PATH_PATTERNS.items():
             ps = {x["name"]: x for x in operation(op_id)[2].get("parameters", []) if x["in"] == "path"}
             self.assertIn(pname, ps, f"{op_id} に道の値 {pname} が無い")
-            self.assertEqual(ps[pname]["schema"].get("pattern"), pat, f"{op_id} の {pname} の値域が違う")
+            self.assertEqual(ps[pname]["schema"].get("pattern"), _portable({"pattern": pat})["pattern"], f"{op_id} の {pname} の値域が違う")
         pat = re.compile(PATH_PATTERNS[("downloadBridgeRelease", "name")])
         src = (ROOT / "apps/api/test/features/contract/k144-contract.test.ts").read_text(encoding="utf-8")
         block = re.search(r"RELEASE_NAMES = \[(.*?)\] as const;", src, re.S)
@@ -918,7 +921,7 @@ class ContractShapeTest(unittest.TestCase):
             props = SCHEMAS[name]["properties"]
             for k, want in fields.items():
                 got = props.get(k, {})
-                for key, val in want.items():
+                for key, val in _portable(want).items():
                     if got.get(key) != val:
                         bad.append(f"{op_id}（{name}）.{k}.{key}: 契約 {got.get(key)!r} ／ 口 {val!r}")
             m = re.search(rf"export const {name} = z\.strictObject\(\{{(.*?)\n\}}\);", ZOD, re.S)
@@ -986,7 +989,7 @@ class ContractShapeTest(unittest.TestCase):
                     if name not in params:
                         bad.append(f"{o}: 問い合わせに {name} が無い")
                         continue
-                    for key, val in ws.items():
+                    for key, val in _portable(ws).items():
                         if params[name].get(key) != val:
                             bad.append(f"{o}.{name}.{key}: 契約 {params[name].get(key)!r} ／ 表 {val!r}")
                 for name, sc in params.items():
@@ -1093,6 +1096,9 @@ class ContractShapeTest(unittest.TestCase):
         "apps/api/src/features/F5/delegate/records.ts": [("slice(0, 30)", "Bridge が送る todo の並びの数（人が書く欄でない）"),
                                                           ("slice(0, 4)", "Bridge が送る開いている窓の並びの数（人が書く欄でない）"),
                                                           ("[...wellFormed(s)].slice(0, max)", "Bridge が送る欄（道具の名前・対象・todo の文・止めた先・セッションの id・返事 200000 字・途中の 1 行 400 字。人が書く欄でない）を文字（コードポイント）の単位で切る 1 か所の clip。呼ぶ所は clip(…) の 10 か所（K62-API-033・K62-API-082）")],
+        # K-461：知らせの一覧（DB から limit+1 件取った行を次の分の有無を見た後に limit 件に戻す）と、payload の写しを短くする clip（文字の単位）
+        "apps/api/src/features/F7/notifications/list.ts": [("rows.slice(0, q.limit)", "DB から limit+1 件取った行を、次の分の有無を見た後に limit 件に戻す（入力でない）")],
+        "apps/api/src/features/F7/notifications/shape.ts": [("Array.from(s).slice(0, CLIP_MAX)", "payload の写しを短くする（人が書く入力でない・文字（コードポイント）の単位で切る）")],
     }
 
     def _migration_texts(self) -> list[tuple[str, str]]:
