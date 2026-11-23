@@ -109,14 +109,16 @@ describe("K-947 指す会社の確かめ", () => {
 });
 
 describe("K-947 TS の土台", () => {
-  it("K947-API-006 opsTx：中は role ops・会社の文脈なし（app.tenant_id() が null）・user は運営の人", async () => {
+  it("K947-API-006 opsTx：中は role ops・会社の文脈なし（文脈の値 app.tenant_id が null）・user は運営の人", async () => {
     const got = await opsTx(
       f.pool,
       ops(opsMoney),
       async (c) =>
         (
           await c.query<{ role: string; tenant: string | null; uid: string }>(
-            "select app.role() as role, app.tenant_id() as tenant, app.user_id() as uid",
+            // 関数 app.role() はアプリの接続に実行権が無い（app の関数は PUBLIC から外した・20261123100000_function_execute_private_after）。
+            // 3 つとも関数と同じ中身（文脈の値を読み、空は null）をそのまま読む
+            "select nullif(current_setting('app.role', true), '') as role, nullif(current_setting('app.tenant_id', true), '')::uuid as tenant, nullif(current_setting('app.user_id', true), '')::uuid as uid",
           )
         ).rows[0],
     );
