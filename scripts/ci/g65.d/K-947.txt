@@ -1,0 +1,2 @@
+python3 scripts/ci/k947_ops_definer_test.py
+python3 scripts/ci/ops_definer_gate.py
