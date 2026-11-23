@@ -213,6 +213,13 @@ export const MOCKS: readonly MockEntry[] = [
     label: "決定を足す小窓（直接書く・空で押した）",
     ticket: "K-397",
   },
+  {
+    id: "dec-no-section",
+    screen: "tickets",
+    ps: "PS0",
+    label: "作るときに決定ログを書かなかったチケット：決定が在れば本文の最後に決定ログが出る（作るときの字は無い）",
+    ticket: "K-1119",
+  },
   { id: "dec-revise", screen: "tickets", ps: "PS0", label: "決定を改める小窓", ticket: "K-398" },
   {
     id: "dec-cancel",
@@ -815,6 +822,11 @@ function view(id: string, theme: Theme): ReactNode {
           decisions={<DecisionLog intro="支払いは銀行振込" items={DECISIONS} canWrite />}
           dialog={<DecisionDialog open people={DECISION_PEOPLE} errors={{ text: "決めたことを書いてください" }} />}
         />
+      );
+    case "dec-no-section":
+      // 区画の行が無いチケット（K-1119）：版 0 の区画で決定ログを出す。作るときの字（intro）は無く、並びと字は dec-log と同じ
+      return (
+        <Page theme={theme} ps="PS0" stage={menu(ST.doing!)} decisions={<DecisionLog items={DECISIONS} canWrite />} />
       );
     case "dec-revise":
       return (

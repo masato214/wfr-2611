@@ -1,4 +1,4 @@
-// K-382「段 7 の部品とモック（/dev/mock/f6 の 26 の状態）を本線に入れ、差し込み口の先に『まだ』の形の入れ物をつなぐ」の試験
+// K-382「段 7 の部品とモック（/dev/mock/f6 の 27 の状態。dec-no-section は K-1119 が足した）を本線に入れ、差し込み口の先に『まだ』の形の入れ物をつなぐ」の試験
 //   （実 Chrome と、ファイルと検査の道具を読む試験・実装より先に積む）。
 //   的：開発用の置き場 /dev/mock/f6（索引）と /dev/mock/f6/<状態>。モックは本番と同じ部品（features/F6/{progress,thread,decisions}/views.tsx・
 //     詳細の部品 features/F4/create-ticket/detail-head.tsx・components/k）を決めた値で並べたもの（段 7 の下絵・代表の OK answer=fabd031f9b37）。
@@ -26,7 +26,7 @@ const VIEWS = ["progress/views.tsx", "thread/views.tsx", "decisions/views.tsx"].
 const CSS = ["progress/progress.css", "thread/thread.css", "decisions/decisions.css"].map((f) => join(F6, f));
 const TITLE = "セイコー様へ 11 月分の請求書を送る";
 
-/** 画面の葉と、その葉が本物にするモックの状態（11_tickets/K-382.md・K-392〜K-398.md の頭の欄 mock: と同じ・26 個） */
+/** 画面の葉と、その葉が本物にするモックの状態（11_tickets/K-382.md・K-392〜K-398.md・K-1119.md の頭の欄 mock: と同じ・27 個） */
 const LEAVES: Record<string, readonly string[]> = {
   "K-382": ["prog-overview"],
   "K-395": [
@@ -45,6 +45,7 @@ const LEAVES: Record<string, readonly string[]> = {
   "K-396": ["talk-compose-stage"],
   "K-397": ["dec-log", "dec-empty", "dec-add"],
   "K-398": ["dec-from-message", "dec-revise", "dec-cancel", "dec-conflict"],
+  "K-1119": ["dec-no-section"],
 };
 const ALL = Object.values(LEAVES).flat();
 const OWNER = new Map(Object.entries(LEAVES).flatMap(([k, ids]) => ids.map((id) => [id, k] as const)));
@@ -86,9 +87,9 @@ const topmostInside = (item: Locator) =>
 
 // ---- ファイルの突き合わせ（ブラウザ不要） ----
 
-test("K382-MK-001 モックの状態は 26 個で、画面の葉 8 本（K-382・K-392〜K-398）が持つ状態の和とちょうど同じ（余りも欠けも重なりも 0）", () => {
+test("K382-MK-001 モックの状態は 27 個で、画面の葉 9 本（K-382・K-392〜K-398・K-1119）が持つ状態の和とちょうど同じ（余りも欠けも重なりも 0）", () => {
   const ids = mockEntries().map((e) => e.id);
-  expect(ids.length).toBe(26);
+  expect(ids.length).toBe(27);
   expect(new Set(ids).size, "同じ id が 2 つある").toBe(ids.length);
   expect([...ids].sort()).toEqual([...ALL].sort());
 });
@@ -252,7 +253,7 @@ test("K382-DC-001 決定ログ：段 7 の節 §149（D-149.1〜）の行が 07_
 
 // ---- 実ブラウザ：モックの全部の状態が描ける ----
 
-test("K382-UI-001 索引 /dev/mock/f6：見出し tickets と 26 のリンクが出て、各リンクの先は /dev/mock/f6/<状態>", async ({
+test("K382-UI-001 索引 /dev/mock/f6：見出し tickets と 27 のリンクが出て、各リンクの先は /dev/mock/f6/<状態>", async ({
   page,
 }) => {
   await guard(page);
@@ -271,7 +272,7 @@ for (const [row, w] of [
   ["K382-UI-003", 768],
   ["K382-UI-004", 1440],
 ] as const) {
-  test(`${row} 幅 ${w}：26 の状態が 200 で開き、「この状態はありません」が無く、頁の h1 がちょうど 1 つで題名「${TITLE}」・横のはみ出し 0`, async ({
+  test(`${row} 幅 ${w}：27 の状態が 200 で開き、「この状態はありません」が無く、頁の h1 がちょうど 1 つで題名「${TITLE}」・横のはみ出し 0`, async ({
     page,
   }) => {
     test.setTimeout(240_000);
@@ -290,7 +291,7 @@ for (const [row, w] of [
   });
 }
 
-test("K382-UI-005 26 の状態（幅 1440）で pageerror と hydration の知らせが 0", async ({ page }) => {
+test("K382-UI-005 27 の状態（幅 1440）で pageerror と hydration の知らせが 0", async ({ page }) => {
   test.setTimeout(180_000);
   await guard(page);
   const errors: string[] = [];
