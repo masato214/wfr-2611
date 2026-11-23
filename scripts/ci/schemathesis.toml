@@ -41,6 +41,14 @@ checks.positive_data_acceptance.expected-statuses = ["2xx", "3xx", "401", "403",
 include-operation-id = "createSavedView"
 checks.positive_data_acceptance.expected-statuses = ["2xx", "3xx", "401", "403", "404", "409", "422", "429", "5xx"]
 
+# K-1116：PC の確かめに答える口は、PC がコードを頼んだ（確かめを始めた）後だけ受け、頼まれていなければ 404 E-CRED-014（K-355 の決め・契約にもある）。
+#   設定を作った（POST /credentials）だけでは頼まれていないので、schemathesis が自分で引いた線で作った直後に叩くと必ず 404 になり、
+#   「作った物が引けない」（ST302・ensure_resource_availability）と数える。この口に限って外す（答えの 404 は credential-login-check.test.ts の K355-API-013 が見る）。
+#   schemathesis 4.33 の stateful は、答えの確かめをその口の設定で組む（engine/run/stateful/_executor.py の checks_config_for(operation=…)）
+[[operations]]
+include-operation-id = "answerCredentialLoginCheck"
+checks.ensure_resource_availability.enabled = false
+
 # K-754：やったことの一覧（listCloneActivity）の「続きの印」（cursor）も、口が前の答えで渡した鍵の文字列（base64url）だけを受ける。形（pattern）は合っていても、
 #   復号できない・時刻と id の 2 つに分かれない印は 422（欄 cursor）で断る（K754-API-012）。形だけでは書けない決まりなので、
 #   この口に限って「形どおりの入力」を 422 で断るのを受け付けとして数えない（ST202 にしない・K-161 の listApprovalQueue・K-757 と同じ）

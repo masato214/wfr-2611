@@ -1,0 +1,1 @@
+python3 scripts/ci/k1115_cut_take_test.py

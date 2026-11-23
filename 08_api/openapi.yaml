@@ -9600,7 +9600,7 @@ components:
       properties:
         name:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
       additionalProperties: false
       x-operation: renamePasskey
       required:
@@ -9611,10 +9611,10 @@ components:
       properties:
         email:
           type: string
-          pattern: ^\s*[^@\s]+@[^@\s]+\.[^@\s]+\s*$
+          pattern: ^[ \t\n\r]*(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}[ \t\n\r]*$
         name:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 100
         company_name:
           type: string
@@ -9639,7 +9639,7 @@ components:
       properties:
         token:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
       additionalProperties: false
       x-operation: verifySignup
       required:
@@ -9650,7 +9650,8 @@ components:
       properties:
         email:
           type: string
-          pattern: ^\s*[^@\s]+@[^@\s]+\.[^@\s]+\s*$
+          pattern: ^[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]*[^@ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+@[^@ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+\.[^@
+            \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]+[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]*$
       additionalProperties: false
       x-operation: requestPasswordReset
       required:
@@ -9661,10 +9662,10 @@ components:
       properties:
         email:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
         password:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
       additionalProperties: false
       x-operation: signInWithPassword
       required:
@@ -9674,7 +9675,7 @@ components:
       allOf:
       - properties:
           email:
-            pattern: ^\s*[^@\s]+@[^@\s]+\.[^@\s]+\s*$
+            pattern: ^[ \t\n\r]*(?:[A-Za-z0-9_'+\-]+\.)*[A-Za-z0-9_'+\-]*[A-Za-z0-9_+-]@(?:[A-Za-z0-9][A-Za-z0-9\-]*\.)+[A-Za-z]{2,}[ \t\n\r]*$
     SignInCodeInput:
       type: object
       properties:
@@ -9683,12 +9684,12 @@ components:
         code:
           type: string
           nullable: true
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 64
         backup_code:
           type: string
           nullable: true
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 64
       additionalProperties: false
       x-operation: verifySignInCode
@@ -9698,7 +9699,7 @@ components:
       allOf:
       - properties:
           pending:
-            pattern: \S
+            pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
       oneOf:
       - required:
         - code
@@ -9726,7 +9727,7 @@ components:
       properties:
         pending:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
       additionalProperties: false
       x-operation: requestAdminRecovery
       required:
@@ -9745,7 +9746,7 @@ components:
       properties:
         code:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 64
       additionalProperties: false
       x-operation: confirmTwoFactor
@@ -9819,7 +9820,7 @@ components:
         code:
           type: string
           maxLength: 32
-          pattern: ^[\s\-‐‑‒–—―ー−－]*(?:[2-9A-HJKMNP-Za-hjkmnp-z２-９Ａ-ＨＪＫＭＮＰ-Ｚａ-ｈｊｋｍｎｐ-ｚ][\s\-‐‑‒–—―ー−－]*){6}$
+          pattern: ^[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\-‐‑‒–—―ー−－]*(?:[2-9A-HJKMNP-Za-hjkmnp-z２-９Ａ-ＨＪＫＭＮＰ-Ｚａ-ｈｊｋｍｎｐ-ｚ][ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\-‐‑‒–—―ー−－]*){6}$
         device_label:
           type: string
         machine_id:
@@ -9851,7 +9852,7 @@ components:
           format: uuid
         title:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 200
         assignee_member_id:
           type: string
@@ -9935,7 +9936,7 @@ components:
       properties:
         no_spec_reason:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 500
       additionalProperties: false
       x-operation: delegateTicket
@@ -10072,7 +10073,7 @@ components:
           nullable: true
         login:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
         password:
           type: string
           minLength: 1
@@ -10191,7 +10192,7 @@ components:
       properties:
         login:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
         password:
           type: string
           minLength: 1
@@ -10290,7 +10291,7 @@ components:
           format: uuid
         destination:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 2048
         executor_key:
           type: string
@@ -10314,11 +10315,11 @@ components:
       properties:
         request_ref:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 100
         code:
           type: string
-          pattern: ^[\s\-‐‑‒–—―ー−－]*(?:[0-9A-Za-z０-９Ａ-Ｚａ-ｚ][\s\-‐‑‒–—―ー−－]*){1,64}$
+          pattern: ^[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\-‐‑‒–—―ー−－]*(?:[0-9A-Za-z０-９Ａ-Ｚａ-ｚ][ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\-‐‑‒–—―ー−－]*){1,64}$
         approved:
           type: boolean
           enum:
@@ -10364,7 +10365,7 @@ components:
           maxLength: 400
         request_ref:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 100
         ask_kind:
           type: string
@@ -10405,7 +10406,7 @@ components:
       properties:
         browser:
           type: string
-          pattern: ^\s*(?:[cｃ][hｈ][rｒ][oｏ][mｍ][eｅ]|[dｄ][eｅ][dｄ][iｉ][cｃ][aａ][tｔ][eｅ][dｄ]|[oｏ][fｆ][fｆ])\s*$
+          pattern: ^[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]*(?:[cｃ][hｈ][rｒ][oｏ][mｍ][eｅ]|[dｄ][eｅ][dｄ][iｉ][cｃ][aａ][tｔ][eｅ][dｄ]|[oｏ][fｆ][fｆ])[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]*$
       additionalProperties: false
       x-operation: updateMyDevice
       required:
@@ -10421,7 +10422,7 @@ components:
       properties:
         browser:
           type: string
-          pattern: ^\s*(?:[cｃ][hｈ][rｒ][oｏ][mｍ][eｅ]|[dｄ][eｅ][dｄ][iｉ][cｃ][aａ][tｔ][eｅ][dｄ]|[oｏ][fｆ][fｆ])\s*$
+          pattern: ^[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]*(?:[cｃ][hｈ][rｒ][oｏ][mｍ][eｅ]|[dｄ][eｅ][dｄ][iｉ][cｃ][aａ][tｔ][eｅ][dｄ]|[oｏ][fｆ][fｆ])[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]*$
       additionalProperties: false
       x-operation: setBridgeBrowser
       required:
@@ -10433,7 +10434,7 @@ components:
         seen_at:
           type: string
           nullable: true
-          pattern: ^(?:[1-9]\d{3}-(?:0[13578]|1[02])-(?:0[1-9]|[12]\d|3[01])|[1-9]\d{3}-(?:0[469]|11)-(?:0[1-9]|[12]\d|30)|[1-9]\d{3}-02-(?:0[1-9]|1\d|2[0-8])|(?:[1-9]\d(?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,6})?(?:Z|[+-](?:0\d|1[0-5])(?::?[0-5]\d)?)$
+          pattern: ^(?:[1-9][0-9]{3}-(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01])|[1-9][0-9]{3}-(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30)|[1-9][0-9]{3}-02-(?:0[1-9]|1[0-9]|2[0-8])|(?:[1-9][0-9](?:0[48]|[2468][048]|[13579][26])|(?:[2468][048]|[13579][26])00)-02-29)T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]{1,6})?(?:Z|[+-](?:0[0-9]|1[0-5])(?::?[0-5][0-9])?)$
       additionalProperties: false
       x-operation: markTicketTimelineSeen
     TicketMessageInput:
@@ -10441,7 +10442,7 @@ components:
       properties:
         body:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
         mention_member_ids:
           type: array
           items:
@@ -10467,10 +10468,10 @@ components:
           format: uuid
         hold_reason:
           type: string
-          pattern: '[^\s\u0000-\u001f\u007f]'
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\u0000-\u001f\u007f]'
         resume_condition:
           type: string
-          pattern: '[^\s\u0000-\u001f\u007f]'
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\u0000-\u001f\u007f]'
       additionalProperties: false
       x-operation: createTicketMessage
       required:
@@ -10513,7 +10514,7 @@ components:
       properties:
         body:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
         mention_member_ids:
           type: array
           items:
@@ -10548,10 +10549,10 @@ components:
           maximum: 100000
         hold_reason:
           type: string
-          pattern: ^[^\u0000]*[^\s\u0000-\u001f\u007f][^\u0000]*$
+          pattern: ^[^\u0000]*[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\u0000-\u001f\u007f][^\u0000]*$
         resume_condition:
           type: string
-          pattern: ^[^\u0000]*[^\s\u0000-\u001f\u007f][^\u0000]*$
+          pattern: ^[^\u0000]*[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\u0000-\u001f\u007f][^\u0000]*$
       additionalProperties: false
       x-operation: updateTicket
       allOf:
@@ -10601,7 +10602,7 @@ components:
       properties:
         text:
           type: string
-          pattern: '[^\s\u0000-\u001f\u007f]'
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\u0000-\u001f\u007f]'
         reason:
           type: string
           nullable: true
@@ -10652,7 +10653,7 @@ components:
             enum:
             - revise
           text:
-            pattern: '[^\s\u0000-\u001f\u007f]'
+            pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\u0000-\u001f\u007f]'
         required:
         - text
       - properties:
@@ -10660,7 +10661,7 @@ components:
             enum:
             - cancel
           reason:
-            pattern: '[^\s\u0000-\u001f\u007f]'
+            pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\u0000-\u001f\u007f]'
         required:
         - reason
     InvitationsCreateInput:
@@ -12155,7 +12156,7 @@ components:
       properties:
         title:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 200
       additionalProperties: false
       x-operation: createTestSpec
@@ -12172,7 +12173,7 @@ components:
           type: boolean
         title:
           type: string
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
           maxLength: 200
       additionalProperties: false
       x-operation: updateTestSpec
@@ -12207,7 +12208,8 @@ components:
         name:
           type: string
           minLength: 1
-          pattern: ^\s*[^\s\u0000-\u001f\u007f-\u009f](?:[^\u0000-\u001f\u007f-\u009f]{0,58}[^\s\u0000-\u001f\u007f-\u009f])?\s*$
+          pattern: ^[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]*[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\u0000-\u001f\u007f-\u009f](?:[^\u0000-\u001f\u007f-\u009f]{0,58}[^
+            \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff\u0000-\u001f\u007f-\u009f])?[ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]*$
         share:
           type: string
           enum:
@@ -14408,7 +14410,7 @@ components:
         title:
           type: string
           nullable: true
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
         participant_member_ids:
           type: array
           items:
@@ -14460,11 +14462,6 @@ components:
         kind_id:
           type: string
           nullable: true
-          enum:
-          - rule
-          - preference
-          - example
-          - null
         owner_member_id:
           type: string
           format: uuid
@@ -14475,10 +14472,10 @@ components:
         body:
           type: string
           nullable: true
-          pattern: \S
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
         confidence:
           type: string
-          pattern: ^-?(?:[0-8](?:\.[0-9]+)?|9(?:\.(?:[0-9]{1,2}|(?:[0-8][0-9]|9[0-8])[0-9]+|99[0-4][0-9]*))?)$
+          pattern: ^-?[0-9]+(\.[0-9]+)?$
           nullable: true
         source_type_id:
           type: string
@@ -14504,14 +14501,14 @@ components:
           format: uuid
           nullable: true
       additionalProperties: false
-      allOf:
-      - properties:
-          body:
-            type: string
       x-operation: updateMemory
       required:
       - body
       x-required-by: hooks
+      allOf:
+      - properties:
+          body:
+            type: string
 paths:
   /api/v1/acceptances/{id}/remind:
     post:

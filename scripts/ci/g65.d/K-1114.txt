@@ -1,0 +1,1 @@
+python3 scripts/ci/k1114_build_dir_skip_test.py

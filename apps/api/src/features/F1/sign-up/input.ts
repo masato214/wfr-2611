@@ -1,6 +1,6 @@
 // 登録の入力を確かめて直す（K-51）。表記ゆらぎはサーバーが最後の砦（全角・前後の空白・大文字小文字）。
 //   エラーの文言は正本（errors.json → @kaname/errors）から引く。会社名は空でよい（D-125.135）
-import { EMAIL_RE, normalizeEmail } from "@kaname/auth/signup";
+import { isLoginEmail, normalizeEmail } from "@kaname/auth/signup";
 import { kanameError } from "@kaname/errors";
 import type { HookReply } from "../../../contract/deps.js";
 
@@ -37,7 +37,8 @@ export function parseSignup(raw: Record<string, unknown>, rawPassword: unknown):
   const typed = cleanText(raw["email"]);
   // 途中の空白は打ち間違い（「a b@example.com」を ab@ にしない）。前後の空白・全角・大文字は直す
   const email = /\s/.test(typed) ? "" : normalizeEmail(typed);
-  if (!EMAIL_RE.test(email)) return fail("E-VAL-004", "email");
+  // 部品（better-auth）の z.email() が断るメールも、確かめの口で落ちる前にここで断る（K-1117）
+  if (!isLoginEmail(email)) return fail("E-VAL-004", "email");
   const name = cleanText(raw["name"]);
   if (!name || length(name) > NAME_MAX) return fail("E-VAL-010", "name");
   const companyName = cleanText(raw["company_name"]);

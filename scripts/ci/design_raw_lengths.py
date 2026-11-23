@@ -38,7 +38,7 @@ BARE = re.compile(r"(?<![\w#.-])(-?(?:\d+\.?\d*|\.\d+))(?![\w%.-])")
 COLOR_FN = re.compile(r"\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix|light-dark)\(", re.I)
 VAR = re.compile(r"var\(\s*(--[\w-]+)\s*(,)?", re.I)
 DEFAULT_OTHER = {"font-size": ["px"], "border-radius": ["px"]}
-SKIP_DIRS = {"node_modules", ".next", ".turbo", "dist", "build", "out", "coverage", "test-results",
+SKIP_DIRS = {"node_modules", ".next", ".next-prod", ".turbo", "dist", "build", "out", "coverage", "test-results",
              "playwright-report", ".git"}
 
 
