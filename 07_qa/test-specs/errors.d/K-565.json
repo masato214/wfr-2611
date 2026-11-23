@@ -1,0 +1,35 @@
+{
+ "errors": [
+  {
+   "id": "E-CONF-020",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "delegate"
+   },
+   "when": "確認項目が 1 つも無いチケットで、使わない理由を書かずに「AI に任せる」を押した",
+   "false_when": "確認項目が 1 件以上ある／使わない理由を書いた",
+   "message": "確認項目が 1 つもありません。確認項目を足すか、使わない理由を書いてから任せてください",
+   "action": "確認項目を足す／理由を書く",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "本文だけで確認項目が無いチケットを開いておく",
+    "steps": [
+     "理由を書かずに「AI に任せる」を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-150.45"
+   ],
+   "support_code": "CONF-020"
+  }
+ ]
+}

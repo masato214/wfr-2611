@@ -1,0 +1,12 @@
+{
+ "data_links": [
+  {"paths": ["apps/api/src/hooks/ticket-body.ts", "apps/api/src/features/F4/body/**"],
+   "tests": ["apps/api/test/features/F4/ticket-body-update.test.ts"]},
+  {"paths": ["apps/api/test/features/F4/ticket-body-update.test.ts", "apps/api/test/features/contract/k144-contract.test.ts", "apps/api/test/features/F1/terms.test.ts"],
+   "tests": ["apps/api/test/generated/patch_tickets_id_body.test.ts"]}
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F4/ticket-body.harness.ts": "入っている葉の hooks のファイル（ticket-body.ts・ticket-versions.ts）を動的 import で読む（最初の要求の前に 1 回・まだ入っていない葉の物は読まない）。読む物と使う試験は data_links で結ぶ・K-432",
+  "apps/api/test/features/contract/k144.d/K-432.ts": "k144 の置き場の葉のファイル。最初の要求の前に hooks のファイルを動的 import する。ファイルは読まない（K-378）"
+ }
+}

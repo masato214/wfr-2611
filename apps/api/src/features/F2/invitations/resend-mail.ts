@@ -5,7 +5,8 @@
 export const RESEND_REQUEST_SUBJECT = "【Kaname】招待の送り直しを頼まれました";
 
 export interface ResendRequestFacts {
-  invitee_email: string;
+  /** 宛てのメール。空＝招待のリンク（K-421） */
+  invitee_email: string | null;
   invited_at: Date;
   expires_at: Date;
   workspace_name: string | null;
@@ -24,7 +25,8 @@ const DAY = new Intl.DateTimeFormat("ja-JP", {
 //   この口が 403 を返すと読まれる（実際は通らない道）
 export function resendRequestMail(f: ResendRequestFacts): { subject: string; text: string } {
   const where = f.workspace_name ? `「${f.workspace_name}」` : "ワークスペース";
-  const text = `${where}に招待した ${f.invitee_email} さんから、招待の送り直しを頼まれました。
+  const who = f.invitee_email === null ? "招待のリンクを開いた人から" : `${f.invitee_email} さんから`;
+  const text = `${where}に招待した${f.invitee_email === null ? "、" : " "}${who}、招待の送り直しを頼まれました。
 招待のリンクの期限が過ぎていたため、参加できなかったようです。
 
 招いた日：${DAY.format(new Date(f.invited_at))}

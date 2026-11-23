@@ -318,6 +318,12 @@
    "path": "/api/v1/tenants/{id}",
    "decision": "D-128.78",
    "reason": "行為の言葉からの推測で出ていた汎用の API。画面（company-settings）から逆に出した API に置き換えた"
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/action_runs/{id}/retry",
+   "decision": "D-129.11",
+   "reason": "「もう一度」は K-62 の「AI に任せる」（delegateTicket）と同じ働き。契約に重ねて持たない（D-151.17）"
   }
  ]
 }

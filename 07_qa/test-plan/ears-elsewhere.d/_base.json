@@ -426,6 +426,10 @@
     "test_post_tickets_id_delegate_rejected_403": "K62-API-024",
     "test_post_tickets_id_delegate_not_found": "K62-API-026",
     "test_post_tickets_id_delegate_conflict": "K62-API-020",
+    "test_post_tickets_id_delegate_conflict_2": {
+     "file": "apps/api/test/features/F5/delegate-body.test.ts",
+     "mark": "K565-API-011"
+    },
     "test_post_tickets_id_delegate_rejected_422": "K62-API-030",
     "test_post_tickets_id_delegate_rate_limited": "K62-API-034",
     "test_post_tickets_id_delegate_shape": "K62-API-001",
@@ -739,7 +743,7 @@
     "test_post_tickets_id_complete_ok": "K63-API-027",
     "test_post_tickets_id_complete_rejected_403": "K63-API-034",
     "test_post_tickets_id_complete_conflict": "K63-API-032",
-    "test_post_tickets_id_complete_rejected_422": "K63-API-028",
+    "test_post_tickets_id_complete_rejected_422": "K63-API-030",
     "test_post_tickets_id_complete_rejected_422_2": "K63-API-029",
     "test_post_tickets_id_complete_shape": "K63-API-027",
     "test_post_tickets_id_complete_session_unresolved": {

@@ -1,0 +1,244 @@
+{
+ "errors": [
+  {
+   "id": "E-VWS-001",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "名前が空か、空白だけ（全角の空白も）。前後の空白を落とした後に 1 文字も残らない",
+   "false_when": "前後の空白を落とした後に 1 文字以上の見える字が残る",
+   "message": "名前を入れてください",
+   "action": "名前を入れる",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "名前の欄を空のまま（か空白だけで）保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-002",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "名前が 61 文字以上（全角半角にそろえ、前後の空白を落とした後の文字の数）",
+   "false_when": "60 文字まで（全角 60 文字も通る）",
+   "message": "名前は 60 文字までにしてください",
+   "action": "名前を短くする",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "名前の欄に 61 文字を入れて保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-003",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "「グループの全員」に見せる指定なのに、見せるグループ（scope_id）が無いか null",
+   "false_when": "グループの全員に見せるときに見せるグループが付いている。自分だけの保存は見せるグループが無くてよい",
+   "message": "グループの全員に見せるときは、見せるグループを選んでください",
+   "action": "見せるグループを選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "「グループの全員」を選び、見せるグループを選ばずに保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-004",
+   "class": "not_found",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "見せるグループ（scope_id）が無い・別の会社のグループ・消したグループ・自分に見えないグループ（在るかを教えない）",
+   "false_when": "自分に見えるグループ（席のグループと、その下のグループ）",
+   "message": "見せるグループが見つかりませんでした。消されたか、見る権限が無いかもしれません",
+   "action": "見せるグループを選び直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "保存の小窓を開いたまま、見せるグループの権限が外れる（か消される）",
+     "そのまま保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-005",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "同じ人の消していない保存した条件に、同じ名前（大文字小文字・全角半角の違いも同じ）がもうある",
+   "false_when": "同じ名前が無い・ほかの人の条件・消した条件",
+   "message": "同じ名前の保存した条件が、もうあります。別の名前にしてください",
+   "action": "別の名前にする",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "すでに保存した条件と同じ名前（大文字小文字だけ違っても同じ）で保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-006",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "同じ人が作った消していない保存した条件が 50 件ある（51 件目）",
+   "false_when": "49 件まで。消した条件・ほかの人の条件は数えない",
+   "message": "保存できる条件は 50 件までです。いらないものを消してから保存してください",
+   "action": "いらない条件を消す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "保存した条件を 50 件にして、51 件目を保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-007",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "条件（filters）が入れ物でない・欄が 9 個以上・欄の名前が決まりの外・値が決まりの外（配列・null・501 字以上・入れ物の入れ物・33 欄以上）、列（columns）が文字の並びでない・51 個以上・1 つが 41 文字以上",
+   "false_when": "条件は欄 8 個までの小さな入れ物、列は 50 個までの文字の並び",
+   "message": "条件の形が正しくありません。条件・列の並び・大きさを確かめてください",
+   "action": "条件を作り直す",
+   "undo": false,
+   "layers": [
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "画面を通さずに口を直に呼び、条件に配列を入れて保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-008",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "名前の途中に制御文字（改行・タブ・BEL ほか。C0・DEL・C1）がある",
+   "false_when": "見える字と普通の空白だけ",
+   "message": "名前に改行などの制御文字は使えません",
+   "action": "名前を打ち直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "名前に改行を貼り付けて保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  }
+ ]
+}

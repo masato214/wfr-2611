@@ -32,6 +32,7 @@ export interface Health {
 
 const CONTRACT_PATHS = ENDPOINTS.map((e) => ({
   method: e.method,
+  literal: !/:[a-z_]/i.test(e.path),
   re: new RegExp(`^${e.path.replace(/:[a-z_]+/gi, "[^/]+")}$`),
 }));
 
@@ -186,10 +187,23 @@ export function createApp(o: AppOptions | string = {}): Hono<Vars> {
         }
       : undefined;
   if (opts.repo) app.use("/api/*", tenantContext(opts.repo, resolver));
+  // 決まった名前の道（/invitations/link）に、その名前が持たないメソッドで来たら、「:id」の道に当てず 405 を返す（契約の外のメソッド・K-421）
+  app.use("/api/*", async (c, next) => {
+    const m = c.req.method;
+    if (m === "OPTIONS" || m === "HEAD") return next();
+    const lit = CONTRACT_PATHS.filter((p) => p.literal && p.re.test(c.req.path));
+    if (lit.length && !lit.some((p) => p.method === m)) {
+      const allow = [...new Set(lit.map((p) => p.method))].join(", ");
+      return c.json({ error: "method_not_allowed", code: "METHOD_NOT_ALLOWED" }, 405, { allow });
+    }
+    return next();
+  });
   if (opts.repo && opts.contract !== false) registerAll(app, defaultDeps(opts.contract ?? {}));
   // 契約にある道すじに、契約に無いメソッド（TRACE など）で来たら 405 と使えるメソッド（Allow）を返す（404 にしない・K-35）
   app.notFound((c) => {
-    const allow = [...new Set(CONTRACT_PATHS.filter((p) => p.re.test(c.req.path)).map((p) => p.method))];
+    // 道すじが「/invitations/link」のように決まった名前と「/invitations/:id」の両方に当たるときは、決まった名前の方の使えるメソッドだけを返す（契約はその道すじを別の道として書く・K-421）
+    const hit = CONTRACT_PATHS.filter((p) => p.re.test(c.req.path));
+    const allow = [...new Set((hit.some((p) => p.literal) ? hit.filter((p) => p.literal) : hit).map((p) => p.method))];
     if (allow.length)
       return c.json({ error: "method_not_allowed", code: "METHOD_NOT_ALLOWED" }, 405, { allow: allow.join(", ") });
     return c.json({ error: "not_found", code: "NOT_FOUND" }, 404);

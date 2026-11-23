@@ -1,0 +1,226 @@
+{
+ "errors": [
+  {
+   "id": "E-STP-001",
+   "class": "permission",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "担当者でない人・担当者のいないチケットで、止まった AI の仕事を「自分で直す」にしようとした",
+   "false_when": "そのチケットの担当者が押した",
+   "message": "自分で直すにできるのは、このチケットの担当者だけです",
+   "action": "担当者に頼む",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "AI の仕事が止まったチケットを、担当者でない人が開く",
+    "steps": [
+     "止まった帯の「自分で直す」を押す"
+    ],
+    "needs": "担当者でない人のアカウント"
+   },
+   "severity": "medium",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-002",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "awaiting_approval"
+   },
+   "when": "承認待ち・完了のチケット、承認の後の実行、作り終えた実行で「自分で直す」にしようとした",
+   "false_when": "作る段の止まった実行・動いている実行を担当者が押した",
+   "message": "いまは自分で直すに切り替えられません（承認待ち・完了のとき、または承認の後の実行です）",
+   "action": "画面を読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "AI が作り終えて承認待ちになったチケットの古い画面を開いたままにする",
+    "steps": [
+     "「自分で直す」を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-003",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "もう自分で進めることにした実行を、もう一度「自分で直す」にしようとした（二度押し・別のタブ）",
+   "false_when": "まだ自分で進めることにしていない実行",
+   "message": "もう自分で進めることにしています",
+   "action": "画面を読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "止まった帯の「自分で直す」を別のタブでも開いておく",
+    "steps": [
+     "片方で「自分で直す」を押す",
+     "もう片方でも押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-004",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "新しい実行がある古い止まりで「自分で直す」にしようとした",
+   "false_when": "そのチケットの一番新しい実行を指している",
+   "message": "この実行はもう新しい実行に替わっています",
+   "action": "画面を読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "止まった帯を開いたまま、別のタブで「AI に任せる」を押す",
+    "steps": [
+     "古い画面の「自分で直す」を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-010",
+   "class": "timeout",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "承認から 24 時間を過ぎて、実行の前の確かめで止まった",
+   "false_when": "24 時間以内に実行の前の確かめが済んだ",
+   "message": "承認から 24 時間を過ぎたので、実行の前にもう一度確かめます",
+   "action": "承認をもう一度確かめる",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "承認した後、24 時間そのままにしたチケット",
+    "steps": [
+     "詳細の止まった帯を開く"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-011",
+   "class": "connectivity",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "AI がブラウザ（Chrome の拡張機能）を使えなくて止まった",
+   "false_when": "Chrome が開いていて拡張機能が入り、同じアカウントでログインしている",
+   "message": "AI がブラウザを使えませんでした。Chrome を開き、拡張機能「Claude in Chrome」が入っていて、この Claude と同じアカウントでログインしているか確かめてください",
+   "action": "Chrome と拡張機能を確かめる",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "Chrome を閉じた状態で、ブラウザを使う仕事を AI に任せる",
+    "steps": [
+     "詳細の止まった帯を開く"
+    ],
+    "needs": "この PC の Chrome"
+   },
+   "severity": "medium",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-012",
+   "class": "dependency",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "止まった理由の種類が決められない（どの言い回しにも当たらない・理由が届いていない）",
+   "false_when": "理由の種類が決まる",
+   "message": "AI が途中で止まりました（理由の種類は分かりません）。もう一度「AI に任せる」か、自分で直すを選べます",
+   "action": "AI に任せ直す／自分で直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "AI が理由を送らずに止まったチケット",
+    "steps": [
+     "詳細の止まった帯を開く"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  }
+ ]
+}

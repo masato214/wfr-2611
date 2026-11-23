@@ -30,9 +30,14 @@ describe("POST /api/v1/tickets/:id/delegate", () => {
     expect(readFileSync("apps/api/test/features/F5/delegate.test.ts", "utf8")).toContain("K62-API-020");
   });
   it("test_post_tickets_id_delegate_rejected_422", () => {
-    // UNWANTED: IF チケットの id が uuid でないか本文に知らない欄があるなら、Kaname は 422 と項目ごとの理由を返し、何も積まない
+    // UNWANTED: IF チケットの id が uuid でないか本文に知らない欄があるか使わない理由の形が違うなら、Kaname は 422 と項目ごとの理由を返し、何も積まない
     // 本物の試験：apps/api/test/features/F5/delegate.test.ts の「K62-API-030」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F5/delegate.test.ts", "utf8")).toContain("K62-API-030");
+  });
+  it("test_post_tickets_id_delegate_conflict_2", () => {
+    // UNWANTED: IF 確認項目が 1 つも無く使わない理由も無いなら、Kaname は 409 と E-CONF-020 を返し、仕事も実行の記録も理由も積まない
+    // 本物の試験：apps/api/test/features/F5/delegate-body.test.ts の「K565-API-011」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F5/delegate-body.test.ts", "utf8")).toContain("K565-API-011");
   });
   it("test_post_tickets_id_delegate_too_large", () => {
     // UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない

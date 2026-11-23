@@ -218,7 +218,7 @@
    "file": "apps/api/src/auth/ext.ts",
    "method": "POST",
    "route": "/api/auth-ext/agent/resume",
-   "to": "retryActionRun"
+   "to": "delegateTicket"
   },
   {
    "file": "apps/api/src/auth/ext.ts",

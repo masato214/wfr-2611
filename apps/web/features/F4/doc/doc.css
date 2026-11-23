@@ -1,0 +1,931 @@
+/* 段 5 の作り直した下絵（項目＋目的＋完了の条件＋自由な本文）。色・字・余白は正本のトークン（--k-*）だけ。クラスの頭は k-f4d- */
+
+/* ---- 項目（形の決まった欄）：2 列 ---- */
+.k-f4d-items {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--k-c-create-aside-width), 1fr));
+  gap: var(--k-s-md) var(--k-s-lg);
+  min-width: 0;
+}
+.k-f4d-items > * {
+  min-width: 0;
+}
+.k-f4d-sub {
+  margin: 0;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  font-weight: 700;
+  color: var(--k-on-surface);
+}
+.k-f4d-sub small {
+  margin-left: var(--k-s-sm);
+  font-size: var(--k-text-body-sm);
+  font-weight: 400;
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  min-width: 0;
+}
+.k-f4d-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-lg);
+  padding: var(--k-s-lg);
+}
+.k-f4d-line {
+  border: 0;
+  border-top: var(--k-c-f4d-rule-soft-border);
+  margin: 0;
+}
+.k-f4d-multi {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+}
+.k-f4d-multi legend {
+  padding: 0;
+  margin-bottom: var(--k-s-xs);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-multi label,
+.k-f4d-check {
+  display: flex;
+  align-items: center;
+  gap: var(--k-s-sm);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+}
+.k-f4d-multi input,
+.k-f4d-check input {
+  accent-color: var(--k-primary);
+}
+.k-f4d-hint {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-req-mark {
+  color: var(--k-error);
+}
+
+/* ---- 本文：道具の帯＋文書 ---- */
+.k-f4d-editor {
+  border: var(--k-c-f4d-rule-strong-border);
+  border-radius: var(--k-r-md);
+  background: var(--k-card);
+  overflow: hidden;
+  min-width: 0;
+}
+.k-f4d-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-xs);
+  padding: var(--k-s-xs) var(--k-s-sm);
+  background: var(--k-table-head);
+  border-bottom: var(--k-c-f4d-rule-border);
+}
+/* 狭い幅（スマホ）は帯の中で横に送る。送れる側にだけ影（local の覆いが端で影を隠す） */
+@media (max-width: 767px) {
+  .k-f4d-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    background:
+      linear-gradient(to right, var(--k-table-head), transparent) left / var(--k-s-lg) 100% no-repeat local,
+      linear-gradient(to left, var(--k-table-head), transparent) right / var(--k-s-lg) 100% no-repeat local,
+      linear-gradient(to right, color-mix(in srgb, var(--k-on-surface) 22%, transparent), transparent) left /
+        var(--k-s-md) 100% no-repeat scroll,
+      linear-gradient(to left, color-mix(in srgb, var(--k-on-surface) 22%, transparent), transparent) right /
+        var(--k-s-md) 100% no-repeat scroll;
+    background-color: var(--k-table-head);
+  }
+}
+.k-f4d-bar-group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--k-s-xs);
+}
+.k-f4d-bar-group + .k-f4d-bar-group {
+  padding-left: var(--k-s-xs);
+  border-left: var(--k-c-f4d-rule-border);
+}
+.k-f4d-bar button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  white-space: nowrap;
+  min-width: var(--k-c-dialog-button-height);
+  height: var(--k-c-dialog-button-height);
+  padding: 0 var(--k-s-sm);
+  border: 0;
+  border-radius: var(--k-r-sm);
+  background: transparent;
+  color: var(--k-on-surface);
+  font: inherit;
+  font-size: var(--k-text-body-sm);
+  cursor: pointer;
+}
+.k-f4d-bar button:hover {
+  background: var(--k-select);
+}
+.k-f4d-bar button:focus-visible {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-in-width);
+}
+.k-f4d-bar b {
+  font-weight: 700;
+}
+.k-f4d-bar i {
+  font-style: italic;
+}
+.k-f4d-swatch {
+  display: inline-block;
+  width: var(--k-s-md);
+  height: var(--k-s-xs);
+  margin-left: var(--k-s-xs);
+  vertical-align: middle;
+  background: var(--k-st-danger);
+  border-radius: var(--k-r-sm);
+}
+.k-f4d-bar .k-f4d-chev {
+  flex: none;
+  width: var(--k-s-sm);
+  height: var(--k-s-sm);
+  margin-left: var(--k-s-xs);
+}
+.k-f4d-bar .k-f4d-chev path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+.k-f4d-bgmark {
+  background: var(--k-st-warning-container);
+  border-radius: var(--k-r-sm);
+  padding: 0 var(--k-s-xs);
+}
+.k-f4d-md-note {
+  margin: 0;
+  padding: var(--k-s-xs) var(--k-s-md);
+  text-align: right;
+  border-top: var(--k-c-f4d-rule-soft-border);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-doc {
+  padding: var(--k-s-md) var(--k-s-lg);
+  font-size: var(--k-text-body-md);
+  line-height: var(--k-lh-body-md);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.k-f4d-doc > * + * {
+  margin-top: var(--k-s-sm);
+}
+.k-f4d-doc h2,
+.k-f4d-doc h3 {
+  margin: var(--k-s-md) 0 var(--k-s-sm);
+  padding-bottom: var(--k-s-xs);
+  border-bottom: var(--k-c-f4d-rule-border);
+  font-size: var(--k-text-section-title);
+  line-height: var(--k-lh-section-title);
+  font-weight: 700;
+}
+.k-f4d-doc h3 {
+  font-size: var(--k-text-h3);
+  border-bottom: 0;
+}
+.k-f4d-doc > :first-child {
+  margin-top: 0;
+}
+.k-f4d-doc p {
+  margin: 0;
+}
+.k-f4d-doc [data-c="red"] {
+  color: var(--k-st-danger);
+}
+.k-f4d-doc [data-c="teal"] {
+  color: var(--k-secondary);
+}
+.k-f4d-doc [data-c="amber"] {
+  color: var(--k-st-warning);
+}
+.k-f4d-doc mark {
+  background: var(--k-mark);
+  color: inherit;
+}
+.k-f4d-doc ul {
+  list-style: disc;
+  margin: 0;
+  padding-left: var(--k-s-lg);
+}
+.k-f4d-ghost {
+  margin: 0;
+  color: var(--k-neutral-strong);
+}
+.k-f4d-ghost-h {
+  color: var(--k-neutral-strong);
+}
+.k-f4d-checks {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+}
+.k-f4d-checks li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--k-s-sm);
+}
+.k-f4d-checks input {
+  margin-top: var(--k-s-xs);
+  accent-color: var(--k-primary);
+}
+.k-f4d-checks li[data-done="true"] span {
+  color: var(--k-on-surface-variant);
+  text-decoration: line-through;
+}
+.k-f4d-tablewrap {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.k-f4d-doc table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: var(--k-text-body);
+}
+.k-f4d-doc th,
+.k-f4d-doc td {
+  border: var(--k-c-f4d-rule-border);
+  padding: var(--k-s-xs) var(--k-s-sm);
+  text-align: left;
+  vertical-align: top;
+}
+.k-f4d-doc th {
+  background: var(--k-table-head);
+  font-weight: 500;
+}
+.k-f4d-img {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+}
+.k-f4d-img-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 9;
+  max-width: calc(var(--k-s-2xl) * 4);
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-md);
+  background: var(--k-surface-variant);
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4d-img figcaption {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-quote {
+  margin: 0;
+  padding-left: var(--k-s-md);
+  border-left: var(--k-c-f4d-quote-border);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-caret {
+  display: inline-block;
+  width: var(--k-c-f4d-caret-width);
+  height: var(--k-c-f4d-caret-height);
+  margin: var(--k-c-f4d-caret-margin);
+  vertical-align: text-bottom;
+  background: var(--k-primary);
+}
+.k-f4d-drafting {
+  margin-left: var(--k-s-sm);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-st-warning);
+}
+
+/* ---- 書いている帯 ---- */
+.k-f4d-editband {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-md) var(--k-s-lg) 0;
+  border-top: var(--k-c-f4d-rule-soft-border);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-editband-acts {
+  margin-left: auto;
+  display: flex;
+  gap: var(--k-s-sm);
+}
+
+/* ---- 仕事の結果（出来たときだけ出る） ---- */
+.k-f4d-result {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-md) var(--k-s-lg);
+  border-top: var(--k-c-f4d-rule-soft-border);
+}
+.k-f4d-result h2 {
+  margin: 0;
+  font-size: var(--k-text-h3);
+  line-height: var(--k-lh-h3);
+  font-weight: 600;
+}
+.k-f4d-result ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+}
+.k-f4d-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm) var(--k-s-md);
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-field);
+  font-size: var(--k-text-body);
+}
+.k-f4d-file small,
+.k-f4d-log small {
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4d-log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-c-f4d-log-gap);
+  padding-left: var(--k-s-md);
+  border-left: var(--k-c-f4d-log-border);
+  font-size: var(--k-text-body);
+}
+.k-f4d-handoff {
+  padding: var(--k-s-sm) var(--k-s-md);
+  border-radius: var(--k-r-field);
+  background: var(--k-st-warning-soft);
+  border: var(--k-c-f4d-rule-warning-border);
+  font-size: var(--k-text-body);
+}
+
+/* ---- 詳細の読むだけの目的・完了の条件 ---- */
+.k-f4d-fieldview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+  padding: var(--k-s-md) var(--k-s-lg);
+  border-top: var(--k-c-f4d-rule-soft-border);
+}
+.k-f4d-fieldview h2 {
+  margin: 0;
+  font-size: var(--k-text-h3);
+  line-height: var(--k-lh-h3);
+  font-weight: 600;
+}
+.k-f4d-fieldview p {
+  margin: 0;
+  white-space: pre-line;
+  font-size: var(--k-text-body-md);
+  line-height: var(--k-lh-body-md);
+}
+.k-f4d-body-wrap {
+  padding: var(--k-s-md) var(--k-s-lg);
+  border-top: var(--k-c-f4d-rule-soft-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+}
+.k-f4d-body-wrap > h2 {
+  margin: 0;
+  font-size: var(--k-text-h3);
+  line-height: var(--k-lh-h3);
+  font-weight: 600;
+}
+.k-f4d-body-wrap .k-f4d-doc {
+  padding: 0;
+}
+
+/* ---- 作る面の足 ---- */
+.k-f4d-top {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-md);
+}
+
+/* ---- 版と差分 ---- */
+.k-f4d-ver {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-lg);
+  align-items: flex-start;
+  padding: var(--k-s-lg);
+}
+.k-f4d-ver-side {
+  flex: 1 1 var(--k-c-create-aside-width);
+  max-width: var(--k-c-create-aside-width);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+}
+.k-f4d-ver-main {
+  flex: 999 1 var(--k-c-create-aside-width);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-md);
+}
+.k-f4d-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.k-f4d-pick button {
+  height: var(--k-c-dialog-button-height);
+  padding: 0 var(--k-s-md);
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-full);
+  background: var(--k-card);
+  color: var(--k-on-surface);
+  font: inherit;
+  font-size: var(--k-text-body);
+  cursor: pointer;
+}
+.k-f4d-pick button[aria-pressed="true"] {
+  background: var(--k-primary);
+  border-color: var(--k-primary);
+  color: var(--k-on-primary);
+}
+.k-f4d-pick button:focus-visible {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-out-width);
+}
+.k-f4d-vlist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+}
+.k-f4d-vlist li {
+  padding: var(--k-s-sm) var(--k-s-md);
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-field);
+  font-size: var(--k-text-body);
+}
+.k-f4d-vlist li[data-from="true"],
+.k-f4d-vlist li[data-to="true"] {
+  border-color: var(--k-primary-line);
+  background: var(--k-primary-soft);
+}
+.k-f4d-vlist small {
+  display: block;
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4d-diff {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-field);
+  overflow: hidden;
+  font-size: var(--k-text-body);
+}
+.k-f4d-diff li {
+  padding: var(--k-s-xs) var(--k-s-md);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.k-f4d-diff li[data-kind="add"] {
+  background: var(--k-st-success-soft);
+  color: var(--k-st-on-success-container);
+}
+.k-f4d-diff li[data-kind="add"]::before {
+  content: "＋ ";
+}
+.k-f4d-diff li[data-kind="del"] {
+  background: var(--k-st-danger-container);
+  color: var(--k-st-on-danger-container);
+  text-decoration: line-through;
+}
+.k-f4d-diff li[data-kind="del"]::before {
+  content: "－ ";
+}
+.k-f4d-ver-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-sm);
+}
+.k-f4d-unchecked {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+  font-size: var(--k-text-body);
+}
+
+/* ---- ほかの項目（畳む） ---- */
+.k-f4d-more {
+  border-top: var(--k-c-f4d-rule-soft-border);
+  padding-top: var(--k-s-sm);
+}
+.k-f4d-more-sum {
+  cursor: pointer;
+  font-size: var(--k-text-body);
+  color: var(--k-primary);
+  font-weight: 500;
+}
+.k-f4d-more-sum:focus-visible {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-out-width);
+}
+.k-f4d-more-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-md);
+  padding-top: var(--k-s-md);
+}
+
+/* ---- 作る面（Backlog と同じ並び・密度を低く） ---- */
+.k-f4d-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-md) var(--k-s-lg);
+  min-width: 0;
+}
+.k-f4d-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-s-md);
+}
+.k-f4d-head h1 {
+  margin: 0;
+  font-size: var(--k-text-page-title);
+  line-height: var(--k-lh-page-title);
+  font-weight: var(--k-fw-page-title);
+}
+.k-f4d-kind {
+  max-width: var(--k-c-create-aside-width);
+}
+.k-f4d-box {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-md);
+  background: var(--k-card);
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-card);
+  min-width: 0;
+}
+.k-f4d-big {
+  min-height: calc(var(--k-s-2xl) * 4);
+}
+.k-f4d-big[data-long="true"] {
+  min-height: calc(var(--k-s-2xl) * 7);
+}
+.k-f4d-addlink {
+  display: flex;
+  align-items: center;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm) var(--k-s-md);
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-md);
+  background: var(--k-table-head);
+  color: var(--k-on-surface);
+  font: inherit;
+  font-size: var(--k-text-body);
+  text-align: left;
+  cursor: pointer;
+}
+.k-f4d-addlink:focus-visible {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-out-width);
+}
+.k-f4d-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, calc(var(--k-c-create-aside-width) * 1.6)), 1fr));
+  column-gap: var(--k-s-lg);
+  min-width: 0;
+}
+.k-f4d-pair {
+  display: grid;
+  grid-template-columns: var(--k-s-2xl) minmax(0, 1fr);
+  gap: var(--k-s-sm);
+  align-items: start;
+  padding: var(--k-s-sm) 0;
+  border-bottom: var(--k-c-f4d-rule-soft-border);
+  min-width: 0;
+}
+.k-f4d-pair[data-full="true"] {
+  grid-column: 1 / -1;
+}
+.k-f4d-name {
+  padding-top: var(--k-s-sm);
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-cell {
+  min-width: 0;
+}
+.k-f4d-cell .k-field > .k-label,
+.k-f4d-cell .k-field > .k-label-row,
+.k-f4d-sr {
+  position: absolute;
+  width: var(--k-c-f4d-sr-width);
+  height: var(--k-c-f4d-sr-height);
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.k-f4d-cell .k-select-trigger,
+.k-f4d-cell .k-input {
+  max-width: var(--k-c-create-aside-width);
+}
+.k-f4d-cell textarea.k-input {
+  max-width: none;
+}
+.k-f4d-inline {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--k-s-sm);
+  flex-wrap: wrap;
+}
+.k-f4d-custom {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.k-f4d-custom-h {
+  margin: var(--k-s-sm) 0 0;
+  padding-bottom: var(--k-s-xs);
+  border-bottom: var(--k-c-f4d-rule-border);
+  font-size: var(--k-text-body-md);
+  font-weight: 700;
+}
+.k-f4d-list .k-f4d-pair {
+  grid-template-columns: var(--k-s-2xl) minmax(0, 1fr);
+}
+.k-f4d-body-wrap {
+  border-top: 0;
+}
+
+/* ---- 確認項目（項目の表の中の 1 項目） ---- */
+.k-f4d-specs {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  min-width: 0;
+}
+.k-f4d-spec-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.k-f4d-spec-list li {
+  display: flex;
+  align-items: center;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-xs) 0;
+  border-bottom: var(--k-c-f4d-rule-soft-border);
+  font-size: var(--k-text-body);
+}
+.k-f4d-spec-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.k-f4d-spec-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-sm);
+}
+.k-f4d-specs[data-compact="true"] .k-f4d-spec-list li {
+  flex-wrap: wrap;
+}
+.k-f4d-link {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--k-primary);
+  font: inherit;
+  cursor: pointer;
+}
+.k-f4d-tplnote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-s-sm);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+
+/* 完了にする（ここだけ「済」の緑） */
+.k-btn.k-f4d-done {
+  background: var(--k-st-success);
+  border-color: var(--k-st-success);
+  color: var(--k-on-primary);
+}
+.k-btn.k-f4d-done:hover:not(:disabled) {
+  background: var(--k-st-on-success-container);
+  border-color: var(--k-st-on-success-container);
+}
+.k-btn.k-f4d-done:focus-visible {
+  outline: var(--k-c-f4d-ring-done-border);
+  outline-offset: var(--k-c-f4d-ring-out-width);
+}
+
+/* 確認項目の結果 */
+.k-f4d-spec-box {
+  accent-color: var(--k-st-success);
+}
+.k-f4d-spec-res {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-s-xs);
+}
+.k-f4d-spec-res small,
+.k-f4d-logs small {
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4d-spec-list li {
+  flex-wrap: wrap;
+}
+
+/* 記録 */
+.k-f4d-logwrap {
+  padding: var(--k-s-md) var(--k-s-lg);
+  border-top: var(--k-c-f4d-rule-soft-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+}
+.k-f4d-logwrap h2 {
+  margin: 0;
+  font-size: var(--k-text-h3);
+  line-height: var(--k-lh-h3);
+  font-weight: 600;
+}
+.k-f4d-logs {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+}
+.k-f4d-logs li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--k-s-sm);
+  font-size: var(--k-text-body);
+}
+.k-f4d-avatar {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--k-s-lg);
+  height: var(--k-s-lg);
+  border-radius: var(--k-r-full);
+  background: var(--k-surface-variant);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4d-logtext {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--k-s-xs) var(--k-s-sm);
+  border-radius: var(--k-r-field);
+  background: var(--k-table-head);
+  border: var(--k-c-f4d-rule-soft-border);
+  overflow-wrap: anywhere;
+}
+
+/* 小窓の足元：左に「やめる」・右に進める物 */
+.k-dialog-actions:has(.k-f4d-left) {
+  flex-wrap: nowrap;
+}
+.k-f4d-left {
+  margin-right: auto;
+}
+@media (max-width: 30rem) {
+  .k-dialog-actions:has(.k-f4d-left) {
+    flex-direction: column-reverse;
+    align-items: stretch;
+  }
+  .k-f4d-left {
+    margin-right: 0;
+  }
+  .k-f4d-vlist-wrap {
+    display: none;
+  }
+  .k-f4d-ver {
+    padding: var(--k-s-md);
+    gap: var(--k-s-md);
+  }
+  .k-f4d-ver-side {
+    max-width: none;
+    flex-basis: 100%;
+  }
+  .k-f4d-ver-main {
+    flex-basis: 100%;
+  }
+  .k-f4d-items {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 版と差分の頭 */
+.k-f4d-vhead {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+  padding: var(--k-s-md) var(--k-s-lg) 0;
+}
+.k-f4d-vhead h1 {
+  margin: 0;
+  font-size: var(--k-text-page-title);
+  line-height: var(--k-lh-page-title);
+  font-weight: var(--k-fw-page-title);
+}
+.k-f4d-vticket {
+  margin: 0;
+  font-size: var(--k-text-body);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-back {
+  align-self: flex-start;
+  font-size: var(--k-text-body);
+  color: var(--k-primary);
+}
+
+/* 右のパネルの確認項目：1 行目に確かめること、2 行目に札・結果・外す */
+.k-f4d-specs[data-compact="true"] .k-f4d-spec-text {
+  flex-basis: 100%;
+}
+.k-f4d-specs[data-compact="true"] .k-f4d-spec-list li > .k-btn:last-child {
+  margin-left: auto;
+}
+.k-f4d-spec-text {
+  display: flex;
+  align-items: center;
+  gap: var(--k-s-sm);
+}
+.k-f4d-body-wrap .k-f4d-editor .k-f4d-doc {
+  padding: var(--k-s-md) var(--k-s-lg);
+}
+
+.k-f4d-spec-list li[data-done="true"] .k-f4d-spec-text span {
+  color: var(--k-on-surface-variant);
+  text-decoration: line-through;
+}
+.k-f4d-spec-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  cursor: pointer;
+}
+.k-f4d-spec-list li {
+  flex-wrap: nowrap;
+}
+.k-f4d-specs[data-compact="true"] .k-f4d-spec-text {
+  flex-basis: auto;
+}
+.k-f4d-specs[data-compact="true"] .k-f4d-spec-list li > .k-btn:last-child {
+  margin-left: 0;
+}
+/* 作る面の親を決める入口の入れ物（K-443 の試験がここを入口として選ぶ） */
+.k-f4d-parent {
+  display: block;
+}

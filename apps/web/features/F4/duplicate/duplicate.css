@@ -1,0 +1,47 @@
+/* 複製（K-446・段 5 の下絵）：詳細の複製の小窓と、作る面の「過去のチケットから複製」の入口。値は --k-* のトークンだけを読む。
+   元を選ぶ小窓の並びは親の小窓と同じ（features/F4/parent の k-f4-pick-*） */
+
+/* 作る面の頭の「作り方」の切り替えで、使える入口（押せる） */
+.k-create-how > span[role="button"] {
+  cursor: pointer;
+}
+.k-create-how > span[role="button"]:hover {
+  color: var(--k-on-surface);
+  background: var(--k-select);
+}
+
+/* 日付の欄（元の期限のまま。押すと期限の小窓） */
+.k-f4-dup-due {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: var(--k-c-dialog-select-height);
+  text-align: left;
+  cursor: pointer;
+}
+
+/* 写すもの・写さないもの */
+.k-f4-dup-row {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+}
+.k-f4-dup-row[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4-dup-note {
+  margin: 0;
+  padding-left: calc(var(--k-c-dialog-check-gap) + var(--k-text-body-md));
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-c-dialog-check-lh);
+  overflow-wrap: anywhere;
+}
+.k-f4-dup-skip {
+  margin: 0;
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-c-dialog-check-text);
+  line-height: var(--k-c-dialog-check-lh);
+  overflow-wrap: anywhere;
+}

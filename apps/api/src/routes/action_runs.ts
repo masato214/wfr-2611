@@ -5,7 +5,6 @@ import { op, type ContractDeps } from "../contract/op.js";
 
 export function register(app: Hono<Vars>, deps: ContractDeps): void {
   app.get("/api/v1/action_runs/:id", op(deps, "getActionRun"));
-  app.post("/api/v1/action_runs/:id/retry", op(deps, "retryActionRun"));
   app.post("/api/v1/action_runs/:id/stop", op(deps, "stopActionRun"));
   app.post("/api/v1/action_runs/:id/takeover", op(deps, "takeoverActionRun"));
 }

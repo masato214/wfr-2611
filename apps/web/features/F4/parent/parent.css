@@ -1,0 +1,128 @@
+/* 親を決める小窓と、探して 1 つ選ぶ並び（K-443・段 5 の下絵）。複製の元を選ぶ小窓も同じ並び（k-f4-pick-*）を使う。
+   値は --k-* のトークンだけを読む。小窓の枠・頭・足は components/k の Dialog のまま */
+
+/* 探して 1 つ選ぶ並び（radiogroup） */
+.k-f4-pick {
+  display: grid;
+  gap: var(--k-s-xs);
+  min-width: 0;
+}
+.k-f4-pick-item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) var(--k-c-create-target-width);
+  align-items: center;
+  gap: var(--k-s-xs) var(--k-s-sm);
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--k-s-sm);
+  background: var(--k-c-input-bg);
+  border: var(--k-c-create-options-border);
+  border-radius: var(--k-r-field);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.k-f4-pick-item:hover {
+  background: var(--k-select);
+}
+.k-f4-pick-item[aria-checked="true"] {
+  border-color: var(--k-primary);
+  background: var(--k-primary-soft);
+}
+.k-f4-pick-item[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4-pick-item[aria-disabled="true"]:hover {
+  background: var(--k-c-input-bg);
+}
+.k-f4-pick-lead {
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+  white-space: nowrap;
+}
+.k-f4-pick-title {
+  min-width: 0;
+  font-size: var(--k-text-body);
+  font-weight: var(--k-fw-label-md);
+  overflow-wrap: anywhere;
+}
+.k-f4-pick-mark {
+  display: grid;
+  place-items: center;
+  color: var(--k-primary);
+}
+.k-f4-pick-meta,
+.k-f4-pick-why {
+  grid-column: 2 / -1;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  overflow-wrap: anywhere;
+}
+.k-f4-pick-meta {
+  color: var(--k-on-surface-variant);
+}
+.k-f4-pick-why {
+  color: var(--k-st-warning);
+}
+
+/* 親の小窓：注意の 1 行・合う物が無いときの文 */
+.k-f4-par-note {
+  margin: 0;
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+}
+.k-f4-par-none {
+  margin: 0;
+  padding: var(--k-s-md) var(--k-s-sm);
+  border: var(--k-c-state-empty-border);
+  border-radius: var(--k-r-field);
+  color: var(--k-on-surface-variant);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+/* 作る面の種別の行：親を決める入口（決めたら札と「外す」） */
+.k-f4-par-entry {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--k-s-xs);
+  min-width: 0;
+  max-width: 100%;
+}
+.k-f4-par-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-c-create-chip-gap);
+  min-width: 0;
+  max-width: 100%;
+  padding: var(--k-c-create-chip-pad);
+  border: var(--k-c-create-chip-border);
+  border-radius: var(--k-c-create-chip-radius);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4-par-chip > span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.k-f4-par-remove {
+  display: inline-grid;
+  place-items: center;
+  width: var(--k-c-create-target-width);
+  height: var(--k-c-create-target-height);
+  padding: 0;
+  border: 0;
+  border-radius: var(--k-r-full);
+  background: transparent;
+  color: var(--k-on-surface-variant);
+  cursor: pointer;
+}
+.k-f4-par-remove:hover {
+  background: var(--k-surface-variant);
+  color: var(--k-on-surface);
+}

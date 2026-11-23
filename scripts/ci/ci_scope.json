@@ -1276,6 +1276,28 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/ticket-message-edit.ts",
+    "apps/api/src/features/F6/thread/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F6/thread-edit.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F6/thread-edit.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/patch_ticket_messages_id.test.ts",
+    "apps/api/test/generated/delete_ticket_messages_id.test.ts",
+    "apps/api/test/generated/post_ticket_messages_id_star.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/ticket-update.ts",
     "apps/api/src/features/ticket-update/**",
     "apps/api/src/features/F6/progress/**"
@@ -1306,6 +1328,17 @@
   },
   {
    "paths": [
+    "packages/db/migrations/20261120130600_ticket_message_post_stage.sql",
+    "apps/api/src/features/F6/thread/post.ts",
+    "apps/api/src/features/F6/thread/input.ts",
+    "apps/api/src/features/F6/progress/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F6/thread-post-stage.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/ticket-decisions.ts",
     "apps/api/src/features/F6/decisions/**"
    ],
@@ -1323,6 +1356,26 @@
    "tests": [
     "apps/api/test/generated/get_tickets_id_decisions.test.ts",
     "apps/api/test/generated/post_tickets_id_decisions.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/ticket-decision-update.ts",
+    "apps/api/src/features/F6/decisions/update.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F6/decision-update.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F6/decision-update.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/patch_ticket_decisions_id.test.ts"
    ]
   },
   {
@@ -1357,6 +1410,58 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/workspace-invitation-link.ts",
+    "apps/api/src/features/F10/invite/link.ts",
+    "apps/api/src/features/F2/invitations/**",
+    "packages/auth/src/invitations.ts",
+    "packages/db/migrations/20261121092100_invitation_link.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F10/invite-link.test.ts",
+    "apps/api/test/features/F2/invitation-accept-new.test.ts",
+    "apps/api/test/features/F2/invitation-accept-signed.test.ts",
+    "apps/api/test/features/F2/invitation-preview.test.ts",
+    "apps/api/test/features/F2/invitation-resend-request.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F10/invite-link.test.ts"
+   ],
+   "readers": [
+    "apps/api/test/generated/post_invitations_link.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "scripts/ci/canvas_field_gate.py",
+    "scripts/ci/gen_built_routes.py"
+   ],
+   "tests": [
+    "apps/web/tests/k/k431-stage5-mock.spec.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/ticket-body.ts",
+    "apps/api/src/features/F4/body/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F4/ticket-body-update.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F4/ticket-body-update.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/F1/terms.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/patch_tickets_id_body.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/test-specs-*.ts",
     "apps/api/src/features/F4/test-spec/**"
    ],
@@ -1379,6 +1484,27 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/test-specs-*.ts",
+    "apps/api/src/features/F4/test-spec/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F4/test-spec-update.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F4/test-spec-update.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/F1/terms.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/delete_test_specs_id.test.ts",
+    "apps/api/test/generated/patch_test_specs_id.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/ticket-links.ts",
     "apps/api/src/features/F4/ticket-links/**"
    ],
@@ -1397,6 +1523,36 @@
     "apps/api/test/generated/get_tickets_id_links.test.ts",
     "apps/api/test/generated/post_tickets_id_links.test.ts",
     "apps/api/test/generated/delete_ticket_links_id.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/notifications-*.ts",
+    "apps/api/src/hooks/shell.ts",
+    "apps/api/src/features/F7/notifications/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F7/notifications-list.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "packages/db/migrations/20261123080100_notifications_read_at.sql",
+    "05_flow/rls_policies.py"
+   ],
+   "tests": [
+    "apps/api/test/features/F7/notifications-list.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F7/notifications-list.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_notifications.test.ts"
    ]
   },
   {
@@ -1424,6 +1580,15 @@
     "apps/api/src/features/F7/search/**"
    ],
    "tests": [
+    "apps/api/test/features/F7/search-conversations.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/search.ts",
+    "apps/api/src/features/F7/search/**"
+   ],
+   "tests": [
     "apps/api/test/features/F7/search-decisions.test.ts"
    ]
   },
@@ -1433,6 +1598,67 @@
    ],
    "tests": [
     "apps/api/test/generated/get_tickets.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/saved-views*.ts",
+    "apps/api/src/features/F7/saved-views/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F7/saved-views-create.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F7/saved-views-create.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_saved_views.test.ts",
+    "apps/api/test/generated/post_saved_views.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/scope-overview.ts",
+    "apps/api/src/features/F7/overview/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F7/scope-overview.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F7/scope-overview.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_scopes_id_overview.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/stopped.ts",
+    "apps/api/src/features/F7/stopped/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F7/stopped-takeover.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F7/stopped-takeover.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/F1/terms.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_action_runs_id_takeover.test.ts"
    ]
   },
   {
@@ -1689,19 +1915,35 @@
   "apps/api/test/features/contract/k144.d/K-383.ts": "setup の中で土台 ../../F6/thread.harness.js を動的 import で読む（土台を値で読み込まない・K-378.ts の注）・K-383",
   "apps/api/test/features/contract/k144.d/K-384.ts": "setup の中で土台 ../../F6/thread.harness.js を動的 import で読む（K-378.ts の注）・K-384",
   "apps/api/test/features/contract/k144.d/K-385.ts": "setup の中で土台 ../../F6/thread.harness.js を動的 import で読む（K-378.ts の注）・K-385",
+  "apps/api/test/features/contract/k144.d/K-386.ts": "setup の中で土台 ../../F6/thread.harness.js を動的 import で読む（K-378.ts の注）・K-386",
   "apps/api/test/features/F6/progress.harness.ts": "段 7 の進める口の hooks のファイル（apps/api/src/hooks/ticket-update.ts）を最初の要求の前に動的 import で読む（data_links で結ぶ・K-387）",
   "apps/api/test/features/contract/k144.d/K-387.ts": "この葉の hooks のファイルを本体の準備の中で動的 import で読む（data_links で結ぶ・k144.d の README の決まり・K-387）",
   "apps/api/test/features/F6/progress-reopen.test.ts": "承認と完了の口の hooks のファイル（apps/api/src/hooks/approve-complete.ts）を最初の要求の前に動的 import で読む（K-388）",
+  "apps/api/test/features/F6/thread-post-stage.test.ts": "書き込みの口の hooks のファイル（apps/api/src/hooks/ticket-message-post.ts・K-385）を最初の要求の前に動的 import で読む（K-389）",
   "apps/api/test/features/F6/decisions.harness.ts": "決定の口の hooks のファイル（apps/api/src/hooks/ticket-decisions.ts）を最初の要求の前に動的 import で読む（data_links で結ぶ・K-390）",
   "apps/api/test/features/contract/k144.d/K-390.ts": "この葉の hooks のファイルを本体の準備の中で動的 import で読む（data_links で結ぶ・K-390）",
+  "apps/api/test/features/F6/decision-update.test.ts": "改める口の hooks のファイル（apps/api/src/hooks/ticket-decision-update.ts）を最初の要求の前に動的 import で読む（data_links で結ぶ・K-391）",
+  "apps/api/test/features/contract/k144.d/K-391.ts": "この葉の hooks のファイルを本体の準備の中で動的 import で読む（data_links で結ぶ・K-391）",
   "apps/web/tests/k/k400-stage9-mock.spec.ts": "モックの置き場 apps/web/app/(dev)/dev/mock/f8/mocks.tsx・部品 apps/web/features/F8/handover/（views.tsx・handover.css・detail-slots.tsx・slot-dispatch.tsx・use-handovers.ts・区画のファイル 10 個）と apps/web/features/F10/invite/views.tsx・探す欄の型 apps/web/components/k/search-field.tsx・道の一覧 apps/web/lib/built-routes.ts・写しの台本 07_functional/段9-F8/mock-shots.mjs・正本 04_design/DESIGN-kaname.md・トークン apps/web/styles/k-tokens.css・設計の検査の訳 design-gate.json を読み、scripts/ci/design_gate.py を子プロセスで流す（K-400）",
   "apps/api/test/features/F10/invite-create.test.ts": "葉の hooks のファイル apps/api/src/hooks/workspace-invitations.ts を existsSync で見て動的 import で読む（まだ入っていないときは差さない）。読む物と使う試験は data_links で結ぶ・K-419",
+  "packages/db/test/k426_function_execute_private.test.ts": "この葉の migration のファイルを読み、取引の中でもう一度当てる（migration の道で db の組に当たる）と、口の文（apps/api/src・packages/auth/src・packages/contracts/src・packages/db/src）を読んで app の関数の名前を集める（DB の試験なので db の組で流れる）・K-426",
   "apps/api/test/features/F5/k429_runs_shape.test.ts": "契約 08_api/openapi.yaml を読み、実行の一覧の問い合わせ（limit・cursor・sort）の形が契約に書いた形と一致するかを確かめる。契約は _base の 47 に在り、この試験は api の組が流す・K-429",
+  "apps/web/tests/k/k431-stage5-mock.spec.ts": "モックの置き場 apps/web/app/(dev)/dev/mock/f4v2/mocks.tsx・apps/web/app/(dev)/dev/mock/f4/mocks.tsx・F4 の部品の置き場（apps/web/features/F4 の doc・parent・due・duplicate・links・home・detail-more・create-ticket）・道の一覧 apps/web/lib/built-routes.ts（作り手 gen_built_routes.py を data_links で結ぶ）を読み、scripts/ci/canvas_field_gate.py を子プロセスで流す（K-431）",
+  "apps/api/test/features/F4/ticket-body.harness.ts": "入っている葉の hooks のファイル（ticket-body.ts・ticket-versions.ts）を動的 import で読む（最初の要求の前に 1 回・まだ入っていない葉の物は読まない）。読む物と使う試験は data_links で結ぶ・K-432",
+  "apps/api/test/features/contract/k144.d/K-432.ts": "k144 の置き場の葉のファイル。最初の要求の前に hooks のファイルを動的 import する。ファイルは読まない（K-378）",
   "apps/api/test/features/F4/test-spec.harness.ts": "入っている葉の hooks のファイル apps/api/src/hooks/test-specs-*.ts を動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-434",
   "apps/api/test/features/contract/k144.d/K-434.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-434",
+  "apps/api/test/features/contract/k144.d/K-435.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-435",
   "apps/api/test/features/F4/ticket-links.test.ts": "この葉の hooks のファイル apps/api/src/hooks/ticket-links.ts を、最初の要求の前に動的 import で読む（まだ無い実装の前の準備を落とさないため）。読む物と使う試験は data_links で結ぶ・K-441",
   "apps/api/test/features/contract/k144.d/K-441.ts": "同じ。準備の中で hooks のファイルを動的 import で読む（k144 の置き場の決まり・K-441）",
+  "apps/api/test/features/contract/k144.d/K-461.ts": "k144 の置き場の葉のファイル。準備の中で試験の土台の手助け（notify.harness.ts）を動的 import する。ファイルは読まない（K-378）",
+  "apps/api/test/features/F7/notify.harness.ts": "入っている葉の hooks のファイル（notifications-*.ts・shell.ts）を readdirSync と動的 import で読む（まだ入っていない葉の物は無いので、在る物だけを差す）。読む物と使う試験は data_links で結ぶ・K-461",
+  "apps/api/test/features/F7/notifications-list.test.ts": "本線の migration（packages/db/migrations/*.sql）と画面の道（apps/web/app の page.tsx）を読んで、種類の表と行き先を照らす（K461-API-015・016）。読む物は apps/web/app と packages/db/migrations の変更で、試験の対象は同じ試験",
   "apps/api/test/features/F7/search-tickets.test.ts": "探す口の hooks のファイル（apps/api/src/hooks/search.ts）と種類の置き場（features/F7/search/kinds.ts）を動的 import で読む（失敗の道の確かめ。data_links で結ぶ・K-468）",
+  "apps/api/test/features/F7/saved-views.harness.ts": "この段の hooks のファイル apps/api/src/hooks/saved-views.ts と saved-views-edit.ts（K-476）を最初の要求の前に動的 import で読む（data_links で結ぶ・K-475）",
+  "apps/api/test/features/F7/scope-overview.test.ts": "この葉の hooks のファイル（apps/api/src/hooks/scope-overview.ts）を最初の要求の前に動的 import で読む（data_links で結ぶ・K-477）",
+  "apps/api/test/features/contract/k144.d/K-477.ts": "この葉の hooks のファイルを本体の準備の中で動的 import で読む（data_links で結ぶ・k144.d の README の決まり・K-477）",
+  "apps/api/test/features/contract/k144.d/K-485.ts": "k144 の置き場の葉のファイル。準備の中で F3/leaf-hooks.ts を動的 import し、hooks のファイルを最初の要求のときに読む。ファイルは読まない（K-378）",
   "apps/api/test/features/contract/k144.d/K-487.ts": "k144 の置き場の葉のファイル。準備の中で F3/leaf-hooks.ts を動的 import し、hooks のファイルを最初の要求のときに読む。ファイルは読まない（K-378）",
   "apps/api/test/features/F7/ticket-delete.harness.ts": "土台。leaf-hooks 越しに葉の hooks のファイルを読む。K-488・K-489 の試験も使う・K-487",
   "apps/api/test/features/contract/k144.d/K-488.ts": "k144 の置き場の葉のファイル。準備の中で F3/leaf-hooks.ts を動的 import し、hooks のファイルを最初の要求のときに読む。ファイルは読まない（K-378）",

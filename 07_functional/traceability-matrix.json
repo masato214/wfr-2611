@@ -885,7 +885,6 @@
     "GET /api/clones/me/growth",
     "GET /api/clones/me/activity",
     "POST /api/clones/me/activity/export",
-    "POST /api/action_runs/:id/retry",
     "POST /api/action_runs/:id/takeover",
     "navigate /account",
     "navigate /settings/close",
@@ -2928,7 +2927,7 @@
     "POST /api/ticket_imports",
     "GET /api/ticket_imports/:id",
     "POST /api/ticket_imports/:id/commit",
-    "PATCH /api/tickets/:id/sections/:key",
+    "PATCH /api/tickets/:id/body",
     "GET /api/tickets/:id/versions",
     "POST /api/tickets/:id/versions/:v/restore",
     "POST /api/ticket_kinds/:id/template-from-ticket",
@@ -5444,12 +5443,6 @@
      "role": "action",
      "method": "POST",
      "path_draft": "/api/clones/me/activity/export"
-    },
-    {
-     "act": "A57",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/action_runs/:id/retry"
     },
     {
      "act": "A57",
@@ -10771,7 +10764,7 @@
      "act": "A101",
      "role": "action",
      "method": "PATCH",
-     "path_draft": "/api/tickets/:id/sections/:key"
+     "path_draft": "/api/tickets/:id/body"
     },
     {
      "act": "A101",

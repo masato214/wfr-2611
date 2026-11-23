@@ -197,7 +197,7 @@ schemas["Error"] = {"type": "object", "properties": {"error": {"type": "string"}
 # 問い合わせの値の形（入口 op.ts が確かめるのと同じ。K-35）
 #   sort は表の列の名前だけ。scope_id は表に scope_id があるときだけ出す。空の値（?limit=）は指定なしと同じ（allowEmptyValue）
 # 続きの印を「鍵の文字列」で受ける一覧の口（D-131.9・K-161）。ほかの一覧の口は位置の数のまま（入口 op.ts の KEY_CURSOR_OPS と同じ集まり）
-KEY_CURSOR_OPS = {"listApprovalQueue", "listTickets"}
+KEY_CURSOR_OPS = {"listApprovalQueue", "listNotifications", "listTickets"}
 def qtype(q, table, op=None):
     cols = sorted(_DBC.get(table, {}))
     if q == "limit": return {"type": "integer", "minimum": 1, "maximum": getattr(_sa, "LIST_DETAILS", {}).get(op, {}).get("limit_max", 200)}
@@ -241,6 +241,8 @@ for _op in list(_REQ) + list(_RANGES) + list(_RULES):
     if _op not in _in_of: raise SystemExit(f"05_flow/screen_api.py の REQUIRED_INPUTS・VALUE_RANGES・INPUT_RULES の口 {_op} が、体を受ける口に無い")
 _sig = lambda o: json.dumps([_REQ.get(o, []), _RANGES.get(o, {}), _RULES.get(o, {})], ensure_ascii=False, sort_keys=True)
 _EMPTY = _sig("")
+# 値域を書き込む前の形（K-1116）：自分の形はここから写す。書き込んだ後の形を写すと、最初の口の値域がほかの口に漏れる（createMemory → updateMemory）
+_pristine = {n: copy.deepcopy(schemas[n]) for n in dict.fromkeys(n for _, n in _body_ops) if n in schemas}
 for _name in dict.fromkeys(n for _, n in _body_ops):
     _sharers = [o for o, n in _body_ops if n == _name]
     _keep = _EMPTY if any(_sig(o) == _EMPTY for o in _sharers) else _sig(_sharers[0])
@@ -249,7 +251,7 @@ for _name in dict.fromkeys(n for _, n in _body_ops):
         _own = _name if _sig(_op) == _keep else _op[0].upper() + _op[1:] + "Input"
         if _own != _name:
             if _own in schemas: raise SystemExit(f"自分の入力の形 {_own} が既にある")
-            schemas[_own] = copy.deepcopy(schemas[_name]); schemas[_own]["x-operation"] = _op; _in_of[_op] = _own
+            schemas[_own] = copy.deepcopy(_pristine[_name]); schemas[_own]["x-operation"] = _op; _in_of[_op] = _own
         sc = schemas[_own] = copy.deepcopy(schemas[_own])
         for _k in _REQ.get(_op, []) + list(_RANGES.get(_op, {})):
             if _k not in sc["properties"]: raise SystemExit(f"{_op} の欄 {_k} が入力の形 {_own} に無い")
@@ -303,6 +305,8 @@ ts.append(""); ts.append("export const ENDPOINTS = " + json.dumps([{"id": e["id"
 os.makedirs(OUT, exist_ok=True)
 meta = {"version": "v3.1", "created_at": TODAY, "frozen_at": TODAY, "base_url": BASE, "_doc": "05_flow/build_api.py が機械生成。手で直さない。凍結後の変更は決定（ADR）＋影響解析", "source": ["D-043.2", "D-051.1", "D-051.2", "D-053.1"]}
 json.dump({"meta": meta, "endpoints": endpoints, "acts_without_endpoint": acts_without, "deferred_screens": deferred_screens}, open(f"{OUT}/endpoints.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+import portable_regex as _pr  # noqa: E402
+openapi = _pr.walk(openapi)   # pattern の \s \S \d \w を JS（口）と同じ字を並べた形にして書く（schemathesis は Python で読む・K-1117）
 yaml.safe_dump(openapi, open(f"{OUT}/openapi.yaml", "w", encoding="utf-8"), allow_unicode=True, sort_keys=False, width=200)
 open(f"{OUT}/types.ts", "w", encoding="utf-8").write("\n".join(ts) + "\n")
 json.dump({"meta": {"project": "Kaname", "created_at": TODAY, "skill_version": "v3.1", "total_endpoints": len(endpoints)}, "context": {"api_style": "REST（独立 API 層・Hono・OpenAPI が契約）", "auth_method": "セッション（Better Auth・トークンベース・sessions 表で失効）", "versioning": "url（/api/v1）", "contract_test_framework": "OpenAPI-driven（schemathesis 系）＋ 型生成同期 check（未確定：段階 1 凍結時に確認）"},

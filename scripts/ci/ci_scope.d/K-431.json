@@ -1,0 +1,8 @@
+{
+ "data_links": [
+  {"paths": ["scripts/ci/canvas_field_gate.py", "scripts/ci/gen_built_routes.py"], "tests": ["apps/web/tests/k/k431-stage5-mock.spec.ts"]}
+ ],
+ "reads_ok": {
+  "apps/web/tests/k/k431-stage5-mock.spec.ts": "モックの置き場 apps/web/app/(dev)/dev/mock/f4v2/mocks.tsx・apps/web/app/(dev)/dev/mock/f4/mocks.tsx・F4 の部品の置き場（apps/web/features/F4 の doc・parent・due・duplicate・links・home・detail-more・create-ticket）・道の一覧 apps/web/lib/built-routes.ts（作り手 gen_built_routes.py を data_links で結ぶ）を読み、scripts/ci/canvas_field_gate.py を子プロセスで流す（K-431）"
+ }
+}

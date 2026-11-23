@@ -3546,6 +3546,30 @@
    "reason": null
   },
   {
+   "entity": "action_runs",
+   "field": "taken_over_at",
+   "consumed_by_screens": [
+    "bridge-setup",
+    "credentials",
+    "onboard-testrun",
+    "approvals",
+    "clone-chat",
+    "ai-activity",
+    "ops-support",
+    "ops-home",
+    "account",
+    "services",
+    "ops-tenant",
+    "tickets",
+    "masters",
+    "rules",
+    "knowledge",
+    "clients"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
    "entity": "service_registry",
    "field": "<common>",
    "consumed_by_screens": [],
@@ -7479,6 +7503,35 @@
   {
    "entity": "notifications",
    "field": "failed_at",
+   "consumed_by_screens": [
+    "invite-accept",
+    "mfa-setup",
+    "login",
+    "bridge-setup",
+    "clone-chat",
+    "members",
+    "ops-support",
+    "company-settings",
+    "app-setup",
+    "ops-skills",
+    "inquiry",
+    "ops-notices",
+    "ops-billing",
+    "ops-tenant",
+    "member-detail",
+    "tickets",
+    "work-types",
+    "knowledge",
+    "clients",
+    "requests",
+    "portal"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "notifications",
+   "field": "read_at",
    "consumed_by_screens": [
     "invite-accept",
     "mfa-setup",

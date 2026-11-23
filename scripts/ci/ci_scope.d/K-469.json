@@ -1,0 +1,13 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/search.ts",
+    "apps/api/src/features/F7/search/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F7/search-conversations.test.ts"
+   ]
+  }
+ ]
+}

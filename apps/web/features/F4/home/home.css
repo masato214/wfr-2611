@@ -1,0 +1,17 @@
+/* 空の一覧のおすすめ 3 つ（K-453・段 5 の下絵）。箱・あいさつ・主ボタンの形は今の一覧（ticket-list.css の k-list-*）のまま。
+   ここは「おすすめ」を押せる字にする分だけ。値は --k-* のトークンだけを読む */
+
+.k-f4-home-suggest {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--k-c-create-target-height);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--k-primary);
+  font: inherit;
+  cursor: pointer;
+}
+.k-f4-home-suggest:hover {
+  text-decoration: underline;
+}

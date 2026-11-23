@@ -1,0 +1,51 @@
+/* 詳細の「…」のメニュー（段 5・K-431・キャンバス TdMore）の部品。値は正本のトークン（--k-*）だけを読む。生の大きさ・色を書かない。
+   開くボタンは詳細の頭の「…」（outlined のボタンと同じ形）。箱と項目は components/k の Menu の型（k-select-popup・k-select-item） */
+
+.k-f4-more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--k-c-detail-more-width);
+  min-height: var(--k-c-button-primary-height);
+  padding: var(--k-c-detail-more-pad);
+  border: var(--k-c-button-outlined-border);
+  border-radius: var(--k-c-button-outlined-radius);
+  background: var(--k-c-button-outlined-bg);
+  color: var(--k-c-button-outlined-fg);
+  font: inherit;
+  font-size: var(--k-c-detail-act-text);
+  line-height: var(--k-c-detail-act-lh);
+  cursor: pointer;
+}
+.k-f4-more-btn[data-popup-open] {
+  border-color: var(--k-primary-line);
+  background: var(--k-primary-container);
+}
+
+.k-f4-more-popup {
+  min-width: var(--k-c-create-aside-width);
+}
+.k-f4-more-item {
+  min-height: 0;
+  padding: var(--k-s-sm);
+}
+.k-f4-more-item[data-disabled] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-f4-more-main {
+  display: grid;
+  min-width: 0;
+}
+.k-f4-more-main small {
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4-more-sep {
+  margin: var(--k-s-xs) 0;
+  border-top: var(--k-c-doc-toolbar-border-bottom);
+}
+.k-f4-more-danger {
+  color: var(--k-error);
+}

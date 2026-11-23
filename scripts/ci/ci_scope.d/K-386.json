@@ -1,0 +1,29 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/ticket-message-edit.ts",
+    "apps/api/src/features/F6/thread/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F6/thread-edit.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F6/thread-edit.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/patch_ticket_messages_id.test.ts",
+    "apps/api/test/generated/delete_ticket_messages_id.test.ts",
+    "apps/api/test/generated/post_ticket_messages_id_star.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/contract/k144.d/K-386.ts": "setup の中で土台 ../../F6/thread.harness.js を動的 import で読む（K-378.ts の注）・K-386"
+ }
+}

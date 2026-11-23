@@ -1,0 +1,28 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/saved-views*.ts",
+    "apps/api/src/features/F7/saved-views/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F7/saved-views-create.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F7/saved-views-create.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_saved_views.test.ts",
+    "apps/api/test/generated/post_saved_views.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F7/saved-views.harness.ts": "この段の hooks のファイル apps/api/src/hooks/saved-views.ts と saved-views-edit.ts（K-476）を最初の要求の前に動的 import で読む（data_links で結ぶ・K-475）"
+ }
+}

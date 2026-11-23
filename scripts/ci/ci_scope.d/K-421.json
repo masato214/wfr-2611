@@ -1,0 +1,28 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/workspace-invitation-link.ts",
+    "apps/api/src/features/F10/invite/link.ts",
+    "apps/api/src/features/F2/invitations/**",
+    "packages/auth/src/invitations.ts",
+    "packages/db/migrations/20261121092100_invitation_link.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F10/invite-link.test.ts",
+    "apps/api/test/features/F2/invitation-accept-new.test.ts",
+    "apps/api/test/features/F2/invitation-accept-signed.test.ts",
+    "apps/api/test/features/F2/invitation-preview.test.ts",
+    "apps/api/test/features/F2/invitation-resend-request.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F10/invite-link.test.ts"
+   ],
+   "readers": [
+    "apps/api/test/generated/post_invitations_link.test.ts"
+   ]
+  }
+ ]
+}

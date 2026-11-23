@@ -19,6 +19,8 @@ describe("POST /api/v1/auth/invitations/:token/accept", () => {
     // 本物の試験：apps/api/test/features/F2/invitation-accept-new.test.ts の「K332-API-004」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F2/invitation-accept-new.test.ts", "utf8")).toContain("K332-API-004");
   });
+  // 本物の試験はまだ無い（apps/api/test/features/F2/invitation-accept-new.test.ts）：UNWANTED: IF ログインしていない人が宛てのメールを持たない招待で参加しようとしたなら、Kaname は 401 と UNAUTHENTICATED を返し、利用者も所属も作らず招待も使わない
+  it.todo("test_post_auth_invitations_token_accept_rejected_401");
   it("test_post_auth_invitations_token_accept_rejected_403", () => {
     // UNWANTED: IF 招いたワークスペースが止められているなら、Kaname は 403 と E-AUTH-012 を返し、利用者を作らず招待も使わない
     // 本物の試験：apps/api/test/features/F2/invitation-accept-new.test.ts の「K332-API-011」（同じ CI の G3 で流れる）

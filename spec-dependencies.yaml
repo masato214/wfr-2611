@@ -4011,6 +4011,74 @@ layer_checks:
 - file: scripts/ci/deprecated_baseline.json
   check: python3 scripts/ci/stack_gate.py
   elsewhere: G46
+# ---- K-625：台帳・登録の断片（.d）・設定の層。その層の名前を実際に読む検査を結ぶ（別の段が流す物は elsewhere で重ねて流さない・K-156） ----
+- file: scripts/ci/ci_scope.json
+  check: python3 scripts/ci/k325_registries_test.py
+  elsewhere: G65
+- file: scripts/ci/ci_scope.d/
+  check: python3 scripts/ci/k325_registries_test.py
+  elsewhere: G65
+- file: 07_qa/test-plan/ears-elsewhere.d/
+  check: python3 scripts/ci/k325_registries_test.py
+  elsewhere: G65
+- file: 05_flow/screen_api.d/
+  check: python3 scripts/ci/k325_registries_test.py
+  elsewhere: G65
+- file: scripts/ci/contract_shape.d/
+  check: python3 scripts/ci/contract_shape_test.py
+  elsewhere: G47
+- file: apps/api/test/features/contract/k144.d/
+  check: python3 scripts/ci/contract_shape_test.py
+  elsewhere: G47
+- file: packages/auth/src/disabled-paths.d/
+  check: python3 scripts/ci/k326_ts_registries_test.py
+  elsewhere: G65
+- file: scripts/ci/g47.d/
+  check: python3 scripts/ci/k376_gate_lists_test.py
+  elsewhere: G65
+- file: scripts/ci/g65.d/
+  check: python3 scripts/ci/k376_gate_lists_test.py
+  elsewhere: G65
+- file: scripts/ci/author_gate.json
+  check: python3 scripts/ci/k206_author_gate_test.py
+  elsewhere: G65
+- file: scripts/ci/canvas_field_ledger.json
+  check: python3 scripts/ci/k215_canvas_field_test.py
+  elsewhere: G68
+- file: scripts/ci/canvas_layout_ledger.json
+  check: python3 scripts/ci/k254_canvas_values_test.py
+  elsewhere: G71
+- file: scripts/ci/class_ledger.json
+  check: python3 scripts/ci/k214_class_gate_test.py
+  elsewhere: G67
+- file: scripts/ci/lock_dates.json
+  check: python3 scripts/ci/stack_gate.py
+  elsewhere: G46
+- file: scripts/ci/perf_budget.json
+  check: python3 scripts/ci/k237_perf_ledger_test.py
+  elsewhere: G65
+- file: scripts/ci/raw_length_ledger.json
+  check: python3 scripts/ci/design_gate.py --design 04_design/DESIGN-kaname.md --mocks apps/web/components/k apps/web/features --css apps/web/styles/k-tokens.css --part --no-components --raw-lengths
+  elsewhere: G72
+- file: scripts/ci/runner_tools.json
+  check: python3 scripts/ci/k195_runner_chrome_test.py
+  elsewhere: G65
+- file: scripts/ci/staging_region.json
+  check: python3 scripts/ci/k212_function_region_test.py
+  elsewhere: G65
+- file: apps/web/vercel.json
+  check: python3 scripts/ci/k212_function_region_test.py
+  elsewhere: G65
+- file: 07_qa/test-plan/result-ledger.json
+  check: python3 scripts/ci/ci_results_ledger_test.py
+  elsewhere: G61
+- file: ticket-flow.yaml
+  check: python3 scripts/ci/k174_flow_config_test.py
+  elsewhere: G65
+- file: ai-team.yaml
+  manual: 旧い進め方（ai-team-delivery）の設定。今の進め方は ticket-flow.yaml で、どの検査もこのファイルを読まない。残してあるだけで、手で見る
+- file: ci-gates.yaml
+  manual: 旧い進め方（ai-team-delivery）の設定。今の進め方は ticket-flow.yaml で、どの検査もこのファイルを読まない。残してあるだけで、手で見る
 - file: scripts/spec-sync/*.py
   check: python3 scripts/spec-sync/spec-validator.py --project-root . --tier g --pre-commit && python3 scripts/spec-sync/spec-validator.py --project-root . --tier h --pre-commit
 - file: scripts/spec-sync/audit-manifest.yaml
@@ -4035,6 +4103,10 @@ project_audit:
     reason: electron-builder のビルド出力（.app）。配布物の正本は bridge-release の目録（kaname-bridge.json）
   - path: apps/bridge/release/mac-arm64/
     reason: 同上
+  - path: 11_tickets/_old/
+    reason: 置き換え前のチケットの保管（KN-* と古い K-*）。生きているチケットは 11_tickets/K-*.md で、決定の追随は要らない（D-128.139）
+  - path: 07_qa/ci-results/
+    reason: CI の回の記録（機械が書く証拠）。成果物ではなく、読むのは ci_results.py の判定で、決定の追随は要らない
   stale_ok:
   - path: 11_tickets/README.md
     reason: build_index.py が作る一覧。決定は各チケットの decisions が持ち、G45 が決定ログにあるかを見る

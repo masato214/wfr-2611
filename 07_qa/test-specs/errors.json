@@ -6945,6 +6945,101 @@
    "support_code": "CONF-037"
   },
   {
+   "id": "E-CONF-031",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "decisions"
+   },
+   "when": "決定を改める・取り消すとき、読んだ後にほかの人が先にその決定を改めていた（改められた決定を改める・取り消す・同時に 2 人が改める・K-391）",
+   "false_when": "その決定がまだ生きている（改められても取り消されてもいない）",
+   "message": "この決定は、いま別の人が改めました。読み直してから、もう一度お試しください",
+   "action": "読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "作業中のチケットの決定を 2 人が開いている",
+    "steps": [
+     "1 人が決定を改める",
+     "もう 1 人が同じ決定を改める"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.63"
+   ],
+   "support_code": "CONF-031"
+  },
+  {
+   "id": "E-CONF-033",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "decisions"
+   },
+   "when": "決定を改める・取り消すとき、読んだ後にほかの人が先にその決定を取り消していた（取り消した決定を改める・取り消す・K-391）",
+   "false_when": "その決定がまだ生きている（取り消されていない）",
+   "message": "この決定は、いま別の人が取り消しました。読み直してから、もう一度お試しください",
+   "action": "読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "作業中のチケットの決定を 2 人が開いている",
+    "steps": [
+     "1 人が決定を取り消す",
+     "もう 1 人が同じ決定を改める"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.63"
+   ],
+   "support_code": "CONF-033"
+  },
+  {
+   "id": "E-VAL-045",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "decisions"
+   },
+   "when": "決定を取り消すとき、理由が無い・空・空白だけ（全角も）・制御文字だけ（K-391）",
+   "false_when": "取り消す理由に字がある（字数の上限は無い）",
+   "message": "取り消す理由を書いてください",
+   "action": "取り消す理由を書く",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "作業中のチケットの決定",
+    "steps": [
+     "決定を取り消す確かめで、理由を空のまま取り消す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.63"
+   ],
+   "support_code": "VAL-045"
+  },
+  {
    "id": "E-VAL-046",
    "class": "validation",
    "where": {
@@ -7094,6 +7189,62 @@
    ]
   },
   {
+   "id": "E-SEC-004",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "今の版と送った版が違う（先に別の人が直した・同じ版を持った 2 つの画面が同時に書き終えた後の方）",
+   "false_when": "送った版が今の版と同じ",
+   "message": "先に直されました。読み直してから、もう一度直してください",
+   "action": "読み直してもう一度",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの詳細を開く",
+    "steps": [
+     "2 つの画面で同じ本文を直し、先に 1 つ目の画面で書き終えてから、2 つ目の画面でも書き終える"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.13"
+   ]
+  },
+  {
+   "id": "E-SEC-005",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "完了したチケットの本文を直そうとした",
+   "false_when": "完了していないチケット",
+   "message": "このチケットは完了しています。完了したチケットの本文は変えられません",
+   "action": "新しいチケットで書く",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの詳細を開く",
+    "steps": [
+     "完了したチケットの本文を直して書き終える"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.30"
+   ]
+  },
+  {
    "id": "E-SPEC-001",
    "class": "conflict",
    "where": {
@@ -7120,6 +7271,91 @@
    "source": [
     "D-150.33",
     "D-150.56"
+   ]
+  },
+  {
+   "id": "E-SPEC-020",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "版が今と違う（先にほかの人が同じ確認項目を変えた・同じ版から同時に 2 人が直した）",
+   "false_when": "送った版が今の版と同じ（付ける・外す・文を直すのどれも）",
+   "message": "別の人が先にこの確認項目を変えました。読み直してから、もう一度お試しください",
+   "action": "読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの詳細を 2 つの画面で開き、確認項目の欄を見る",
+    "steps": [
+     "片方の画面で確認項目にチェックを付け、もう片方の画面（読み直す前）で同じ項目の文を直して保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.39",
+    "D-150.56"
+   ]
+  },
+  {
+   "id": "E-SPEC-021",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "チェックが付いている確認項目の文を直そうとした",
+   "false_when": "チェックが付いていない確認項目の文を直す（チェックを外した後も直せる）",
+   "message": "チェックが付いている確認項目の文は直せません。チェックを外してから直してください",
+   "action": "チェックを外す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの詳細を開き、チェックが付いた確認項目を用意する",
+    "steps": [
+     "チェックが付いた確認項目の文を書き換えて保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.55"
+   ]
+  },
+  {
+   "id": "E-SPEC-022",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "ナレッジの「必ず守る」から入った確認項目の文を直そうとした・行を外そうとした",
+   "false_when": "ナレッジから入った項目のチェックの付け外し／手で足した項目・AI の項目の文の直しと行の取り外し",
+   "message": "ナレッジの「必ず守る」から入った確認項目は、文を直したり外したりできません。チェックの付け外しだけできます",
+   "action": "チェックを付け外しする",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "「必ず守る」のナレッジを写したチケットの詳細を開く",
+    "steps": [
+     "ナレッジから入った確認項目の文を書き換えるか、行を外す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "段 10 の代表の決め 2026-11-22"
    ]
   },
   {
@@ -7220,6 +7456,34 @@
    ]
   },
   {
+   "id": "E-NTF-001",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "notifications"
+   },
+   "when": "知らせの一覧の続きの鍵が、形（base64url の 1〜200 字）には合うが今の状態では読めない（JSON でない・時刻や id の形でない・古い・壊れた）",
+   "false_when": "口が出した鍵（形に合わない鍵は入口が 422 にする）",
+   "message": "お知らせの続きを読めませんでした。最初から読み直してください",
+   "action": "最初から読み直す（続きの鍵を付けずに開き直す）",
+   "undo": false,
+   "layers": [
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "鈴を押して知らせの一覧を開く",
+    "steps": [
+     "続きの鍵に壊れた文字列を入れて GET /api/v1/notifications を呼ぶ"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-151.4"
+   ]
+  },
+  {
    "id": "E-SRC-001",
    "class": "validation",
    "where": {
@@ -7303,6 +7567,468 @@
    "source": [
     "D-151.1",
     "D-128.157"
+   ]
+  },
+  {
+   "id": "E-VWS-001",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "名前が空か、空白だけ（全角の空白も）。前後の空白を落とした後に 1 文字も残らない",
+   "false_when": "前後の空白を落とした後に 1 文字以上の見える字が残る",
+   "message": "名前を入れてください",
+   "action": "名前を入れる",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "名前の欄を空のまま（か空白だけで）保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-002",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "名前が 61 文字以上（全角半角にそろえ、前後の空白を落とした後の文字の数）",
+   "false_when": "60 文字まで（全角 60 文字も通る）",
+   "message": "名前は 60 文字までにしてください",
+   "action": "名前を短くする",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "名前の欄に 61 文字を入れて保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-003",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "「グループの全員」に見せる指定なのに、見せるグループ（scope_id）が無いか null",
+   "false_when": "グループの全員に見せるときに見せるグループが付いている。自分だけの保存は見せるグループが無くてよい",
+   "message": "グループの全員に見せるときは、見せるグループを選んでください",
+   "action": "見せるグループを選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "「グループの全員」を選び、見せるグループを選ばずに保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-004",
+   "class": "not_found",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "見せるグループ（scope_id）が無い・別の会社のグループ・消したグループ・自分に見えないグループ（在るかを教えない）",
+   "false_when": "自分に見えるグループ（席のグループと、その下のグループ）",
+   "message": "見せるグループが見つかりませんでした。消されたか、見る権限が無いかもしれません",
+   "action": "見せるグループを選び直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "保存の小窓を開いたまま、見せるグループの権限が外れる（か消される）",
+     "そのまま保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-005",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "同じ人の消していない保存した条件に、同じ名前（大文字小文字・全角半角の違いも同じ）がもうある",
+   "false_when": "同じ名前が無い・ほかの人の条件・消した条件",
+   "message": "同じ名前の保存した条件が、もうあります。別の名前にしてください",
+   "action": "別の名前にする",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "すでに保存した条件と同じ名前（大文字小文字だけ違っても同じ）で保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-006",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "同じ人が作った消していない保存した条件が 50 件ある（51 件目）",
+   "false_when": "49 件まで。消した条件・ほかの人の条件は数えない",
+   "message": "保存できる条件は 50 件までです。いらないものを消してから保存してください",
+   "action": "いらない条件を消す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "保存した条件を 50 件にして、51 件目を保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-007",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "条件（filters）が入れ物でない・欄が 9 個以上・欄の名前が決まりの外・値が決まりの外（配列・null・501 字以上・入れ物の入れ物・33 欄以上）、列（columns）が文字の並びでない・51 個以上・1 つが 41 文字以上",
+   "false_when": "条件は欄 8 個までの小さな入れ物、列は 50 個までの文字の並び",
+   "message": "条件の形が正しくありません。条件・列の並び・大きさを確かめてください",
+   "action": "条件を作り直す",
+   "undo": false,
+   "layers": [
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "画面を通さずに口を直に呼び、条件に配列を入れて保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-VWS-008",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "save"
+   },
+   "when": "名前の途中に制御文字（改行・タブ・BEL ほか。C0・DEL・C1）がある",
+   "false_when": "見える字と普通の空白だけ",
+   "message": "名前に改行などの制御文字は使えません",
+   "action": "名前を打ち直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの一覧で絞った条件を「保存した条件」に保存する小窓を開く",
+    "steps": [
+     "名前に改行を貼り付けて保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.83",
+    "D-151.9"
+   ]
+  },
+  {
+   "id": "E-STP-001",
+   "class": "permission",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "担当者でない人・担当者のいないチケットで、止まった AI の仕事を「自分で直す」にしようとした",
+   "false_when": "そのチケットの担当者が押した",
+   "message": "自分で直すにできるのは、このチケットの担当者だけです",
+   "action": "担当者に頼む",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "AI の仕事が止まったチケットを、担当者でない人が開く",
+    "steps": [
+     "止まった帯の「自分で直す」を押す"
+    ],
+    "needs": "担当者でない人のアカウント"
+   },
+   "severity": "medium",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-002",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "awaiting_approval"
+   },
+   "when": "承認待ち・完了のチケット、承認の後の実行、作り終えた実行で「自分で直す」にしようとした",
+   "false_when": "作る段の止まった実行・動いている実行を担当者が押した",
+   "message": "いまは自分で直すに切り替えられません（承認待ち・完了のとき、または承認の後の実行です）",
+   "action": "画面を読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "AI が作り終えて承認待ちになったチケットの古い画面を開いたままにする",
+    "steps": [
+     "「自分で直す」を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-003",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "もう自分で進めることにした実行を、もう一度「自分で直す」にしようとした（二度押し・別のタブ）",
+   "false_when": "まだ自分で進めることにしていない実行",
+   "message": "もう自分で進めることにしています",
+   "action": "画面を読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "止まった帯の「自分で直す」を別のタブでも開いておく",
+    "steps": [
+     "片方で「自分で直す」を押す",
+     "もう片方でも押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-004",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "新しい実行がある古い止まりで「自分で直す」にしようとした",
+   "false_when": "そのチケットの一番新しい実行を指している",
+   "message": "この実行はもう新しい実行に替わっています",
+   "action": "画面を読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "止まった帯を開いたまま、別のタブで「AI に任せる」を押す",
+    "steps": [
+     "古い画面の「自分で直す」を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-010",
+   "class": "timeout",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "承認から 24 時間を過ぎて、実行の前の確かめで止まった",
+   "false_when": "24 時間以内に実行の前の確かめが済んだ",
+   "message": "承認から 24 時間を過ぎたので、実行の前にもう一度確かめます",
+   "action": "承認をもう一度確かめる",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "承認した後、24 時間そのままにしたチケット",
+    "steps": [
+     "詳細の止まった帯を開く"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-011",
+   "class": "connectivity",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "AI がブラウザ（Chrome の拡張機能）を使えなくて止まった",
+   "false_when": "Chrome が開いていて拡張機能が入り、同じアカウントでログインしている",
+   "message": "AI がブラウザを使えませんでした。Chrome を開き、拡張機能「Claude in Chrome」が入っていて、この Claude と同じアカウントでログインしているか確かめてください",
+   "action": "Chrome と拡張機能を確かめる",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "Chrome を閉じた状態で、ブラウザを使う仕事を AI に任せる",
+    "steps": [
+     "詳細の止まった帯を開く"
+    ],
+    "needs": "この PC の Chrome"
+   },
+   "severity": "medium",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
+   ]
+  },
+  {
+   "id": "E-STP-012",
+   "class": "dependency",
+   "where": {
+    "screen": "tickets",
+    "state": "stopped"
+   },
+   "when": "止まった理由の種類が決められない（どの言い回しにも当たらない・理由が届いていない）",
+   "false_when": "理由の種類が決まる",
+   "message": "AI が途中で止まりました（理由の種類は分かりません）。もう一度「AI に任せる」か、自分で直すを選べます",
+   "action": "AI に任せ直す／自分で直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "AI が理由を送らずに止まったチケット",
+    "steps": [
+     "詳細の止まった帯を開く"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-129.11",
+    "D-151.17",
+    "D-151.18"
    ]
   },
   {
@@ -7483,6 +8209,37 @@
     "D-125.62",
     "D-129.43"
    ]
+  },
+  {
+   "id": "E-CONF-020",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "delegate"
+   },
+   "when": "確認項目が 1 つも無いチケットで、使わない理由を書かずに「AI に任せる」を押した",
+   "false_when": "確認項目が 1 件以上ある／使わない理由を書いた",
+   "message": "確認項目が 1 つもありません。確認項目を足すか、使わない理由を書いてから任せてください",
+   "action": "確認項目を足す／理由を書く",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "本文だけで確認項目が無いチケットを開いておく",
+    "steps": [
+     "理由を書かずに「AI に任せる」を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-150.45"
+   ],
+   "support_code": "CONF-020"
   },
   {
    "id": "E-KNW-010",
