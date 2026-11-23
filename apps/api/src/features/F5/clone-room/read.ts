@@ -18,6 +18,7 @@ const kindOf = (e: unknown): string => {
 export const CLONE_SQL = {
   clone_me: "select app.clone_me() as v",
   clone_now: "select app.clone_now() as v",
+  clone_growth: "select app.clone_growth() as v",
 } as const;
 
 /** 引数の無い読む関数を 1 回呼んで答えにする（200 { data } ／ 403 ／ 503） */
