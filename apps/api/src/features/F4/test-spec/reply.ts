@@ -32,3 +32,21 @@ export const kindOf = (e: unknown): string => {
   const x = e as { code?: unknown; name?: unknown } | null;
   return typeof x?.code === "string" ? x.code : typeof x?.name === "string" ? x.name : "Error";
 };
+
+/** 先に変えられた（版が今と違う・409・E-SPEC-020）。体は error と code だけ */
+export const conflictVersion = (): HookReply => {
+  const e = kanameError("E-SPEC-020");
+  return { status: e.status, body: { error: e.entry.cls, code: e.code } };
+};
+
+/** チェックが付いている行の文は直せない（409・E-SPEC-021・外してから直す） */
+export const conflictChecked = (): HookReply => {
+  const e = kanameError("E-SPEC-021");
+  return { status: e.status, body: { error: e.entry.cls, code: e.code } };
+};
+
+/** ナレッジから入った行は文を直せない・行を外せない（409・E-SPEC-022） */
+export const conflictLocked = (): HookReply => {
+  const e = kanameError("E-SPEC-022");
+  return { status: e.status, body: { error: e.entry.cls, code: e.code } };
+};

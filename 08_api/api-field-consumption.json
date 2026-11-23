@@ -7544,6 +7544,35 @@
   },
   {
    "entity": "notifications",
+   "field": "read_at",
+   "consumed_by_screens": [
+    "invite-accept",
+    "mfa-setup",
+    "login",
+    "bridge-setup",
+    "clone-chat",
+    "members",
+    "ops-support",
+    "company-settings",
+    "app-setup",
+    "ops-skills",
+    "inquiry",
+    "ops-notices",
+    "ops-billing",
+    "ops-tenant",
+    "member-detail",
+    "tickets",
+    "work-types",
+    "knowledge",
+    "clients",
+    "requests",
+    "portal"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "notifications",
    "field": "retry_count",
    "consumed_by_screens": [
     "invite-accept",

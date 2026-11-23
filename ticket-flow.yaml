@@ -63,6 +63,7 @@ changes_ignore:
   - "07_qa/test-specs/errors.json"
   - "07_qa/test-specs/errors.md"
   - "08_api/API-SPEC.md"
+  - "08_api/phase1/合わせた/*.md"
   - "08_api/api-decisions.json"
   - "08_api/api-field-consumption.json"
   - "08_api/api-spec.html"

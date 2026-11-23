@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 366（作った 92・後のフェーズの行為だけ 20）・前の道すじ 26・表 148・画面の部品 19・共通の処理 13・エラー 255・部品 56・設定 41
+API 366（作った 99・後のフェーズの行為だけ 20）・前の道すじ 26・表 148・画面の部品 19・共通の処理 13・エラー 262・部品 56・設定 41
 
 ## 共通の処理
 
@@ -328,8 +328,8 @@ API 366（作った 92・後のフェーズの行為だけ 20）・前の道す�
 | `listMyTicketDrafts` | GET /api/v1/me/ticket-drafts | 取得（me）— チケットを作る（画面で・下書きから） | F4 | 作った | K-60 |
 | `saveMyTicketDraft` | POST /api/v1/me/ticket-drafts | 作成・実行（me）— チケットを作る（画面で・下書きから） | F4 | 作った | K-60 |
 | `listMembers` | GET /api/v1/members | 取得（members）— 振り分ける（責任者・期限・分類・親）。AI と相談しても | F4 | 契約だけ（501） | K-60 |
-| `updateTestSpec` | PATCH /api/v1/test_specs/:id | 更新（test_specs）— テスト仕様を作る（AI の案・抜けの点検・種類と型を確か | F4 | 契約だけ（501） | K-59 |
-| `deleteTestSpec` | DELETE /api/v1/test_specs/:id | 削除（test_specs）— テスト仕様を作る（AI の案・抜けの点検・種類と型を確か | F4 | 契約だけ（501） | K-59 |
+| `updateTestSpec` | PATCH /api/v1/test_specs/:id | 更新（test_specs）— テスト仕様を作る（AI の案・抜けの点検・種類と型を確か | F4 | 作った | K-435 |
+| `deleteTestSpec` | DELETE /api/v1/test_specs/:id | 削除（test_specs）— テスト仕様を作る（AI の案・抜けの点検・種類と型を確か | F4 | 作った | K-435 |
 | `listTicketFields` | GET /api/v1/ticket-fields | 取得（custom_fields）— その種別で出す会社の項目を並びの順に見る（型・必須・説明・選択肢） | F4 | 作った | K-563 |
 | `createTicketImport` | POST /api/v1/ticket_imports | 作成・実行（ticket_imports）— チケットを作る（画面で・下書きから） | F4 | 契約だけ（501） | K-59 |
 | `getTicketImport` | GET /api/v1/ticket_imports/:id | 取得（ticket_imports）— チケットを作る（画面で・下書きから） | F4 | 契約だけ（501） | K-59 |
@@ -391,17 +391,17 @@ API 366（作った 92・後のフェーズの行為だけ 20）・前の道す�
 | `delegateTicket` | POST /api/v1/tickets/:id/delegate | 作成・実行（tickets）— AI に任せる | F5 | 作った | K-62 |
 | `dryRunTicket` | POST /api/v1/tickets/:id/dry-run | 作成・実行（tickets）— 試し打ちする（宛先を自分に差し替えて確かめる） | F5 | 契約だけ（501） | K-61 |
 | `listTicketRuns` | GET /api/v1/tickets/:id/runs | 取得（tickets）— AI に任せる | F5 | 作った | K-62 |
-| `updateTicketDecision` | PATCH /api/v1/ticket_decisions/:id | 更新（ticket_decisions）— 決定を記録する（AI の候補を確定・直接書く） | F6 | 契約だけ（501） | K-66 |
-| `updateTicketMessage` | PATCH /api/v1/ticket_messages/:id | 更新（ticket_messages）— チケットのスレッドで話す（@ で知らせる） | F6 | 契約だけ（501） | K-66 |
-| `deleteTicketMessage` | DELETE /api/v1/ticket_messages/:id | 削除（ticket_messages）— チケットのスレッドで話す（@ で知らせる） | F6 | 契約だけ（501） | K-66 |
-| `starTicketMessage` | POST /api/v1/ticket_messages/:id/star | 作成・実行（ticket_messages）— チケットのスレッドで話す（@ で知らせる） | F6 | 契約だけ（501） | K-66 |
+| `updateTicketDecision` | PATCH /api/v1/ticket_decisions/:id | 更新（ticket_decisions）— 決定を記録する（AI の候補を確定・直接書く） | F6 | 作った | K-391 |
+| `updateTicketMessage` | PATCH /api/v1/ticket_messages/:id | 更新（ticket_messages）— チケットのスレッドで話す（@ で知らせる） | F6 | 作った | K-386 |
+| `deleteTicketMessage` | DELETE /api/v1/ticket_messages/:id | 削除（ticket_messages）— チケットのスレッドで話す（@ で知らせる） | F6 | 作った | K-386 |
+| `starTicketMessage` | POST /api/v1/ticket_messages/:id/star | 作成・実行（ticket_messages）— チケットのスレッドで話す（@ で知らせる） | F6 | 作った | K-386 |
 | `listTicketDecisions` | GET /api/v1/tickets/:id/decisions | 取得（ticket_decisions）— チケットの決定を見る（生きている決定・改められた・取り消した） | F6 | 作った | K-390 |
 | `createTicketDecision` | POST /api/v1/tickets/:id/decisions | 作成・実行（tickets）— 決定を記録する（AI の候補を確定・直接書く） | F6 | 作った | K-390 |
 | `createTicketMessage` | POST /api/v1/tickets/:id/messages | 作成・実行（tickets）— チケットのスレッドで話す（@ で知らせる） | F6 | 作った | K-385 |
 | `listTicketTimeline` | GET /api/v1/tickets/:id/timeline | 取得（ticket_messages）— やり取りを新しい方から読む（前を見る・すべて／話だけ／自分あて・新しい数・候補の人） | F6 | 作った | K-383 |
 | `markTicketTimelineSeen` | POST /api/v1/tickets/:id/timeline/seen | 作成・実行（tickets）— チケットのスレッドで話す（@ で知らせる） | F6 | 作った | K-384 |
 | `takeoverActionRun` | POST /api/v1/action_runs/:id/takeover | 作成・実行（action_runs）— 止まった理由を見て一手を打つ（PC が閉じている・壊れた | F7 | 作った | K-67,K-485 |
-| `listNotifications` | GET /api/v1/notifications | 取得（notifications）— 知らせを見てチケットへ行く | F7 | 契約だけ（501） | K-67 |
+| `listNotifications` | GET /api/v1/notifications | 取得（notifications）— 自分宛ての知らせを新しい順に見る（未読だけ・人で絞る・20 件ずつ・読んだものは 30 日分） | F7 | 作った | K-461 |
 | `readNotification` | PATCH /api/v1/notifications/:id | 更新（notifications）— 知らせを見てチケットへ行く | F7 | 契約だけ（501） | K-67 |
 | `readAllNotifications` | POST /api/v1/notifications/read-all | 作成・実行（notifications）— 知らせを見てチケットへ行く | F7 | 契約だけ（501） | K-67 |
 | `listSavedViews` | GET /api/v1/saved_views | 取得（saved_views）— 保存した検索条件を名前の順に開く（自分の物と、見えるグループの全員向けの物） | F7 | 作った | K-67,K-475 |

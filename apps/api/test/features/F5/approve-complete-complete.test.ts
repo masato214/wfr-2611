@@ -51,7 +51,7 @@ import {
 setupApproveComplete();
 
 describe("K-63 承認して完了する：完了（口・本物の DB）", () => {
-  it("K63-API-027 作業中（実行が終わった）× 完了にする × 担当者：完了の段・completed_at と completed_by・todo は全部 [x] の新しい版・やり取りに 1 行・受け箱に知らせ（作った人へ）・候補はまだ", async () => {
+  it("K63-API-027 作業中（実行が終わった）× 完了にする × 担当者：完了の段・completed_at と completed_by・やり取りに 1 行・受け箱に知らせ（作った人へ）・候補はまだ。実施事項の区画は書き換えない（K-566・版も字も同じ）", async () => {
     const t = await ticket({ creator: writer });
     await executed(t);
     const v = await todoVersion(t.id);
@@ -72,14 +72,14 @@ describe("K-63 承認して完了する：完了（口・本物の DB）", () =>
       "select version, body->>'text' as text from ticket_sections where ticket_id = $1 and section_key = 'todo'",
       [t.id],
     );
-    expect(todo.version).toBe(v + 1);
-    expect(todo.text).toBe("- [x] 請求書を作る\n- [x] 先方に送る");
+    expect(todo.version).toBe(v);
+    expect(todo.text).toBe("- 請求書を作る\n- 先方に送る");
     expect(
       await num(
         "select count(*) as n from ticket_section_versions v join ticket_sections s on s.id = v.section_id where s.ticket_id = $1 and s.section_key = 'todo'",
         [t.id],
       ),
-    ).toBe(2);
+    ).toBe(1);
     expect((await messagesOf(t.id)).at(-1)!.body).toContain("高本が完了にしました");
     const n = await f.admin.query<{ member_id: string; channel_id: string; sent_at: string | null }>(
       "select member_id, channel_id, sent_at from notifications where event_kind_id = 'ticket.completed' and dedupe_key like $1",
@@ -93,41 +93,26 @@ describe("K-63 承認して完了する：完了（口・本物の DB）", () =>
     ).toBe(1);
   });
 
-  it("K63-API-028 作業中・チェックが残っている × 完了にする：422・E-VAL-022・残っている項目を出す（範囲の外の番号は K63-API-065）。済み（- [x]）の項目は送らなくても済みのまま数える（混ざった形も全部済みも 201・外さない・決める人の答え answer=bf373f5b265a）", async () => {
-    const t = await ticket();
-    await executed(t);
-    for (const checked of [[0], []]) {
-      const r = await complete(boss, t.id, await completeBody(t, { todo_checked: checked }));
-      expect(r.status, JSON.stringify(checked)).toBe(422);
-      const j = await json(r);
-      expect(JSON.stringify(j)).toContain(VAL_TODO_LEFT);
-      expect(
-        details(j)
-          .filter((x) => x.field === "todo_checked")
-          .map((x) => x.message),
-      ).toContain("先方に送る");
+  it("K63-API-028 作業中・チェックが残っている × 完了にする：止めない（K-566）。conditions_confirmed だけで 201 になり、E-VAL-022・E-CONF-017 は出ない。済み（- [x]）も未済みも区画は書き換えない（todo_checked・todo_version は送らない）", async () => {
+    for (let i = 0; i < 2; i += 1) {
+      const t = await ticket();
+      await executed(t);
+      const v = await todoVersion(t.id);
+      const r = await complete(boss, t.id, await completeBody(t));
+      expect(r.status, await r.clone().text()).toBe(201);
+      expect(JSON.stringify(await json(r))).not.toContain(VAL_TODO_LEFT);
+      expect(await stageKeyOf(t.id)).toBe("done");
+      expect(await todoVersion(t.id)).toBe(v);
     }
-    expect(await stageKeyOf(t.id)).toBe("doing");
-    // もう [x] になっている項目は送らなくても済み
-    await f.admin.query(
-      "update ticket_sections set body = jsonb_build_object('text', '- [x] 請求書を作る' || chr(10) || '- [x] 先方に送る'), version = version + 1 where ticket_id = $1 and section_key = 'todo'",
-      [t.id],
-    );
-    const ok = await complete(boss, t.id, await completeBody(t, { todo_checked: [] }));
-    expect(ok.status).toBe(201);
-    // 済みと未済みが混ざった形：「- 請求書を作る」「- [x] 先方に送る」に [0] だけを送ると 201 で、新しい版は両方 - [x]（済みの項目を送らなくても断らない・外さない）
     const mixed = await ticket({ todo: "- 請求書を作る\n- [x] 先方に送る" });
     await executed(mixed);
-    const v = await todoVersion(mixed.id);
-    const r = await complete(boss, mixed.id, await completeBody(mixed, { todo_checked: [0] }));
+    const r = await complete(boss, mixed.id, await completeBody(mixed));
     expect(r.status, await r.clone().text()).toBe(201);
-    expect(await stageKeyOf(mixed.id)).toBe("done");
-    const todo = await one<{ version: number; text: string }>(
-      "select version, body->>'text' as text from ticket_sections where ticket_id = $1 and section_key = 'todo'",
+    const todo = await one<{ text: string }>(
+      "select body->>'text' as text from ticket_sections where ticket_id = $1 and section_key = 'todo'",
       [mixed.id],
     );
-    expect(todo.version).toBe(v + 1);
-    expect(todo.text).toBe("- [x] 請求書を作る\n- [x] 先方に送る");
+    expect(todo.text).toBe("- 請求書を作る\n- [x] 先方に送る");
   });
 
   it("K63-API-029 作業中・完了の条件を確かめていない × 完了にする：422・E-VAL-023（欄 conditions_confirmed）", async () => {
@@ -162,7 +147,7 @@ describe("K-63 承認して完了する：完了（口・本物の DB）", () =>
     expect(kids).toEqual([`${child.number} 宛名を確かめる`]);
     expect(JSON.stringify(kids)).not.toContain(doneChild.number);
     expect(await stageKeyOf(parent.id)).toBe("doing");
-    const c = await complete(boss, child.id, { todo_checked: [], todo_version: 0, conditions_confirmed: true });
+    const c = await complete(boss, child.id, { conditions_confirmed: true });
     expect(c.status, await c.clone().text()).toBe(201);
     expect((await complete(boss, parent.id, await completeBody(parent))).status).toBe(201);
   });
@@ -234,7 +219,7 @@ describe("K-63 承認して完了する：完了（口・本物の DB）", () =>
     expect(await snapshot(t)).toEqual(before);
   });
 
-  it("K63-API-035 作業中・開いた後に実施事項が書き換わった × 完了にする：409・E-CONF-017。読み直せば通る", async () => {
+  it("K63-API-035 作業中・開いた後に実施事項が書き換わった × 完了にする：止めない（K-566）。版を送らなくても 201 で、E-CONF-017 は出ない（todo_version は送らない）", async () => {
     const t = await ticket();
     await executed(t);
     const old = await completeBody(t);
@@ -243,30 +228,30 @@ describe("K-63 承認して完了する：完了（口・本物の DB）", () =>
       [t.id],
     );
     const r = await complete(boss, t.id, old);
-    expect(r.status).toBe(409);
-    expect((await json(r))["code"]).toBe(CONF_TODO_CHANGED);
-    expect(await stageKeyOf(t.id)).toBe("doing");
-    expect((await complete(boss, t.id, await completeBody(t, { todo_checked: [0, 1, 2] }))).status).toBe(201);
+    expect(r.status, await r.clone().text()).toBe(201);
+    expect(JSON.stringify(await json(r))).not.toContain(CONF_TODO_CHANGED);
+    expect(await stageKeyOf(t.id)).toBe("done");
   });
 });
 
 describe("K-63 承認して完了する：入力・失敗・守り（口・本物の DB）", () => {
-  it("K63-API-043 失敗 × 完了の途中で DB が落ちた（区画の版を書く所）：500。段は変わらず、知らせも出ない", async () => {
+  it("K63-API-043 失敗 × 完了の途中で DB が落ちた（証跡を書く所）：503・E-PAGE-003。段は変わらず、知らせも出ない", async () => {
     const t = await ticket({ title: "K63 壊れる 完了", creator: writer });
     await executed(t);
     await f.admin.query(`create or replace function app.k63_boom2() returns trigger language plpgsql as $$
       begin
-        if exists (select 1 from tickets x where x.id = new.ticket_id and x.title like 'K63 壊れる%') then
+        if new.action = 'ticket.complete' and exists (select 1 from tickets x where x.id::text = new.target_id and x.title like 'K63 壊れる%') then
           raise exception 'K63 の試験で壊した';
         end if;
         return new;
       end $$`);
     await f.admin.query(
-      "create trigger k63_boom2 before insert on ticket_section_versions for each row execute function app.k63_boom2()",
+      "create trigger k63_boom2 before insert on audit_events for each row execute function app.k63_boom2()",
     );
     try {
       const r = await complete(boss, t.id, await completeBody(t));
-      expect(r.status).toBe(500);
+      expect(r.status).toBe(503);
+      expect(((await r.json()) as { code?: string }).code).toBe("E-PAGE-003");
       expect(await stageKeyOf(t.id)).toBe("doing");
       expect(
         (await one<{ c: string | null }>("select completed_at as c from tickets where id = $1", [t.id])).c,
@@ -275,7 +260,7 @@ describe("K-63 承認して完了する：入力・失敗・守り（口・本�
         await num("select count(*) as n from notifications where dedupe_key like $1", [`%ticket.completed:${t.id}`]),
       ).toBe(0);
     } finally {
-      await f.admin.query("drop trigger if exists k63_boom2 on ticket_section_versions");
+      await f.admin.query("drop trigger if exists k63_boom2 on audit_events");
       await f.admin.query("drop function if exists app.k63_boom2()");
     }
   });
@@ -283,10 +268,22 @@ describe("K-63 承認して完了する：入力・失敗・守り（口・本�
   it("K63-API-052 守り × 完了の関数を直に呼ぶ × 見るだけの人：書かない（守りの 2 層目）", async () => {
     const t = await ticket();
     await executed(t);
-    const v = await todoVersion(t.id);
     const ctx: TenantContext = { tenantId: T.tenantId, userId: viewer.id, role: "member", stepUpAt: null };
+    // 関数の引数の数は葉の時点で違う（区画の道が在る間は 4 つ・K-578 の後は 2 つ）ので、在る引数の数に合わせて呼ぶ
+    const n = Number(
+      (
+        await f.admin.query<{ n: number }>(
+          "select p.pronargs as n from pg_proc p join pg_namespace s on s.oid = p.pronamespace where s.nspname = 'app' and p.proname = 'ticket_complete'",
+        )
+      ).rows[0]!.n,
+    );
     const out = await withTenant(f.pool, ctx, (cl) =>
-      cl.query<{ v: { error?: string } }>("select app.ticket_complete($1, $2, $3, true) as v", [t.id, [0, 1], v]),
+      n === 4
+        ? cl.query<{ v: { error?: string } }>(
+            "select app.ticket_complete($1, null::integer[], null::integer, true) as v",
+            [t.id],
+          )
+        : cl.query<{ v: { error?: string } }>("select app.ticket_complete($1, true) as v", [t.id]),
     );
     expect(out.rows[0]!.v.error).toBe("not_writable");
     expect(await stageKeyOf(t.id)).toBe("doing");
@@ -294,36 +291,14 @@ describe("K-63 承認して完了する：入力・失敗・守り（口・本�
 });
 
 describe("K-63 承認して完了する：積む仕事の中身（口・本物の DB）", () => {
-  it("K63-API-065 入力 × 完了の todo_checked に範囲の外の番号（負・項目の数を超える）：422・E-VAL-022 の形で「番号 <n> は実施事項にありません」。ほかが全部済みでも断る（D-131.8）", async () => {
+  it("K63-API-065 入力 × 完了の todo_checked の形の誤り（文字の並び）：422・段は変わらない（区画の道が在っても無くても同じ）", async () => {
     const t = await ticket();
     await executed(t);
-    for (const checked of [
-      [0, 1, 5],
-      [-1, 0, 1],
-      [0, 1, 2],
-    ]) {
-      const r = await complete(boss, t.id, await completeBody(t, { todo_checked: checked }));
-      expect(r.status, JSON.stringify(checked)).toBe(422);
-      const j = await json(r);
-      expect(JSON.stringify(j)).toContain(VAL_TODO_LEFT);
-      const bad = checked.find((n) => n < 0 || n > 1)!;
-      expect(
-        details(j)
-          .filter((x) => x.field === "todo_checked")
-          .map((x) => x.message),
-      ).toContain(`番号 ${bad} は実施事項にありません`);
-    }
+    const bad = await complete(boss, t.id, await completeBody(t, { todo_checked: ["a"] }));
+    expect(bad.status).toBe(422);
     expect(await stageKeyOf(t.id)).toBe("doing");
-    // 残っている項目と範囲の外の番号の両方があれば、両方を出す
-    const r = await complete(boss, t.id, await completeBody(t, { todo_checked: [0, 9] }));
-    expect(r.status).toBe(422);
-    const msgs = details(await json(r))
-      .filter((x) => x.field === "todo_checked")
-      .map((x) => x.message);
-    expect(msgs).toContain("先方に送る");
-    expect(msgs).toContain("番号 9 は実施事項にありません");
-    expect((await complete(boss, t.id, await completeBody(t))).status).toBe(201);
   });
+
   it("K63-API-080 作業中（実行が終わった）・完了 × チケットの詳細を読む（本物の DB）：作業中は can.complete が直せる人で true・見るだけの人で false。完了の後は can.complete が false で completed に時刻と押した人の名前", async () => {
     const t = await ticket({ creator: writer });
     await executed(t);

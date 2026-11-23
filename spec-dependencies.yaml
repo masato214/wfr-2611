@@ -4103,6 +4103,10 @@ project_audit:
     reason: electron-builder のビルド出力（.app）。配布物の正本は bridge-release の目録（kaname-bridge.json）
   - path: apps/bridge/release/mac-arm64/
     reason: 同上
+  - path: 11_tickets/_old/
+    reason: 置き換え前のチケットの保管（KN-* と古い K-*）。生きているチケットは 11_tickets/K-*.md で、決定の追随は要らない（D-128.139）
+  - path: 07_qa/ci-results/
+    reason: CI の回の記録（機械が書く証拠）。成果物ではなく、読むのは ci_results.py の判定で、決定の追随は要らない
   stale_ok:
   - path: 11_tickets/README.md
     reason: build_index.py が作る一覧。決定は各チケットの decisions が持ち、G45 が決定ログにあるかを見る

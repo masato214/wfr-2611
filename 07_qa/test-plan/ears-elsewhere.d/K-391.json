@@ -1,0 +1,31 @@
+{
+ "ops": {
+  "updateTicketDecision": {
+   "file": "apps/api/test/features/F6/decision-update.test.ts",
+   "reason": "改める・取り消すは決定の今の状態（生きている・改められた・取り消した）と書けるかの組み合わせで答えが変わり、生成の試験の種では作れない（K-391）",
+   "covers": {
+    "test_patch_ticket_decisions_id_ok": "K391-API-001",
+    "test_patch_ticket_decisions_id_rejected_401": "K391-API-012",
+    "test_patch_ticket_decisions_id_rejected_403": "K391-API-012",
+    "test_patch_ticket_decisions_id_not_found": "K391-API-012",
+    "test_patch_ticket_decisions_id_rejected_422": "K391-API-002",
+    "test_patch_ticket_decisions_id_conflict": "K391-API-004",
+    "test_patch_ticket_decisions_id_unavailable": "K391-API-014",
+    "test_patch_ticket_decisions_id_rate_limited": "K391-API-016",
+    "test_patch_ticket_decisions_id_shape": "K391-API-001",
+    "test_patch_ticket_decisions_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_ticket_decisions_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_ticket_decisions_id_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    }
+   }
+  }
+ }
+}
