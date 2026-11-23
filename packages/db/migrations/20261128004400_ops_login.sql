@@ -13,6 +13,8 @@
 --   どの関数も security definer・search_path に pg_temp・public から外し、アプリの接続（kaname_app）にだけ渡す（D-128.171）。
 
 alter table sessions add column if not exists login_kind text;
+-- 同じ migration を流し直しても同じ形にするため（この migration が足す検査の制約だけを置き直す。前からの保証は外さない）
+-- squawk-ignore ban-drop-constraint
 alter table sessions drop constraint if exists sessions_login_kind_ck;
 alter table sessions add constraint sessions_login_kind_ck check (login_kind in ('passkey'));
 

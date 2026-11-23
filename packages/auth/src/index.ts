@@ -310,7 +310,9 @@ export function createAuth(o: AuthOptions): { auth: Auth; pool: pg.Pool } {
                   .catch((x: unknown) =>
                     console.error(`[auth] 入り方を書けなかった後の後片付けができなかった（${kindOf(x)}）`),
                   );
-                throw e;
+                // 元の例外をそのまま投げると、部品 @better-auth/passkey が APIError でない例外を 400 に包む。止めの hook と同じ 503・E-PAGE-003 で上げる
+                console.error(`[auth] 入り方を書けなかった（${kindOf(e)}）`);
+                throw new APIError("SERVICE_UNAVAILABLE", { code: LOGIN_GATE_DOWN });
               }
             }
             // 同意し直しの印（K-53・D-125.162）：今の版の利用規約かプライバシーポリシーにまだ同意していなければ、このセッションに立てる。
