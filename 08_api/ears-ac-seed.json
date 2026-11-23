@@ -775,7 +775,7 @@
    "endpoint": "POST /api/v1/auth/ops-setup",
    "feature_id": "F-016",
    "screen_ids": [
-    "ops-team"
+    "login"
    ],
    "acts": [
     "A134"

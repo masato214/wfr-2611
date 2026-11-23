@@ -202,7 +202,8 @@
     "E-080 notifications",
     "E-131 terms_consents",
     "E-077 status_incidents",
-    "E-075 notices"
+    "E-075 notices",
+    "E-071 ops_members"
    ],
    "related_apis": [
     "POST /api/auth/sign-in",
@@ -212,6 +213,7 @@
     "POST /api/auth/step-up",
     "POST /api/auth/sign-out",
     "GET /api/auth/service-status",
+    "POST /api/auth/ops-setup",
     "navigate /password-reset",
     "navigate /signup",
     "navigate /today"
@@ -3316,8 +3318,7 @@
     "GET /api/ops/members",
     "POST /api/ops/members",
     "PATCH /api/ops/members/:id",
-    "DELETE /api/ops/members/:id",
-    "POST /api/auth/ops-setup"
+    "DELETE /api/ops/members/:id"
    ],
    "access_roles": [
     "R6"
@@ -3660,6 +3661,12 @@
      "role": "data_fetch",
      "method": "GET",
      "path_draft": "/api/auth/service-status"
+    },
+    {
+     "act": "A134",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/auth/ops-setup"
     },
     {
      "role": "transition",
@@ -11688,12 +11695,6 @@
      "role": "action",
      "method": "DELETE",
      "path_draft": "/api/ops/members/:id"
-    },
-    {
-     "act": "A134",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/auth/ops-setup"
     }
    ]
   },
@@ -13075,10 +13076,12 @@
    "entity_id": "E-071",
    "entity_name": "ops_members",
    "used_by_screens": [
+    "login",
     "ops-audit",
     "ops-team"
    ],
    "used_by_features": [
+    "F-004",
     "F-016",
     "F-019"
    ]
@@ -14745,6 +14748,7 @@
     "E-055",
     "E-058",
     "E-061",
+    "E-071",
     "E-073",
     "E-075",
     "E-077",

@@ -240,7 +240,7 @@
    "path": "/api/v1/auth/ops-setup",
    "implementation_path": "apps/api/src/routes/sessions.ts::startOpsSetup",
    "screen_ids_referencing": [
-    "ops-team"
+    "login"
    ],
    "acts": [
     "A134"

@@ -1926,6 +1926,27 @@
      ]
     },
     {
+     "act": "A134",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/auth/ops-setup",
+     "table": "sessions",
+     "operation_id": "startOpsSetup",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-061",
+      "E-071"
+     ],
+     "choke_points": [
+      "C2",
+      "C4"
+     ],
+     "source": [
+      "D-128.70",
+      "D-125.167"
+     ]
+    },
+    {
      "role": "transition",
      "method": "navigate",
      "path_draft": "/password-reset",
@@ -2112,6 +2133,27 @@
      ]
     },
     {
+     "act": "A134",
+     "role": "action",
+     "method": "POST",
+     "path_draft": "/api/auth/ops-setup",
+     "table": "sessions",
+     "operation_id": "startOpsSetup",
+     "auth": "session（会社・層・権限）",
+     "related_entities": [
+      "E-061",
+      "E-071"
+     ],
+     "choke_points": [
+      "C2",
+      "C4"
+     ],
+     "source": [
+      "D-128.70",
+      "D-125.167"
+     ]
+    },
+    {
      "role": "transition",
      "method": "navigate",
      "path_draft": "/password-reset",
@@ -2151,7 +2193,8 @@
     "E-080",
     "E-131",
     "E-077",
-    "E-075"
+    "E-075",
+    "E-071"
    ],
    "mock_path": "06_mockup/v1/v1-login.html",
    "route": "/login",
@@ -46168,27 +46211,6 @@
       "D-128.70",
       "D-125.167"
      ]
-    },
-    {
-     "act": "A134",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/auth/ops-setup",
-     "table": "sessions",
-     "operation_id": "startOpsSetup",
-     "auth": "session（会社・層・権限）",
-     "related_entities": [
-      "E-061",
-      "E-071"
-     ],
-     "choke_points": [
-      "C2",
-      "C4"
-     ],
-     "source": [
-      "D-128.70",
-      "D-125.167"
-     ]
     }
    ],
    "required_apis": [
@@ -46268,27 +46290,6 @@
       "E-071",
       "E-061",
       "E-072"
-     ],
-     "choke_points": [
-      "C2",
-      "C4"
-     ],
-     "source": [
-      "D-128.70",
-      "D-125.167"
-     ]
-    },
-    {
-     "act": "A134",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/auth/ops-setup",
-     "table": "sessions",
-     "operation_id": "startOpsSetup",
-     "auth": "session（会社・層・権限）",
-     "related_entities": [
-      "E-061",
-      "E-071"
      ],
      "choke_points": [
       "C2",

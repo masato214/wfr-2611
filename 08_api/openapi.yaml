@@ -16643,7 +16643,7 @@ paths:
       x-acts:
       - A134
       x-screens:
-      - ops-team
+      - login
       x-choke-points:
       - C2
       - C4

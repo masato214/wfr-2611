@@ -220,6 +220,11 @@
      "role": "data_fetch",
      "endpoint": "GET /api/v1/auth/service-status",
      "act": "A13"
+    },
+    {
+     "role": "action",
+     "endpoint": "POST /api/v1/auth/ops-setup",
+     "act": "A134"
     }
    ],
    "transitions": [
@@ -3191,11 +3196,6 @@
     {
      "role": "action",
      "endpoint": "DELETE /api/v1/ops/members/:id",
-     "act": "A134"
-    },
-    {
-     "role": "action",
-     "endpoint": "POST /api/v1/auth/ops-setup",
      "act": "A134"
     }
    ],

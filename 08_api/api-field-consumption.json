@@ -6497,6 +6497,7 @@
    "entity": "ops_members",
    "field": "member_id",
    "consumed_by_screens": [
+    "login",
     "ops-audit",
     "ops-team"
    ],
@@ -6507,6 +6508,7 @@
    "entity": "ops_members",
    "field": "ops_role_id",
    "consumed_by_screens": [
+    "login",
     "ops-audit",
     "ops-team"
    ],
@@ -6517,6 +6519,7 @@
    "entity": "ops_members",
    "field": "revoked_at",
    "consumed_by_screens": [
+    "login",
     "ops-audit",
     "ops-team"
    ],

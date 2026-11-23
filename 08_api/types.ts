@@ -724,7 +724,7 @@ export const ENDPOINTS = [
    "A134"
   ],
   "screens": [
-   "ops-team"
+   "login"
   ]
  },
  {

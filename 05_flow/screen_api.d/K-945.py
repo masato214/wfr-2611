@@ -2,7 +2,7 @@
 # メールのリンク（24 時間・1 回だけ）の印を受け、パスキーを付けるだけのセッション（入り方 ops_setup）を返す。ログインしていない人の口。
 #   答えにログインの印が入るので冪等の器に残さない（NO_GENERIC_409・2 回目は 409 E-PAGE-006）
 SCREEN_API = {
-    "ops-team": [
+    "login": [
         ("POST", "/auth/ops-setup", "A134", "sessions", "startOpsSetup", ["ops_members"]),
     ],
 }
