@@ -1,0 +1,28 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/ops-team.ts",
+    "apps/api/src/features/F12/ops/team*.ts",
+    "packages/db/migrations/20261128012500_ops_team.sql",
+    "packages/auth/src/ops-first.ts",
+    "apps/api/src/features/F12/ops-setup/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-team.test.ts",
+    "apps/api/test/features/F12/ops-setup.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/ops-team.harness.ts",
+    "apps/api/test/features/F12/ops-team.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-team.test.ts",
+    "apps/api/test/generated/get_ops_members.test.ts",
+    "apps/api/test/generated/post_ops_members.test.ts"
+   ]
+  }
+ ]
+}

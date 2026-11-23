@@ -1,6 +1,6 @@
 {
  "version": "v3.1",
- "created_at": "2026-11-23",
+ "created_at": "2026-11-24",
  "summary": {
   "screens_count": 74,
   "features_count": 32,
@@ -3310,7 +3310,6 @@
    "entities": [
     "E-071 ops_members",
     "E-132 passkeys",
-    "E-091 invitations",
     "E-072 ops_audit_events",
     "E-061 sessions"
    ],
@@ -13515,14 +13514,12 @@
     "invite-accept",
     "members",
     "member-detail",
-    "clients",
-    "ops-team"
+    "clients"
    ],
    "used_by_features": [
     "F-001",
     "F-002",
     "F-010",
-    "F-016",
     "F-021"
    ]
   },
@@ -15539,7 +15536,6 @@
     "E-086",
     "E-087",
     "E-088",
-    "E-091",
     "E-093",
     "E-094",
     "E-095",

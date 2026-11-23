@@ -1,0 +1,62 @@
+{
+ "errors": [
+  {
+   "id": "E-OPS-015",
+   "class": "conflict",
+   "where": {
+    "screen": "ops-team",
+    "state": "op-team-add"
+   },
+   "when": "運営の人を足すとき、同じメールの運営の人がもう居る（大文字・前後の空白はそろえて比べる）",
+   "false_when": "新しいメール・外した運営の人のメール（同じ人として足し直す）",
+   "message": "この人はもう運営の人です",
+   "action": "できることを変えるときは、一覧の［変える］から",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "運営の人を持つ運営の人で入り、本人確認を取り直す",
+    "steps": [
+     "もう居る運営の人のメールで足す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-156.22"
+   ]
+  },
+  {
+   "id": "E-OPS-016",
+   "class": "conflict",
+   "where": {
+    "screen": "ops-team",
+    "state": "op-team-add"
+   },
+   "when": "運営の人を足すとき、同じメールの人が顧客の会社に居る",
+   "false_when": "運営の会社だけに居る人・まだ誰も使っていないメール",
+   "message": "このメールは顧客のアカウントで使われています。運営の人には別のメールを使ってください",
+   "action": "別のメールで足す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "顧客の会社の人のメール",
+    "steps": [
+     "そのメールで運営の人を足す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-156.22"
+   ]
+  }
+ ]
+}

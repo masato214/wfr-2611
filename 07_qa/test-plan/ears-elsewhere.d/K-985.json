@@ -1,0 +1,47 @@
+{
+ "ops": {
+  "listOpsMembers": {
+   "file": "apps/api/test/features/F12/ops-team.test.ts",
+   "reason": "運営の人・パスキー・最後の 1 人で答えが変わる。種では作れない（K-985）",
+   "covers": {
+    "test_get_ops_members_ok": "K985-API-001",
+    "test_get_ops_members_shape": "K985-API-001",
+    "test_get_ops_members_rejected_401": "K985-API-004",
+    "test_get_ops_members_rejected_403": "K985-API-004",
+    "test_get_ops_members_rate_limited": "K985-API-015",
+    "test_get_ops_members_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_ops_members_rejected_422": "入力を受けない GET（問い合わせの値も持たない）",
+    "test_get_ops_members_terms_pending": "運営の人は顧客の規約の同意を持たない（K-944 の解決で termsPending は false）"
+   }
+  },
+  "addOpsMember": {
+   "file": "apps/api/test/features/F12/ops-team.test.ts",
+   "reason": "同じメールの人の有る無し・外した人・メールの送り出しで答えが変わり、運営の記録を書く。種では作れない（K-985）",
+   "covers": {
+    "test_post_ops_members_ok": "K985-API-005",
+    "test_post_ops_members_shape": "K985-API-005",
+    "test_post_ops_members_rejected_401": "K985-API-004",
+    "test_post_ops_members_rejected_403": "K985-API-012",
+    "test_post_ops_members_rejected_422": "K985-API-011",
+    "test_post_ops_members_rate_limited": "K985-API-015",
+    "test_post_ops_members_session_unresolved": "K985-API-014",
+    "test_post_ops_members_conflict": "K985-API-007",
+    "test_post_ops_members_conflict_2": "K985-API-008",
+    "test_post_ops_members_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_ops_members_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）",
+    "test_post_ops_members_terms_pending": "運営の人は顧客の規約の同意を持たない（K-944）",
+    "test_post_ops_members_mfa_pending": "付けるだけのセッションは運営の口に届かない（K945-API-007）"
+   }
+  }
+ }
+}

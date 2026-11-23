@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 370（作った 97・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 263・部品 56・設定 41
+API 370（作った 97・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 265・部品 56・設定 41
 
 ## 共通の処理
 
@@ -255,7 +255,7 @@ API 370（作った 97・後のフェーズの行為だけ 20）・前の道す�
 | `recordPayment` | POST /api/v1/ops/invoices/:id/payments | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） |  |
 | `exportOpsInvoices` | POST /api/v1/ops/invoices/export | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） |  |
 | `issueOpsInvoices` | POST /api/v1/ops/invoices/issue | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） |  |
-| `listOpsMembers` | GET /api/v1/ops/members | 取得（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） | K-985 |
+| `listOpsMembers` | GET /api/v1/ops/members | 取得（ops_members）— 生きている運営の人を作った順に見る（できること・パスキー・自分・最後の 1 人の印） | F12 | 契約だけ（501） | K-985 |
 | `addOpsMember` | POST /api/v1/ops/members | 作成・実行（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） | K-985 |
 | `updateOpsMemberCaps` | PATCH /api/v1/ops/members/:id | 更新（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |
 | `removeOpsMember` | DELETE /api/v1/ops/members/:id | 削除（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |

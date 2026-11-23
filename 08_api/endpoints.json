@@ -1,8 +1,8 @@
 {
  "meta": {
   "version": "v3.1",
-  "created_at": "2026-11-23",
-  "frozen_at": "2026-11-23",
+  "created_at": "2026-11-24",
+  "frozen_at": "2026-11-24",
   "base_url": "/api/v1",
   "_doc": "05_flow/build_api.py が機械生成。手で直さない。凍結後の変更は決定（ADR）＋影響解析",
   "source": [
@@ -3957,7 +3957,7 @@
       "error": "validation_failed",
       "code": "VALIDATION_ERROR"
      },
-     "trigger": "印が無い・43 字の base64url でない・知らない欄（strict）",
+     "trigger": "印が無い・43 字の base64url でない・名前が空・空白だけ・41 字以上（K-985）・知らない欄（strict）",
      "ears_form": "UNWANTED: IF 入力が決まりに合わないなら、Kaname は 422 を返し、リンクを使わない"
     },
     {
@@ -36770,7 +36770,7 @@
     "role": "ops",
     "scheme": "session（Better Auth・sessions 表を見る。app.tenant_id / app.user_id / app.role を SET LOCAL）"
    },
-   "rate_limit": "120/min/user",
+   "rate_limit": "60/min/user",
    "access_control_policies": [],
    "outputs_4xx": [
     {
@@ -36808,8 +36808,8 @@
       "error": "rate_limited",
       "retry_after_sec": 60
      },
-     "trigger": "120/min/user",
-     "ears_form": "UNWANTED: IF 120/min/user を超えたら、Kaname は 429 と retry_after_sec を返す"
+     "trigger": "60/min/user",
+     "ears_form": "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す"
     },
     {
      "status": 403,
@@ -36847,7 +36847,7 @@
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
     "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
-    "UNWANTED: IF 120/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
+    "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",
     "UNWANTED: IF 付けるまで進めないの印が立ったセッションなら、Kaname は 403 と MFA_REQUIRED を返し、副作用を起こさない",
     "UNWANTED: IF 入口でセッションを解く所が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、止める側に倒して副作用を起こさない",
@@ -36860,7 +36860,7 @@
     "ファイル / オブジェクト"
    ],
    "side_effect_ordering": null,
-   "description": "取得（ops）— 運営の人を足し、できることを決める",
+   "description": "取得（ops_members）— 生きている運営の人を作った順に見る（できること・パスキー・自分・最後の 1 人の印）",
    "implementation_path": "apps/api/src/routes/ops_members.ts::listOpsMembers",
    "permission": {
     "who": "ops:ops_people",
@@ -36873,15 +36873,13 @@
     "path": [],
     "body": null,
     "query": [
-     "scope_id",
      "cursor",
-     "limit",
-     "sort"
+     "limit"
     ]
    },
    "outputs_2xx": {
     "status": 200,
-    "body": "{ data: OpsMembers[], meta?: { cursor, limit, total } }"
+    "body": "{ data: OpsMembers[] }"
    },
    "id": "EP-214",
    "feature_id": "F-016"
@@ -36897,8 +36895,7 @@
    ],
    "related_entities": [
     "E-071",
-    "E-072",
-    "E-091"
+    "E-072"
    ],
    "choke_points": [
     "C2",
@@ -36918,9 +36915,7 @@
     "scheme": "session（Better Auth・sessions 表を見る。app.tenant_id / app.user_id / app.role を SET LOCAL）"
    },
    "rate_limit": "60/min/user",
-   "access_control_policies": [
-    "invitations_permission_write"
-   ],
+   "access_control_policies": [],
    "outputs_4xx": [
     {
      "status": 401,
@@ -36942,22 +36937,52 @@
     },
     {
      "status": 409,
-     "code": "CONFLICT",
+     "code": "E-OPS-015",
      "body": {
-      "error": "conflict"
+      "error": "conflict",
+      "code": "E-OPS-015"
      },
-     "trigger": "二重送信・同時編集・既に登録済み（冪等キーで防ぐ）",
-     "ears_form": "UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない"
+     "errors": [
+      "E-OPS-015"
+     ],
+     "trigger": "同じメールの生きている運営の人が居る（大文字・前後の空白をそろえた後で比べる）。欄・details は付けない",
+     "ears_form": "UNWANTED: IF 同じメールの運営の人がもう居るなら、Kaname は 409 と E-OPS-015 を返し、人もリンクもメールも作らない"
     },
     {
      "status": 422,
      "code": "VALIDATION_ERROR",
      "body": {
       "error": "validation_failed",
-      "details": []
+      "code": "VALIDATION_ERROR"
      },
-     "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
-     "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+     "trigger": "メールが無い・形が違う・255 字以上、できることが無い・空・知らない字・重なり・10 個以上・並びでない、知らない欄（strict）",
+     "ears_form": "UNWANTED: IF 入力が決まりに合わないなら、Kaname は 422 と欄ごとの理由を返し、人もリンクもメールも作らない"
+    },
+    {
+     "status": 409,
+     "code": "E-OPS-016",
+     "body": {
+      "error": "conflict",
+      "code": "E-OPS-016"
+     },
+     "errors": [
+      "E-OPS-016"
+     ],
+     "trigger": "同じメールの人が顧客の会社に居る（運営の人は運営の会社だけに居る）。欄・details は付けない",
+     "ears_form": "UNWANTED: IF メールが顧客のアカウントで使われているなら、Kaname は 409 と E-OPS-016 を返し、運営の人を作らず顧客の利用者も消さない"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "unavailable",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "認証の利用者を作る・運営の人とリンクと記録を書く DB が落ちた（作った利用者は消してから返す）",
+     "ears_form": "UNWANTED: IF 書けないなら、Kaname は 503 と E-PAGE-003 を返し、人もリンクもメールも残さない"
     },
     {
      "status": 413,
@@ -37014,8 +37039,10 @@
     "EVENT-DRIVEN: WHEN POST /api/v1/ops/members が「運営の人ごとに 問い合わせ・中を見る・お金・止める・お知らせ・配るもの・値段の案・値段を決める・運営の人 を付ける」として呼ばれたとき THEN Kaname は「運営の人はパスキーでしか入れない」を行い 2xx を返す",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
-    "UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない",
-    "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF 同じメールの運営の人がもう居るなら、Kaname は 409 と E-OPS-015 を返し、人もリンクもメールも作らない",
+    "UNWANTED: IF 入力が決まりに合わないなら、Kaname は 422 と欄ごとの理由を返し、人もリンクもメールも作らない",
+    "UNWANTED: IF メールが顧客のアカウントで使われているなら、Kaname は 409 と E-OPS-016 を返し、運営の人を作らず顧客の利用者も消さない",
+    "UNWANTED: IF 書けないなら、Kaname は 503 と E-PAGE-003 を返し、人もリンクもメールも残さない",
     "UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない",
     "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",

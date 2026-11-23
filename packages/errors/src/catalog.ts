@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。263 件
+// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。265 件
 export interface CatalogEntry {
   id: string;
   cls: string;
@@ -4758,6 +4758,42 @@ export const CATALOG: Record<string, CatalogEntry> = {
     "where": {
       "screen": "login",
       "state": "ops-passkey-only"
+    }
+  },
+  "E-OPS-015": {
+    "id": "E-OPS-015",
+    "cls": "conflict",
+    "message": "この人はもう運営の人です",
+    "action": "できることを変えるときは、一覧の［変える］から",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-OPS-015",
+    "must_not": true,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "ops-team",
+      "state": "op-team-add"
+    }
+  },
+  "E-OPS-016": {
+    "id": "E-OPS-016",
+    "cls": "conflict",
+    "message": "このメールは顧客のアカウントで使われています。運営の人には別のメールを使ってください",
+    "action": "別のメールで足す",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-OPS-016",
+    "must_not": true,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "ops-team",
+      "state": "op-team-add"
     }
   }
 };

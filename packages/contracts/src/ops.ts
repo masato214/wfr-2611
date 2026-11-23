@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml）。手で直さない。openapi:e5f18ca4fe917e28
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml）。手で直さない。openapi:e333a21e8f6ac00a
 import type * as T from "./types.js";
 
 /** 口ごとの型：path の値・問い合わせ・入力・成功の答えの data */
@@ -216,8 +216,8 @@ export interface Ops {
   recordPayment: { params: { id: string }; query: never; body: T.PaymentsInput; data: T.Payments };
   exportOpsInvoices: { params: never; query: never; body: T.ExportJobsInput; data: T.ExportJobs };
   issueOpsInvoices: { params: never; query: never; body: T.InvoicesInput; data: T.Invoices };
-  listOpsMembers: { params: never; query: { "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.OpsMembers[] };
-  addOpsMember: { params: never; query: never; body: T.OpsMembersInput; data: T.OpsMembers };
+  listOpsMembers: { params: never; query: { "cursor"?: string | number; "limit"?: string | number }; body: never; data: T.OpsMemberRow[] };
+  addOpsMember: { params: never; query: never; body: T.OpsMemberAddInput; data: T.OpsMemberRow };
   updateOpsMemberCaps: { params: { id: string }; query: never; body: T.OpsMembersInput; data: T.OpsMembers };
   removeOpsMember: { params: { id: string }; query: never; body: never; data: T.OpsMembers };
   listOpsNotices: { params: never; query: { "kind"?: string | number; "state"?: string | number; "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.Notices[] };

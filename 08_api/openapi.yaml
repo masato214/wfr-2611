@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Kaname API
   version: 1.0.0
-  description: Mock-Driven Contract Generation。2026-11-23 凍結。信頼源は 08_api/endpoints.json。x-acts / x-screens / x-choke-points / x-source で行為・画面・関門・決定に辿れる
+  description: Mock-Driven Contract Generation。2026-11-24 凍結。信頼源は 08_api/endpoints.json。x-acts / x-screens / x-choke-points / x-source で行為・画面・関門・決定に辿れる
 servers:
 - url: /api/v1
 components:
@@ -12281,10 +12281,47 @@ components:
         token:
           type: string
           pattern: ^[A-Za-z0-9_-]{43}$
+        name:
+          type: string
+          nullable: true
+          pattern: \S
+          minLength: 1
+          maxLength: 40
       additionalProperties: false
       x-operation: startOpsSetup
       required:
       - token
+      x-required-by: hooks
+    OpsMemberAddInput:
+      type: object
+      properties:
+        email:
+          type: string
+          minLength: 3
+          maxLength: 254
+          pattern: ^[^@\s]+@[^@\s]+\.[^@\s]+$
+        caps:
+          type: array
+          items:
+            type: string
+            enum:
+            - inquiry
+            - peek
+            - money
+            - stop
+            - notice
+            - distribute
+            - plan_propose
+            - plan_decide
+            - ops_people
+          minItems: 1
+          maxItems: 9
+          uniqueItems: true
+      additionalProperties: false
+      x-operation: addOpsMember
+      required:
+      - email
+      - caps
       x-required-by: hooks
     ScopeOverview:
       type: object
@@ -14351,6 +14388,31 @@ components:
         token:
           type: string
       x-operation: startOpsSetup
+    OpsMemberRow:
+      type: object
+      properties:
+        member_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+        caps:
+          type: array
+          items:
+            type: string
+        has_passkey:
+          type: boolean
+        setup_pending:
+          type: boolean
+        is_self:
+          type: boolean
+        locked_caps:
+          type: array
+          items:
+            type: string
+      x-operation: addOpsMember
     Error:
       type: object
       properties:
@@ -34735,7 +34797,7 @@ paths:
   /api/v1/ops/members:
     get:
       operationId: listOpsMembers
-      summary: 取得（ops）— 運営の人を足し、できることを決める
+      summary: 取得（ops_members）— 生きている運営の人を作った順に見る（できること・パスキー・自分・最後の 1 人の印）
       tags:
       - ops_members
       x-acts:
@@ -34766,23 +34828,6 @@ paths:
           type: integer
           minimum: 1
           maximum: 200
-      - name: sort
-        in: query
-        allowEmptyValue: true
-        schema:
-          type: string
-          enum:
-          - caps
-          - created_at
-          - created_by
-          - deleted_at
-          - id
-          - member_id
-          - ops_role_id
-          - revoked_at
-          - tenant_id
-          - updated_at
-          - updated_by
       responses:
         '200':
           description: 成功
@@ -34794,7 +34839,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/OpsMembers'
+                      $ref: '#/components/schemas/OpsMemberRow'
                   meta:
                     type: object
         '401':
@@ -34852,7 +34897,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/OpsMembersInput'
+              $ref: '#/components/schemas/OpsMemberAddInput'
       responses:
         '201':
           description: 成功
@@ -34862,9 +34907,12 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/OpsMembers'
+                    $ref: '#/components/schemas/OpsMemberRow'
                   meta:
                     type: object
+                    properties:
+                      mail_sent:
+                        type: boolean
         '401':
           description: UNAUTHENTICATED
           content:
@@ -34878,13 +34926,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
         '409':
-          description: CONFLICT
+          description: E-OPS-015／E-OPS-016
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '422':
           description: VALIDATION_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: E-PAGE-003
           content:
             application/json:
               schema:
@@ -34897,12 +34951,6 @@ paths:
                 $ref: '#/components/schemas/Error'
         '429':
           description: RATE_LIMITED
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '503':
-          description: E-PAGE-003
           content:
             application/json:
               schema:

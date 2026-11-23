@@ -471,7 +471,7 @@ SCREEN_API = {
     ],
     "ops-team": [
         ("GET", "/ops/members", "A134", "ops_members", "listOpsMembers", ["passkeys"]),
-        ("POST", "/ops/members", "A134", "ops_members", "addOpsMember", ["invitations", "ops_audit_events"]),
+        ("POST", "/ops/members", "A134", "ops_members", "addOpsMember", ["ops_audit_events"]),   # 招待の表は使わない。リンクの表 ops_setup_links は関数だけが触る裏の表で ER 図の対象の外（K-985）
         ("PATCH", "/ops/members/:id", "A134", "ops_members", "updateOpsMemberCaps", ["ops_audit_events"]),
         ("DELETE", "/ops/members/:id", "A134", "ops_members", "removeOpsMember", ["sessions", "ops_audit_events"]),
     ],

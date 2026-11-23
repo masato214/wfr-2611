@@ -1,4 +1,4 @@
-# Kaname API 設計書 v1.0（2026-11-23 凍結）
+# Kaname API 設計書 v1.0（2026-11-24 凍結）
 
 > 信頼源は `08_api/endpoints.json` と `openapi.yaml`（05_flow/build_api.py が機械生成）。
 
@@ -226,8 +226,8 @@
 | EP-211 | POST | `/api/v1/ops/invoices/:id/payments` | 作成・実行（ops）— 請求書を出し、入金を記録する | A72 | 1 | ops | C2 | 401 403 404 409 422 413 429 403 403 503 |
 | EP-212 | POST | `/api/v1/ops/invoices/export` | 作成・実行（ops）— 請求書を出し、入金を記録する | A72 | 1 | ops | C2 | 401 403 409 422 413 429 403 403 503 |
 | EP-213 | POST | `/api/v1/ops/invoices/issue` | 作成・実行（ops）— 請求書を出し、入金を記録する | A72 | 1 | ops | C2 | 401 403 409 422 413 429 403 403 503 |
-| EP-214 | GET | `/api/v1/ops/members` | 取得（ops）— 運営の人を足し、できることを決める | A134 | 1 | ops | C4 | 401 403 422 429 403 403 503 |
-| EP-215 | POST | `/api/v1/ops/members` | 作成・実行（ops）— 運営の人を足し、できることを決める | A134 | 1 | ops | C2 C4 | 401 403 409 422 413 429 403 403 503 |
+| EP-214 | GET | `/api/v1/ops/members` | 取得（ops_members）— 生きている運営の人を作った順に見る（で | A134 | 1 | ops | C4 | 401 403 422 429 403 403 503 |
+| EP-215 | POST | `/api/v1/ops/members` | 作成・実行（ops）— 運営の人を足し、できることを決める | A134 | 1 | ops | C2 C4 | 401 403 409 422 409 503 413 429 403 403 503 |
 | EP-216 | PATCH | `/api/v1/ops/members/:id` | 更新（ops）— 運営の人を足し、できることを決める | A134 | 1 | ops | C2 C4 | 401 403 404 422 413 429 403 403 503 |
 | EP-217 | DELETE | `/api/v1/ops/members/:id` | 削除（ops）— 運営の人を足し、できることを決める | A134 | 1 | ops | C2 C4 | 401 403 404 422 429 403 403 503 |
 | EP-218 | GET | `/api/v1/ops/notices` | 取得（ops）— お知らせを出す | A71 | 1 | ops |  | 401 403 422 429 403 403 503 |
@@ -401,4 +401,4 @@
 
 ## 6. 変更履歴
 
-- v1.0 2026-11-23 凍結（endpoints 370）
+- v1.0 2026-11-24 凍結（endpoints 370）

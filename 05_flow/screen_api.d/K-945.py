@@ -8,7 +8,7 @@ SCREEN_API = {
 }
 
 INPUTS = {
-    "startOpsSetup": ("OpsSetupInput", {"token": "string"}),
+    "startOpsSetup": ("OpsSetupInput", {"token": "string", "name": "string?"}),   # name は K-985 が足した（入るときに本人が付ける・任意・D-156.66）
 }
 
 # apps/api/src/features/F12/ops-setup/setup.ts（印が無い・ほかの欄は 422・strict）
@@ -19,7 +19,8 @@ REQUIRED_INPUTS = {
 # 表は sessions（K-313 の resetPassword と同じ。リンクの表 ops_setup_links は関数だけが触る裏の表で ER 図の対象の外）
 # 印は 32 バイトの乱数の base64url（43 字）
 VALUE_RANGES = {
-    "startOpsSetup": {"token": {"pattern": "^[A-Za-z0-9_-]{43}$"}},
+    "startOpsSetup": {"token": {"pattern": "^[A-Za-z0-9_-]{43}$"},
+                      "name": {"pattern": "\\S", "minLength": 1, "maxLength": 40}},   # 前後の空白を落として 1〜40 字・空白だけは 422（D-156.38 と同じ形・K-985）
 }
 
 RESPONSES = {
@@ -43,7 +44,7 @@ ERRORS_4XX = {
          "trigger": "形どおりのリンクの印が使えない（無い・使った・期限切れ。どれかを見分けさせない）。欄・details は付けない",
          "ears_form": "UNWANTED: IF リンクの印が使えないなら、Kaname は 409 と E-PAGE-006 を返し、セッションを作らない"},
         {"status": 422, "code": "VALIDATION_ERROR", "body": {"error": "validation_failed", "code": "VALIDATION_ERROR"},
-         "trigger": "印が無い・43 字の base64url でない・知らない欄（strict）",
+         "trigger": "印が無い・43 字の base64url でない・名前が空・空白だけ・41 字以上（K-985）・知らない欄（strict）",
          "ears_form": "UNWANTED: IF 入力が決まりに合わないなら、Kaname は 422 を返し、リンクを使わない"},
         {"status": 503, "code": "E-PAGE-003", "body": {"error": "unavailable", "code": "E-PAGE-003"}, "errors": ["E-PAGE-003"],
          "trigger": "セッションを作る・入り方を書く DB が落ちた（認証側のセッションは消してから返す）",

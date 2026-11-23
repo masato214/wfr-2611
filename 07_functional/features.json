@@ -1,7 +1,7 @@
 {
  "meta": {
   "version": "v3.1",
-  "created_at": "2026-11-23",
+  "created_at": "2026-11-24",
   "_doc": "05_flow/build_functional.py が flow.json・ER図・モック・errors.json から生成。手で直さない。",
   "source": [
    "D-053.1",
@@ -495,7 +495,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-001",
     "D-001.5",
@@ -630,7 +630,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-026",
     "D-037",
@@ -720,7 +720,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-042",
     "D-053.3",
@@ -1778,7 +1778,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-002",
     "D-003.1",
@@ -2310,7 +2310,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-003.7",
     "D-004",
@@ -2940,7 +2940,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-003.7",
     "D-008.2",
@@ -3193,7 +3193,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-006.2",
     "D-010",
@@ -3511,7 +3511,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-003",
     "D-003.1",
@@ -3704,7 +3704,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-003.1",
     "D-003.3",
@@ -4465,7 +4465,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-003.1",
     "D-004.10",
@@ -4950,7 +4950,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-003",
     "D-003.1",
@@ -5394,7 +5394,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-010.7",
     "D-015",
@@ -6013,7 +6013,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-003.7",
     "D-010",
@@ -6148,7 +6148,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-030",
     "D-030.10",
@@ -6350,7 +6350,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-002",
     "D-002.2",
@@ -6415,7 +6415,9 @@
     "E-ACT-039",
     "E-ACT-041",
     "E-PAY-005",
-    "E-DISC-002"
+    "E-DISC-002",
+    "E-OPS-015",
+    "E-OPS-016"
    ],
    "policies": [
     "C2",
@@ -6478,7 +6480,6 @@
     "E-086",
     "E-087",
     "E-088",
-    "E-091",
     "E-093",
     "E-094",
     "E-095",
@@ -6827,6 +6828,8 @@
     "EVENT-DRIVEN: WHEN R6 が「新しい版の案（前後の差・いまの顧客の扱い・理由）を作り、値段を決められる別の人が影響を見て決めるか差し戻す」したとき THEN Kaname は「決めるといまの顧客にお知らせを出し、記録に残す（消せない）」を行う",
     "UNWANTED: IF スキルの一式に資格情報・会社名・個人名が混ざっている、テストの場面が 1 つでも失敗している、または版のメモが空のまま「出す」を押した THEN Kaname は「この版は出せません。テストで失敗した場面があります（外部サービスの規約変更）。直して再テストしてください」を出し、失敗した場面を見る／直して「上げてテストで動かす」（E-ACT-041）",
     "EVENT-DRIVEN: WHEN R6 が「運営の人ごとに 問い合わせ・中を見る・お金・止める・お知らせ・配るもの・値段の案・値段を決める・運営の人 を付ける」したとき THEN Kaname は「運営の人はパスキーでしか入れない」を行う",
+    "UNWANTED: IF 運営の人を足すとき、同じメールの運営の人がもう居る（大文字・前後の空白はそろえて比べる） THEN Kaname は「この人はもう運営の人です」を出し、できることを変えるときは、一覧の［変える］から（E-OPS-015）",
+    "UNWANTED: IF 運営の人を足すとき、同じメールの人が顧客の会社に居る THEN Kaname は「このメールは顧客のアカウントで使われています。運営の人には別のメールを使ってください」を出し、別のメールで足す（E-OPS-016）",
     "EVENT-DRIVEN: WHEN R6 が「セキュリティの出来事を見る」したとき THEN Kaname は「失敗したログイン・鍵の失効・不審な接続の記録」を行う",
     "UNWANTED: IF セキュリティの出来事（失敗したログイン・鍵の失効・不審な接続）の記録が読めない、または追記に失敗した THEN Kaname は「セキュリティの記録を読み込めませんでした。運営に連絡してください」を出し、再読み込み／運営に連絡する（E-ACT-039）",
     "EVENT-DRIVEN: WHEN R6 が「会社の詳細で運営マネージドを許可する」したとき THEN Kaname は「llm_routes の許可を更新。3 社の使用量を集計して費用へ」を行う",
@@ -6838,7 +6841,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-002",
     "D-002.2",
@@ -7215,7 +7218,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-006.5",
     "D-013.1",
@@ -7377,7 +7380,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-030.6",
     "D-037",
@@ -7508,7 +7511,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-010.7",
     "D-019.3",
@@ -7702,7 +7705,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-026",
     "D-026.2",
@@ -7983,7 +7986,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-125.121",
     "D-125.123",
@@ -8124,7 +8127,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-125.121",
     "D-125.122",
@@ -8430,7 +8433,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-007",
     "D-012",
@@ -8853,7 +8856,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-003.9",
     "D-007",
@@ -8974,7 +8977,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-013",
     "D-014",
@@ -9219,7 +9222,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-010",
     "D-038",
@@ -9330,7 +9333,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-004",
     "D-007",
@@ -9407,7 +9410,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-029",
     "D-025",
@@ -9473,7 +9476,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-015",
     "D-044",
@@ -9571,7 +9574,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-012",
     "D-043",
@@ -9639,7 +9642,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-002",
     "D-004",
@@ -9706,7 +9709,7 @@
    "checklist": [],
    "legacy_drift_notes": null,
    "status": "decided",
-   "decided_at": "2026-11-23",
+   "decided_at": "2026-11-24",
    "source": [
     "D-017",
     "D-042",
