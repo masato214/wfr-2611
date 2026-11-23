@@ -4,7 +4,9 @@
 //                      ・ほかに「運営の人を持ち、パスキーのある」運営の人が居れば何もしない（"already"・その人が足し直す）
 //                      ・同じメールの運営の人が居れば人を増やさず新しいリンクを送る（最後の 1 人がパスキーを無くしたとき・前のリンクは使えなくなる）
 //                      ・メールを送れなければ "mail_failed"（送れたと言わない・G-15）
-//   issueOpsSetupLink … リンクの印を作り、その人の使っていないリンクを使えなくして新しい行を足す（K-985 も使う）。DB には sha256 の 16 進だけ
+//   newOpsSetupToken  … リンクの印と sha256 の 16 進を作る（K-985 の運営の人を足す口も同じ物を使う）
+//   opsSetupUrl       … リンクの住所（印は # の後）
+//   issueOpsSetupLink … リンクの印を作り、その人の使っていないリンクを使えなくして新しい行を足す。DB には sha256 の 16 進だけ
 //   cliMailer         … 台本の本物の送り出し。signedMail（署名と返信先）で包み、from は mailFrom。{ error } を見て落ちたら投げる
 // 印も宛先も標準出力・ログに出さない（宛先は mailTag の印だけ）。
 import { randomBytes } from "node:crypto";
@@ -44,8 +46,11 @@ export interface FirstOpsInput {
 
 type Queryable = Pick<pg.PoolClient, "query">;
 
-/** 32 バイトの乱数の base64url（43 字） */
-const newToken = (): string => randomBytes(32).toString("base64url");
+/** リンクの印（32 バイトの乱数の base64url・43 字）と、DB に残す sha256 の 16 進。印そのものは DB に残さない（K-945・K-985 が使う） */
+export const newOpsSetupToken = (): { token: string; hash: string } => {
+  const token = randomBytes(32).toString("base64url");
+  return { token, hash: hashToken(token) };
+};
 
 /** リンクの住所。印は # の後（問い合わせの値に載せない＝サーバーの記録に残らない） */
 export const opsSetupUrl = (webBaseURL: string, token: string): string =>
@@ -57,7 +62,7 @@ export async function issueOpsSetupLink(
   opsMemberId: string,
   createdBy?: string | null,
 ): Promise<string> {
-  const token = newToken();
+  const { token, hash } = newOpsSetupToken();
   await db.query(
     "update ops_setup_links set expires_at = least(expires_at, now()) where ops_member_id = $1 and used_at is null",
     [opsMemberId],
@@ -65,7 +70,7 @@ export async function issueOpsSetupLink(
   await db.query(
     `insert into ops_setup_links (ops_member_id, token_hash, expires_at, created_by)
      values ($1, $2, now() + make_interval(hours => $3), $4)`,
-    [opsMemberId, hashToken(token), OPS_SETUP_HOURS, createdBy ?? null],
+    [opsMemberId, hash, OPS_SETUP_HOURS, createdBy ?? null],
   );
   return token;
 }
