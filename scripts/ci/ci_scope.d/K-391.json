@@ -1,0 +1,28 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/ticket-decision-update.ts",
+    "apps/api/src/features/F6/decisions/update.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F6/decision-update.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F6/decision-update.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/patch_ticket_decisions_id.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F6/decision-update.test.ts": "改める口の hooks のファイル（apps/api/src/hooks/ticket-decision-update.ts）を最初の要求の前に動的 import で読む（data_links で結ぶ・K-391）",
+  "apps/api/test/features/contract/k144.d/K-391.ts": "この葉の hooks のファイルを本体の準備の中で動的 import で読む（data_links で結ぶ・K-391）"
+ }
+}

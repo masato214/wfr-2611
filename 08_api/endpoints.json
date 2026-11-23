@@ -45,8 +45,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -3772,7 +3771,6 @@
    "rate_limit": "10/min/ip",
    "access_control_policies": [
     "notifications_self_only_write",
-    "notifications_permission_write",
     "invitations_permission_write"
    ],
    "outputs_4xx": [
@@ -4221,8 +4219,7 @@
    },
    "rate_limit": "10/min/ip",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -8998,8 +8995,7 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "messages_conversation_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -10903,7 +10899,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "notifications_self_only_write",
-    "notifications_permission_write",
     "invitations_permission_write"
    ],
    "outputs_4xx": [
@@ -11610,7 +11605,6 @@
    "access_control_policies": [
     "messages_conversation_write",
     "notifications_self_only_write",
-    "notifications_permission_write",
     "ticket_sections_ticket_write"
    ],
    "outputs_4xx": [
@@ -11802,8 +11796,7 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "messages_conversation_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -11994,8 +11987,7 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "messages_conversation_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -13037,7 +13029,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "notifications_self_only_write",
-    "notifications_permission_write",
     "invitations_permission_write",
     "client_contacts_write"
    ],
@@ -18750,7 +18741,6 @@
     "inquiries_self_only_write",
     "inquiries_ops_write",
     "notifications_self_only_write",
-    "notifications_permission_write",
     "attachments_permission_write"
    ],
    "outputs_4xx": [
@@ -19080,8 +19070,7 @@
     "messages_conversation_write",
     "inquiries_self_only_write",
     "inquiries_ops_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -19614,7 +19603,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "notifications_self_only_write",
-    "notifications_permission_write",
     "invitations_permission_write"
    ],
    "outputs_4xx": [
@@ -19977,7 +19965,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "notifications_self_only_write",
-    "notifications_permission_write",
     "invitations_permission_write"
    ],
    "outputs_4xx": [
@@ -21281,8 +21268,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -24379,8 +24365,7 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "messages_conversation_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -24559,7 +24544,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "notifications_self_only_write",
-    "notifications_permission_write",
     "knowledge_links_write"
    ],
    "outputs_4xx": [
@@ -26454,7 +26438,6 @@
    "access_control_policies": [
     "policies_permission_write",
     "notifications_self_only_write",
-    "notifications_permission_write",
     "learning_candidates_self_write"
    ],
    "outputs_4xx": [
@@ -31606,8 +31589,7 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "sessions_permission_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -32699,8 +32681,7 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "members_permission_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -34254,7 +34235,7 @@
    },
    "rate_limit": "120/min/user",
    "access_control_policies": [
-    "notifications_tenant_read",
+    "notifications_self_read",
     "notifications_ops_read_with_grant"
    ],
    "outputs_4xx": [
@@ -34285,6 +34266,19 @@
      },
      "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
      "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+    },
+    {
+     "status": 409,
+     "code": "CONFLICT",
+     "body": {
+      "error": "conflict",
+      "code": "E-NTF-001"
+     },
+     "errors": [
+      "E-NTF-001"
+     ],
+     "trigger": "続きの鍵が形（base64url の 1〜200 字）には合うが、今の状態では読めない（JSON でない・時刻や id の形でない・古い・壊れた）",
+     "ears_form": "UNWANTED: IF 続きの鍵が形に合うのに今の状態では読めないなら、Kaname は 409 と E-NTF-001 を返し、最初から読み直すよう促す"
     },
     {
      "status": 429,
@@ -34332,6 +34326,7 @@
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
     "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF 続きの鍵が形に合うのに今の状態では読めないなら、Kaname は 409 と E-NTF-001 を返し、最初から読み直すよう促す",
     "UNWANTED: IF 120/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",
     "UNWANTED: IF 付けるまで進めないの印が立ったセッションなら、Kaname は 403 と MFA_REQUIRED を返し、副作用を起こさない",
@@ -34342,7 +34337,7 @@
    "list_ignores_scope": false,
    "outward_side_effects": [],
    "side_effect_ordering": null,
-   "description": "取得（notifications）— 知らせを見てチケットへ行く",
+   "description": "取得（notifications）— 自分宛ての知らせを新しい順に見る（未読だけ・人で絞る・20 件ずつ・読んだものは 30 日分）",
    "implementation_path": "apps/api/src/routes/notifications.ts::listNotifications",
    "permission": {
     "who": "self",
@@ -34355,15 +34350,15 @@
     "path": [],
     "body": null,
     "query": [
-     "scope_id",
+     "unread",
+     "actor_member_id",
      "cursor",
-     "limit",
-     "sort"
+     "limit"
     ]
    },
    "outputs_2xx": {
     "status": 200,
-    "body": "{ data: Notifications[], meta?: { cursor, limit, total } }"
+    "body": "{ data: Notifications[], meta: { next_cursor, actors } }"
    },
    "id": "EP-199",
    "feature_id": "F-004"
@@ -34399,8 +34394,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -34565,8 +34559,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -35417,8 +35410,7 @@
     "messages_conversation_write",
     "inquiries_self_only_write",
     "inquiries_ops_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -36117,7 +36109,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "notifications_self_only_write",
-    "notifications_permission_write",
     "plan_versions_ops_write",
     "subscriptions_permission_write",
     "invoices_permission_write"
@@ -37565,8 +37556,7 @@
    "access_control_policies": [
     "notice_deliveries_self_only_write",
     "notice_deliveries_permission_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -39213,8 +39203,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -39394,8 +39383,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -40179,8 +40167,7 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "tenant_distributions_permission_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -41063,7 +41050,6 @@
    "access_control_policies": [
     "tenant_distributions_permission_write",
     "notifications_self_only_write",
-    "notifications_permission_write",
     "skill_versions_ops_write"
    ],
    "outputs_4xx": [
@@ -42447,8 +42433,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -43196,7 +43181,6 @@
     "account_events_self_only_write",
     "account_events_permission_write",
     "notifications_self_only_write",
-    "notifications_permission_write",
     "subscriptions_permission_write"
    ],
    "outputs_4xx": [
@@ -43380,7 +43364,6 @@
     "account_events_permission_write",
     "sessions_permission_write",
     "notifications_self_only_write",
-    "notifications_permission_write",
     "subscriptions_permission_write"
    ],
    "outputs_4xx": [
@@ -44039,8 +44022,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -44529,7 +44511,6 @@
     "conversations_self_only_write",
     "bridge_jobs_self_only_write",
     "notifications_self_only_write",
-    "notifications_permission_write",
     "attachments_permission_write"
    ],
    "outputs_4xx": [
@@ -44856,8 +44837,7 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "messages_conversation_write",
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -48009,7 +47989,7 @@
     "approvals_ops_read_with_grant",
     "sessions_tenant_read",
     "sessions_ops_read_with_grant",
-    "notifications_tenant_read",
+    "notifications_self_read",
     "notifications_ops_read_with_grant",
     "ticket_handovers_read",
     "ticket_handovers_ops_read_with_grant"
@@ -48175,19 +48155,23 @@
      "status": 403,
      "code": "FORBIDDEN",
      "body": {
-      "error": "forbidden"
+      "error": "forbidden",
+      "code": "FORBIDDEN"
      },
-     "trigger": "権限（誰に×何に×どの層で×できること）が無い、または運営が許可の無い会社を読もうとした",
-     "ears_form": "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）"
+     "errors": [],
+     "trigger": "チケットは見えるが書けない人（読むだけの人。入口の行の守り）",
+     "ears_form": "UNWANTED: IF チケットを書けない人なら、Kaname は 403 を返し、項目も証跡も変えない"
     },
     {
      "status": 404,
      "code": "NOT_FOUND",
      "body": {
-      "error": "not_found"
+      "error": "not_found",
+      "code": "NOT_FOUND"
      },
-     "trigger": "無い・消えた・取り消された（期限切れ・削除済み・他社の行）",
-     "ears_form": "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）"
+     "errors": [],
+     "trigger": "項目が無い・消した・チケットが見えない・ほかの会社の物・消された（欄も details も付けない＝在るかを漏らさない）",
+     "ears_form": "UNWANTED: IF 項目が無いか見えないなら、Kaname は 404 を返し、在るかを漏らさず項目も証跡も変えない"
     },
     {
      "status": 422,
@@ -48196,8 +48180,74 @@
       "error": "validation_failed",
       "details": []
      },
-     "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
-     "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+     "errors": [],
+     "trigger": "版が無い・1 未満・整数でない／checked か title のどちらか 1 つでない／checked が真偽でない／題名が空白だけか 200 字を超える／体に知らない欄（strict）",
+     "ears_form": "UNWANTED: IF 入力が決まりに合わないなら、Kaname は 422 と欄ごとの理由を返し、項目も証跡も変えない"
+    },
+    {
+     "status": 409,
+     "code": "E-SPEC-020",
+     "body": {
+      "error": "conflict",
+      "code": "E-SPEC-020"
+     },
+     "errors": [
+      "E-SPEC-020"
+     ],
+     "trigger": "送った版が今の版と違う（先にほかの人が変えた・同じ版から同時に 2 人が直した）",
+     "ears_form": "UNWANTED: IF 送った版が今の版と違うなら、Kaname は 409 と E-SPEC-020 を返し、項目も版も証跡も変えない"
+    },
+    {
+     "status": 409,
+     "code": "E-SPEC-021",
+     "body": {
+      "error": "conflict",
+      "code": "E-SPEC-021"
+     },
+     "errors": [
+      "E-SPEC-021"
+     ],
+     "trigger": "チェックが付いている項目の文を直そうとした（外してから直す）",
+     "ears_form": "UNWANTED: IF チェックが付いている項目の文を直そうとしたなら、Kaname は 409 と E-SPEC-021 を返し、項目も版も証跡も変えない"
+    },
+    {
+     "status": 409,
+     "code": "E-SPEC-001",
+     "body": {
+      "error": "conflict",
+      "code": "E-SPEC-001"
+     },
+     "errors": [
+      "E-SPEC-001"
+     ],
+     "trigger": "チケットが完了した（完了の確定と同時に来たときも、完了の後に来た方）",
+     "ears_form": "UNWANTED: IF チケットが完了しているなら、Kaname は 409 と E-SPEC-001 を返し、項目も証跡も変えない"
+    },
+    {
+     "status": 409,
+     "code": "E-SPEC-022",
+     "body": {
+      "error": "conflict",
+      "code": "E-SPEC-022"
+     },
+     "errors": [
+      "E-SPEC-022"
+     ],
+     "trigger": "ナレッジの「必ず守る」から入った項目の文を直そうとした（チェックの付け外しはできる）",
+     "ears_form": "UNWANTED: IF ナレッジから入った項目の文を直そうとしたなら、Kaname は 409 と E-SPEC-022 を返し、項目も版も証跡も変えない"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "dependency",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "項目と証跡を書く DB の関数（app.test_spec_update）が使えない・書けない",
+     "ears_form": "UNWANTED: IF 書けないなら、Kaname は 503 と E-PAGE-003 を返し、項目も証跡も残さない"
     },
     {
      "status": 413,
@@ -48262,9 +48312,14 @@
    "ears_ac_seed": [
     "EVENT-DRIVEN: WHEN PATCH /api/v1/test_specs/:id が「確認項目を見て直す・OFF にするなら理由を書く」として呼ばれたとき THEN Kaname は「項目と版を残す」を行い 2xx を返す（自動側：案を出し、抜けを点検し、①機械 ②AI ③人 の種類と判定の型を提案する）",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
-    "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
-    "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
-    "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF チケットを書けない人なら、Kaname は 403 を返し、項目も証跡も変えない",
+    "UNWANTED: IF 項目が無いか見えないなら、Kaname は 404 を返し、在るかを漏らさず項目も証跡も変えない",
+    "UNWANTED: IF 入力が決まりに合わないなら、Kaname は 422 と欄ごとの理由を返し、項目も証跡も変えない",
+    "UNWANTED: IF 送った版が今の版と違うなら、Kaname は 409 と E-SPEC-020 を返し、項目も版も証跡も変えない",
+    "UNWANTED: IF チェックが付いている項目の文を直そうとしたなら、Kaname は 409 と E-SPEC-021 を返し、項目も版も証跡も変えない",
+    "UNWANTED: IF チケットが完了しているなら、Kaname は 409 と E-SPEC-001 を返し、項目も証跡も変えない",
+    "UNWANTED: IF ナレッジから入った項目の文を直そうとしたなら、Kaname は 409 と E-SPEC-022 を返し、項目も版も証跡も変えない",
+    "UNWANTED: IF 書けないなら、Kaname は 503 と E-PAGE-003 を返し、項目も証跡も残さない",
     "UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない",
     "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 外部が失敗したか完了信号が無いなら、Kaname は成功扱いにせず 502 と次の一手（人へのハンドオフ）を返す",
@@ -48355,19 +48410,23 @@
      "status": 403,
      "code": "FORBIDDEN",
      "body": {
-      "error": "forbidden"
+      "error": "forbidden",
+      "code": "FORBIDDEN"
      },
-     "trigger": "権限（誰に×何に×どの層で×できること）が無い、または運営が許可の無い会社を読もうとした",
-     "ears_form": "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）"
+     "errors": [],
+     "trigger": "チケットは見えるが書けない人（読むだけの人。入口の行の守り）",
+     "ears_form": "UNWANTED: IF チケットを書けない人なら、Kaname は 403 を返し、項目も証跡も変えない"
     },
     {
      "status": 404,
      "code": "NOT_FOUND",
      "body": {
-      "error": "not_found"
+      "error": "not_found",
+      "code": "NOT_FOUND"
      },
-     "trigger": "無い・消えた・取り消された（期限切れ・削除済み・他社の行）",
-     "ears_form": "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）"
+     "errors": [],
+     "trigger": "項目が無い・もう外した・チケットが見えない・ほかの会社の物・消された（欄も details も付けない＝在るかを漏らさない）",
+     "ears_form": "UNWANTED: IF 項目が無いか外した後か見えないなら、Kaname は 404 を返し、在るかを漏らさず項目も証跡も変えない"
     },
     {
      "status": 422,
@@ -48378,6 +48437,45 @@
      },
      "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
      "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+    },
+    {
+     "status": 409,
+     "code": "E-SPEC-001",
+     "body": {
+      "error": "conflict",
+      "code": "E-SPEC-001"
+     },
+     "errors": [
+      "E-SPEC-001"
+     ],
+     "trigger": "チケットが完了した（完了の確定と同時に来たときも、完了の後に来た方）",
+     "ears_form": "UNWANTED: IF チケットが完了しているなら、Kaname は 409 と E-SPEC-001 を返し、項目も証跡も変えない"
+    },
+    {
+     "status": 409,
+     "code": "E-SPEC-022",
+     "body": {
+      "error": "conflict",
+      "code": "E-SPEC-022"
+     },
+     "errors": [
+      "E-SPEC-022"
+     ],
+     "trigger": "ナレッジの「必ず守る」から入った項目を外そうとした",
+     "ears_form": "UNWANTED: IF ナレッジから入った項目を外そうとしたなら、Kaname は 409 と E-SPEC-022 を返し、項目も証跡も変えない"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "dependency",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "項目の印と証跡を書く DB の関数（app.test_spec_delete）が使えない・書けない",
+     "ears_form": "UNWANTED: IF 書けないなら、Kaname は 503 と E-PAGE-003 を返し、項目は残し証跡も残さない"
     },
     {
      "status": 429,
@@ -48432,9 +48530,12 @@
    "ears_ac_seed": [
     "EVENT-DRIVEN: WHEN DELETE /api/v1/test_specs/:id が「確認項目を見て直す・OFF にするなら理由を書く」として呼ばれたとき THEN Kaname は「項目と版を残す」を行い 2xx を返す（自動側：案を出し、抜けを点検し、①機械 ②AI ③人 の種類と判定の型を提案する）",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
-    "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
-    "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
+    "UNWANTED: IF チケットを書けない人なら、Kaname は 403 を返し、項目も証跡も変えない",
+    "UNWANTED: IF 項目が無いか外した後か見えないなら、Kaname は 404 を返し、在るかを漏らさず項目も証跡も変えない",
     "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF チケットが完了しているなら、Kaname は 409 と E-SPEC-001 を返し、項目も証跡も変えない",
+    "UNWANTED: IF ナレッジから入った項目を外そうとしたなら、Kaname は 409 と E-SPEC-022 を返し、項目も証跡も変えない",
+    "UNWANTED: IF 書けないなら、Kaname は 503 と E-PAGE-003 を返し、項目は残し証跡も残さない",
     "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 外部が失敗したか完了信号が無いなら、Kaname は成功扱いにせず 502 と次の一手（人へのハンドオフ）を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",
@@ -48699,13 +48800,44 @@
     },
     {
      "status": 422,
-     "code": "VALIDATION_ERROR",
+     "code": "E-VAL-042",
      "body": {
       "error": "validation_failed",
-      "details": []
+      "code": "E-VAL-042"
      },
-     "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
-     "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+     "errors": [
+      "E-VAL-042",
+      "E-VAL-045"
+     ],
+     "trigger": "改めるとき新しい決定が無い・空・空白だけ・制御文字だけ（E-VAL-042・欄 text）／取り消すとき理由が無い・空・空白だけ・制御文字だけ（E-VAL-045・欄 reason）。action が無い・知らない言葉は 422 VALIDATION_ERROR（欄 action）",
+     "ears_form": "UNWANTED: IF 改めるのに新しい決定が空か、取り消すのに理由が空なら、Kaname は 422（E-VAL-042・E-VAL-045）を返し、何も書かない"
+    },
+    {
+     "status": 409,
+     "code": "E-CONF-031",
+     "body": {
+      "error": "conflict",
+      "code": "E-CONF-031"
+     },
+     "errors": [
+      "E-CONF-031",
+      "E-CONF-033"
+     ],
+     "trigger": "読んだ後にほかの人が先に改めた（改められた決定を改める・取り消す・E-CONF-031）／取り消した（取り消した決定を改める・取り消す・E-CONF-033）。読み直してからもう一度",
+     "ears_form": "UNWANTED: IF 決定がすでに改められているか取り消されているなら、Kaname は 409（E-CONF-031・E-CONF-033）を返し、何も書かない"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "unavailable",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "守りの判定（今のメンバーか・書けるか）の所で例外になった・DB の関数が知らない言葉を返した",
+     "ears_form": "UNWANTED: IF 守りの判定ができなかったなら、Kaname は 503 を返し、止める側に倒して何も書かない（守りの判定の例外）"
     },
     {
      "status": 413,
@@ -48763,7 +48895,9 @@
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
     "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
-    "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF 改めるのに新しい決定が空か、取り消すのに理由が空なら、Kaname は 422（E-VAL-042・E-VAL-045）を返し、何も書かない",
+    "UNWANTED: IF 決定がすでに改められているか取り消されているなら、Kaname は 409（E-CONF-031・E-CONF-033）を返し、何も書かない",
+    "UNWANTED: IF 守りの判定ができなかったなら、Kaname は 503 を返し、止める側に倒して何も書かない（守りの判定の例外）",
     "UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない",
     "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",
@@ -48780,7 +48914,7 @@
    "implementation_path": "apps/api/src/routes/ticket_decisions.ts::updateTicketDecision",
    "permission": {
     "who": "write",
-    "scope": "そのグループの人。取引先のルールにするのは取引先の担当とマネージャー",
+    "scope": "そのチケットを書ける人（見るだけの人は変えられない・⑧）",
     "step_up": false
    },
    "path_params": [
@@ -50334,20 +50468,63 @@
      "status": 404,
      "code": "NOT_FOUND",
      "body": {
-      "error": "not_found"
+      "error": "not_found",
+      "code": "NOT_FOUND"
      },
-     "trigger": "無い・消えた・取り消された（期限切れ・削除済み・他社の行）",
-     "ears_form": "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）"
+     "trigger": "書き込みが無い・見えない・消した・チケットを消した",
+     "ears_form": "UNWANTED: IF 書き込みが無い・見えない・消した・チケットを消したなら、Kaname は 404 と NOT_FOUND を返し、何も変えない"
     },
     {
      "status": 422,
-     "code": "VALIDATION_ERROR",
+     "code": "E-VAL-027",
      "body": {
-      "error": "validation_failed",
-      "details": []
+      "error": "validation",
+      "code": "E-VAL-027"
      },
-     "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
-     "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+     "errors": [
+      "E-VAL-027"
+     ],
+     "trigger": "本文が無い・空・空白だけ（全角の空白・改行も）",
+     "ears_form": "UNWANTED: IF 本文が無い・空・空白だけなら、Kaname は 422 と E-VAL-027 を返し、何も変えない"
+    },
+    {
+     "status": 404,
+     "code": "E-PAGE-001",
+     "body": {
+      "error": "not_found",
+      "code": "E-PAGE-001"
+     },
+     "errors": [
+      "E-PAGE-001"
+     ],
+     "trigger": "@ する人が選べない（見られない・抜けた・止められた）。在るかを漏らさないので 404（欄・details・detail なし・控え帳 2026-11-21 01:15）",
+     "ears_form": "UNWANTED: IF @ する人が選べないなら、Kaname は 404 と E-PAGE-001 を返し、欄の名前も明細も付けず、何も変えない"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "unavailable",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "守りの判定で例外・関数が知らない言葉を返した",
+     "ears_form": "UNWANTED: IF 守りの判定で例外になったなら、Kaname は 503 と E-PAGE-003 を返し、何も変えない（止める側に倒す）"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "unavailable",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "書く所で DB が落ちた（1 つの処理なので何も変わらない・ログは場所と例外の種類だけ）",
+     "ears_form": "UNWANTED: IF 書く所の DB が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、書き込みを前のまま残す"
     },
     {
      "status": 413,
@@ -50404,8 +50581,11 @@
     "EVENT-DRIVEN: WHEN PATCH /api/v1/ticket_messages/:id が「スレッドに書く・@ を付ける」として呼ばれたとき THEN Kaname は「@ の相手に知らせる」を行い 2xx を返す",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
-    "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
-    "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF 書き込みが無い・見えない・消した・チケットを消したなら、Kaname は 404 と NOT_FOUND を返し、何も変えない",
+    "UNWANTED: IF 本文が無い・空・空白だけなら、Kaname は 422 と E-VAL-027 を返し、何も変えない",
+    "UNWANTED: IF @ する人が選べないなら、Kaname は 404 と E-PAGE-001 を返し、欄の名前も明細も付けず、何も変えない",
+    "UNWANTED: IF 守りの判定で例外になったなら、Kaname は 503 と E-PAGE-003 を返し、何も変えない（止める側に倒す）",
+    "UNWANTED: IF 書く所の DB が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、書き込みを前のまま残す",
     "UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない",
     "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",
@@ -50491,19 +50671,21 @@
      "status": 403,
      "code": "FORBIDDEN",
      "body": {
-      "error": "forbidden"
+      "error": "forbidden",
+      "code": "FORBIDDEN"
      },
-     "trigger": "権限（誰に×何に×どの層で×できること）が無い、または運営が許可の無い会社を読もうとした",
-     "ears_form": "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）"
+     "trigger": "書いた本人でもそのグループのマネージャーでもない",
+     "ears_form": "UNWANTED: IF 書いた本人でもそのグループのマネージャーでもないなら、Kaname は 403 と FORBIDDEN を返し、消さない"
     },
     {
      "status": 404,
      "code": "NOT_FOUND",
      "body": {
-      "error": "not_found"
+      "error": "not_found",
+      "code": "NOT_FOUND"
      },
-     "trigger": "無い・消えた・取り消された（期限切れ・削除済み・他社の行）",
-     "ears_form": "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）"
+     "trigger": "書き込みが無い・見えない・消した・書き込みでない（変更・仕組みの行）・チケットを消した",
+     "ears_form": "UNWANTED: IF 書き込みが無い・見えない・もう消した・書き込みでないなら、Kaname は 404 と NOT_FOUND を返し、何も変えない"
     },
     {
      "status": 422,
@@ -50514,6 +50696,32 @@
      },
      "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
      "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "unavailable",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "守りの判定で例外・関数が知らない言葉を返した",
+     "ears_form": "UNWANTED: IF 守りの判定で例外になったなら、Kaname は 503 と E-PAGE-003 を返し、何も変えない（止める側に倒す）"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "unavailable",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "書く所で DB が落ちた（1 つの処理なので何も変わらない・ログは場所と例外の種類だけ）",
+     "ears_form": "UNWANTED: IF 書く所の DB が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、書き込みを前のまま残す"
     },
     {
      "status": 429,
@@ -50559,9 +50767,11 @@
    "ears_ac_seed": [
     "EVENT-DRIVEN: WHEN DELETE /api/v1/ticket_messages/:id が「スレッドに書く・@ を付ける」として呼ばれたとき THEN Kaname は「@ の相手に知らせる」を行い 2xx を返す",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
-    "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
-    "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
+    "UNWANTED: IF 書いた本人でもそのグループのマネージャーでもないなら、Kaname は 403 と FORBIDDEN を返し、消さない",
+    "UNWANTED: IF 書き込みが無い・見えない・もう消した・書き込みでないなら、Kaname は 404 と NOT_FOUND を返し、何も変えない",
     "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF 守りの判定で例外になったなら、Kaname は 503 と E-PAGE-003 を返し、何も変えない（止める側に倒す）",
+    "UNWANTED: IF 書く所の DB が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、書き込みを前のまま残す",
     "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",
     "UNWANTED: IF 付けるまで進めないの印が立ったセッションなら、Kaname は 403 と MFA_REQUIRED を返し、副作用を起こさない",
@@ -50578,8 +50788,8 @@
    "description": "削除（ticket_messages）— チケットのスレッドで話す（@ で知らせる）",
    "implementation_path": "apps/api/src/routes/ticket_messages.ts::deleteTicketMessage",
    "permission": {
-    "who": "self",
-    "scope": "書いた本人（マネージャーは消した印を残して消せる）",
+    "who": "read",
+    "scope": "書いた本人か、そのチケットのグループのマネージャー（口と DB の関数が確かめる）。消すと 1 行の跡が残る（⑪）",
     "step_up": false
    },
    "path_params": [
@@ -50655,10 +50865,11 @@
      "status": 404,
      "code": "NOT_FOUND",
      "body": {
-      "error": "not_found"
+      "error": "not_found",
+      "code": "NOT_FOUND"
      },
-     "trigger": "無い・消えた・取り消された（期限切れ・削除済み・他社の行）",
-     "ears_form": "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）"
+     "trigger": "書き込みが無い・見えない・消した・書き込みでない（変更・仕組みの行）・チケットを消した",
+     "ears_form": "UNWANTED: IF 書き込みが無い・見えない・消した・書き込みでないなら、Kaname は 404 と NOT_FOUND を返し、何も変えない"
     },
     {
      "status": 409,
@@ -50678,6 +50889,32 @@
      },
      "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
      "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "unavailable",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "守りの判定で例外・関数が知らない言葉を返した",
+     "ears_form": "UNWANTED: IF 守りの判定で例外になったなら、Kaname は 503 と E-PAGE-003 を返し、何も変えない（止める側に倒す）"
+    },
+    {
+     "status": 503,
+     "code": "E-PAGE-003",
+     "body": {
+      "error": "unavailable",
+      "code": "E-PAGE-003"
+     },
+     "errors": [
+      "E-PAGE-003"
+     ],
+     "trigger": "書く所で DB が落ちた（1 つの処理なので何も変わらない・ログは場所と例外の種類だけ）",
+     "ears_form": "UNWANTED: IF 書く所の DB が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、書き込みを前のまま残す"
     },
     {
      "status": 413,
@@ -50734,9 +50971,11 @@
     "EVENT-DRIVEN: WHEN POST /api/v1/ticket_messages/:id/star が「スレッドに書く・@ を付ける」として呼ばれたとき THEN Kaname は「@ の相手に知らせる」を行い 2xx を返す",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
-    "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
+    "UNWANTED: IF 書き込みが無い・見えない・消した・書き込みでないなら、Kaname は 404 と NOT_FOUND を返し、何も変えない",
     "UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない",
     "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF 守りの判定で例外になったなら、Kaname は 503 と E-PAGE-003 を返し、何も変えない（止める側に倒す）",
+    "UNWANTED: IF 書く所の DB が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、書き込みを前のまま残す",
     "UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない",
     "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",
@@ -50770,7 +51009,7 @@
     "query": []
    },
    "outputs_2xx": {
-    "status": 201,
+    "status": 200,
     "body": "{ data: TicketMessages, meta?: { cursor, limit, total } }"
    },
    "id": "EP-297",
@@ -52008,7 +52247,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "notifications_self_only_write",
-    "notifications_permission_write",
     "client_contacts_write"
    ],
    "outputs_4xx": [
@@ -53573,12 +53811,11 @@
      },
      "errors": [
       "E-CONF-016",
-      "E-CONF-017",
       "E-CONF-018",
       "E-CONF-019"
      ],
-     "trigger": "承認待ち・実行中・確認中か、走っている実行・決まっていない承認待ちがある（E-CONF-016）・開いた後に実施事項が書き換わった（E-CONF-017）・もう完了している（E-CONF-018）・作業中でない（未着手・保留・E-CONF-019）",
-     "ears_form": "UNWANTED: IF 完了にできない状態（承認待ち・実行中・確認中・実施事項が変わった・もう完了・作業中でない）なら、Kaname は 409 とその理由（E-CONF-016・017・018・019）を返し、何も書かない"
+     "trigger": "承認待ち・実行中・確認中か、走っている実行・決まっていない承認待ちがある（E-CONF-016）・もう完了している（E-CONF-018）・作業中でない（未着手・保留・E-CONF-019）",
+     "ears_form": "UNWANTED: IF 完了にできない状態（承認待ち・実行中・確認中・もう完了・作業中でない）なら、Kaname は 409 とその理由（E-CONF-016・018・019）を返し、何も書かない"
     },
     {
      "status": 422,
@@ -53588,11 +53825,10 @@
       "details": []
      },
      "errors": [
-      "E-VAL-022",
       "E-VAL-024"
      ],
-     "trigger": "チェックの入っていない実施事項が残っている・実施事項に無い番号を送った（E-VAL-022・欄 todo_checked に項目ごと）・終わっていない子がある（E-VAL-024・欄 children に子ごと）",
-     "ears_form": "UNWANTED: IF 実施事項が残っているか、終わっていない子があるなら、Kaname は 422 と項目ごとの理由（E-VAL-022・E-VAL-024）を返し、何も書かない"
+     "trigger": "終わっていない子がある（E-VAL-024・欄 children に子ごと。チェックの箱・確認項目の未チェックでは止めない・K-566）",
+     "ears_form": "UNWANTED: IF 終わっていない子があるなら、Kaname は 422 と子ごとの理由（E-VAL-024）を返し、何も書かない"
     },
     {
      "status": 422,
@@ -53676,8 +53912,8 @@
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
     "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
-    "UNWANTED: IF 完了にできない状態（承認待ち・実行中・確認中・実施事項が変わった・もう完了・作業中でない）なら、Kaname は 409 とその理由（E-CONF-016・017・018・019）を返し、何も書かない",
-    "UNWANTED: IF 実施事項が残っているか、終わっていない子があるなら、Kaname は 422 と項目ごとの理由（E-VAL-022・E-VAL-024）を返し、何も書かない",
+    "UNWANTED: IF 完了にできない状態（承認待ち・実行中・確認中・もう完了・作業中でない）なら、Kaname は 409 とその理由（E-CONF-016・018・019）を返し、何も書かない",
+    "UNWANTED: IF 終わっていない子があるなら、Kaname は 422 と子ごとの理由（E-VAL-024）を返し、何も書かない",
     "UNWANTED: IF 完了の条件を確かめた印が無いか、入力の形が違うなら、Kaname は 422 と欄ごとの理由（E-VAL-023）を返し、何も書かない",
     "UNWANTED: IF 守りの判定ができなかったなら、Kaname は 503 を返し、止める側に倒して何も書かない（守りの判定の例外）",
     "UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない",
@@ -54715,8 +54951,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -55457,8 +55692,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -55474,10 +55708,11 @@
      "status": 403,
      "code": "FORBIDDEN",
      "body": {
-      "error": "forbidden"
+      "error": "forbidden",
+      "code": "FORBIDDEN"
      },
-     "trigger": "権限（誰に×何に×どの層で×できること）が無い、または運営が許可の無い会社を読もうとした",
-     "ears_form": "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）"
+     "trigger": "見るだけの人（書き込めるが段は変えられない）が段の欄を付けた",
+     "ears_form": "UNWANTED: IF 段を変えられない人が段の欄を付けて書いたなら、Kaname は 403 を返し、書き込みも段も残さない"
     },
     {
      "status": 404,
@@ -55494,12 +55729,16 @@
     },
     {
      "status": 409,
-     "code": "CONFLICT",
+     "code": "E-CONF-030",
      "body": {
-      "error": "conflict"
+      "error": "conflict",
+      "code": "E-CONF-030"
      },
-     "trigger": "二重送信・同時編集・既に登録済み（冪等キーで防ぐ）",
-     "ears_form": "UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない"
+     "errors": [
+      "E-CONF-030"
+     ],
+     "trigger": "今の段が仕組みの段（確認中・承認待ち・実行中）か、走っている実行・決まっていない承認待ちがあるのに段の欄を付けた",
+     "ears_form": "UNWANTED: IF AI が動いている間か承認待ちの間に段を変えて書こうとしたら、Kaname は 409 と E-CONF-030 を返し、書き込みも残さない"
     },
     {
      "status": 422,
@@ -55514,6 +55753,88 @@
      ],
      "trigger": "本文が無い・空・空白だけ（全角の空白・改行も・口の前処理が断る・欄 body の明細 1 件）",
      "ears_form": "UNWANTED: IF 本文が無い・空・空白だけなら、Kaname は 422 と E-VAL-027 と欄 body の明細を返し、書き込みも受け箱の行も作らない"
+    },
+    {
+     "status": 404,
+     "code": "E-PAGE-001",
+     "body": {
+      "error": "not_found",
+      "code": "E-PAGE-001"
+     },
+     "errors": [
+      "E-PAGE-001"
+     ],
+     "trigger": "段の id（stage_id）が指す段が無い・別の会社の段・消した段（欄 stage_id）",
+     "ears_form": "UNWANTED: IF 指した段が無いか見えないなら、Kaname は 404 を返し、在るかを漏らさず何も書かない"
+    },
+    {
+     "status": 409,
+     "code": "E-CONF-032",
+     "body": {
+      "error": "conflict",
+      "code": "E-CONF-032"
+     },
+     "errors": [
+      "E-CONF-032"
+     ],
+     "trigger": "今の段が完了なのに、未着手・保留・会社が足した段を選んだ（段の欄が無ければ書ける）",
+     "ears_form": "UNWANTED: IF 完了したチケットの段を開き直さずに変えて書こうとしたら、Kaname は 409 と E-CONF-032 を返し、書き込みも残さない"
+    },
+    {
+     "status": 409,
+     "code": "E-CONF-034",
+     "body": {
+      "error": "conflict",
+      "code": "E-CONF-034",
+      "details": []
+     },
+     "errors": [
+      "E-CONF-034"
+     ],
+     "trigger": "段の id（stage_id）で、仕組みの段か完了の段を行き先にした（欄 stage_id）",
+     "ears_form": "UNWANTED: IF 書き込みの口で移せない段を行き先にしたなら、Kaname は 409 と E-CONF-034 を返し、書き込みも残さない"
+    },
+    {
+     "status": 409,
+     "code": "E-CONF-035",
+     "body": {
+      "error": "conflict",
+      "code": "E-CONF-035",
+      "details": []
+     },
+     "errors": [
+      "E-CONF-035"
+     ],
+     "trigger": "段の id（stage_id）で保留の段を選んだのに、保留の理由か再開の条件を送っていない（足りない欄ごとの明細）",
+     "ears_form": "UNWANTED: IF 段の id で保留の段を選んで理由か条件が無いなら、Kaname は 409 と E-CONF-035 と足りない欄を返し、書き込みも残さない"
+    },
+    {
+     "status": 409,
+     "code": "E-CONF-036",
+     "body": {
+      "error": "conflict",
+      "code": "E-CONF-036",
+      "details": []
+     },
+     "errors": [
+      "E-CONF-036"
+     ],
+     "trigger": "段の id（stage_id）で保留でない段を選んで保留の理由か再開の条件を付けた（欄ごとの明細）",
+     "ears_form": "UNWANTED: IF 保留でない段を選んで保留の理由か条件を付けたなら、Kaname は 409 と E-CONF-036 を返し、書き込みも残さない"
+    },
+    {
+     "status": 422,
+     "code": "VALIDATION_ERROR",
+     "body": {
+      "error": "validation_failed",
+      "details": []
+     },
+     "errors": [
+      "E-VAL-041",
+      "E-VAL-047"
+     ],
+     "trigger": "形の誤り：保留の理由（E-VAL-041）か再開の条件（E-VAL-047）が空・空白だけ、stage_key hold で理由か条件が無い、stage_id と stage_key の両方、stage_key が todo・doing・hold でない、段の欄が無いか stage_key todo・doing なのに理由か条件を付けた、実績など書く欄に無い欄（欄ごとの理由）",
+     "ears_form": "UNWANTED: IF 入力の形が決まりに合わないなら、Kaname は 422 と欄ごとの理由を返し、何も書かない"
     },
     {
      "status": 404,
@@ -55605,10 +55926,16 @@
    "ears_ac_seed": [
     "EVENT-DRIVEN: WHEN POST /api/v1/tickets/:id/messages が「スレッドに書く・@ を付ける」として呼ばれたとき THEN Kaname は「@ の相手に知らせる」を行い 2xx を返す",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
-    "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
+    "UNWANTED: IF 段を変えられない人が段の欄を付けて書いたなら、Kaname は 403 を返し、書き込みも段も残さない",
     "UNWANTED: IF @ する人・知らせる人・引用元が選べないなら、Kaname は 404 と E-PAGE-001 を返し、在るかを漏らさず何も書かない",
-    "UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない",
+    "UNWANTED: IF AI が動いている間か承認待ちの間に段を変えて書こうとしたら、Kaname は 409 と E-CONF-030 を返し、書き込みも残さない",
     "UNWANTED: IF 本文が無い・空・空白だけなら、Kaname は 422 と E-VAL-027 と欄 body の明細を返し、書き込みも受け箱の行も作らない",
+    "UNWANTED: IF 指した段が無いか見えないなら、Kaname は 404 を返し、在るかを漏らさず何も書かない",
+    "UNWANTED: IF 完了したチケットの段を開き直さずに変えて書こうとしたら、Kaname は 409 と E-CONF-032 を返し、書き込みも残さない",
+    "UNWANTED: IF 書き込みの口で移せない段を行き先にしたなら、Kaname は 409 と E-CONF-034 を返し、書き込みも残さない",
+    "UNWANTED: IF 段の id で保留の段を選んで理由か条件が無いなら、Kaname は 409 と E-CONF-035 と足りない欄を返し、書き込みも残さない",
+    "UNWANTED: IF 保留でない段を選んで保留の理由か条件を付けたなら、Kaname は 409 と E-CONF-036 を返し、書き込みも残さない",
+    "UNWANTED: IF 入力の形が決まりに合わないなら、Kaname は 422 と欄ごとの理由を返し、何も書かない",
     "UNWANTED: IF チケットが無い・見えない・消したなら、Kaname は 404 と NOT_FOUND を返し、何も書かない",
     "UNWANTED: IF 書き込みと受け箱の行を書く所で DB が落ちたなら、Kaname は 503 を返し、書き込みも受け箱の行も残さない（1 つの取引・止める側に倒す）",
     "UNWANTED: IF 守りの判定で例外になったなら、Kaname は 503 と E-PAGE-003 を返し、何も書かない（止める側に倒す）",
@@ -59025,8 +59352,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "notifications_self_only_write",
-    "notifications_permission_write"
+    "notifications_self_only_write"
    ],
    "outputs_4xx": [
     {
@@ -60207,7 +60533,6 @@
     "account_events_self_only_write",
     "account_events_permission_write",
     "notifications_self_only_write",
-    "notifications_permission_write",
     "export_jobs_self_only_write",
     "export_jobs_permission_write"
    ],

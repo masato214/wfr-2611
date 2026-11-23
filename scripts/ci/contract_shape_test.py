@@ -48,7 +48,7 @@ VOCAB = {"string", "integer", "number", "boolean", "object", "array", "uuid", "u
 #   入口の zod は前から全部 .optional()（契約に required が 1 つも無かった）なので、必須の確かめと文言は口の振る舞いが持っている。
 #   ここに無い口の入力の形は required を持たない（条件つきで要る欄＝stepUp の code・種別ごとの必須の区画は required にしない）
 REQUIRED_INPUTS: dict[str, set[str]] = {
-    "completeTicket": {"todo_checked", "todo_version", "conditions_confirmed"},   # apps/api/src/features/F5/approve-complete/complete.ts（3 つとも必須・K-165）
+    "completeTicket": {"conditions_confirmed"},   # apps/api/src/features/F5/approve-complete/complete.ts（conditions_confirmed だけ必須・todo_* は任意で中身は見ない・K-566）
     "returnApproval": {"note"},                       # apps/api/src/features/F5/approve-complete/decide.ts（無い・空は 422 E-VAL-020・K-163）
     "createSignup": {"email", "name", "password"},     # apps/api/src/features/F1/sign-up/input.ts:40〜47（E-VAL-004・010・005。無いと空と同じ）。company_name は空でよい（D-125.135）
     "verifySignup": {"token"},                         # apps/api/src/features/F1/verify-email/index.ts:227（無い・空は 422 E-PAGE-006・K52-API-015）
@@ -1093,6 +1093,9 @@ class ContractShapeTest(unittest.TestCase):
         "apps/api/src/features/F5/delegate/records.ts": [("slice(0, 30)", "Bridge が送る todo の並びの数（人が書く欄でない）"),
                                                           ("slice(0, 4)", "Bridge が送る開いている窓の並びの数（人が書く欄でない）"),
                                                           ("[...wellFormed(s)].slice(0, max)", "Bridge が送る欄（道具の名前・対象・todo の文・止めた先・セッションの id・返事 200000 字・途中の 1 行 400 字。人が書く欄でない）を文字（コードポイント）の単位で切る 1 か所の clip。呼ぶ所は clip(…) の 10 か所（K62-API-033・K62-API-082）")],
+        # K-461：知らせの一覧（DB から limit+1 件取った行を次の分の有無を見た後に limit 件に戻す）と、payload の写しを短くする clip（文字の単位）
+        "apps/api/src/features/F7/notifications/list.ts": [("rows.slice(0, q.limit)", "DB から limit+1 件取った行を、次の分の有無を見た後に limit 件に戻す（入力でない）")],
+        "apps/api/src/features/F7/notifications/shape.ts": [("Array.from(s).slice(0, CLIP_MAX)", "payload の写しを短くする（人が書く入力でない・文字（コードポイント）の単位で切る）")],
     }
 
     def _migration_texts(self) -> list[tuple[str, str]]:

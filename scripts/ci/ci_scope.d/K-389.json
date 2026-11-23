@@ -1,0 +1,4 @@
+{"data_links": [
+  {"paths": ["packages/db/migrations/20261120130600_ticket_message_post_stage.sql", "apps/api/src/features/F6/thread/post.ts", "apps/api/src/features/F6/thread/input.ts", "apps/api/src/features/F6/progress/**"],
+   "tests": ["apps/api/test/features/F6/thread-post-stage.test.ts"]}],
+ "reads_ok": {"apps/api/test/features/F6/thread-post-stage.test.ts": "書き込みの口の hooks のファイル（apps/api/src/hooks/ticket-message-post.ts・K-385）を最初の要求の前に動的 import で読む（K-389）"}}

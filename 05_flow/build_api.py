@@ -101,7 +101,7 @@ for (m, p), e in sorted(eps.items(), key=lambda kv: (kv[0][1], ["GET", "POST", "
         _pm = _sa.PERMS[e["operation_id"]]; e["permission"] = {"who": _pm[0], "scope": _pm[1], "step_up": _pm[2]}
     e["path_params"] = params; e["returns_list"] = (m == "GET" and (e["operation_id"].startswith(("list", "search")) or e["operation_id"] in getattr(_sa, "LIST_OPS", set()))) if e.get("operation_id") else (m == "GET" and ":id" not in p)
     e["inputs"] = {"path": params, "body": f"{tname} の入力（types.ts の {''.join(w.capitalize() for w in tname.split('_'))}Input）" if m in ("POST", "PATCH") else None, "query": ["scope_id", "cursor", "limit", "sort"] if m == "GET" and ":id" not in p else []}
-    e["outputs_2xx"] = {"status": 201 if m == "POST" else 200, "body": f"{{ data: {''.join(w.capitalize() for w in tname.split('_'))}{'[]' if e['returns_list'] else ''}, meta?: {{ cursor, limit, total }} }}"}
+    e["outputs_2xx"] = {"status": getattr(_sa, "SUCCESS_STATUS", {}).get(e.get("operation_id"), 201 if m == "POST" else 200), "body": f"{{ data: {''.join(w.capitalize() for w in tname.split('_'))}{'[]' if e['returns_list'] else ''}, meta?: {{ cursor, limit, total }} }}"}
     _ld = getattr(_sa, "LIST_DETAILS", {}).get(e.get("operation_id"))   # 一覧の口の細目（K-92）：問い合わせと答えの meta をその口の形に
     if _ld:
         e["inputs"]["query"] = list(_sa.QUERIES.get(e["operation_id"], ["scope_id"])) + ["cursor", "limit"] + (["sort"] if _ld.get("sort", True) else [])
@@ -196,7 +196,7 @@ schemas["Error"] = {"type": "object", "properties": {"error": {"type": "string"}
 # 問い合わせの値の形（入口 op.ts が確かめるのと同じ。K-35）
 #   sort は表の列の名前だけ。scope_id は表に scope_id があるときだけ出す。空の値（?limit=）は指定なしと同じ（allowEmptyValue）
 # 続きの印を「鍵の文字列」で受ける一覧の口（D-131.9・K-161）。ほかの一覧の口は位置の数のまま（入口 op.ts の KEY_CURSOR_OPS と同じ集まり）
-KEY_CURSOR_OPS = {"listApprovalQueue", "listTickets"}
+KEY_CURSOR_OPS = {"listApprovalQueue", "listNotifications", "listTickets"}
 def qtype(q, table, op=None):
     cols = sorted(_DBC.get(table, {}))
     if q == "limit": return {"type": "integer", "minimum": 1, "maximum": getattr(_sa, "LIST_DETAILS", {}).get(op, {}).get("limit_max", 200)}

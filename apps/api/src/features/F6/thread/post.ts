@@ -6,6 +6,8 @@ import type pg from "pg";
 import { withTenant } from "@kaname/db/context";
 import { KanameError } from "@kaname/errors";
 import type { HookArgs, HookReply } from "../../../contract/deps.js";
+import { HOLD_ONLY_MESSAGE, invalid, replyOf } from "../progress/errors.js";
+import { progressIssues } from "../progress/fields.js";
 import { isBlankBody, toPostPayload } from "./input.js";
 import { broke, down, notFound } from "./reply.js";
 
@@ -16,7 +18,7 @@ const rejected = (code: string, field: string): HookReply => {
 };
 
 /** 見えない物（404・E-PAGE-001）。欄の名前も明細も付けない（前からある 404 E-PAGE-001 と同じ形） */
-const pageNotFound = (): HookReply => {
+export const pageNotFound = (): HookReply => {
   const e = new KanameError("E-PAGE-001");
   const body: Record<string, unknown> = { ...e.toJSON() };
   delete body["detail"]; // 空の detail も付けない（欄も明細も無い・試験 006〜008）
@@ -26,12 +28,23 @@ const pageNotFound = (): HookReply => {
 interface PostResult {
   item?: unknown;
   error?: string;
+  fields?: unknown;
 }
+
+/** 段の欄を送ったか（stage_key か stage_id） */
+const hasStage = (p: { stage_key?: unknown; stage_id?: unknown }): boolean =>
+  p["stage_key"] !== undefined || p["stage_id"] !== undefined;
 
 /** 本文が空：入口の前処理で断る（本文が無いのも空と同じ答え・E-VAL-027） */
 export function inputPost(raw: unknown): { input: Record<string, unknown> } | { reply: HookReply } {
   if (raw !== null && typeof raw === "object" && !Array.isArray(raw)) {
-    if (isBlankBody((raw as Record<string, unknown>)["body"])) return { reply: rejected("E-VAL-027", "body") };
+    const o = raw as Record<string, unknown>;
+    if (isBlankBody(o["body"])) return { reply: rejected("E-VAL-027", "body") };
+    // 段の欄の形の決まり（K-387 と同じ・契約に書ける物だけ 422）。段の欄が無ければ見ない（保留の欄だけの断りは関数が見える人にだけ返す）
+    if (hasStage(o)) {
+      const issue = progressIssues(o);
+      if (issue) return { reply: issue };
+    }
   }
   return { input: raw as Record<string, unknown> };
 }
@@ -61,6 +74,13 @@ export function createPostTicketMessage(appPool: pg.Pool): (a: HookArgs) => Prom
     if (v?.error === "empty") return rejected("E-VAL-027", "body");
     // @・知らせる人・引用元が選べない（見られない・抜けた・止められた・別のチケット・消した）は DB の中身で決まるので 422 にせず 404（欄も明細も付けない＝在るかを漏らさない・控え帳 2026-11-21 01:15）
     if (v?.error === "not_selectable") return pageNotFound();
+    if (v?.error === "hold_not_allowed" && !hasStage(payload)) {
+      // 段の欄が無いのに保留の欄だけ（理由を直すのは頭の札の口 K-387）：形の誤り・送った欄ごと
+      const fs = Array.isArray(v.fields) ? v.fields.map(String) : [];
+      return invalid(fs.map((field) => ({ field, message: HOLD_ONLY_MESSAGE })));
+    }
+    // 段の所の断り（K-387 の関数の言葉）は K-387 と同じ振り分け。知らない言葉は止める側（503）
+    if (v?.error !== undefined && hasStage(payload)) return replyOf(v, "やり取りに書く（段）", { ...payload });
     return down("やり取りに書く（知らない答え）", new Error("unknown"));
   };
 }

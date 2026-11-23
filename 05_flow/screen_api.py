@@ -550,7 +550,7 @@ INPUTS = {
     # K-332：招待で参加する。ログインしていない人は名前とパスワード（ログイン中の人は空・K-333）。宛てのメールは招待のもの（体の email は口の前処理が落とす）
     "acceptInvitation": ("InvitationAcceptInput", {"name": "string?", "password": "string?"}),
     # K-165：完了にする。todo_checked は済ませた実施事項の番号（0 から）の並び・todo_version は画面が読んだ todo の区画の版（無ければ 0）・conditions_confirmed は完了の条件を確かめた印
-    "completeTicket": ("TicketCompleteInput", {"todo_checked": "array", "todo_version": "integer", "conditions_confirmed": "boolean"}),
+    "completeTicket": ("TicketCompleteInput", {"todo_checked": "array?", "todo_version": "integer?", "conditions_confirmed": "boolean"}),
 }
 # get で始まるが並びを返す口（K-53）。一覧の問い合わせ（scope_id・cursor・limit・sort）は形だけ確かめて無視する
 LIST_OPS = {"getCurrentTerms"}
@@ -683,12 +683,12 @@ ERRORS_4XX = {
     ],
     # 完了にする（K-165・D-125.55・D-128.49・D-128.138）。冪等キーは汎用のまま（同じキーなら最初の結果）
     "completeTicket": [
-        {"status": 409, "code": "CONFLICT", "body": {"error": "conflict", "code": "E-CONF-016"}, "errors": ["E-CONF-016", "E-CONF-017", "E-CONF-018", "E-CONF-019"],
-         "trigger": "承認待ち・実行中・確認中か、走っている実行・決まっていない承認待ちがある（E-CONF-016）・開いた後に実施事項が書き換わった（E-CONF-017）・もう完了している（E-CONF-018）・作業中でない（未着手・保留・E-CONF-019）",
-         "ears_form": "UNWANTED: IF 完了にできない状態（承認待ち・実行中・確認中・実施事項が変わった・もう完了・作業中でない）なら、Kaname は 409 とその理由（E-CONF-016・017・018・019）を返し、何も書かない"},
-        {"status": 422, "code": "VALIDATION_ERROR", "body": {"error": "validation_failed", "details": []}, "errors": ["E-VAL-022", "E-VAL-024"],
-         "trigger": "チェックの入っていない実施事項が残っている・実施事項に無い番号を送った（E-VAL-022・欄 todo_checked に項目ごと）・終わっていない子がある（E-VAL-024・欄 children に子ごと）",
-         "ears_form": "UNWANTED: IF 実施事項が残っているか、終わっていない子があるなら、Kaname は 422 と項目ごとの理由（E-VAL-022・E-VAL-024）を返し、何も書かない"},
+        {"status": 409, "code": "CONFLICT", "body": {"error": "conflict", "code": "E-CONF-016"}, "errors": ["E-CONF-016", "E-CONF-018", "E-CONF-019"],
+         "trigger": "承認待ち・実行中・確認中か、走っている実行・決まっていない承認待ちがある（E-CONF-016）・もう完了している（E-CONF-018）・作業中でない（未着手・保留・E-CONF-019）",
+         "ears_form": "UNWANTED: IF 完了にできない状態（承認待ち・実行中・確認中・もう完了・作業中でない）なら、Kaname は 409 とその理由（E-CONF-016・018・019）を返し、何も書かない"},
+        {"status": 422, "code": "VALIDATION_ERROR", "body": {"error": "validation_failed", "details": []}, "errors": ["E-VAL-024"],
+         "trigger": "終わっていない子がある（E-VAL-024・欄 children に子ごと。チェックの箱・確認項目の未チェックでは止めない・K-566）",
+         "ears_form": "UNWANTED: IF 終わっていない子があるなら、Kaname は 422 と子ごとの理由（E-VAL-024）を返し、何も書かない"},
         {"status": 422, "code": "VALIDATION_ERROR", "body": {"error": "validation_failed", "details": []}, "errors": ["E-VAL-023"],
          "trigger": "完了の条件を確かめていない（conditions_confirmed が true でない・無い。E-VAL-023・欄 conditions_confirmed）・実施事項の番号や版が整数でない・本文に知らない欄",
          "ears_form": "UNWANTED: IF 完了の条件を確かめた印が無いか、入力の形が違うなら、Kaname は 422 と欄ごとの理由（E-VAL-023）を返し、何も書かない"},
@@ -886,7 +886,7 @@ NOT_NULL_ANSWERS = {
 #   入口の zod はその欄を .optional() のままにし、無いときの答え（エラー ID と文言）は口の振る舞いが持つ（scripts/ci/contract.mjs）。
 #   条件つきで要る欄（stepUp の code・種別ごとの必須の区画・優先度「高」の理由）は載せない
 REQUIRED_INPUTS = {
-    "completeTicket": ["todo_checked", "todo_version", "conditions_confirmed"],   # apps/api/src/features/F5/approve-complete/complete.ts（3 つとも必須・無ければ 422・K-165）
+    "completeTicket": ["conditions_confirmed"],   # apps/api/src/features/F5/approve-complete/complete.ts（conditions_confirmed だけ必須・無ければ 422。todo_checked・todo_version は任意で中身は見ない・K-566）
     "returnApproval": ["note"],                                          # apps/api/src/features/F5/approve-complete/decide.ts（無い・空・空白だけは 422 E-VAL-020・K-163）
     "createSignup": ["email", "name", "password"],                       # apps/api/src/features/F1/sign-up/input.ts:40〜47（E-VAL-004・010・005）
     "verifySignup": ["token"],                                           # apps/api/src/features/F1/verify-email/index.ts:227（E-PAGE-006）
@@ -949,7 +949,7 @@ VALUE_RANGES = {
     "renamePasskey": {"name": {"pattern": "\\S"}},     # apps/api/src/features/F1/passkeys/index.ts（空・空白だけは 422・K-309）
     "confirmTwoFactor": {"code": {"pattern": "\\S", "maxLength": 64}},   # apps/api/src/features/F1/two-factor/index.ts（空・6 けたでないは 422 欄 code・K-311）
     "consentToTerms": {"agree": {"enum": [True]}},      # apps/api/src/features/F1/consent-terms/index.ts:72
-    "completeTicket": {   # apps/api/src/features/F5/approve-complete/complete.ts と app.ticket_complete（0100）。負の番号は 422 E-VAL-022・false は 422 E-VAL-023
+    "completeTicket": {   # apps/api/src/features/F5/approve-complete/complete.ts と app.ticket_complete（0100）。形の誤り（負の番号・整数でない版）は 422・false は 422 E-VAL-023
         "todo_checked": {"items": {"type": "integer", "minimum": 0}},
         "todo_version": {"minimum": 0},
         "conditions_confirmed": {"enum": [True]},
@@ -994,7 +994,7 @@ RESPONSES = {
     "search": ("SearchHit", {"kind": "string", "id": "string", "title": "string", "snippet": "string", "url": "string"}),
     "listTicketTimeline": ("TimelineItem", {"id": "string", "kind": "string", "at": "string", "actor": "object?", "message": "object?", "changes": "array?", "run": "object?", "deleted": "object?"}),
     "lintTestSpecs": ("TestSpecLint", {"missing": "array", "warnings": "array"}),
-    "completeTicket": ("TicketCompletion", {"ticket": "object", "knowledge_candidates": "array", "skipped_reason": "string"}),
+    "completeTicket": ("TicketCompletion", {"ticket": "object", "knowledge_candidates": "array", "skipped_reason": "string", "unchecked": "object"}),
     "bulkUpdateTickets": ("BulkResult", {"updated": "array", "skipped": "array"}),
     "listApprovalQueue": ("ApprovalQueueItem", {"kind": "string", "id": "string", "ticket_id": "string?", "ticket_number": "string", "title": "string", "from_member_id": "string", "from_name": "string", "check_summary": "string", "due_on": "string?", "decide_inline": "boolean", "irreversible": "boolean", "primary_action": "string", "secondary_action": "string", "note": "string?", "created_at": "string"}),   # K-161：期限なし・聞き直しでない行は due_on・note が null
     "getApproval": ("ApprovalDetail", {"approval": "object", "ticket": "object", "operation": "object", "message_text": "string", "artifact_version": "object", "checks": "array", "check_summary": "string", "cautions": "array", "irreversible": "boolean", "can_decide": "boolean", "chain": "array"}),
@@ -1231,11 +1231,11 @@ PERMS = {
     "listTicketTimeline": ("read", "そのチケットを見られる人", False),
     "createTicketMessage": ("read", "そのチケットを見られる人（閲覧のみの人も書ける。段や決定は変えられない・⑧）", False),
     "updateTicketMessage": ("self", "書いた本人", False),
-    "deleteTicketMessage": ("self", "書いた本人（マネージャーは消した印を残して消せる）", False),
+    "deleteTicketMessage": ("read", "書いた本人か、そのチケットのグループのマネージャー（口と DB の関数が確かめる）。消すと 1 行の跡が残る（⑪）", False),
     "starTicketMessage": ("read", "そのチケットを見られる人（自分の印だけ）", False),
     "listTicketDecisions": ("read", "そのチケットを見られる人（見るだけの人も読める）", False),
     "createTicketDecision": ("write", "そのチケットを書ける人（見るだけの人は足せない・⑧）。決めた人は同じ会社の今のメンバー（既定は本人）", False),
-    "updateTicketDecision": ("write", "そのグループの人。取引先のルールにするのは取引先の担当とマネージャー", False),
+    "updateTicketDecision": ("write", "そのチケットを書ける人（見るだけの人は変えられない・⑧）", False),
     "createTicketHandover": ("write", "渡すは担当者、配るはマネージャー、引き取りの申し出はメンバー、上へ上げるは担当者", False),
     "answerTicketHandover": ("recipient", "渡された・判断を仰がれた相手だけ", False),
     "listTicketLinks": ("read", "両方のチケットを見られる人（片方が見えないときは番号だけ）", False),
@@ -1576,6 +1576,9 @@ PERMS = {
     "getServiceStatus": ("public", "誰でも（稼働状況とメンテの予定だけ。どのワークスペースのことも出さない）", False),
     "listPortalNotices": ("client", "取引先の人（全部向けの障害・メンテだけ）", False),
 }
+
+# 成功の状態コード（既定は POST 201・それ以外 200）。POST でも「作らず決めるだけ」で 200 を返す口だけ書く（K-410）。チケットごとの分は screen_api.d に書く
+SUCCESS_STATUS: dict[str, int] = {}
 
 # チケットごとのファイル（screen_api.d/K-xxx.py）の分を足す（K-325）。同じ鍵・同じ operationId が 2 つあれば止まる
 import sys as _sys  # noqa: E402

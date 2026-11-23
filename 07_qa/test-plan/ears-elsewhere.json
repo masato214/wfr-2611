@@ -743,7 +743,7 @@
     "test_post_tickets_id_complete_ok": "K63-API-027",
     "test_post_tickets_id_complete_rejected_403": "K63-API-034",
     "test_post_tickets_id_complete_conflict": "K63-API-032",
-    "test_post_tickets_id_complete_rejected_422": "K63-API-028",
+    "test_post_tickets_id_complete_rejected_422": "K63-API-030",
     "test_post_tickets_id_complete_rejected_422_2": "K63-API-029",
     "test_post_tickets_id_complete_shape": "K63-API-027",
     "test_post_tickets_id_complete_session_unresolved": {
@@ -1584,6 +1584,112 @@
    },
    "na": {}
   },
+  "updateTicketMessage": {
+   "file": "apps/api/test/features/F6/thread-edit.test.ts",
+   "reason": "直すのは書いた本人だけで、新しく @ した人にだけ知らせる。書いた人・前の @・チケットの見え方の組み合わせは生成の試験の種では作れない（K-386）",
+   "covers": {
+    "test_patch_ticket_messages_id_ok": "K386-API-001",
+    "test_patch_ticket_messages_id_rejected_401": "K386-API-016",
+    "test_patch_ticket_messages_id_rejected_403": "K386-API-003",
+    "test_patch_ticket_messages_id_not_found": "K386-API-003",
+    "test_patch_ticket_messages_id_rejected_422": "K386-API-004",
+    "test_patch_ticket_messages_id_not_found_2": "K386-API-004",
+    "test_patch_ticket_messages_id_shape": "K386-API-001",
+    "test_patch_ticket_messages_id_rate_limited": "K386-API-016",
+    "test_patch_ticket_messages_id_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_patch_ticket_messages_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_ticket_messages_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_ticket_messages_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_ticket_messages_id_session_unresolved_3": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  },
+  "deleteTicketMessage": {
+   "file": "apps/api/test/features/F6/thread-edit.test.ts",
+   "reason": "消せるのは書いた本人かそのグループのマネージャーで、跡と証跡が残る。役とグループの組み合わせは生成の試験の種では作れない（K-386）",
+   "covers": {
+    "test_delete_ticket_messages_id_ok": "K386-API-007",
+    "test_delete_ticket_messages_id_rejected_401": "K386-API-016",
+    "test_delete_ticket_messages_id_rejected_403": "K386-API-009",
+    "test_delete_ticket_messages_id_not_found": "K386-API-010",
+    "test_delete_ticket_messages_id_shape": "K386-API-008",
+    "test_delete_ticket_messages_id_rejected_422": {
+     "file": "apps/api/test/features/contract/k144.d/K-386.ts",
+     "mark": "K144-API-731"
+    },
+    "test_delete_ticket_messages_id_rate_limited": "K386-API-016",
+    "test_delete_ticket_messages_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_delete_ticket_messages_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_delete_ticket_messages_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_delete_ticket_messages_id_session_unresolved_3": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  },
+  "starTicketMessage": {
+   "file": "apps/api/test/features/F6/thread-edit.test.ts",
+   "reason": "☆ は押した人ごとの印で、押すたびに付く・外れる。同時に押す人・見え方の組み合わせは生成の試験の種では作れない（K-386）",
+   "covers": {
+    "test_post_ticket_messages_id_star_ok": "K386-API-012",
+    "test_post_ticket_messages_id_star_rejected_401": "K386-API-016",
+    "test_post_ticket_messages_id_star_rejected_403": "K386-API-015",
+    "test_post_ticket_messages_id_star_not_found": "K386-API-014",
+    "test_post_ticket_messages_id_star_rejected_422": "K386-API-013",
+    "test_post_ticket_messages_id_star_rate_limited": "K386-API-016",
+    "test_post_ticket_messages_id_star_shape": "K386-API-012",
+    "test_post_ticket_messages_id_star_rejected_422_2": {
+     "file": "apps/api/test/features/contract/k144.d/K-386.ts",
+     "mark": "K144-API-732"
+    },
+    "test_post_ticket_messages_id_star_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_ticket_messages_id_star_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_ticket_messages_id_star_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_ticket_messages_id_star_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_ticket_messages_id_star_session_unresolved_3": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  },
   "updateTicket": {
    "file": "apps/api/test/features/F6/progress.test.ts",
    "reason": "段・実績・保留の変更は、今の段・行き先の段・走っている実行・担当者の組み合わせで答えが変わる。生成の試験の種では作れない（K-387）",
@@ -1665,6 +1771,33 @@
     },
     "test_post_tickets_id_decisions_conflict": "K390-API-011",
     "test_post_tickets_id_decisions_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    }
+   }
+  },
+  "updateTicketDecision": {
+   "file": "apps/api/test/features/F6/decision-update.test.ts",
+   "reason": "改める・取り消すは決定の今の状態（生きている・改められた・取り消した）と書けるかの組み合わせで答えが変わり、生成の試験の種では作れない（K-391）",
+   "covers": {
+    "test_patch_ticket_decisions_id_ok": "K391-API-001",
+    "test_patch_ticket_decisions_id_rejected_401": "K391-API-012",
+    "test_patch_ticket_decisions_id_rejected_403": "K391-API-012",
+    "test_patch_ticket_decisions_id_not_found": "K391-API-012",
+    "test_patch_ticket_decisions_id_rejected_422": "K391-API-002",
+    "test_patch_ticket_decisions_id_conflict": "K391-API-004",
+    "test_patch_ticket_decisions_id_unavailable": "K391-API-014",
+    "test_patch_ticket_decisions_id_rate_limited": "K391-API-016",
+    "test_patch_ticket_decisions_id_shape": "K391-API-001",
+    "test_patch_ticket_decisions_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_ticket_decisions_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_ticket_decisions_id_too_large": {
      "file": "apps/api/test/features/contract/k144-contract.test.ts",
      "mark": "K144-API-042"
     }
@@ -1826,6 +1959,69 @@
     "test_post_tickets_id_test_specs_upstream_failed": "外を呼ばない（C3 は契約の口の宣言に付いているだけ・AI も PC も呼ばない）"
    }
   },
+  "updateTestSpec": {
+   "file": "apps/api/test/features/F4/test-spec-update.test.ts",
+   "reason": "チェックの付け外し・文の直しは、チケットが見えるか・書けるか・完了したか・版が合うか・チェックが付いているか・出どころで答えが変わり、DB の関数が行とやり取りと証跡を 1 つの取引で書く。生成の試験の偽のセッションでは作れない（K-435）",
+   "covers": {
+    "test_patch_test_specs_id_ok": "K435-API-001",
+    "test_patch_test_specs_id_shape": "K435-API-001",
+    "test_patch_test_specs_id_rejected_401": "K435-API-012",
+    "test_patch_test_specs_id_rejected_403": "K435-API-012",
+    "test_patch_test_specs_id_not_found": "K435-API-012",
+    "test_patch_test_specs_id_rejected_422": "K435-API-007",
+    "test_patch_test_specs_id_conflict": "K435-API-008",
+    "test_patch_test_specs_id_conflict_2": "K435-API-005",
+    "test_patch_test_specs_id_conflict_3": "K435-API-011",
+    "test_patch_test_specs_id_conflict_4": "K435-API-010",
+    "test_patch_test_specs_id_session_unresolved": "K435-API-014",
+    "test_patch_test_specs_id_rate_limited": "K435-API-015",
+    "test_patch_test_specs_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_test_specs_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_test_specs_id_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    }
+   },
+   "na": {
+    "test_patch_test_specs_id_upstream_failed": "外を呼ばない（C3 は契約の口の宣言に付いているだけ・AI も PC も呼ばない）"
+   }
+  },
+  "deleteTestSpec": {
+   "file": "apps/api/test/features/F4/test-spec-update.test.ts",
+   "reason": "行を外すは、チケットが見えるか・書けるか・完了したか・出どころで答えが変わり、DB の関数が行の印とやり取りと証跡を 1 つの取引で書く。生成の試験の偽のセッションでは作れない（K-435）",
+   "covers": {
+    "test_delete_test_specs_id_ok": "K435-API-016",
+    "test_delete_test_specs_id_shape": "K435-API-016",
+    "test_delete_test_specs_id_rejected_401": "K435-API-012",
+    "test_delete_test_specs_id_rejected_403": "K435-API-012",
+    "test_delete_test_specs_id_not_found": "K435-API-012",
+    "test_delete_test_specs_id_rejected_422": {
+     "file": "apps/api/test/features/contract/k144.d/K-435.ts",
+     "mark": "K144-API-523"
+    },
+    "test_delete_test_specs_id_conflict": "K435-API-011",
+    "test_delete_test_specs_id_conflict_2": "K435-API-010",
+    "test_delete_test_specs_id_session_unresolved": "K435-API-019",
+    "test_delete_test_specs_id_rate_limited": "K435-API-020",
+    "test_delete_test_specs_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_delete_test_specs_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_delete_test_specs_id_upstream_failed": "外を呼ばない（C3 は契約の口の宣言に付いているだけ・AI も PC も呼ばない）"
+   }
+  },
   "listTicketLinks": {
    "file": "apps/api/test/features/F4/ticket-links.test.ts",
    "reason": "つながりの一覧は、相手が見えるか・消えているか・書けるかで答えの形が変わる。生成の試験の種ではグループと権限を作れない（K-441）",
@@ -1901,6 +2097,29 @@
    },
    "na": {
     "test_delete_ticket_links_id_rejected_422": "入力は道の id だけ（uuid の確かめは入口の共通・K144-API-543）"
+   }
+  },
+  "listNotifications": {
+   "file": "apps/api/test/features/F7/notifications-list.test.ts",
+   "reason": "知らせの一覧は、行の守り（自分宛て）と種類の表とチケットの見え方の組み合わせで答えが変わる。生成の試験の種では知らせの行も人も作れない（K-461）",
+   "covers": {
+    "test_get_notifications_ok": "K461-API-001",
+    "test_get_notifications_rejected_401": "K461-API-017",
+    "test_get_notifications_rejected_403": "K461-API-029",
+    "test_get_notifications_rejected_422": "K461-API-006",
+    "test_get_notifications_conflict": "K461-API-011",
+    "test_get_notifications_rate_limited": "K461-API-018",
+    "test_get_notifications_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_notifications_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_notifications_mfa_pending": "止めは全部の口で同じ 1 か所の入口（op.ts）。口ごとの止めは作った口の生成の試験 mfa_pending が見る（K-321）"
    }
   },
   "search": {

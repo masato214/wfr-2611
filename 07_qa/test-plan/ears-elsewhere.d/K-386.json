@@ -1,0 +1,110 @@
+{
+ "ops": {
+  "updateTicketMessage": {
+   "file": "apps/api/test/features/F6/thread-edit.test.ts",
+   "reason": "直すのは書いた本人だけで、新しく @ した人にだけ知らせる。書いた人・前の @・チケットの見え方の組み合わせは生成の試験の種では作れない（K-386）",
+   "covers": {
+    "test_patch_ticket_messages_id_ok": "K386-API-001",
+    "test_patch_ticket_messages_id_rejected_401": "K386-API-016",
+    "test_patch_ticket_messages_id_rejected_403": "K386-API-003",
+    "test_patch_ticket_messages_id_not_found": "K386-API-003",
+    "test_patch_ticket_messages_id_rejected_422": "K386-API-004",
+    "test_patch_ticket_messages_id_not_found_2": "K386-API-004",
+    "test_patch_ticket_messages_id_shape": "K386-API-001",
+    "test_patch_ticket_messages_id_rate_limited": "K386-API-016",
+    "test_patch_ticket_messages_id_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_patch_ticket_messages_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_ticket_messages_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_ticket_messages_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_ticket_messages_id_session_unresolved_3": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  },
+  "deleteTicketMessage": {
+   "file": "apps/api/test/features/F6/thread-edit.test.ts",
+   "reason": "消せるのは書いた本人かそのグループのマネージャーで、跡と証跡が残る。役とグループの組み合わせは生成の試験の種では作れない（K-386）",
+   "covers": {
+    "test_delete_ticket_messages_id_ok": "K386-API-007",
+    "test_delete_ticket_messages_id_rejected_401": "K386-API-016",
+    "test_delete_ticket_messages_id_rejected_403": "K386-API-009",
+    "test_delete_ticket_messages_id_not_found": "K386-API-010",
+    "test_delete_ticket_messages_id_shape": "K386-API-008",
+    "test_delete_ticket_messages_id_rejected_422": {
+     "file": "apps/api/test/features/contract/k144.d/K-386.ts",
+     "mark": "K144-API-731"
+    },
+    "test_delete_ticket_messages_id_rate_limited": "K386-API-016",
+    "test_delete_ticket_messages_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_delete_ticket_messages_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_delete_ticket_messages_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_delete_ticket_messages_id_session_unresolved_3": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  },
+  "starTicketMessage": {
+   "file": "apps/api/test/features/F6/thread-edit.test.ts",
+   "reason": "☆ は押した人ごとの印で、押すたびに付く・外れる。同時に押す人・見え方の組み合わせは生成の試験の種では作れない（K-386）",
+   "covers": {
+    "test_post_ticket_messages_id_star_ok": "K386-API-012",
+    "test_post_ticket_messages_id_star_rejected_401": "K386-API-016",
+    "test_post_ticket_messages_id_star_rejected_403": "K386-API-015",
+    "test_post_ticket_messages_id_star_not_found": "K386-API-014",
+    "test_post_ticket_messages_id_star_rejected_422": "K386-API-013",
+    "test_post_ticket_messages_id_star_rate_limited": "K386-API-016",
+    "test_post_ticket_messages_id_star_shape": "K386-API-012",
+    "test_post_ticket_messages_id_star_rejected_422_2": {
+     "file": "apps/api/test/features/contract/k144.d/K-386.ts",
+     "mark": "K144-API-732"
+    },
+    "test_post_ticket_messages_id_star_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_ticket_messages_id_star_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_ticket_messages_id_star_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_ticket_messages_id_star_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_ticket_messages_id_star_session_unresolved_3": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  }
+ }
+}

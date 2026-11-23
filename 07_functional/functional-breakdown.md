@@ -93,7 +93,7 @@
 | E-076 | `notice_deliveries` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 4 | D-069 D-075 D-076 |
 | E-077 | `status_incidents` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | ops_scoped | 1 | D-069 D-075 D-075.2 D-076 |
 | E-079 | `notification_preferences` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 4 | D-043 D-069 D-075 D-075.3 |
-| E-080 | `notifications` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 4 | D-043 D-069 D-075 D-076 |
+| E-080 | `notifications` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 3 | D-043 D-069 D-075 D-076 |
 | E-081 | `plans` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | ops_scoped | 1 | D-069 D-075 D-076 D-076.6 |
 | E-082 | `plan_versions` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | none | 2 | D-069 D-075 D-076 |
 | E-083 | `subscriptions` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 3 | D-069 D-075 D-075.4 D-076 |

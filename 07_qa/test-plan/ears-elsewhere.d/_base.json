@@ -743,7 +743,7 @@
     "test_post_tickets_id_complete_ok": "K63-API-027",
     "test_post_tickets_id_complete_rejected_403": "K63-API-034",
     "test_post_tickets_id_complete_conflict": "K63-API-032",
-    "test_post_tickets_id_complete_rejected_422": "K63-API-028",
+    "test_post_tickets_id_complete_rejected_422": "K63-API-030",
     "test_post_tickets_id_complete_rejected_422_2": "K63-API-029",
     "test_post_tickets_id_complete_shape": "K63-API-027",
     "test_post_tickets_id_complete_session_unresolved": {

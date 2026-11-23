@@ -1,0 +1,99 @@
+{
+ "errors": [
+  {
+   "id": "E-CONF-031",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "decisions"
+   },
+   "when": "決定を改める・取り消すとき、読んだ後にほかの人が先にその決定を改めていた（改められた決定を改める・取り消す・同時に 2 人が改める・K-391）",
+   "false_when": "その決定がまだ生きている（改められても取り消されてもいない）",
+   "message": "この決定は、いま別の人が改めました。読み直してから、もう一度お試しください",
+   "action": "読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "作業中のチケットの決定を 2 人が開いている",
+    "steps": [
+     "1 人が決定を改める",
+     "もう 1 人が同じ決定を改める"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.63"
+   ],
+   "support_code": "CONF-031"
+  },
+  {
+   "id": "E-CONF-033",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "decisions"
+   },
+   "when": "決定を改める・取り消すとき、読んだ後にほかの人が先にその決定を取り消していた（取り消した決定を改める・取り消す・K-391）",
+   "false_when": "その決定がまだ生きている（取り消されていない）",
+   "message": "この決定は、いま別の人が取り消しました。読み直してから、もう一度お試しください",
+   "action": "読み直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "作業中のチケットの決定を 2 人が開いている",
+    "steps": [
+     "1 人が決定を取り消す",
+     "もう 1 人が同じ決定を改める"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.63"
+   ],
+   "support_code": "CONF-033"
+  },
+  {
+   "id": "E-VAL-045",
+   "class": "validation",
+   "where": {
+    "screen": "tickets",
+    "state": "decisions"
+   },
+   "when": "決定を取り消すとき、理由が無い・空・空白だけ（全角も）・制御文字だけ（K-391）",
+   "false_when": "取り消す理由に字がある（字数の上限は無い）",
+   "message": "取り消す理由を書いてください",
+   "action": "取り消す理由を書く",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "作業中のチケットの決定",
+    "steps": [
+     "決定を取り消す確かめで、理由を空のまま取り消す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.63"
+   ],
+   "support_code": "VAL-045"
+  }
+ ]
+}
