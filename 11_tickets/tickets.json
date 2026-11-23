@@ -24381,7 +24381,9 @@
    "choke_points": [],
    "choke_none": "画面の字・並べ方の正（flow）とその生成物・キャンバスの絵と作り手・試験だけ。口も DB も外も触らない",
    "tests": [
-    "apps/web/tests/k/k1113-shell-words.spec.ts",
+    "apps/web/tests/k/k1113-shell-words.spec.ts"
+   ],
+   "carry": [
     "apps/web/tests/k-shell.spec.ts",
     "apps/web/tests/k/showcase.spec.ts",
     "apps/web/tests/k/k138-shell.spec.ts",
@@ -24391,7 +24393,6 @@
     "apps/web/tests/k/k375-bridge-reinstall.spec.ts",
     "apps/web/test/k-nav-model.test.ts"
    ],
-   "carry": [],
    "depends_on": [
     "K-420"
    ],
