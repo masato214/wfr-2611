@@ -1,6 +1,7 @@
 // 登録・ログインの補助（T-U-01／05）。表記ゆらぎはサーバで直す（NFKC・前後の空白・小文字）。ロックは app.login_attempts（5 回で 15 分）
 import { createHash } from "node:crypto";
 import type pg from "pg";
+import { z } from "zod";
 import { LOGIN_BLOCKED_CODES, type Auth } from "./index.js";
 import { authUserIdByEmail } from "./pending.js";
 
@@ -8,6 +9,11 @@ import { authUserIdByEmail } from "./pending.js";
 export const normalizeEmail = (v: string): string => v.normalize("NFKC").replace(/\s+/g, "").trim().toLowerCase();
 export const emailHash = (email: string): string => createHash("sha256").update(normalizeEmail(email)).digest("hex");
 export const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+/** ログインの部品 better-auth が登録・ログインで見るメールの形（zod の z.email()・同じ zod 4.6.7）。外は部品が INVALID_EMAIL で断る */
+const PART_EMAIL = z.email();
+/** 正規化した後のメールを、EMAIL_RE と部品の z.email() の両方で見る（登録で受けて確かめで落ちるメールを先に断る・K-1117） */
+export const isLoginEmail = (normalized: string): boolean =>
+  EMAIL_RE.test(normalized) && PART_EMAIL.safeParse(normalized).success;
 /** ログに宛先をそのまま出さない（K-51・TP-REG-14）。同じ宛先は同じ印になるので、送った／送れなかったを辿れる */
 export const mailTag = (email: string): string => `宛先#${emailHash(email).slice(0, 12)}`;
 
