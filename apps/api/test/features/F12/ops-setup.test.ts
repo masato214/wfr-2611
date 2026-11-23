@@ -13,7 +13,7 @@
 //     201 { data: { token: <セッションの印> } }。セッションの入り方は 'ops_setup'：解決は role ops・mfaPending true（パスキーを付けるだけ。運営の口は 403 MFA_REQUIRED）
 //     409 E-PAGE-006（無い・使った・期限切れ・欄なし）／ 422（形）／ 429（1 分に 10 回・IP ごと）
 import { describe, expect, it } from "vitest";
-import pg from "pg";
+import type pg from "pg";
 import { createHash } from "node:crypto";
 import type { Mail } from "@kaname/auth";
 import { cliMailer, createFirstOps } from "@kaname/auth/ops-first";

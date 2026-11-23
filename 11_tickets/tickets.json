@@ -24457,13 +24457,16 @@
    "split": "",
    "choke_points": [
     "C2",
+    "C4",
     "C6"
    ],
    "tests": [
     "apps/api/test/features/F12/ops-setup.test.ts",
     "apps/api/test/generated/post_auth_ops_setup.test.ts"
    ],
-   "carry": [],
+   "carry": [
+    "scripts/ci/ci_scope_test.py"
+   ],
    "depends_on": [
     "K-944"
    ],
@@ -24482,8 +24485,7 @@
     "@kaname/api",
     "@kaname/auth",
     "@kaname/contracts",
-    "@kaname/db",
-    "@kaname/notify"
+    "@kaname/db"
    ],
    "ci_wide": [
     "db",

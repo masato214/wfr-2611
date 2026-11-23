@@ -4,8 +4,8 @@
 //   最後の 1 人がパスキーを無くしたときも同じ命令（同じメールなら人を増やさず新しいリンク・前のリンクは使えなくなる）。
 //   送れなかったら 0 以外で終わる（もう一度流す）。この台本は読み込むだけで動くので、試験が読む関数は ops-first.ts に置く
 import { parseArgs } from "node:util";
-import pg from "pg";
 import { adminDatabaseUrl, loadConfig } from "@kaname/config";
+import { createPool } from "@kaname/db/pool";
 import { createAuth } from "./index.js";
 import { cliMailer, createFirstOps } from "./ops-first.js";
 import { mailTag } from "./signup.js";
@@ -20,8 +20,9 @@ if (!email || !name) {
 
 const config = loadConfig();
 const adminUrl = adminDatabaseUrl() ?? config.databaseUrl;
-const admin = new pg.Pool({ connectionString: adminUrl, max: 2 });
-const appPool = new pg.Pool({ connectionString: config.databaseUrl, max: 1 });
+// 接続は関門 createPool を通す（G35・G7：packages/db の外で pg を直に使わない）
+const admin = createPool({ databaseUrl: adminUrl, max: 2 });
+const appPool = createPool({ databaseUrl: config.databaseUrl, max: 1 });
 const { auth, pool: authPool } = createAuth({
   authDatabaseUrl: config.authDatabaseUrl,
   appPool,

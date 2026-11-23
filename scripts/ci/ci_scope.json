@@ -1781,6 +1781,15 @@
   },
   {
    "paths": [
+    "apps/api/test/features/F12/ops-setup.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_auth_ops_setup.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/web/features/F6/progress/progress.css",
     "04_design/DESIGN-kaname.md",
     "apps/web/styles/k-tokens.css"

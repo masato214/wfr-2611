@@ -9,7 +9,7 @@
   "api_built": 97,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
-  "db": 148,
+  "db": 149,
   "ui": 19,
   "packages": 13,
   "errors": 263,
@@ -6816,6 +6816,14 @@
    "writes": [
     "F12"
    ],
+   "reads": [],
+   "boundary": false
+  },
+  {
+   "table": "ops_setup_links",
+   "class": "internal",
+   "why": "口は無いが、関数 app.ops_setup_consume などだけが触る裏の表（運営の人のパスキーを付けるリンク・K-945）",
+   "writes": [],
    "reads": [],
    "boundary": false
   },

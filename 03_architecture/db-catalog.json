@@ -349,6 +349,10 @@
    "class": "skeleton",
    "why": "第1フェーズの口が使う（08_api/endpoints.json）"
   },
+  "ops_setup_links": {
+   "class": "internal",
+   "why": "口は無いが、関数 app.ops_setup_consume などだけが触る裏の表（運営の人のパスキーを付けるリンク・K-945）"
+  },
   "payment_methods": {
    "class": "frozen",
    "why": "どの口もコードも使わない。後のフェーズ用に先に作ってあった表（D-128.127）"

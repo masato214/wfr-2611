@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 370（作った 97・後のフェーズの行為だけ 20）・前の道すじ 26・表 148・画面の部品 19・共通の処理 13・エラー 263・部品 56・設定 41
+API 370（作った 97・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 263・部品 56・設定 41
 
 ## 共通の処理
 
@@ -100,6 +100,7 @@ API 370（作った 97・後のフェーズの行為だけ 20）・前の道す�
 | `ops_audit_events` | skeleton |  | F12 |  |
 | `ops_members` | skeleton | F12 |  |  |
 | `ops_plan_proposals` | skeleton | F12 |  |  |
+| `ops_setup_links` | internal |  |  |  |
 | `payments` | skeleton | F12 |  |  |
 | `permissions` | skeleton | F10 |  |  |
 | `plans` | skeleton |  | F12 |  |

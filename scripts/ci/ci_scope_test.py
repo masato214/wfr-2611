@@ -995,7 +995,7 @@ class RealRepoTest(unittest.TestCase):
         self.assertEqual(rules["affects_required_from"], 108)
         ws = ci_scope.workspace(str(ROOT))
         self.assertEqual(ci_scope.shared_packages(ws, rules["shared_min_dependents"]),
-                         {"@kaname/db", "@kaname/config", "@kaname/contracts", "@kaname/errors"})
+                         {"@kaname/db", "@kaname/config", "@kaname/contracts", "@kaname/errors", "@kaname/notify"})   # notify は api と auth（命令 ops:first・K-945）が使う
         self.assertEqual(set(rules["jobs"]), {"database", "web"})
         for job, j in rules["jobs"].items():
             # packages・paths は要る。ticket_rows（画面の組とチケットの一覧・K-156・D-133.5）は任意
