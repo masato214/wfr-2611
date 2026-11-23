@@ -172,7 +172,8 @@ describe("K-741 使わない確認の口と表を片付ける", () => {
 
   it("K741-API-010 親の md：K-59.md の apis から listChecks・tests から get_tickets_id_checks が、K-61.md の apis から markHumanCheck・tests から post_checks_id_human が外れ、ほかの口と試験は残る", () => {
     expect(apisOf("K-59")).not.toContain("listChecks");
-    expect(apisOf("K-59")).toEqual(expect.arrayContaining(["createTestSpec", "deleteTestSpec"]));
+    expect(apisOf("K-59")).toContain("createTestSpec");
+    expect(apisOf("K-435")).toContain("deleteTestSpec"); // 本線の形：確認項目を外す口の持ち主は K-435（K-59 には無い）
     expect(testsOf("K-59").some((x) => x.endsWith("get_tickets_id_checks.test.ts"))).toBe(false);
     expect(testsOf("K-59").length).toBeGreaterThan(3);
     expect(apisOf("K-61")).not.toContain("markHumanCheck");

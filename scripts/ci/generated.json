@@ -314,6 +314,10 @@
   {
    "path": "packages/contracts/src/index.ts",
    "reason": "手で書く（先頭は、隣の生成物を作り手が「生成する（手で直さない）」という説明）。作り手は書かないので outputs から外した（K-191）。変えるチケットが changes: に書く"
+  },
+  {
+   "path": "apps/api/test/features/F5/checks-retire.test.ts",
+   "reason": "手で書く試験（先頭の「契約と生成物と文書のファイル」は、試験が読む物の説明）。作り手は書かない（K-741）"
   }
  ],
  "not_always_written": [

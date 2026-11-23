@@ -332,14 +332,14 @@
     "E-046 bridge_job_events",
     "E-049 messages",
     "E-080 notifications",
-    "E-094 attachments",
     "E-043 conversations",
     "E-050 artifacts",
     "E-051 artifact_versions",
     "E-106 tickets",
     "E-120 reference_logs",
     "E-042 credentials",
-    "E-052 audit_events"
+    "E-052 audit_events",
+    "E-094 attachments"
    ],
    "related_apis": [
     "POST /api/bridge/pairing-codes",

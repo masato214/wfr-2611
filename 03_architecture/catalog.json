@@ -6,13 +6,13 @@
  ],
  "counts": {
   "api": 366,
-  "api_built": 99,
+  "api_built": 101,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
   "db": 148,
   "ui": 19,
   "packages": 13,
-  "errors": 262,
+  "errors": 263,
   "stack": 56,
   "env": 41
  },
@@ -755,9 +755,9 @@
    "tables": [
     "attachments"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-61"
+    "K-761"
    ]
   },
   {
@@ -804,9 +804,9 @@
    "tables": [
     "bridge_job_events"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-61"
+    "K-761"
    ]
   },
   {

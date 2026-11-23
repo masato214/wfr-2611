@@ -246,7 +246,7 @@ SCREEN_API = {
         ("POST", "/bridge/jobs/:id/questions", "A91", "messages", "askFromBridge", ["notifications"]),
         ("GET", "/bridge/jobs/:id/questions/:qid", "A91", "messages", "getBridgeQuestionAnswer", []),
         ("GET", "/bridge/jobs/:id/control", "A104", "bridge_jobs", "getJobControl", []),
-        ("POST", "/bridge/jobs/:id/browser", "A104", "bridge_job_events", "reportBrowserState", ["attachments"]),
+        ("POST", "/bridge/jobs/:id/browser", "A104", "bridge_job_events", "reportBrowserState", []),   # 写真・画面の写しは送らない（K-761）
         ("POST", "/bridge/jobs/:id/conversation-entries", "A20", "messages", "mirrorConversationEntries", ["conversations"]),
         ("GET", "/bridge/mirror-targets", "A20", "conversations", "listMirrorTargets", ["messages"]),   # 写しを取り戻す先（D-112・D-128.122）
         ("POST", "/bridge/jobs/:id/artifacts", "A95", "artifacts", "putArtifactFromBridge", ["artifact_versions"]),
@@ -1390,14 +1390,14 @@ PERMS = {
     "askFromBridge": ("device", "同上（本人に聞く）", False),
     "getBridgeQuestionAnswer": ("device", "同上", False),
     "getJobControl": ("device", "同上（止める・割り込みの指示を受け取る）", False),
-    "reportBrowserState": ("device", "同上。写しに預けたログイン情報が写り込んだら隠してから送る（D-128.57）", False),
+    "reportBrowserState": ("device", "同上。仕事の間のブラウザの様子（使う・使えない）だけ。写真・画面の写しは送らない（K-761）", False),
     "mirrorConversationEntries": ("device", "同上（会話の記録の写し。正は本人の PC・D-112）", False),
     "listMirrorTargets": ("device", "同上（取り戻す先：直近の本人の会話と、そこで使った Claude Code の session・D-112）", False),
     "putArtifactFromBridge": ("device", "同上", False),
     "callKanameTool": ("device", "同上。分身は本人の権限の中でだけ Kaname の道具を呼べる", False),
     "resolveCredential": ("device", "その人の PC の実行器だけ。持ち主と使える場所が合うときだけ・その仕事の間だけ。AI と画面には返さない（D-128.57）", False),
     "reportCredentialCheck": ("device", "その人の PC", False),
-    "getFileForBridge": ("device", "その仕事に付いたファイルだけ（期限つきの署名 URL）", False),
+    "getFileForBridge": ("device", "その仕事に付いた資料だけ（期限つきの署名 URL）。動いている仕事の間だけ（K-761）", False),
     # 運営：配るもの（運営の人で、そのできることを持つ人だけ・D-128.70）
     "listOpsWorkTypes": ("ops:distribute", "配るものを持つ運営の人", False),
     "getOpsWorkType": ("ops:distribute", "同上。どのワークスペースがどの版を使っているかは数だけ（中身は見ない）", False),

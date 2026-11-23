@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。262 件
+// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。263 件
 export interface CatalogEntry {
   id: string;
   cls: string;
@@ -4740,6 +4740,24 @@ export const CATALOG: Record<string, CatalogEntry> = {
     "where": {
       "screen": "tickets",
       "state": "delegate"
+    }
+  },
+  "E-TALK-040": {
+    "id": "E-TALK-040",
+    "cls": "external",
+    "message": "資料の場所を出せませんでした。少し待ってから、もう一度お試しください",
+    "action": "待ってやり直す（PC は取れなかった資料を名前と理由で文に添えて続ける）",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-TALK-040",
+    "must_not": false,
+    "layers": [
+      "API",
+      "C4"
+    ],
+    "where": {
+      "screen": "clone-chat",
+      "choke_point": "C4"
     }
   }
 };

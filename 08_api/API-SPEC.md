@@ -56,10 +56,10 @@
 | EP-041 | PATCH | `/api/v1/bridge/devices/:id` | 更新（bridge）— 自分の PC をつなぐ | A09 | 1 | member | C1 C2 C4 | 401 403 404 422 413 429 502 403 403 503 |
 | EP-042 | DELETE | `/api/v1/bridge/devices/:id` | 削除（bridge）— 自分の PC をつなぐ | A09 | 1 | member | C1 C2 C4 | 401 403 404 422 429 502 403 403 503 |
 | EP-043 | POST | `/api/v1/bridge/devices/:id/browser-check` | 作成・実行（bridge）— 自分の PC をつなぐ | A09 | 1 | member | C1 C2 C4 | 401 403 404 409 422 413 429 502 403 403 503 |
-| EP-044 | GET | `/api/v1/bridge/files/:ref` | 取得（bridge）— AI に任せる | A104 | 1 | device |  | 401 403 422 429 502 503 |
+| EP-044 | GET | `/api/v1/bridge/files/:ref` | 取得（bridge）— AI に任せる | A104 | 1 | device |  | 401 403 422 404 502 503 429 502 503 |
 | EP-045 | POST | `/api/v1/bridge/heartbeat` | 作成・実行（bridge）— 自分の PC をつなぐ | A09 | 1 | device | C1 C2 C4 | 401 403 409 422 413 429 502 503 |
 | EP-046 | POST | `/api/v1/bridge/jobs/:id/artifacts` | 作成・実行（bridge）— 自分のAIの返事を成果物に書き出し、会話の | A95 | 1 | device | C2 C4 | 401 403 404 409 422 413 429 503 |
-| EP-047 | POST | `/api/v1/bridge/jobs/:id/browser` | 作成・実行（bridge）— AI に任せる | A104 | 1 | device | C2 C3 C5 | 401 403 404 409 422 413 429 502 503 |
+| EP-047 | POST | `/api/v1/bridge/jobs/:id/browser` | 作成・実行（bridge）— AI に任せる | A104 | 1 | device | C2 C3 C5 | 401 403 404 409 422 503 413 429 502 503 |
 | EP-048 | GET | `/api/v1/bridge/jobs/:id/control` | 取得（bridge）— AI に任せる | A104 | 1 | device |  | 401 403 404 422 429 502 503 |
 | EP-049 | POST | `/api/v1/bridge/jobs/:id/conversation-entries` | 作成・実行（bridge）— 自分の AI に指示する・相談する（会話・ | A20 | 1 | device | C2 C3 C4 | 401 403 404 409 422 413 429 502 503 |
 | EP-050 | POST | `/api/v1/bridge/jobs/:id/finish` | 作成・実行（bridge）— AI に任せる | A104 | 1 | device | C2 C3 C5 | 401 403 404 409 422 413 429 502 503 |

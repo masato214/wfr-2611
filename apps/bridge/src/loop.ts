@@ -357,6 +357,17 @@ export function startLoop(d: LoopDeps): () => void {
     // AI が使うブラウザ（D-119）。専用のブラウザはログインの状態を Bridge の置き場に持ち続ける（tmp に置かない）
     const browser = browserFor(job, d.browser?.());
     let browserWasOff = false; // 使えなかったか（知らせは 1 回）
+    // ブラウザの様子を Kaname に残す（K-761・reportBrowserState）。途中経過と同じ列で結末より前に届け、送れなくても仕事は止めない
+    const reported = new Set<string>();
+    const reportBrowser = (which: "chrome" | "dedicated", st: "using" | "off"): void => {
+      const key = `${which}:${st}`;
+      if (reported.has(key)) return;
+      reported.add(key);
+      sent = sent
+        .then(() => post(jobPath(job.job_id, "browser"), { browser: which, state: st }))
+        .catch(() => undefined);
+    };
+    if (browser !== "off") reportBrowser(browser, "using");
     const dedicated =
       browser === "dedicated" ? dedicatedBrowser(d.dataDir ?? join(tmpdir(), "kaname-bridge"), process.execPath) : null;
     // 道具の鍵がある仕事は、手元の口を今の仕事に向ける（チケットは ticket_read だけ・会話は会話の道具）
@@ -428,6 +439,7 @@ export function startLoop(d: LoopDeps): () => void {
         // AI が Chrome を使えない（拡張機能が無い・Chrome が閉じている・切れた）。会話に 1 行残す（黙って終わらない・D-119）
         onBrowserOff: (which) => {
           browserWasOff = true;
+          reportBrowser(which, "off");
           progress("notice", { text: BROWSER_OFF_NOTICE[which] });
         },
         // 記録が無く新しいセッションで続けた知らせ（D-124.3・E-NF-003）。会話に 1 行、仕事は続く
@@ -541,10 +553,15 @@ export function startLoop(d: LoopDeps): () => void {
     mkdirSync(dir, { recursive: true });
     const lines: string[] = [];
     for (const a of list) {
-      const s = await post<{ url: string; name: string }>("/bridge/attachment", {
-        job_id: job.job_id,
-        attachment_id: a.id,
-      });
+      // 契約の口 GET /api/v1/bridge/files/:ref?job_id=…（K-761）。その仕事に付いた資料の期限つきの署名 URL
+      const s =
+        (
+          await call<{ url: string; name: string | null; mime: string | null; size: number | null }>(
+            `/v1/bridge/files/${encodeURIComponent(a.id)}?job_id=${encodeURIComponent(job.job_id)}`,
+            null,
+            "GET",
+          )
+        )?.data ?? null;
       if (!s) {
         lines.push(`${a.name}（取りに行けませんでした）`);
         continue;

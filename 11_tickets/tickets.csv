@@ -3111,6 +3111,18 @@ K-753,分身の今を読む口（getMyClone・getCloneNow：部屋の頭の名�
 - [ ] migration が空の DB に全部当たり、一覧 `migrations.generated.ts` が最新。もう 1 度当てても失敗しない
 - [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑
 - [ ] 手元の CI（このチケットの範囲）が緑"
+K-761,PC の側：ブラウザの様子と仕事に付いたファイル（reportBrowserState：仕事の間のブラウザの様子を残す／getFileForBridge：仕事に付いたファイルの署名 URL）（K-61 の葉）,タスク,K-61,未着手,実装,2026-12-06,F5・自分のAIと話す,"PC（Bridge）が仕事の間に呼ぶ契約の口 2 本を作る（今はどちらも契約だけで 501）。Bridge の呼び先も契約の道に替える。
+
+- `reportBrowserState`（POST /api/v1/bridge/jobs/:id/browser・体は `{ browser, state }`）：その仕事で AI が使うブラウザ（`chrome`＝本人の Chrome／`dedicated`＝Bridge 専用）の**様子**を、仕事の出来事（bridge_job_events・種類 `browser`）に残す。様子は `using`（使う仕事として始めた）と `off`（使えなかった）の 2 つ。**写真・画面の写しは作らない**（送らない・残さない。契約の「触る表」から attachments を外す）。画面（`work` の 1 行）には出さない：使えなかったことは前から会話の 1 行（`notice`）で出ており、同じことを二重に出さない
+- `getFileForBridge`（GET /api/v1/bridge/files/:ref?job_id=<仕事の id>・`:ref` は資料の id）：その仕事に**付いた資料**の、期限つきの署名 URL を返す（`{ url, name, mime, size }`）。前の道すじ `POST /api/auth-ext/bridge/attachment`（agent.ts）の中身を移す。付いていない物・ほかの仕事の物・消した物は 404。**資料を付ける口は作らない**（D-153.16）ので、新しい道では付く物が無い（前の道すじで付けた物と試験だけが対象）。署名 URL を受ける所 `GET /api/auth-ext/files/:ref`（署名と期限だけで判定）はそのまま使う
+
+Bridge の側：資料を取りに行く呼び先を新しい口へ替え、ブラウザを使う仕事では仕事の始めに `using`・使えなかったとき（`onBrowserOff`）に `off` を送る。","- [ ] 下の表の 14 行（K761-API-001〜010・K761-BR-001〜004）が緑：`apps/api/test/features/F5/job-extra.test.ts`（口・本物の DB・本物の PC の印・手元の置き場）と `apps/bridge/test/loop-browser-state.test.ts`（偽の Kaname・偽の CLI）。土台は carry の `F5/talk-pc.kit.ts`・`bridge/test/fake-kaname.ts`
+- [ ] 契約の口 `reportBrowserState`・`getFileForBridge` が 501 でない。生成の試験 `post_bridge_jobs_id_browser.test.ts`・`get_bridge_files_ref.test.ts` の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-761.json` の covers）
+- [ ] 共有の試験 k144 の葉の行 K144-API-926・931（`k144.d/K-761.ts`・carry）が緑
+- [ ] 前からの試験は下の「前からの試験を替えた所」のとおり（`apps/bridge/test/loop.test.ts` の資料の呼び先だけ替える）で緑
+- [ ] migration が空の DB に全部当たり、一覧 `migrations.generated.ts` が最新。もう 1 度当てても失敗しない
+- [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
 K-780,段 6 の決定ログ §153（D-153.1〜33）と答えの記録を本線に入れる（文書だけ・K-61 の葉・段 6 の最初・依存なし）,タスク,K-61,未着手,実装,2026-11-27,F5・文書,"段 6（K-61・F5 AI に任せて、確かめて、終える）の決定 D-153.1〜33（止める・取り下げる・自分で直す・差し戻しで次を選ぶ・承認待ちの残り・書き出しは作らない ほか）を、決定ログの新しい節 §153 として本線に入れる。
 
 段 6 のほかの葉は `decisions:` に D-153.n を持つ。切る段の持ち込みの作り手（`scripts/tickets/build_index.py` の K4）は、始める時点の本線の決定ログにその決定が無いと止まる。前は口と DB の最初の葉 K-731 が決定ログも運んでいたので、依存の無い葉（K-741・K-761 など）が先に始まると止まった。だから決定ログだけを先に本線へ入れる、この葉を分けた（段 5 の K-430・段 8 の K-601・段 10 の K-673 と同じ。PM の決め 2026-11-23）。K-731 は決定ログを運ばなくなり、この葉に依存する。

@@ -12272,6 +12272,25 @@ components:
       properties: {}
       additionalProperties: false
       x-operation: takeoverActionRun
+    BridgeBrowserStateInput:
+      type: object
+      properties:
+        browser:
+          type: string
+          enum:
+          - chrome
+          - dedicated
+        state:
+          type: string
+          enum:
+          - using
+          - 'off'
+      additionalProperties: false
+      x-operation: reportBrowserState
+      required:
+      - browser
+      - state
+      x-required-by: hooks
     ScopeOverview:
       type: object
       properties:
@@ -14346,6 +14365,27 @@ components:
         pc:
           type: object
       x-operation: getMyClone
+    BridgeBrowserReported:
+      type: object
+      properties:
+        ok:
+          type: boolean
+      x-operation: reportBrowserState
+    BridgeJobFile:
+      type: object
+      properties:
+        url:
+          type: string
+        name:
+          type: string
+          nullable: true
+        mime:
+          type: string
+          nullable: true
+        size:
+          type: integer
+          nullable: true
+      x-operation: getFileForBridge
     Error:
       type: object
       properties:
@@ -18671,7 +18711,7 @@ paths:
       - D-125.42
       - D-126.15
       x-permission: device
-      x-permission-scope: その仕事に付いたファイルだけ（期限つきの署名 URL）
+      x-permission-scope: その仕事に付いた資料だけ（期限つきの署名 URL）。動いている仕事の間だけ（K-761）
       x-step-up: false
       security:
       - session: []
@@ -18681,6 +18721,13 @@ paths:
         required: true
         schema:
           type: string
+          pattern: ^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$
+      - name: job_id
+        in: query
+        allowEmptyValue: true
+        schema:
+          type: string
+          format: uuid
       responses:
         '200':
           description: 成功
@@ -18690,7 +18737,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Attachments'
+                    $ref: '#/components/schemas/BridgeJobFile'
                   meta:
                     type: object
         '401':
@@ -18711,20 +18758,26 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-        '429':
-          description: RATE_LIMITED
+        '404':
+          description: NOT_FOUND
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '502':
-          description: EXTERNAL_FAILED
+          description: E-TALK-040／EXTERNAL_FAILED
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
         '503':
           description: E-PAGE-003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '429':
+          description: RATE_LIMITED
           content:
             application/json:
               schema:
@@ -18959,7 +19012,7 @@ paths:
       - D-125.42
       - D-126.15
       x-permission: device
-      x-permission-scope: 同上。写しに預けたログイン情報が写り込んだら隠してから送る（D-128.57）
+      x-permission-scope: 同上。仕事の間のブラウザの様子（使う・使えない）だけ。写真・画面の写しは送らない（K-761）
       x-step-up: false
       security:
       - session: []
@@ -18975,7 +19028,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BridgeJobEventsInput'
+              $ref: '#/components/schemas/BridgeBrowserStateInput'
       responses:
         '201':
           description: 成功
@@ -18985,7 +19038,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/BridgeJobEvents'
+                    $ref: '#/components/schemas/BridgeBrowserReported'
                   meta:
                     type: object
         '401':
@@ -19018,6 +19071,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
+        '503':
+          description: E-PAGE-003
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
         '413':
           description: PAYLOAD_TOO_LARGE
           content:
@@ -19032,12 +19091,6 @@ paths:
                 $ref: '#/components/schemas/Error'
         '502':
           description: EXTERNAL_FAILED
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        '503':
-          description: E-PAGE-003
           content:
             application/json:
               schema:

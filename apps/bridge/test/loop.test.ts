@@ -65,10 +65,13 @@ beforeAll(async () => {
         return send({ steers: s });
       }
       if (path === "/bridge/answer2") return send({ answer });
-      if (path === "/bridge/attachment")
-        return body["attachment_id"] === "a1"
+      // 仕事に付いたファイルの署名 URL は契約の口 GET /api/v1/bridge/files/:ref?job_id=…（K-761）
+      if (path.startsWith("/bridge/files/")) {
+        const ref = path.slice("/bridge/files/".length).split("?")[0];
+        return ref === "a1"
           ? send({ url: `${base}/api/auth-ext/files/a1`, name: "../../台帳.csv" })
           : res.writeHead(404).end("{}");
+      }
       return send({ ok: true });
     });
   });
