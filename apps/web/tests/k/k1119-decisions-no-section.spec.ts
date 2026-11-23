@@ -4,6 +4,7 @@
 //   期待は決定（D-150.41：決定ログは出来たときだけ詳細に現れる・D-149.24：区画の行が在れば作るときの字を上に残す）とチケットの表から書く。固定の待ちは使わない。
 //   テストはチケットを作る人が書き、実装する人は変えない（D-128.125）
 import { expect, test, type Page, type Route } from "@playwright/test";
+import type { FidelityPair } from "../../../../scripts/ci/fidelity_compare.mjs";
 import {
   D0,
   D1,
@@ -22,6 +23,7 @@ import {
   type DecMock,
 } from "./decisions-mock";
 import { idOf, item as listItem, mockList, ok, open as openList } from "./list-mock";
+import { MATCH_WIDTHS, matchMock } from "./stage2-match";
 import { SUZU_W, TAKA_W, meta, post as postItem, system, type TimelineItem } from "./thread-mock";
 
 test.use({ timezoneId: "Asia/Tokyo" });
@@ -336,5 +338,42 @@ for (const [name, fail, message] of [
     await addDialog(page).getByRole("button", { name: "決定を足す" }).click();
     await expect(addDialog(page)).toHaveCount(0);
     await expect(heading(page)).toHaveText("決定ログ（1）");
+  });
+}
+
+// ---------------------------------------------------------------- 正のモック dec-no-section と本番の突き合わせ
+// 部品と比べる値は K397-UI-001 の DEC_PAIRS と同じ（k397 の中にしか無いので、区画の部品の分だけ写す）。
+// 作るときの字（dec-intro）はこの見本に無いので比べない。小窓の部品も出さないので比べない
+const TEXT = ["font-size", "font-weight", "color", "line-height", "texts"];
+const FLOW = ["width", "height", "background-color", "border-top-color", "border-top-left-radius"];
+const NO_SECTION_PAIRS: FidelityPair[] = (
+  [
+    ["dec-h2", "#sec-decisions", TEXT],
+    ["dec-add", ".k-dec-head button", [...FLOW, "font-size", "color", "texts"]],
+    ["dec-item", ".k-dec-item", FLOW],
+    ["dec-text", ".k-dec-text", [...TEXT, "text-decoration-line"]],
+    ["dec-tag", ".k-dec-tag", [...FLOW, ...TEXT]],
+    ["dec-sub", ".k-dec-sub", TEXT],
+    ["dec-acts", ".k-dec-acts button", [...FLOW, "font-size", "color", "texts"]],
+  ] as [string, string, string[]][]
+).map(([role, sel, props]) => ({ name: role, role, canvas: sel, app: sel, props }));
+
+for (const w of MATCH_WIDTHS) {
+  test(`K1119-UI-011 dec-no-section 幅 ${w}：区画の行が無い・決定 4 件の頁の詳細の決定ログ（見出し・足す・一覧の行・札・下の字・押す所）が正のモックと同じ（区画は y を比べない）`, async ({
+    browser,
+  }) => {
+    const { rows, bad } = await matchMock(
+      browser,
+      "dec-no-section",
+      w,
+      async (page) => {
+        await decisionsApi(page, { intro: "none", list: [D1, D0, D3, D2], asMock: true });
+        await openDetail(page, w);
+        await expect(items(page)).toHaveCount(4);
+      },
+      { pairs: NO_SECTION_PAIRS, base: "/dev/mock/f6" },
+    );
+    expect(new Set(rows.map((r) => r.part)), "区画の見出しで比べた").toContain("dec-h2");
+    expect(bad, bad.join("\n")).toEqual([]);
   });
 }
