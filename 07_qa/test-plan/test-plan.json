@@ -1,7 +1,7 @@
 {
  "version": "v3",
  "project": "Kaname",
- "created_at": "2026-11-23",
+ "created_at": "2026-11-24",
  "skill": "test-verification",
  "_doc": "05_flow/build_testplan.py が上流（tickets・EARS・entities・foundation_gates・choke-points・stack）から機械生成。手で直さない",
  "source": [
