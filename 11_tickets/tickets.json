@@ -27332,6 +27332,104 @@
    "file": "11_tickets/K-961.md"
   },
   {
+   "id": "K-963",
+   "title": "運営の外枠の数（getOpsShell：受信箱・期限を過ぎた請求・ワークスペースの数・今月の実行・照合が使えなかった登録）と全社の一覧（listOpsWorkspaces：数と種類だけ・気にかける 3 つ・絞り込み・並び）を作る（K-72 の葉・W4）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "運営の一覧",
+   "assignee": "実装",
+   "due": "2026-12-10",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-951（読む口 2 本・関数 2 つ・試験 14 行・見込み 1）と K-947（運営の関数の型）から引いた：migration（止める印の列 4 つ・関数 3 つ）20 分・口 2 本と答えの整え 10 分・登録先（hooks・.d・ears・ci_scope）10 分・試験 20 行を流して直す 20 分。試験の土台 ops-ws.harness.ts は切る段で書いた",
+   "decisions": [
+    "D-156.51",
+    "D-156.46",
+    "D-156.49",
+    "D-156.3",
+    "D-156.4",
+    "D-156.12",
+    "D-156.17",
+    "D-156.23",
+    "D-156.24",
+    "D-156.72",
+    "D-156.35",
+    "D-125.129",
+    "D-128.146"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-workspaces.test.ts",
+    "apps/api/test/features/F12/ops-ws.harness.ts",
+    "apps/api/test/generated/get_ops_shell.test.ts",
+    "apps/api/test/generated/get_ops_workspaces.test.ts"
+   ],
+   "carry": [],
+   "depends_on": [
+    "K-947",
+    "K-1006",
+    "K-1001",
+    "K-468",
+    "K-954",
+    "K-961"
+   ],
+   "acts": [
+    "A60"
+   ],
+   "screens": [
+    "ops-home"
+   ],
+   "apis": [
+    "getOpsShell",
+    "listOpsWorkspaces"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。一覧の形は K-965（op-list・op-list-empty）、外枠の数の印は K-946",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128010300_ops_workspaces.sql",
+    "packages/db/src/migrations.generated.ts",
+    "05_flow/screen_api.d/K-963.py",
+    "scripts/ci/contract_shape.d/K-963.py",
+    "07_qa/test-plan/ears-elsewhere.d/K-963.json",
+    "scripts/ci/ci_scope.d/K-963.json",
+    "apps/api/src/hooks/ops-workspaces.ts",
+    "apps/api/src/features/F12/ops/workspaces.ts",
+    "08_api/db-columns.json",
+    "03_architecture/ER図.md"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営が朝ワークスペースの一覧を開いたとき、全社の様子が数と種類だけで分かり、気にかける会社が上に来るようにする（行為 A60・用事 J15）。外枠の左のメニューの数の印（K-946）と一覧の上の数（K-965）は、1 本の口 getOpsShell に寄せる（D-156.4）。\n\n- **getOpsShell**（ops:any）：運営の人・受信箱の 4 つの数・期限を過ぎた請求（お金を持つ人だけ）・ワークスペースの数（使っている・止めている・やめる手続き中・気にかける・プランごと）・今月の実行（先月との比）・照合が使えなかった登録の数（D-156.35）\n- **listOpsWorkspaces**（ops:any）：1 行は数と種類だけ（中身を返さない・D-156.3）。気にかける 3 つ（代表の答え 2026-11-23（D-156.24・上限に近い会社は出さない＝D-156.72））・絞り込み（view・plan）・探す（q）・並び（sort）\n- 止める印の列（D-156.23）を tenants に足す（**書くのは K-970**・この葉は読むだけ）。状態 active・stopped・closing はこの列とやめる手続きの列から決める",
+    "完了の条件": "- [ ] 下の表の 21 行（K963-API-001〜021）が緑：`apps/api/test/features/F12/ops-workspaces.test.ts`（土台 `ops-ws.harness.ts`・この葉が運ぶ）\n- [ ] 契約の口 2 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-963.json`）\n- [ ] 運営の関数の検査（`python3 scripts/ci/ops_definer_gate.py`・K-947）と migration の lint（Squawk・G58）が緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: LIST, PERM\n\n- **生成の試験は作る段の最初に作る**：契約の断片（`05_flow/screen_api.d/K-963.py`・`scripts/ci/contract_shape.d/K-963.py`）を足して作り手で生成の試験を作り、**実装より先に 1 つのコミットにする**。先の葉の契約を前提にした前からの試験は carry に入れない\n- 答えの形は K-1006 の「画面が使う答えの形」。**sort の値は attention・members・runs**（下絵 op-list の並び「気にかけるを上に・人数・今月の実行」）。K-1006 の断片の sort は `attention・members・runs` に直した（D-156.47）。契約が直るまでこの葉は作る段に入らない\n- 問い合わせの値の形は K-1006 の断片の `QUERY_RANGES`（K-468 の仕組み）。q は送られたままの字で 100 字まで・探すときは NFKC・小文字・前後の空白を落とした形で比べる。cursor は形だけ（付けても答えは変わらない・K-468 と同じ）。limit は契約の共通の範囲で、既定のときは全部（数社〜数十社・D-125.129）\n- 運営の文脈は K-947 の `opsTx`（role ops・tenantId null）。関数は K-947 の型：頭で `app.ops_require('any')`。読むだけなので運営の記録は書かない（D-128.108 は書く操作だけ）\n- **数える会社**：tenants のうち `deleted_at is null`・`half_made_at is null`・`id <> app.ops_tenant_id()`\n- **状態**：止めている（`stopped_at is not null or stop_on <= 日本の今日`・止める日が来たら何もしなくても止まる・D-156.49）→ stopped（state_since＝stopped_at、無ければ stop_on の 0 時（日本））・`deletion_requested_at is not null` → closing（＝deletion_requested_at）・ほか active（＝created_at）。stopped が先\n- **プラン**：`app.tenant_plan_id(<会社>)`（K-954 が作り K-961 が「効いている行」に直した 1 か所。来月 1 日から下げる予定の行は今のプランに数えない＝顧客の側と同じ）→ plans（運営の会社の行）の name・key・`limits->>'members'`。null なら plan_name null・limit null。この葉で契約の行を別の式で引かない（同じ決めを 2 つ持たない）\n- **人数**：`app.tenant_seat_count(<会社>)`（K-961 の 1 か所・社内の人だけ・ゲスト〔役割 requester〕・AI 社員・自分の AI は数えない・D-156.51。顧客の「いま N 人 / M 人まで」と同じ数）。**PC がつながる人**：社内の人（人数に数える人）のうち、sessions の `kind_id = 'bridge'`・`revoked_at is null`・`alive_at is not null`・`last_seen_at > now() - interval '90 seconds'`（画面の生きている知らせの窓と同じ）を 1 つ以上持つ人の数（`{ connected, total }`・total は人数＝`app.tenant_seat_count`。ゲストは PC をつなぐ人に数えない）\n- **今月の実行**：action_runs の `phase is not null and status_id is not null`・`deleted_at is null`・作った時刻が今月（日本時間の月）。prev_ratio は 今月 ÷ 先月（先月が 0 なら null・小数 2 桁）\n- **気にかける 3 つ（D-156.24 を D-156.72 で改めた）**・並びは overdue → stuck → pc。**上限に近い会社（前の limit・上限の 90%）は出さない**（代表の答え 2026-11-23・answer=1e8672e4346c）。kind の値は overdue・stuck・pc の 3 つ（K-1006 の断片の enum も 3 つ）：\n  - overdue：invoices の `issued_at is not null`・`deleted_at is null`（出していない下書きと消した請求書は数えない）・`status_id <> 'paid'` で `due_on < 今日（日本時間）` があれば。label_value は いちばん古い期限からの日数。`status_id` は K-982 が入金のたびに書く写し（状態の決めの 1 か所は K-982 の `app.invoice_state`・D-156.46。答えは同じ）\n  - stuck：action_runs の `status_id = 'stopped'` が直近 7 日に 3 件以上。label_value は件数\n  - pc：作ってから 7 日を超え（`created_at < now() - interval '7 days'`）、`alive_at is not null` の bridge のセッションが 1 つも無い。label_value は 作ってからの日数\n- **請求の状態**（billing_state）：出した・消していない請求書（`issued_at is not null and deleted_at is null`）のうちいちばん新しい 1 枚（issued_at）が paid（`status_id` の写し）→ paid・期限（日本時間の今日より前）を過ぎた → overdue・ほか unpaid・無ければ null\n- **受信箱の数**：inquiries の `deleted_at is null`。unassigned＝担当なし・`state <> 'done'`／mine＝担当が自分（`assignee_ops_member_id = app.user_id()`）・`state <> 'done'`／waiting＝`state = 'waiting'`／later＝`state = 'later'`（数える会社のだけ）\n- **期限を過ぎた請求**：`app.ops_require` の行の caps に money が無ければ null。あれば overdue の請求書の件数と金額の合計（税込の円の整数）\n- **照合が使えなかった登録**（pwned.unchecked）：security_events の `pwned_check_unavailable` が、その会社の最後の `pwned_check_acknowledged` より後にある会社の数（0086 と同じ見方）\n- 答えに会社の中身（チケット・会話・問い合わせの題・メール）を入れない。探す q は管理者のメール（kaname_auth の user）を関数の中で比べるだけで返さない\n- 断る番号（控え帳）：ログインなし 401・運営でない・運営の人の行が無い 403（入口）・形の誤り 422（契約）・DB の失敗 503 E-PAGE-003（K-947 の opsErrorReply）・上限 429\n\n### 関数（migration `20261128010300_ops_workspaces.sql`・K-963 → 63 分）\n\n- `alter table tenants add column if not exists stopped_at timestamptz, add column if not exists stop_on date, add column if not exists stop_reason_key text, add column if not exists stop_noticed_at timestamptz`・check `stop_reason_key is null or stop_reason_key in ('unpaid','violation','danger','request')`（D-156.23・K-1006 の stop の 4 欄。書くのは K-970）\n- `app.workspace_facts(p_tenant uuid) returns jsonb`（security definer・内部用・`kaname_app` に execute を出さない）：1 行の 11 欄を作る（上の決まり）。名前が `app.ops_` で始まらないので型の検査の外（K-947 の検査は呼び口の関数を見る）\n- `app.ops_shell() returns jsonb`（security definer・stable）：`app.ops_require('any')` → 6 欄\n- `app.ops_workspaces(p_q text, p_view text, p_plan text, p_sort text, p_limit integer) returns jsonb`（security definer・stable）：`app.ops_require('any')` → 数える会社を絞り込み・`app.workspace_facts` で 1 行ずつ → 並び（attention：気にかけるのある会社を上に、その中は最初の種類の順（overdue・stuck・pc）・同じなら名前／members：人数の多い順・同じなら名前／runs：今月の実行の多い順・同じなら名前）→ `{\"data\": [...]}`\n- どちらも `grant execute … to kaname_app`。索引は今の物で足りる（数社〜数十社）",
+    "依存の理由": "- K-947: 要る — `app.ops_require`・`opsTx`・`opsErrorReply`・運営の関数の検査（この葉の関数がその型に乗る）\n- K-1006: 要る — 2 本の答えの形・問い合わせの値の形（契約の断片）\n- K-1001: 要る — 運営の口の入口の柵（ops_all・x-tenant-id を無視）。無いと会社の文脈で動く\n- K-468: 要る — 問い合わせの値の形を契約に書く仕組み（`QUERY_RANGES`・K-1006 の断片が使う）\n- K-954: 要る — 今のプランの決め `app.tenant_plan_id`（この葉の workspace_facts が呼ぶ）\n- K-961: 要る — `app.tenant_plan_id` を効いている行の決めに直す（下げる予定を今のプランと読まない）と、人数の 1 か所 `app.tenant_seat_count`（社内の人だけ）。この葉はどちらも呼ぶだけ",
+    "目録で探した結果": "- 使う：K-947 の土台・`app.ops_tenant_id()`・`tenants.half_made_at`（0087）・`deletion_requested_at`（0078）・`subscriptions`・`plans`・`invoices`・`usage_meters`（0015）・`tenant_memberships`（0075）・`sessions.alive_at`（0089）・`action_runs`（0011・phase と status_id は 0092）・`inquiries`（0015・state は K-949）・`security_events`（0003・0086）・K-351 の hooks の書き方\n- 作る：列 4 つ・関数 3 つ・`apps/api/src/hooks/ops-workspaces.ts`・`features/F12/ops/workspaces.ts`。探したが運営の全社の数を出す物は無かった（`routes/ops.ts` は契約の道を並べるだけ・501）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128010300_ops_workspaces.sql`（上の「関数」）。一覧は `python3 scripts/ci/gen_migrations.py`（生成物） |\n| 口 | `features/F12/ops/workspaces.ts`：問い合わせの値を整える（q の前後の空白・既定 view all・sort attention）→ `opsTx` の 1 取引で関数を呼ぶ → `{ data }`。DB の断りは `opsErrorReply(e, \"workspaces\")` |\n| 口の登録（K-326） | `apps/api/src/hooks/ops-workspaces.ts`（getOpsShell・listOpsWorkspaces の before・`register`・fuzz `\"same\"`） |\n| 契約の断片 | `05_flow/screen_api.d/K-963.py`（足す鍵なし・空の表）・`scripts/ci/contract_shape.d/K-963.py`（空の表） |\n| 登録先 | `07_qa/test-plan/ears-elsewhere.d/K-963.json`（下）・`scripts/ci/ci_scope.d/K-963.json`（data_links：`apps/api/src/hooks/ops-workspaces.ts`・`features/F12/ops/workspaces.ts`・migration → この葉の試験）。`08_api/db-columns.json`・`03_architecture/ER図.md` に tenants の 4 列 |\n\n### 生成の試験（ears-elsewhere.d/K-963.json）\n\n```json\n{\"ops\": {\n \"getOpsShell\": {\"file\": \"apps/api/test/features/F12/ops-workspaces.test.ts\",\n  \"reason\": \"全社の数は DB の全部の会社と運営の人の caps で答えが変わる。種では足す前と後の差を作れない（K-963）\",\n  \"covers\": {\"test_get_ops_shell_ok\": \"K963-API-001\", \"test_get_ops_shell_rejected_401\": \"K963-API-017\",\n             \"test_get_ops_shell_rejected_403\": \"K963-API-017\", \"test_get_ops_shell_rate_limited\": \"K963-API-020\",\n             \"test_get_ops_shell_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_ops_shell_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {\"test_get_ops_shell_rejected_422\": \"問い合わせも体も受けない口。知らない問い合わせの 422 は入口の共通（K-144）\"}},\n \"listOpsWorkspaces\": {\"file\": \"apps/api/test/features/F12/ops-workspaces.test.ts\",\n  \"reason\": \"気にかける・絞り込み・並びは会社ごとの請求・実行・PC の行で答えが変わる。種では作れない（K-963）\",\n  \"covers\": {\"test_get_ops_workspaces_ok\": \"K963-API-007\", \"test_get_ops_workspaces_rejected_401\": \"K963-API-017\",\n             \"test_get_ops_workspaces_rejected_403\": \"K963-API-017\", \"test_get_ops_workspaces_rejected_422\": \"K963-API-014\",\n             \"test_get_ops_workspaces_rate_limited\": {\"file\": \"apps/api/test/features/F12/ops-workspaces.test.ts\", \"mark\": \"K963-API-020\"},\n             \"test_get_ops_workspaces_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_ops_workspaces_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}}}}}\n```",
+    "外に影響する手順": "- なし — 読むだけの口 2 本。DB の列を足す migration は書き込みの手順を持たない（列は K-970 が書く）。読む失敗は K963-API-019",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/ops-workspaces.test.ts`（本物の DB・本物の入口・偽のログイン fake:ops）。全社の数は足す前と後の差で見る（試験のファイルは直列）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 受信箱・請求・会社・実行・照合 | 外枠を開く | 運営の人（9 つ） | 6 欄の数 | このチケット | K963-API-001〜006 |\n| 同じ | 同じ | お金を持たない運営の人 | invoices null | このチケット | K963-API-003 |\n| 顧客の会社（ふつう・止めた・やめる・作りかけ・消した・運営の会社） | 一覧を開く | 運営の人 | 数える会社だけ・状態 | このチケット | K963-API-004・015 |\n| 気にかける 3 つの境目 | 同じ | 同じ | 入る・入らない | このチケット | K963-API-008 |\n| ゲストが居る・下げる予定がある会社 | 一覧 | 運営の人 | 人数はゲストを数えない・プランは今の物 | このチケット | K963-API-021 |\n| 絞り込み・探す・並び | URL の値 | 同じ | 絞った行・順 | このチケット | K963-API-009〜013 |\n| 形の誤り | 直に口 | 同じ | 422 | このチケット | K963-API-014 |\n| どれでも | 直に口 | ログインなし・会社の人・運営の行が無い人 | 401・403 | このチケット | K963-API-017 |\n| どれでも | 関数を直に | 会社の人の文脈 | 42501 | このチケット | K963-API-018 |\n| どれでも | 同じ | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K963-API-001 | 対象の状態 | 外枠の数 | 200・鍵ちょうど 6・operator は自分の member_id と caps |\n| K963-API-002 | 対象の状態 | 受信箱 | 足した 5 件で unassigned +2・mine +2・waiting +1・later +1（済みは数えない） |\n| K963-API-003 | 守り | 期限を過ぎた請求 | お金を持つ人は件数 +2・合計 +49500（当日と払われたは数えない）・持たない人は null |\n| K963-API-004 | 対象の状態 | ワークスペースの数 | total +5・active +2（止める日が明日の会社を含む）・stopped +2（止めた時刻の会社と、止める日が今日で止めた時刻の無い会社）・closing +1・attention +1・プランごと free +2・team +1・business +2。作りかけ・消した・運営の会社は一覧にも出ない |\n| K963-API-005 | 時間の流れ | 今月の実行 | 今月の 2 件だけ増える（400 日前は数えない）・prev_ratio は null か 0 以上の数 |\n| K963-API-006 | 時間の流れ | 照合 | 2 件の出来事でも会社 1 つ・確かめると 0・その後にまた落ちると 1 |\n| K963-API-007 | 対象の状態 | 一覧の 1 行 | 鍵ちょうど 11・管理者の名前・チーム・人数 3/10・PC 1/3・今月の実行 1・中身の字が無い |\n| K963-API-008 | 時間の流れ | 気にかけるの境目 | 3 件・1 日・8 日は 1 つずつ入り（label_value 3・1・8）、2 件・当日・6 日は空。上限の 95% を使っている会社も空（D-156.72） |\n| K963-API-009 | 対象の状態 | 既定の並び | 両方 → 詰まり → PC → 上限の 95%（気にかけるなし）→ 何もない の順（気にかけるの無い会社は名前の順）・両方の attention は overdue → stuck |\n| K963-API-010 | 入力 | view | attention・stopped・closing・all がそれぞれの会社だけ |\n| K963-API-011 | 入力 | plan | free・business は 1 社ずつ・team は空 |\n| K963-API-012 | 入力 | q | 全角の名前を半角小文字と前後の空白で・管理者のメールを大文字で探せる・合わなければ 200 で空 |\n| K963-API-013 | 入力 | sort | members は人数の多い順・runs は実行の多い順 |\n| K963-API-014 | 入力 | 形の誤り | 知らない view・plan・sort（name）・101 字の q・知らない名前・NUL は 422・100 字は 200 |\n| K963-API-015 | 対象の状態 | 状態 | active・stopped・closing と、その時刻 |\n| K963-API-016 | 対象の状態 | 請求の状態 | なし null・払った paid・過ぎた overdue・まだ unpaid |\n| K963-API-017 | 利用者の状態 | 入口 | ログインなし 401・会社の人 403・運営の行が無い人 403（2 本とも） |\n| K963-API-018 | 守り | 2 層目（G-02） | 会社の人の文脈で関数を直に呼ぶと 42501 |\n| K963-API-019 | 失敗 | DB が落ちる | 2 本とも 503・E-PAGE-003・関数の名前や例外の文を出さない |\n| K963-API-020 | 守り | 上限 | 上限の次が 429・retry_after_sec は 1〜60 の整数 |\n| K963-API-021 | 対象の状態 | 顧客の側と同じ決め | ゲスト（役割 requester）を 1 人足しても members は { count: 3, limit: 10 } のまま・pc の total も同じ。来月 1 日から下げる予定の契約の行を足しても plan_name はチームのまま |\n\n### テストの型の受け（分類 LIST・PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-LIST-01 0 件・1 件・境目 | K963-API-012（0 件）・007（1 件）・008（気にかけるの境目）。ページの境目は無い（cursor は形だけ・数社〜数十社） |\n| TP-LIST-02 同じ値の並び | K963-API-009・013（同じなら名前の順） |\n| TP-LIST-03 絞り込みの URL | K963-API-010・011（URL の問い合わせの値。画面の URL は K-965） |\n| TP-LIST-04 探す語 | K963-API-012・014（全角半角・大文字小文字・空白・100 字） |\n| TP-PERM-01 役が合わない人 | K963-API-017 |\n| TP-PERM-02 権限を外した直後 | 要らない：口は呼ぶたびに ops_members を読む（入口の共通・K-1001。外した直後の 403 は K-1001 の試験） |\n| TP-PERM-03 他の会社の ID を指す | 要らない：会社を指さない口（全社の数だけ） |\n| TP-PERM-04 一覧・数に混ざらない | K963-API-004（運営の会社・作りかけ・消した会社が混ざらない）・007（中身が混ざらない） |\n| TP-PERM-05 権限を付けた直後 | K963-API-003（caps の money の有無で invoices が変わる＝呼ぶたびに読む） |\n| G-11〜G-16 | G-11：N/A（外の資源を使わない）。G-12：K963-API-008（境目の直前と直後）・006（確かめた直後）。G-13：N/A（読むだけ）。G-14：入口の共通（K-1001）。G-15：K963-API-019。G-16：関数 1 回・1 取引（会社ごとに口を呼ばない） |",
+    "前からの試験を替えた所": "tenants に列を足し、2 つの口の振る舞いを作る。口の名前・道・tenants の列を読む前からの試験を探した（2026-11-23）。\n\n```search\ngit grep -l -E \"getOpsShell|listOpsWorkspaces\\b|/ops/shell|stopped_at|stop_reason_key\" -- 'apps/api/test' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/*'\n4\n```\n\n- scripts/ci/k1102_staging_spec_test.py（K-1102・段 13 の後の葉が切る段で書いた試験）: 替えない — staging の試験の名前の一覧に口の名前が在るかを見るだけ（2026-11-23 に数え直した）\n- scripts/ci/k1000_flow_test.py（K-1000）・scripts/ci/k1006_ops_workspace_contract_test.py（K-1006）・scripts/ci/k948_inquiry_contract_test.py（K-948・受信箱の数が getOpsShell に寄ったことを見る）: 替えない — 親の apis と契約の欄を読むだけ（sort の値は K-1006 が直す）\n- apps/api/test/features/F12/ops-entry.test.ts（K-1001・命令のパスで外した）: 替えない — 覗きの hook を差して入口だけを見る（この葉の hook は試験の中で差し替えられる）",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.3・4・24・35）\n- 切る段の決め（作り方・この md に残す）：止める印の列 4 つ（stopped_at・stop_on・stop_reason_key・stop_noticed_at）は、最初に読むこの葉が足す。書くのは K-970。PC がつながる人は bridge のセッションの生きている知らせが 90 秒の内",
+    "リスク": "- 全社の数は会社が増えると関数の中で全社を回す → 数十社の間は 1 回の関数で足りる。数百社を超えたら数の表を持つ形を後の葉で（G-16）",
+    "申し送り": "- K-1006：listOpsWorkspaces の sort は `attention・members・runs`（D-156.47・済み）\n- K-970：止める印の 4 列はこの葉が足す（足し直さない）。書くのは K-970 の関数だけ\n- K-965・K-946：答えの形は K-1006 のまま（sort だけ上のとおり）\n- K-995：照合が使えなかった登録の数は `pwned.unchecked`",
+    "代表に聞くこと": "- #5 代表の答え 2026-11-23（D-156.24）（気にかけるの目安と並び）\n- T 代表の答え 2026-11-23（D-156.72・answer=1e8672e4346c・勧めと違う）：上限に近い会社は気にかける一覧に出さない（上限の 90% の行を外した）\n- #16 代表の答え 2026-11-23（D-156.35）（回収の数）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 21 行（上限 30）。"
+   },
+   "file": "11_tickets/K-963.md"
+  },
+  {
    "id": "K-1000",
    "title": "段 13 の流れと文書：flow.json の A80 を「操作の版を見る（読むだけ）」に・回収の行為 A138 を足す・配るもの（ops-skills）の目的と第 2 ナビ・運営の役と用事の文、親 K-72 の apis に利用者の口 14 本、文書 08_api/phase1/10 から上の数の 3 本を消す（流れの正本と文書だけ・K-940 から分けた・K-72 の葉・W0）",
    "kind": "タスク",

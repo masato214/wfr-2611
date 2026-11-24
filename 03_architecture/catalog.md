@@ -279,11 +279,11 @@ API 359（作った 112・後のフェーズの行為だけ 20）・前の道す
 | `returnPlanProposal` | POST /api/v1/ops/plan_proposals/:id/return | 作成・実行（ops）— プランの値段・中身を変える案を作り、別の人が決める | F12 | 契約だけ（501） | K-72 |
 | `submitPlanProposal` | POST /api/v1/ops/plan_proposals/:id/submit | 作成・実行（ops）— プランの値段・中身を変える案を作り、別の人が決める | F12 | 契約だけ（501） | K-72 |
 | `listOpsPlans` | GET /api/v1/ops/plans | 取得（ops）— プランの値段・中身を変える案を作り、別の人が決める | F12 | 契約だけ（501） | K-72 |
-| `getOpsShell` | GET /api/v1/ops/shell | 取得（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 契約だけ（501） |  |
+| `getOpsShell` | GET /api/v1/ops/shell | 取得（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 契約だけ（501） | K-963 |
 | `listOpsTemplates` | GET /api/v1/ops/templates | 取得（ops）— ひな形（層・マスタ）を作って配る | F12 | 契約だけ（501） | K-72 |
 | `getOpsTemplate` | GET /api/v1/ops/templates/:id | 取得（ops）— ひな形（層・マスタ）を作って配る | F12 | 契約だけ（501） | K-72 |
 | `releaseOpsTemplate` | POST /api/v1/ops/templates/:id/versions | 作成・実行（ops）— ひな形（層・マスタ）を作って配る | F12 | 契約だけ（501） | K-72 |
-| `listOpsWorkspaces` | GET /api/v1/ops/workspaces | 取得（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 契約だけ（501） |  |
+| `listOpsWorkspaces` | GET /api/v1/ops/workspaces | 取得（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 契約だけ（501） | K-963 |
 | `getOpsWorkspace` | GET /api/v1/ops/workspaces/:id | 取得（ops）— ワークスペースの 1 社を扱う（いまの状態・メンバー・プ | F12 | 契約だけ（501） |  |
 | `listOpsWorkspaceAudit` | GET /api/v1/ops/workspaces/:id/audit | 取得（ops）— ワークスペースの 1 社を扱う（いまの状態・メンバー・プ | F12 | 契約だけ（501） |  |
 | `getOpsWorkspaceBilling` | GET /api/v1/ops/workspaces/:id/billing | 取得（ops）— ワークスペースの 1 社を扱う（いまの状態・メンバー・プ | F12 | 契約だけ（501） |  |
