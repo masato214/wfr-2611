@@ -26837,9 +26837,14 @@
    "apis": [],
    "canvas": [],
    "canvas_none": "流れの正本と文書だけ。画面のコードを変えない",
-   "affects": [],
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts",
+    "@kaname/web"
+   ],
    "ci_wide": [
-    "ci"
+    "ci",
+    "shared"
    ],
    "changes": [
     "05_flow/phase1.py",

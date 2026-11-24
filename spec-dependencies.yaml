@@ -30,7 +30,7 @@ counters:
     type: json_nested_array_length
     file: 05_flow/flow.json
     json_path: $.backbone[*].acts
-  expected_value: 136
+  expected_value: 137
   mirrors:
   - file: 05_flow/使ってもらい方.md
     regex: 行為 (\d+) ／ オブジェクト
