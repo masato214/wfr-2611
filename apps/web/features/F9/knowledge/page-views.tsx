@@ -80,10 +80,13 @@ export function PageActs({
   acts,
   moreOpen = false,
   handlers,
+  mustBlocked,
 }: {
   acts: readonly PageAct[];
   moreOpen?: boolean;
   handlers?: PageHandlers | undefined;
+  /** 「必ず守る」を付けられない訳（押せない形にする・K-691） */
+  mustBlocked?: string | undefined;
 }) {
   const has = (a: PageAct): boolean => acts.includes(a);
   const canEdit = has("edit");
@@ -96,6 +99,7 @@ export function PageActs({
       {has("must-on") || has("must-off") ? (
         <MustToggle
           on={has("must-on")}
+          disabled={mustBlocked}
           inert={Boolean(handlers) && !handlers?.acts[mustKey]}
           onClick={handlers?.acts[mustKey]}
         />
@@ -154,6 +158,8 @@ export interface PageViewProps {
   doc: Doc;
   /** 帯の操作と「…」の動き（画面の入れ物が渡す。下絵は渡さない） */
   handlers?: PageHandlers | undefined;
+  /** 「必ず守る」を付けられない訳（つまみは押せない形・頭の下に 1 行・K-691） */
+  mustBlocked?: string | undefined;
 }
 
 export function PageView({
@@ -167,13 +173,15 @@ export function PageView({
   moreOpen = false,
   doc,
   handlers,
+  mustBlocked,
 }: PageViewProps) {
   return (
     <article className="k-f9-card" aria-labelledby="kn-title">
       <header className="k-f9-phead">
         <Place place={place} />
-        <PageActs acts={acts} moreOpen={moreOpen} handlers={handlers} />
+        <PageActs acts={acts} moreOpen={moreOpen} handlers={handlers} mustBlocked={mustBlocked} />
       </header>
+      {mustBlocked ? <p className="k-f9-note">{mustBlocked}</p> : null}
       <h1 id="kn-title" className="k-f9-title">
         {title}
       </h1>

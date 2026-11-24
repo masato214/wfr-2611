@@ -1,0 +1,11 @@
+{
+  "data_links": [
+    {
+      "paths": ["apps/web/features/F9/knowledge/**", "apps/web/app/(dev)/dev/mock/f9/**"],
+      "tests": ["apps/web/tests/k/k691-knowledge-must-similar.spec.ts", "apps/web/test/k691-must-shape.test.ts"]
+    }
+  ],
+  "reads_ok": {
+    "apps/web/tests/k/k691-knowledge-must-similar.spec.ts": "knowledge-mock.ts を通して正本 07_qa/test-specs/errors.json の文を読み（エラーの文を比べる）、f9-match.ts を通して scripts/ci/fidelity_compare.mjs を読む（モックと本番を比べる・ファイルは書かない）・K-691"
+  }
+}

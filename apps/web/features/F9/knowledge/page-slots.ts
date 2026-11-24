@@ -4,6 +4,7 @@
 import type { ReactNode } from "react";
 import type { PageAnswer, TreeAnswer } from "./shape";
 import type { MoreItem, PageAct, ShelfKind } from "./types";
+import { useMustSlot } from "./must-slot";
 
 export type ReloadWhat = { page?: boolean; tree?: boolean };
 export type AddTarget = { shelf: ShelfKind; group_id?: string };
@@ -51,7 +52,7 @@ export interface MergedSlots {
 const useWriteSlot = (ctx: PageCtx): PageSlot => ({ acts: { edit: () => ctx.setEditing(true) } });
 
 /** 後ろの葉が 1 行ずつ足す。React の hook として毎回同じ順で呼ぶ */
-export const PAGE_SLOTS: readonly ((ctx: PageCtx) => PageSlot)[] = [useWriteSlot];
+export const PAGE_SLOTS: readonly ((ctx: PageCtx) => PageSlot)[] = [useWriteSlot, useMustSlot];
 
 const firstWins = <T extends object>(list: readonly (T | undefined)[]): T =>
   list.reduce<T>((acc, cur) => ({ ...(cur ?? {}), ...acc }), {} as T);

@@ -13,6 +13,7 @@ import { useMyRoles } from "@/lib/auth/role";
 import { NAV } from "@/lib/nav";
 import { KnowledgeLayout } from "./knowledge-layout";
 import { CopyBand, DeclinedBand, PageView, SharedBand, WaitingBand, type BandHandlers } from "./page-views";
+import { MUST_BLOCKED_TOO_LONG } from "./must-shape";
 import { PAGE_SLOTS, mergeSlots, type MergedSlots, type PageCtx } from "./page-slots";
 import {
   bandsOf,
@@ -365,6 +366,7 @@ function Main({ pageId, tree, page, merged, editing, setEditing, onBack, onRetry
         foot={footLine(p.foot)}
         doc={(p.body?.doc ?? { type: "doc", content: [] }) as Doc}
         handlers={handlers}
+        mustBlocked={p.must_blocked === "too_long" ? MUST_BLOCKED_TOO_LONG : undefined}
       />
     </WritingSlot>
   );

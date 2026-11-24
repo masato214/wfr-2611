@@ -2,7 +2,7 @@
 // ナレッジの小窓（中央に開く）：必ず守るの上限・上の棚に上げる・グループを選んで共有・似たページ。
 //   見た目だけ（値は props・口は呼ばない）
 import { ShieldCheck } from "lucide-react";
-import { Button, Callout, Dialog, Select, TextArea } from "@/components/k";
+import { Button, Callout, Dialog, NoticeBox, Select, TextArea, errorText } from "@/components/k";
 import type { PageBrief } from "./types";
 import "./knowledge.css";
 
@@ -20,18 +20,46 @@ export interface MustFullProps {
   pages: readonly { id: string; title: string; folder: string }[];
   /** いま付いている数（上限に届いたとき limit と同じ。並べた数より多いとき「ほか N 個」を出す） */
   count?: number;
+  /** 以下は画面の葉（K-691）が渡す。渡さなければ今の形（下絵） */
+  open?: boolean | undefined;
+  /** 押した行のページを外す（続けて付けるのは画面の葉） */
+  onRemove?: ((id: string) => void) | undefined;
+  /** 閉じる・Esc・右上の× */
+  onClose?: (() => void) | undefined;
+  /** 口の答えを待つ間（「外す」はどれも押せない） */
+  busy?: boolean | undefined;
+  /** 赤い箱の正本の ID */
+  error?: string | null | undefined;
 }
 
-export function MustFullDialog({ shelf, limit, target, pages, count = pages.length }: MustFullProps) {
+export function MustFullDialog({
+  shelf,
+  limit,
+  target,
+  pages,
+  count = pages.length,
+  open = true,
+  onRemove,
+  onClose,
+  busy = false,
+  error,
+}: MustFullProps) {
+  const remove = (id: string) =>
+    onRemove ? (busy ? { "aria-disabled": true as const } : { onClick: () => onRemove(id) }) : {};
   return (
     <Dialog
-      open
-      onOpenChange={noop}
+      open={open}
+      onOpenChange={onClose ? (o) => (o ? undefined : onClose()) : noop}
       title="「必ず守る」は、これ以上付けられません"
       target={target}
-      actions={<Button variant="outlined">閉じる</Button>}
+      actions={
+        <Button variant="outlined" {...(onClose ? { onClick: onClose } : {})}>
+          閉じる
+        </Button>
+      }
     >
       <div className="k-dialog-stack">
+        {error ? <NoticeBox>{errorText(error).entry.message}</NoticeBox> : null}
         <Callout tone="warn" title={`${shelf}の「必ず守る」は ${limit} 個までです`}>
           「必ず守る」のページは、AI に毎回全部渡します。多すぎると AI が守りきれなくなるので、上限があります。
           どれかを外すと、このページに付けられます。
@@ -46,7 +74,7 @@ export function MustFullDialog({ shelf, limit, target, pages, count = pages.leng
                   <b>{p.title}</b>
                   <small>{p.folder}</small>
                 </span>
-                <Button variant="outlined" size="sm" aria-label={`${p.title}の「必ず守る」を外す`}>
+                <Button variant="outlined" size="sm" aria-label={`${p.title}の「必ず守る」を外す`} {...remove(p.id)}>
                   外す
                 </Button>
               </li>
@@ -176,19 +204,30 @@ export interface SimilarProps {
   when: "save" | "raise";
   target: string;
   pages: readonly PageBrief[];
+  /** 以下は画面の葉（K-691）が渡す。渡さなければ今の形（下絵） */
+  open?: boolean | undefined;
+  onBack?: (() => void) | undefined;
+  onProceed?: (() => void) | undefined;
+  /** 「開く」（新しいタブ） */
+  onOpen?: ((id: string) => void) | undefined;
+  /** Esc・右上の× */
+  onClose?: (() => void) | undefined;
 }
 
-export function SimilarDialog({ when, target, pages }: SimilarProps) {
+export function SimilarDialog({ when, target, pages, open = true, onBack, onProceed, onOpen, onClose }: SimilarProps) {
+  const click = (fn: (() => void) | undefined) => (fn ? { onClick: fn } : {});
   return (
     <Dialog
-      open
-      onOpenChange={noop}
+      open={open}
+      onOpenChange={onClose ? (o) => (o ? undefined : onClose()) : noop}
       title="似たページがあります"
       target={target}
       actions={
         <>
-          <Button variant="outlined">戻って直す</Button>
-          <Button>{when === "save" ? "このまま作る" : "このまま頼む"}</Button>
+          <Button variant="outlined" {...click(onBack)}>
+            戻って直す
+          </Button>
+          <Button {...click(onProceed)}>{when === "save" ? "このまま作る" : "このまま頼む"}</Button>
         </>
       }
     >
@@ -204,7 +243,12 @@ export function SimilarDialog({ when, target, pages }: SimilarProps) {
                 <small>{p.place}</small>
                 <span className="k-f9-pick-desc">{p.desc}</span>
               </span>
-              <Button variant="outlined" size="sm" aria-label={`${p.title}を開く`}>
+              <Button
+                variant="outlined"
+                size="sm"
+                aria-label={`${p.title}を開く`}
+                {...click(onOpen ? () => onOpen(p.id) : undefined)}
+              >
                 開く
               </Button>
             </li>
