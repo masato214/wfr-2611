@@ -9,6 +9,7 @@ import type { ContractDeps, Hook, HookArgs, HookReply } from "./deps.js";
 import type { TenantContext } from "@kaname/db/context";
 import { checkFor, stepUpFresh, stepUpOrFreshLogin } from "./permissions.js";
 import { kanameError } from "@kaname/errors";
+import { OPS_TENANT_ID } from "@kaname/db/id";
 export type { ContractDeps } from "./deps.js";
 
 const LIMIT_DEFAULT = 50;
@@ -215,7 +216,7 @@ function handler(deps: ContractDeps, operationId: string, def: EndpointDef, sche
       (c.req.bodyCache as unknown as { text?: Promise<string> }).text = Promise.resolve(bodyText);
     }
     const perMinute = deps.limits?.[operationId] ?? def.rateLimit.perMinute;
-    const ctx = c.get("ctx");
+    let ctx = c.get("ctx");
     const repo = c.get("repo");
     // 1) 上限
     //    PC の印で来た要求は PC ごとに数える（同じ人の PC が何台あっても 1 台ずつの上限・代表の答え answer=431fc50df51b・K-355）
@@ -244,7 +245,18 @@ function handler(deps: ContractDeps, operationId: string, def: EndpointDef, sche
         // PC の印は、本人か PC の印で呼べる口（self_or_device）だけ通す
         if (ctx.role === "client" || (ctx.role === "device" && def.perm.word !== "self_or_device"))
           return err(c, 403, "forbidden", "FORBIDDEN");
-        if (ctx.role === "ops" && !(await repo.opsAllowed(ctx))) return err(c, 403, "forbidden", "FORBIDDEN");
+        if (ctx.role === "ops") {
+          // 運営が会社の人の口を呼ぶのは「中を見る」の読む口（GET）だけ。書く口は許可があっても 403・何も書かない
+          //   （D-125.128「見るだけ」・K-1001。行の守りの 1 層に入口の 1 層を足す・G-02）
+          if (def.method !== "GET") return err(c, 403, "forbidden", "FORBIDDEN");
+          if (!(await repo.opsAllowed(ctx))) return err(c, 403, "forbidden", "FORBIDDEN");
+        }
+      }
+      // 2.58) 運営の口は会社の文脈で動かない（D-156.3・K-1001）：x-tenant-id を付けても文脈の tenantId を null にしてから振る舞いに渡す。
+      //       運営が会社を触る道は security definer の関数だけ（会社の id は道の :id で引数に渡す）。以後の段と hooks は書き換えた文脈を読む
+      if (def.auth === "ops") {
+        c.set("ctx", { ...ctx, tenantId: null });
+        ctx = c.get("ctx");
       }
       // 2.6) 会社から抜けた人（members.deleted_at・セッションは残っている）は、行に結ぶ確かめ（4.1）より前に 403 で止める
       //      （404 でない・何も書かない・全部の口・D-131.7 ②・K-166）。止められた人はここでは見ない（各関数が 403）。判定できなければ 503。
@@ -271,6 +283,10 @@ function handler(deps: ContractDeps, operationId: string, def: EndpointDef, sche
       ),
     ];
     if (badNul.length) return err(c, 422, "validation_failed", "VALIDATION_ERROR", { details: badNul });
+    // 3.0c) 1 社を指す運営の口（perm.scope ops_tenant）で :id が運営の会社なら 404（D-156.3・D-156.12・K-1001）。
+    //       運営の会社は顧客のワークスペースでない。欄・details を付けず在るかを漏らさない。501 と入力の確かめより前（何を送っても 404）
+    if (def.perm.scope === "ops_tenant" && c.req.param("id") === OPS_TENANT_ID)
+      return err(c, 404, "not_found", "NOT_FOUND");
     // 3.1) 権限の言葉の段（K-14）：admin の能力・運営のできること など。行に結ぶ言葉は 4.1 で :id の行を読んで確かめる（K-15）
     if (def.auth !== "public") {
       const check = checkFor(def.perm.word);

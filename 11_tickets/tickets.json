@@ -27072,6 +27072,83 @@
    "file": "11_tickets/K-946.md"
   },
   {
+   "id": "K-947",
+   "title": "運営が会社を触る DB の道の土台：関数の中の 2 層目（app.ops_require・app.ops_target）と、口から呼ぶ TS の土台（opsTx・opsAudit・opsErrorReply）と、運営の関数が確かめと記録を必ず持つかを見る検査（ops_definer_gate）（K-72 の葉・W0）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "運営の土台",
+   "assignee": "実装",
+   "due": "2026-12-04",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 4 の K-327（migration の一覧の作り手と検査・自己試験 8 行・見込み 1）と K-351 の関数の migration（関数 2 つ・15 分）から引いた：migration 1 本（関数 2 つ）15 分・TS の土台 3 つ 15 分・検査の台本 15 分・試験 14 行（DB 8・自己試験 6）を流して直す 15 分",
+   "decisions": [
+    "D-156.3",
+    "D-156.12",
+    "D-156.17",
+    "D-125.128",
+    "D-128.108"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-db.test.ts",
+    "scripts/ci/k947_ops_definer_test.py"
+   ],
+   "carry": [
+    "scripts/ci/g65.d/K-947.txt"
+   ],
+   "depends_on": [
+    "K-944"
+   ],
+   "acts": [
+    "A60",
+    "A64"
+   ],
+   "screens": [],
+   "apis": [],
+   "canvas": [],
+   "canvas_none": "DB の関数と口の土台と検査だけ。画面のコードを変えない",
+   "affects": [
+    "@kaname/api",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "ci"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128004700_ops_base.sql",
+    "packages/db/src/migrations.generated.ts",
+    "apps/api/src/features/F12/ops/db.ts",
+    "scripts/ci/ops_definer_gate.py",
+    "scripts/ci/g65.d/K-947.txt",
+    "apps/api/test/features/F12/ops-db.test.ts",
+    "scripts/ci/k947_ops_definer_test.py"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営が別の会社を触る道は **security definer の関数だけ**（BYPASS は使わない・D-156.3）。段 13 の運営の口の葉（K-963〜K-995）が、どれも同じ形で関数を書けるように、型と土台と検査を先に置く。\n\n- **関数の中の 2 層目**：入口（op.ts の役とできること）が抜けても、関数の頭で `app.ops_require(<できること>)` が運営の人とできることを確かめる（G-02）。指す会社は `app.ops_target(<会社>)` で、在る顧客のワークスペースだけに絞る（運営の会社・作りかけ・消した会社は「無い」）\n- **書く関数は運営の記録を必ず書く**（運営と会社の両方・D-128.108）：`app.record_ops_audit` を中で呼ぶ\n- **検査 `ops_definer_gate.py`**：migration の中の `app.ops_*` の security definer の関数が、①頭で ops_require を呼ぶ ②書くなら record_ops_audit を呼ぶ、を機械で見る（人が思い出さなくても漏れない・choke-points.md）\n- **口から呼ぶ TS の土台**（`apps/api/src/features/F12/ops/db.ts`）：運営の文脈の 1 つの取引（opsTx）・記録の呼び口（opsAudit）・DB の断りを口の答えに直す（opsErrorReply：42501 → 403・P0002 → 404・ほか → 503 E-PAGE-003）",
+    "完了の条件": "- [ ] 下の表の 14 行（K947-API-001〜008・K947-DB-001〜006）が緑：`apps/api/test/features/F12/ops-db.test.ts`・`scripts/ci/k947_ops_definer_test.py`\n- [ ] 検査 `python3 scripts/ci/ops_definer_gate.py` が本線の migrations で 0 で終わる（G65 の段 `scripts/ci/g65.d/K-947.txt` で CI が流す）\n- [ ] 前からの試験は「前からの試験を替えた所」のとおり（替える物は無い）で緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: TOOL, PERM\n\n- 運営の文脈は K-944・K-1001 の形：role ops・tenantId null・userId は運営の会社の members.id。関数は `app.role()`・`app.user_id()` で確かめる（引数で人を受けない）\n- `app.ops_require(p_cap text) returns uuid`（security definer・stable）：`app.role() = 'ops'` で、`ops_members` の `member_id = app.user_id()`・`revoked_at is null`・`deleted_at is null` の行があり、`p_cap = 'any'` か `p_cap = any(caps)` なら、その行の id。ほかは `raise exception … using errcode = 'insufficient_privilege'`（42501）\n- `app.ops_target(p_tenant uuid) returns uuid`（security definer・stable）：`tenants` に在り、`deleted_at is null`・`half_made_at is null`・`id <> app.ops_tenant_id()` なら同じ id。ほかは `errcode = 'no_data_found'`（P0002）。中で ops_require は呼ばない（呼ぶ側が先に呼ぶ）\n- 運営の関数の名前は `app.ops_<名前>`（検査はこの名前で見つける）。検査の台帳 `EXEMPT`（名前 → 理由）に、型でない前からの関数と、ログインの前に呼ぶ関数を置く：`app.ops_tenant_id`（定数）・`app.ops_grant_ok`（行の守りの中の判定）・`app.ops_plan_proposal_guard`（引き金）・`app.ops_require`・`app.ops_target`（この葉の型そのもの）・`app.ops_login_check`（K-944・ログインの前）・`app.ops_setup_consume`（K-945・ログインの前）\n- 検査の読み方：`packages/db/migrations/*.sql` を名前の順に読み、`create [or replace] function app.ops_…` から `$$ … $$` の本体までを 1 つと数え、同じ名前は後の版で上書き。`security definer` が無い関数は見ない。本体の最初の文（`begin` の後・`declare` は除く）が `perform app.ops_require(` か `:= app.ops_require(` でなければ誤り。本体に `insert into`・`update `・`delete from` があり `app.record_ops_audit(` が無ければ誤り。誤りは「<ファイル名>: <関数名> …」の 1 行\n- 断る番号（控え帳・D-156.12・D-156.17）：できることが無い＝403 FORBIDDEN、指した会社が無い・見えない＝404 NOT_FOUND（欄・details なし）、DB のほかの失敗＝503 E-PAGE-003。opsErrorReply のログは `[ops] <where> の DB が失敗した（<SQLSTATE>）` だけ（例外の文・値を出さない）\n- 答えの形は今の入口の err と同じ（`{ error: \"forbidden\", code: \"FORBIDDEN\" }`・`{ error: \"not_found\", code: \"NOT_FOUND\" }`・`{ error: \"unavailable\", code: \"E-PAGE-003\" }`）",
+    "依存の理由": "- K-944: 要る — 運営の文脈（role ops・tenantId null）を作る解決と、運営の会社の人の作り方。試験の偽のログインでも文脈は作れるが、ops_require が読む ops_members の行の意味（運営の人）を K-944 が決める\n- K-1001（入口）: 外した — この葉は DB と TS の土台だけで、入口のファイルに触らない",
+    "目録で探した結果": "- 使う：`withTenant`（`@kaname/db/context`）・`app.record_ops_audit`（0003）・`app.ops_tenant_id()`・`tenants.half_made_at`（0087・K-104 の作りかけの会社）・入口の err の形（`apps/api/src/contract/op.ts`）・G65 の自己試験の置き場（`scripts/ci/g65.d/`）\n- 作る：関数 2 つ・TS の土台 1 ファイル・検査の台本 1 本。探したが運営の関数の型と検査は無かった（ゼロトラストの検査 `zt_gate.py` は契約の口を見る。DB の関数は見ない）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128004700_ops_base.sql`（K-947 → 47 分）：`app.ops_require`・`app.ops_target`（前提と制約）と `grant execute … to kaname_app`。一覧は作り手 `python3 scripts/ci/gen_migrations.py`（生成物） |\n| TS の土台 | `apps/api/src/features/F12/ops/db.ts`：`opsTx<T>(pool, ctx, fn)`（ctx.role が ops でなければ投げる・`withTenant`）・`opsAudit(client, { tenantId, action, targetType, targetId, payload? })`（`select app.record_ops_audit($1, $2, $3, $4, null, $5)`）・`opsErrorReply(e, where): HookReply` |\n| 検査 | `scripts/ci/ops_definer_gate.py`：`check(dir) -> list[str]`・`EXEMPT`・`--dir`（既定 `packages/db/migrations`）。誤りがあれば 1 行ずつ出して 1 で終わる |\n| CI | `scripts/ci/g65.d/K-947.txt`（carry）：`python3 scripts/ci/k947_ops_definer_test.py` と `python3 scripts/ci/ops_definer_gate.py` の 2 行 |\n| 試験 | `apps/api/test/features/F12/ops-db.test.ts`・`scripts/ci/k947_ops_definer_test.py`（切る段が書いた） |",
+    "外に影響する手順": "- なし — 型の関数（読むだけ・断るだけ）と土台。記録を書く呼び口 opsAudit は、呼ぶ口の葉の手順で数える（この葉の試験 K947-API-007 は呼び口が 1 つの取引で両方の記録に書き、落ちたら両方戻ることを見る）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/ops-db.test.ts`（本物の DB・アプリの接続・偽のログインの人）／`scripts/ci/k947_ops_definer_test.py`（一時のフォルダに migration の形のファイルを置く）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| できることを持つ運営の人 | ops_require | 運営の文脈 | ops_members.id | このチケット | K947-API-001 |\n| できることを持たない | ops_require | 運営の文脈 | 42501 | このチケット | K947-API-002 |\n| 会社の人・偽った人 | ops_require | role member | 42501 | このチケット | K947-API-003 |\n| 外した運営の人 | ops_require | 運営の文脈 | 42501 | このチケット | K947-API-004 |\n| 顧客・運営の会社・無い・作りかけ | ops_target | 運営の文脈 | id／P0002 | このチケット | K947-API-005 |\n| 取引と記録 | opsTx・opsAudit | 運営の文脈 | 両方に 1 行・落ちたら 0 | このチケット | K947-API-006・007 |\n| DB の断り | opsErrorReply | — | 403／404／503 | このチケット | K947-API-008 |\n| 運営の関数の形 | 検査 | — | 誤り 0／1 | このチケット | K947-DB-001〜006 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K947-API-001 | 対象の状態 | できることを持つ | ops_require('money') と ('any') がどちらもその人の ops_members.id |\n| K947-API-002 | 守り | できることを持たない | 42501 |\n| K947-API-003 | 守り | role member | 会社の人も、運営の人の members.id を偽った member の文脈も 42501 |\n| K947-API-004 | 利用者の状態 | 外した運営の人 | ops_require('any') も 42501 |\n| K947-API-005 | 守り | 指す会社 | 顧客の会社は同じ id。運営の会社・無い uuid・作りかけは P0002 |\n| K947-API-006 | 対象の状態 | opsTx | 中で文脈の値 app.role は ops・app.tenant_id は null・app.user_id は運営の人（関数 app.role() などと同じ中身を読む。アプリの接続は app.role() の実行権を持たない） |\n| K947-API-007 | 失敗 | opsAudit | 運営の記録と会社の記録に 1 行ずつ。fn が後で落ちると、その action はどちらにも 0 |\n| K947-API-008 | 失敗 | opsErrorReply | 42501 → 403 FORBIDDEN／P0002 → 404 で体は { error, code } だけ／57P01 → 503 E-PAGE-003。ログに SQLSTATE が出て、例外の文は出ない |\n| K947-DB-001 | 守り | 正しい関数 | 読む関数・書く関数の誤り 0 |\n| K947-DB-002 | 守り | 確かめが無い | 誤り 1・ファイル名と関数名が入る |\n| K947-DB-003 | 守り | 記録が無い | 誤り 1・関数名と record_ops_audit の字が入る |\n| K947-DB-004 | 入力 | 後の版 | 後で直せば 0・後で壊せば 1 |\n| K947-DB-005 | 守り | 台帳 | 型と前からの関数が台帳に在り、理由が空でない。security definer でない関数は見ない |\n| K947-DB-006 | 守り | 本物と命令 | 本物の migrations で 0。命令は誤りで 1・無ければ 0 |\n\n### テストの型の受け（分類 TOOL・PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-TOOL-01 日本語の名前のファイル | 要らない：migration の名前は英数字だけ（`20261128HHMM00_<名前>.sql`・D-156.19） |\n| TP-TOOL-02 何も見ていないのに緑 | K947-DB-002・003（わざと壊した関数で赤）・K947-DB-006（命令が 1 で終わる） |\n| TP-TOOL-03 容れ物と手元の違い | 要らない：python の標準だけで、ファイルを読むだけ |\n| TP-PERM-01 役が合わない人 | K947-API-002・003 |\n| TP-PERM-02 権限を外した直後 | K947-API-004 |\n| TP-PERM-03 他の会社の ID を指す | K947-API-005（運営の会社・無い id は「無い」） |\n| TP-PERM-04 一覧・数に混ざらない | 要らない：一覧の関数は K-963 が持つ（ops_target で会社を絞る型だけをここで置く） |\n| TP-PERM-05 権限を付けた直後 | 要らない：ops_require は呼ぶたびに ops_members を引く（覚えない） |\n| G-11・G-15 | N/A：外の資源・外のプロセスを使わない |\n| G-12 | K947-API-004（外した直後） |\n| G-13 | K947-API-003（会社の人の文脈 × 運営の関数） |\n| G-14 | K947-API-004 |\n| G-16 | 関数は 1 回の問い合わせで ops_members を 1 行引くだけ |",
+    "前からの試験を替えた所": "関数を 2 つ足し（前からの関数は変えない）、新しい検査の台本を足すだけ。運営の関数の名前と record_ops_audit を読む前からの試験を探した。\n\n```search\ngit grep -l -E \"ops_require|ops_target|ops_definer\" -- 'apps/api/test' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/features/F12/*' ':!scripts/ci/k947_*'\n0\n```\n\n- 当たる物は 0 本。`packages/db/test/audit.test.ts`（record_ops_audit の両方の記録）は前からの関数をそのまま見る：替えない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.3）",
+    "リスク": "- 本体の最初の文の読み方が、コメントや declare の書き方で外れる → K947-DB-001 の書き方（declare の後の begin の次の文）を型として申し送る。外れたら検査が赤になり、書く側が型に合わせる（緩めない）",
+    "申し送り": "- K-963〜K-995（運営の口の葉）：DB の関数は `app.ops_<名前>`・頭で `perform app.ops_require('<できること>')`（値は `v := app.ops_require(…)` でも可）・会社を指すなら次に `perform app.ops_target(p_tenant)`・書くなら `perform app.record_ops_audit(…)`。口は `opsTx` の中で呼び、例外は `opsErrorReply` で答える\n- K-945：`app.ops_setup_consume` は台帳 EXEMPT に入れた（ログインの前に呼ぶ）。名前を変えるなら台帳も直す\n- 後の葉で、運営の記録に残さない書き込みを持つ関数（例：期限を過ぎたお知らせの印・照合落ちの確かめの印だけを書く関数）を足すと、検査の「書くなら record_ops_audit」で赤になる。そのときは検査を緩めず、その関数を台帳 `EXEMPT` に理由つきで足す（理由の無い足しはしない）。記録に残す操作（D-156.48）なら record_ops_audit を呼ぶ形にする",
+    "代表に聞くこと": "- なし（D-156.3 は PM の決め）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 14 行（上限 30）。"
+   },
+   "file": "11_tickets/K-947.md"
+  },
+  {
    "id": "K-948",
    "title": "契約の作り直し 1：問い合わせ（利用者の 6 口・運営の受信箱の 5 口）を画面が要る欄に作り直し、添付に関門 C4 を足し、書き出しの口 2 本（exportOpsWorkspaces・exportOpsInvoices）を外す（契約と文書だけ・振る舞いは後の葉・K-72 の葉・W0）",
    "kind": "タスク",
@@ -27161,6 +27238,393 @@
     "見込み": "1 時間（実測なし・仮）。試験の行は 17 行（上限 30）。"
    },
    "file": "11_tickets/K-948.md"
+  },
+  {
+   "id": "K-954",
+   "title": "お知らせを読む（listNotices）と読んだ印（markNoticeRead）：届け先の決め（全部・プラン・ワークスペース・出したか）を DB の関数 1 か所に置き、本人の既読を notice_deliveries に 1 行で持つ。続報の置き場 notice_updates・列 target_tenant_ids・impact を足す（K-72 の葉・W2）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "お知らせ",
+   "assignee": "実装",
+   "due": "2026-12-07",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 4 の K-351（一覧の口 1 本・migration 1 本と行の守りの作り直し・試験 20 行・見込み 1）と段 10 の K-704（DB の関数で権限と状態を確かめて書く・試験 25 行・見込み 1）から引いた：migration（列 2 つ・表 1 つ・一意の索引・関数 3 つ）20 分・口 2 本と答えの形 15 分・登録先（hooks・.d・ci_scope・ER 図・db-columns）10 分・自分の確かめ 15 分。試験の土台 notice.harness.ts は切る段で書いた",
+   "decisions": [
+    "D-156.10",
+    "D-156.12",
+    "D-156.17",
+    "D-156.27",
+    "D-156.28",
+    "D-156.33",
+    "D-125.127",
+    "D-128.71",
+    "D-156.57"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/notices-read.test.ts",
+    "apps/api/test/generated/get_notices.test.ts",
+    "apps/api/test/generated/post_notices_id_read.test.ts"
+   ],
+   "carry": [
+    "apps/api/test/features/F12/notice.harness.ts",
+    "apps/api/test/features/contract/k144.d/K-954.ts",
+    "05_flow/screen_api.d/K-954.py",
+    "07_qa/test-plan/ears-elsewhere.d/K-954.json"
+   ],
+   "depends_on": [
+    "K-1004"
+   ],
+   "acts": [
+    "A68"
+   ],
+   "screens": [
+    "notices"
+   ],
+   "apis": [
+    "listNotices",
+    "markNoticeRead"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。困ったとき・お知らせの画面は K-956（正は /dev/mock/f12-user の uh-help・uh-notice）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128005400_member_notices.sql",
+    "packages/db/policies/20261128005400_member_notices.sql",
+    "packages/db/src/migrations.generated.ts",
+    "05_flow/rls_policies.py",
+    "05_flow/screen_api.d/K-954.py",
+    "scripts/ci/contract_shape.d/K-954.py",
+    "07_qa/test-plan/ears-elsewhere.d/K-954.json",
+    "scripts/ci/ci_scope.d/K-954.json",
+    "apps/api/src/hooks/notices-read.ts",
+    "apps/api/src/features/F12/notices/list.ts",
+    "apps/api/src/features/F12/notices/read.ts",
+    "apps/api/src/features/F12/notices/shape.ts",
+    "apps/api/src/features/F12/notices/errors.ts",
+    "08_api/db-columns.json",
+    "03_architecture/ER図.md"
+   ],
+   "flow": "困ったときに運営に聞き、お知らせと請求を見る",
+   "sections": {
+    "目的": "顧客（ワークスペースの人）が「右上の顔 › 困ったとき・お知らせ」で、運営からのお知らせ（リリース・障害・メンテ）を読み、開いたら読んだ印が付く口を作る（行為 A68・今は 501）。答えの形は K-1004 の「画面が使う答えの形」（`Notice` の 9 欄・`{ id, read_at }`）で、この葉は振る舞いだけを書く。\n\n- **届け先の決めを 1 か所に置く**：どのお知らせが、どの会社の人に見えるか（出したか・誰に）を、security definer の関数 `app.notice_for_tenant(p_notice, p_tenant)` に置く。一覧（この葉）・帯と様子（K-955）・運営が「出すと届く数」を数える葉（K-978）が同じ関数を使う（同じ決めを 2 つ作らない）\n- **読んだ印は本人だけ**：開いたときに読んだ印（ボタンは無い・D-156.27）。印は `notice_deliveries`（その会社・その人の 1 行）。同じ会社の別の人の印は自分に効かない\n- **続報の置き場と列を先に作る**：障害の続報の履歴の表 `notice_updates`・誰にの「ワークスペースを選ぶ」の列 `notices.target_tenant_ids`・メンテの影響の列 `notices.impact` を、この葉の migration が作る（読むのはこの葉、書くのは運営の葉 K-977・K-978・K-979）\n- **運営のお知らせは鈴に出さない**（D-156.28）：自分宛の知らせ（`notifications`）の行を作らない",
+    "完了の条件": "- [ ] 下の表の 25 行（K954-API-001〜022・K954-DB-001〜003）が緑：`apps/api/test/features/F12/notices-read.test.ts`（土台 `notice.harness.ts`）\n- [ ] 契約の口 2 本が 501 でない。生成の試験 `get_notices.test.ts`・`post_notices_id_read.test.ts` の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-954.json` の covers）\n- [ ] 共有の試験 k144-contract.test.ts の回で、入口の uuid の行 K144-API-954（`markNoticeRead` の道の id）が通る\n- [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑\n- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: LIST, PERM\n\n- **生成の試験は作る段の最初に作る**：口の契約は K-1004 が作り直した形のまま（この葉は契約の鍵を足さない。`05_flow/screen_api.d/K-954.py` は住所だけの空のファイル）。作る段の最初に作り手（`python3 scripts/ci/build_registries.py && python3 scripts/tickets/regen_all.py`）で生成の試験を作り直し、**実装より先に 1 つのコミットにする**（その後は変えない）。**先の葉の契約を前提にした前からの試験は carry に入れない**（carry は土台 `notice.harness.ts`・自分の k144.d の行と、切る段で書いた登録先の下書き 2 つ＝`05_flow/screen_api.d/K-954.py`・`07_qa/test-plan/ears-elsewhere.d/K-954.json`。2 つは試験ではないが、切る段で中身を決めて書いたので、作る段で書き換えないよう carry で運ぶ。changes にも在るのは作り手が作り直すときに触るため）\n- **届け先の決め**（`app.notice_for_tenant(p_notice uuid, p_tenant uuid) returns boolean`・stable・security definer）：お知らせ n が会社 T の人に見えるのは、次が全部のとき\n  ① `n.tenant_id = app.ops_tenant_id()`（運営の会社の行だけ）・`n.deleted_at is null`・`n.title is not null`\n  ② 出した：`n.state = 'published'`、または `n.state = 'scheduled' and n.publish_at <= now()`（予定の日時を過ぎたら出る・時間で動く仕組みは使わない・D-156.33）。時刻の比べは DB の `now()`\n  ③ 誰に（D-156.33）：全部（`target_plan_ids`・`target_tenant_id`・`target_tenant_ids` がどれも null か空）／プラン（`app.tenant_plan_id(T) = any(target_plan_ids)`）／ワークスペース（`T = any(target_tenant_ids)` か、前の列 `T = target_tenant_id`）のどれか\n  `app.tenant_plan_id(p_tenant uuid) returns uuid`（stable・security definer）：その会社の消していない・終わっていない（`ended_at is null`）契約 `subscriptions` のうち `started_at` の新しい 1 つの `plan_id`。無ければ運営の会社の `plans.key = 'free'` の id（無ければ null）。**この決めは K-961 が「効いている契約＝始まっていて（`started_at <= now()`）終わっていない行」に create or replace で直す**（下げる予定の行＝まだ始まっていない行を今のプランと読まないため。引数・戻り・security definer は同じ。K961-DB-001）\n- **管理者だけ**（代表の答え 2026-11-23・D-156.57：値段が変わるお知らせは管理者だけ）：列 `notices.admins_only boolean not null default false` をこの葉の migration で足す。一覧と読んだ印は、届け先の関数で見えて、かつ `admins_only` が false か、本人がその会社の管理者（`tenant_memberships` の role admin・status active・消していない）のときだけ。この決めは 1 か所の関数 `app.notice_for_member(p_notice uuid, p_tenant uuid, p_member uuid) returns boolean`（stable・security definer・`notice_for_tenant` を呼んで管理者だけの式を足す）に置き、一覧と読んだ印が呼ぶ（会社単位の `app.notice_for_tenant` は変えない＝運営の届く数の数え方は会社のまま）。上の帯には出ない（K-1004 の入力の決まりで、管理者だけのお知らせは帯を選べない）。書くのは K-978（1 社に送る）と K-990（値段が変わる）\n- **一覧**（`app.member_notices(p_kind text, p_unread boolean, p_limit int) returns jsonb`・security definer）：頭で `app.role() = 'member' and app.tenant_id() is not null and app.user_id() is not null` でなければ `raise … errcode = 'insufficient_privilege'`（42501・入口が抜けたときの 2 層目）。届け先の関数で見える物のうち、出す場所に一覧がある物（`'list' = any(placements)`）だけ。`p_kind` が null でなければ `kind_id = p_kind`・`p_unread` が true なら読んでいない物だけ。並びは出した時刻 `coalesce(publish_at, created_at)` の新しい順・同じなら id。`p_limit` 件まで（口は 101 を渡す）\n  1 行の形（K-1004 の 9 欄）：`id`・`kind`（`kind_id`：incident・maintenance・release）・`title`・`body`・`state`（障害なら、その お知らせに結んだ `status_incidents` の消していない行の新しい 1 つの `state`。ほかは null）・`published_at`（`coalesce(publish_at, created_at)`。すぐ出すときも運営の葉 K-978 が出した時刻を `publish_at` に入れる）・`unread`（その人の `notice_deliveries` に `read_at` のある行が無い）・`maintenance`（`maintenance_from` と `maintenance_to` が両方あれば `{ from, to, impact }`・ほかは null）・`updates`（`notice_updates` の消していない行の古い順 `{ state, body, at }`・無ければ `[]`）\n- **口（一覧）**：`apps/api/src/features/F12/notices/list.ts`。問い合わせの値 `kind`・`unread` は入口（op.ts の QUERY_RANGES・K-1004）が形を確かめ済み。`withTenant` の 1 取引で `app.member_notices($1, $2, 101)` を呼び、101 行目があれば捨てて 100 件を返し、`console.warn(\"[notices] 一覧を 100 件で切った\")` を 1 行出す（題・本文・id はログに出さない）。cursor・limit は入口の形の確かめだけで、口は新しい順の 100 件まで（お知らせは月に数件・K-351 と同じ形）。200 `{ data: Notice[] }`・`Cache-Control: private, no-store`\n- **読んだ印**（`app.member_notice_read(p_notice uuid) returns jsonb`・security definer）：頭で一覧と同じ 2 層目。届け先の関数で見えなければ `{\"error\":\"not_found\"}`（何も書かない）。見えれば `insert into notice_deliveries (tenant_id, notice_id, member_id, delivered_at, read_at, created_by) values (T, p_notice, U, now(), now(), U) on conflict do nothing`（一意の索引）の後、その行の `read_at`（`read_at` が null の前の行なら now() を入れる）を `{\"data\": {\"id\", \"read_at\"}}` で返す。2 回目・同時の 2 回は最初の read_at のまま・行は 1 つ\n- **口（読んだ印）**：`apps/api/src/features/F12/notices/read.ts`。体は空の `{}`（知らない鍵は入口が 422）。関数の断り `not_found` → 404 E-PAGE-001（欄・details・detail を付けない＝在るかを漏らさない・控え帳）。200 `{ data: { id, read_at } }`・`Cache-Control: private, no-store`\n- **断る番号**（控え帳・D-156.12・D-156.17）：ログインなし 401／先方の権限の人（role client）は入口が 403（契約の auth が member）／見えない・無い 404 E-PAGE-001／形の誤り 422（入口）／上限 429／DB の失敗（想定外の例外）は 503 E-PAGE-003（`{ error: \"unavailable\", code: \"E-PAGE-003\" }`・何も書かない）。ログは `[notices] <口> の DB が失敗した（<SQLSTATE>）` だけ（題・本文・例外の文を出さない）。言葉 → 番号は `apps/api/src/features/F12/notices/errors.ts` の 1 か所（K-955 も使う）\n- **鈴に出さない**（D-156.28）：どちらの口も `notifications` を書かない・関門 C6 を呼ばない\n- 出す場所の言葉：契約の `placements` の `band`（上の帯）は DB の値 `'banner'`・`list` は `'list'`（0078 の check のまま。読み替えは運営の書く葉 K-977 が 1 か所に持つ）。この葉が読むのは `'list'` だけ\n- 口の登録は葉ごとの hooks のファイル（K-326）：`apps/api/src/hooks/notices-read.ts` に `noticesReadHooks(d)`（listNotices・markNoticeRead の before）と `export const register = defineHooks({ name: \"noticesReadHooks\", make: (d) => noticesReadHooks({ appPool: d.appPool }), fuzz: \"same\" })`。server.ts・fuzz の的に差す行は書かない（作り手 `python3 scripts/ci/gen_ts_registries.py`）",
+    "依存の理由": "- K-1004: 要る — 口 2 本の入力と答えの形（`Notice` の 9 欄・`{ id, read_at }`・問い合わせの値 kind・unread の形）を K-1004 が契約に作り直す。前の契約の形（表の写し）では答えが合わない",
+    "目録で探した結果": "- 使う：`notices`・`status_incidents`（0015・0078 の state・placements・maintenance_from・maintenance_to・notice_id）・`notice_deliveries`（0015）・`subscriptions`・`plans`（0015）・`app.ops_tenant_id()`（0003）・`withTenant`・K-307 の「全部向け」の条件（0105 の `app.public_service_status()`。この葉は変えない）・K-351 の hooks の書き方・K-704 の関数の断りの言葉 → 番号の書き方・試験の土台 `fixture.ts`・`F3/leaf-hooks.ts`（K-364）\n- 作る：列 `notices.target_tenant_ids`・`notices.impact`・表 `notice_updates`・一意の索引 `notice_deliveries_member_uq`・関数 `app.tenant_plan_id`・`app.notice_for_tenant`・`app.member_notices`・`app.member_notice_read`・hooks `notices-read.ts`・`features/F12/notices/`。探したが顧客がお知らせを読む道は無かった（`notices` は運営だけが読める・0105 はログイン前の全部向けだけ）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128005400_member_notices.sql`（K-954 → 54 分）：① `alter table notices add column if not exists target_tenant_ids uuid[]`・`impact text`・`admins_only boolean not null default false`（D-156.57） ② 表 `notice_updates (id uuid pk default gen_random_uuid(), tenant_id uuid not null references tenants(id) default app.ops_tenant_id(), notice_id uuid not null references notices(id), state text not null check (state in ('investigating','identified','monitoring','resolved')), body text not null, created_at・updated_at・created_by・updated_by・deleted_at)`・索引 `(notice_id, created_at)`・`kaname_app` に select, insert, update, delete ③ 同じ会社・同じ人・同じお知らせの消していない 2 行目以降の `notice_deliveries` に `deleted_at` を入れてから、一意の索引 `notice_deliveries_member_uq on notice_deliveries (tenant_id, notice_id, member_id) where deleted_at is null` ④ 関数 4 つ（前提と制約・`search_path = public, app, pg_temp`・`public` から外す・`kaname_app` に execute）。一覧は作り手 `python3 scripts/ci/gen_migrations.py` |\n| 行の守り | `05_flow/rls_policies.py` の POLICIES に `notice_updates` を足す：`notice_updates_ops_all`（select と insert,update,delete・role ops）`tenant_id = app.ops_tenant_id() AND current_setting('app.role', true) = 'ops'`（status_incidents と同じ・会社の人は読めない＝読むのは関数だけ）。`03_architecture/ER図.md` に notice_updates の行と notices の 2 列を書き足し、`python3 05_flow/build_functional.py` → `python3 scripts/ci/gen_rls.py --tables notice_updates -o packages/db/policies/20261128005400_member_notices.sql`（生成物・手で直さない） |\n| 口 | `apps/api/src/features/F12/notices/list.ts`・`read.ts`・`shape.ts`（関数の jsonb → 答えの形。鍵ちょうど 9 つ・updates の鍵ちょうど 3 つ）・`errors.ts`（not_found → 404 E-PAGE-001・想定外 → 503 E-PAGE-003） |\n| 口の登録 | `apps/api/src/hooks/notices-read.ts`（前提と制約） |\n| 登録先 | `05_flow/screen_api.d/K-954.py`（住所だけ）・`scripts/ci/contract_shape.d/K-954.py`（空の表）・`07_qa/test-plan/ears-elsewhere.d/K-954.json`・`scripts/ci/ci_scope.d/K-954.json`（hooks と口のコード → 試験・土台 → 試験を data_links で結ぶ。土台の訳は reads_ok）・k144 の葉のファイル `apps/api/test/features/contract/k144.d/K-954.ts`（carry） |\n| 生成物 | `pnpm db:columns`（08_api/db-columns.json）・`python3 scripts/ci/build_registries.py`・`python3 scripts/ci/gen_ts_registries.py` |\n| 親 | `11_tickets/K-72.md` は触らない（K-1000 の試験 K1000-FL-006 が、親の apis に利用者の口 14 本が在ることを見る。親から葉へ口を移すかはまとめ役が決める＝申し送り） |",
+    "外に影響する手順": "1. 読んだ印を書く（`notice_deliveries` に本人の 1 行・関門 C2・DB の関数の 1 取引）— 失敗：書けない・取引が落ちた → 503 E-PAGE-003・行は残らない（K954-API-020）\n2. 一覧は読むだけ（DB に書かない・お知らせ・メール・鈴を出さない＝K954-API-021）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/notices-read.test.ts`（本物の DB・本物の hooks・偽の画面のログイン。土台 `notice.harness.ts`）。共用の DB なので、この回の題（run）の行だけを見る。\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 出した・全部向け／自分のプラン／自分のワークスペース | 一覧を開く | 会社の人 | 出る | このチケット | K954-API-001・002 |\n| 管理者だけ | 一覧を開く・読んだ印 | 管理者・管理者でない人 | 出る・出ない（404） | このチケット | K954-API-022 |\n| ほかのプラン・ほかのワークスペース向け | 一覧を開く | 会社の人 | 出ない | このチケット | K954-API-002 |\n| 下書き・予定の前・消した | 一覧／読む | 会社の人 | 出ない・404 | このチケット | K954-API-003・018 |\n| 予定の日時を過ぎた（切り替わりの直後） | 一覧を開く | 会社の人 | 出る | このチケット | K954-API-003 |\n| 帯だけ（一覧の場所なし） | 一覧を開く | 会社の人 | 出ない（帯は K-955） | このチケット | K954-API-004 |\n| 運営の会社でない行 | 一覧を開く | 会社の人 | 出ない | このチケット | K954-API-005 |\n| 読む前・自分が読んだ・別の人が読んだ | 一覧・開く | 会社の人 | unread の値 | このチケット | K954-API-006・016・017 |\n| どれでも | 一覧・読む | ログインしていない／先方の権限 | 401／403 | このチケット | K954-API-010・011 |\n| どれでも | 一覧・読む | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n| どれでも | 一覧・読む | 付けるまで進めない | 403・MFA_REQUIRED | 入口の共通（K-321） | 生成の試験 mfa_pending |\n| DB が落ちた | 一覧・読む | 会社の人 | 503 | このチケット | K954-API-015・020 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K954-API-001 | 対象の状態 | 一覧の形と並び | 200・1 行の鍵はちょうど 9 つ・出した時刻の新しい順・published_at は時刻の字 |\n| K954-API-002 | 守り | 誰に | 全部・自分のプラン・自分のワークスペース（target_tenant_ids と前の target_tenant_id）は出る・ほかのプラン・ほかのワークスペース向けは出ない（相手の会社には出る） |\n| K954-API-003 | 時間の流れ | 出したか | 下書き・予定の前（1 時間後）・消した物は出ない・予定の日時を過ぎた物（5 秒前）は出る |\n| K954-API-004 | 対象の状態 | 出す場所 | 帯だけの物は出ない・帯と一覧の物は出る |\n| K954-API-005 | 守り | 運営の会社でない行 | 顧客の会社の tenant_id のお知らせは出ない |\n| K954-API-006 | 対象の状態 | まだ読んでいない | 読む前は unread true・同じ会社の別の人が読んでも自分は true・本人が読むと false |\n| K954-API-007 | 入力 | 絞り込み | kind=incident は障害だけ・unread=true は読んでいない物だけ（読んだ物は出ない） |\n| K954-API-008 | 対象の状態 | 中身 | 障害の state は status_incidents の今の state・updates は古い順で鍵 at・body・state・メンテの maintenance は鍵 from・impact・to で 1 時間・リリースは state null・maintenance null・updates [] |\n| K954-API-009 | 守り | 上限 101 件 | 200・100 件・ログに「[notices] 一覧を 100 件で切った」が 1 行・ログに題が無い |\n| K954-API-010 | 利用者の状態 | ログインしていない | 401・data が無い |\n| K954-API-011 | 守り | 先方の権限の人 | 一覧も読んだ印も 403・既読の行は 0 |\n| K954-API-012 | 守り | 上限を超える | 429・retry_after_sec は 1〜60 |\n| K954-API-013 | 守り | 貯めない | 一覧と読んだ印の Cache-Control に private と no-store |\n| K954-API-014 | 入力 | 問い合わせの値の形 | kind=urgent・unread=yes は 422 |\n| K954-API-015 | 失敗 | DB が落ちた（読む） | 503・E-PAGE-003・答えに題が無い・戻すと 200 |\n| K954-API-016 | 対象の状態 | 読んだ印 | 200・鍵ちょうど id と read_at・既読の行は（その会社・その人）の 1 行だけ |\n| K954-API-017 | 操作の揺れ | 2 回目・同時の 2 回 | どれも 200・read_at は最初のまま・行は 1 つ |\n| K954-API-018 | 守り | 見えないお知らせ | ほかのワークスペース向け・下書き・消した・無い id は 404 E-PAGE-001・field・details・detail が無い・行を作らない |\n| K954-API-019 | 入力 | 体に知らない鍵 | 422・行を作らない |\n| K954-API-020 | 失敗 | DB が落ちた（書く） | 503・E-PAGE-003・行は 0・もう一度で 200 |\n| K954-API-021 | 守り | 鈴に出さない | 一覧と読んだ印の後もその人の notifications の行の数は同じ |\n| K954-API-022 | 守り | 管理者だけ | admins_only のお知らせは、その会社の管理者の一覧に出て読んだ印は 200。管理者でない人の一覧には出ず、読んだ印は 404 E-PAGE-001・既読の行を作らない（D-156.57） |\n| K954-DB-001 | 守り | 関数の権限 | 関数 4 つ（member_notice_read・member_notices・notice_for_member・notice_for_tenant）は security definer・kaname_app は呼べ・PUBLIC は呼べない |\n| K954-DB-002 | 守り | 2 層目 | 運営の文脈（会社なし）で一覧・読んだ印の関数を呼ぶと 42501 |\n| K954-DB-003 | 守り | 表 | notices に impact と target_tenant_ids・会社の人の文脈で notice_updates は 0 行・同じ人の同じお知らせの既読の 2 行目は 23505 |\n\n### テストの型の受け（分類 LIST・PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-LIST-01 0 件・1 件・境目 | 境目は K954-API-009（100／101）。1 件以上は K954-API-001。0 件は要らない：共用の DB では全部向けの行がいつも混ざるので口の答えで 0 件を作れない。0 件の見た目（はじめ）は画面の葉 K-956 の uh-help-empty |\n| TP-LIST-02 同じ値の並び | K954-API-001（出した時刻の新しい順。同じ時刻は id の順と前提と制約に書いた） |\n| TP-LIST-03 絞り込みの URL | 要らない：絞り込みを URL に残すのは画面の葉 K-956。口は kind・unread を受けるだけ（K954-API-007） |\n| TP-LIST-04 探す語 | 要らない：探す語を受けない口 |\n| TP-PERM-01 役が合わない人 | K954-API-011（先方の権限の人）・K954-DB-002（運営の文脈） |\n| TP-PERM-02 権限を外した直後 | 要らない：この口はワークスペースの人なら誰でも読める（権限の言葉 read）。抜けた人は入口の共通（K-166） |\n| TP-PERM-03 他の会社の ID を指す | K954-API-018（ほかのワークスペース向けのお知らせの id は 404） |\n| TP-PERM-04 一覧・数に混ざらない | K954-API-002・005（ほかの会社向け・運営の会社でない行が混ざらない） |\n| TP-PERM-05 権限を付けた直後 | 要らない：見えるかは呼ぶたびに届け先の関数で決める（覚えない） |\n| G-11〜G-16 | G-11：N/A（外の資源を使わない）。G-12：K954-API-003（予定の日時を過ぎた直後）。G-13：K954-API-017（同時の 2 回）。G-14：抜けた人・止められた会社は入口の共通（K-166・K-970）。G-15：K954-API-015（読めないのに空を返さない）。G-16：1 回の口で関数 1 回・1 取引（行ごとに引かない） |",
+    "速さ（今の値と目標の値）": "| 項目 | 今 | 目標 |\n|---|---|---|\n| 画面ごとの口の数（K-956 の困ったとき・お知らせ） | — | お知らせは 1 本（listNotices）。稼働状況（K-955）・自分の問い合わせ（K-951）と同時に始める |\n| 口ごとの文の数・取引の数 | — | 1 取引・文 1 つ（関数の中で続報・状態・既読をまとめて引く） |\n| 認証の要る答えの Cache-Control | — | private, no-store（K954-API-013） |",
+    "前からの試験を替えた所": "お知らせの表・新しい列・口の名前と道を読む前からの試験を探した（この葉の新しい試験・土台・k144 の葉のファイルは外した）。\n\n```search\ngit grep -l -E \"notice_deliveries|notice_updates|target_tenant_ids|listNotices|markNoticeRead|/notices/\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/notice*' ':!apps/api/test/features/F12/service-status-member.test.ts' ':!apps/api/test/features/contract/k144.d/K-954.ts'\n11\n```\n\n- 段 13 のほかの葉が切る段で書いた自分の試験・道具 8 本（apps/api/test/features/F12/flow-notice-band.test.ts（K-997）、apps/api/test/features/F12/ops-notice.harness.ts（K-977）、apps/api/test/features/F12/ops-notices-incident.test.ts（K-979）、apps/api/test/features/F12/ops-notices-publish.test.ts（K-978）、apps/api/test/features/F12/ops-notices-read.test.ts（K-977）、apps/api/test/features/F12/ops-notices-write.test.ts（K-1014）、apps/api/test/features/F12/ops-plans-decide.test.ts（K-990）、apps/api/test/features/F12/ops-stop-gate.test.ts（K-1012））: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n\n- apps/api/test/qa-d.test.ts: 替えない — 表の素の読み書きの口 `PATCH /api/v1/notice_deliveries/:id`・`POST /api/v1/notices` を見る。この葉は表の素の口を変えない（一意の索引は消していない同じ人の 2 行目だけを止める。素の口の試験は 1 行ずつ作る）\n- scripts/ci/k1000_flow_test.py（K-1000）: 替えない — 親 K-72 の apis に口の名前が在ることを見る（K1000-FL-006）。この葉は K-72.md を触らないので答えは変わらない\n- scripts/ci/k1004_notice_contract_test.py（K-1004）: 替えない — 契約の形を読む。この葉は契約を変えない\n- 場合表（`07_qa/test-plan/access-matrix.json`）を読む `packages/db/test/matrix.test.ts`・`matrix_breaks.test.ts`・`rls_drift.test.ts`：替えない — 新しい表 notice_updates の守りが場合表に入る（運営だけ）。種の作り手が notices の行を親に作れなければ赤になる → 作る段で流して確かめ、赤なら種の作り手の外し方（K-428 の形）を確かめて切る段に戻す（リスク）",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.10・27・28・33）\n- 切る段の決め（2026-11-23）：届け先の決めは `app.notice_for_tenant` の 1 か所。出した時刻は `coalesce(publish_at, created_at)`（すぐ出すときも運営の葉が publish_at を入れる）。続報は表 `notice_updates`・障害の今の状態は `status_incidents.state`",
+    "リスク": "- 新しい表 notice_updates を場合表の種の作り手が作れない → 上の「前からの試験を替えた所」の 4 つ目\n- 共用の DB で、ほかの試験の「全部向け」のお知らせが一覧に混ざる → 試験はこの回の題の行だけを見る（K954-API-009 だけは 100 件ちょうどを見るが、自分で 101 件足すので混ざっても 100 件）",
+    "申し送り": "- K-955：帯と様子の届け先は `app.notice_for_tenant` を使う。障害の今の状態は `status_incidents.state`\n- K-977・K-978・K-979（運営の書く葉）：誰にの「ワークスペースを選ぶ」は `target_tenant_ids`（前の `target_tenant_id` は書かない）・プランは `target_plan_ids`（契約の plan の鍵 → 運営の会社の plans.id）・影響は `impact`・続報は `notice_updates` に 1 行（障害の今の状態は `status_incidents.state` も同じ取引で直す）・すぐ出すときも `publish_at` に出した時刻。出す場所の `band` は DB の `'banner'`。**この葉の migration が表と列を作るので K-977・K-979 は K-954 に依存する**\n- K-978：「出すと届く数」は `app.notice_for_tenant` で数える\n- K-977：`app.notice_for_tenant` の「誰に」（③）を `app.notice_audience_ok` に分けて create or replace で寄せ直し、止めている会社（`app.tenant_stopped`）を届け先から外す（D-156.82・それ以外の中身は同じ・K977-DB-003・DB-004）。K-977 の `ci_scope.d` の data_links にこの葉の `notices-read.test.ts` を入れて一緒に流す（K-977 の md に在る）\n- K-961：`app.tenant_plan_id` を効いている契約の決めに直す（上の決めの字を K-961 が create or replace で変える・K-961 の data_links にこの葉の試験）\n- 登録先の下書き `05_flow/screen_api.d/K-954.py`・`07_qa/test-plan/ears-elsewhere.d/K-954.json` は切る段で書いた（carry で運ぶ）\n- K-956：お知らせ 1 件を開いたら `markNoticeRead` を呼ぶ（ボタンは無い）。0 件の見た目は画面の葉が持つ\n- 帯だけのお知らせ（出す場所が band だけ）：この葉の一覧の口には出ない（K954-API-004）。1 件の画面（K-956）は一覧の答えから選ぶので、帯の「詳しく」は一覧に在るお知らせにだけ出す形に K-957 で決めた（K957-UI-014・済み）。この葉の口は変えない\n\n- まとめ役：葉の apis に listNotices・markNoticeRead を書いた。親 K-72 の apis・tests にも残る（K1000-FL-006 が在ることを見る）。2 か所に持ち主が在ることを持ち主の検査（coverage_gate）が咎めるなら、親から外す葉と K1000-FL-006 の形をまとめ役が決める",
+    "代表に聞くこと": "- 代表の答え 2026-11-23（D-156.57）：値段が変わるお知らせは管理者だけ（お知らせに管理者だけの絞りを足す）\n- #8 代表の答え 2026-11-23（D-156.27）（開いた時に読んだ印・未読は行に点）\n- #9 代表の答え 2026-11-23（D-156.28）（運営のお知らせは鈴に出さない）\n- #14 代表の答え 2026-11-23（D-156.33）（誰に 3 つ・出す日時を過ぎたら出す）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 25 行（上限 30）。"
+   },
+   "file": "11_tickets/K-954.md"
+  },
+  {
+   "id": "K-958",
+   "title": "請求書を読む口（getBilling）と請求書の PDF の口（downloadInvoicePdf）：支払い条件・振込先（設定の値）・請求先・請求書の表（お支払い待ち・払われた・期限を過ぎた）・期限を過ぎた数を、プランと支払いの能力の人にだけ返す。運営の会社にプラン 3 つを置く（K-72 の葉・W3）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "請求",
+   "assignee": "実装",
+   "due": "2026-12-08",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-951（読む口 2 本・関数で本人に絞る・試験 13 行・見込み 1）と K-954（読む口・migration で列と関数・試験 24 行・見込み 1）から引いた：migration（列 1 つ・プラン 3 行・関数 2 つ）15 分・口 2 本と設定の値 15 分・登録先（hooks・.d・errors.d・ears・ci_scope・k144・.env.example）10 分・自分の確かめ 15 分。試験の土台 billing.harness.ts は切る段で書いた",
+   "decisions": [
+    "D-156.5",
+    "D-156.12",
+    "D-156.13",
+    "D-156.17",
+    "D-156.29",
+    "D-156.31",
+    "D-156.32",
+    "D-125.24",
+    "D-125.125",
+    "D-128.69"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2",
+    "C4"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/billing-read.test.ts",
+    "apps/api/test/generated/get_workspace_billing.test.ts",
+    "apps/api/test/generated/get_invoices_id_pdf.test.ts"
+   ],
+   "carry": [
+    "apps/api/test/features/F12/billing.harness.ts",
+    "apps/api/test/features/contract/k144.d/K-958.ts"
+   ],
+   "depends_on": [
+    "K-1005",
+    "K-954"
+   ],
+   "acts": [
+    "A69"
+   ],
+   "screens": [
+    "billing"
+   ],
+   "apis": [
+    "getBilling",
+    "downloadInvoicePdf"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。請求書の画面は K-960（正は /dev/mock/f12-user の ub-bills・ub-bills-overdue・ub-bills-empty・ub-bills-noaccess）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/db",
+    "@kaname/config"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128005800_billing_read.sql",
+    "packages/db/src/migrations.generated.ts",
+    "packages/config/src/index.ts",
+    ".env.example",
+    "05_flow/screen_api.d/K-958.py",
+    "scripts/ci/contract_shape.d/K-958.py",
+    "07_qa/test-specs/errors.d/K-958.json",
+    "07_qa/test-plan/ears-elsewhere.d/K-958.json",
+    "scripts/ci/ci_scope.d/K-958.json",
+    "apps/api/src/hooks/billing-read.ts",
+    "apps/api/src/features/F12/billing/read.ts",
+    "apps/api/src/features/F12/billing/errors.ts",
+    "08_api/db-columns.json",
+    "03_architecture/ER図.md"
+   ],
+   "flow": "困ったときに運営に聞き、お知らせと請求を見る",
+   "sections": {
+    "目的": "ワークスペースの管理 › 設定 › 請求書（画面は K-960）が呼ぶ、請求書を読む口と PDF の口を作る（行為 A69・今は 501）。答えの形は K-1005 の「画面が使う答えの形」（getBilling の 7 欄・PDF は `{ url, expires_at }`）で、この葉は振る舞いだけを書く。\n\n- **見られる人**：管理者と「プランと支払い」を付けた人（入口の言葉 admin・tenants の billing の能力・D-156.29）。DB の関数の頭でも同じ能力を確かめる（2 層目・G-02）\n- **状態の決め**（D-156.29・D-156.32）：入金の合計が請求の額と**同じ**ときだけ「払われた」（paid）。足りない・多いは「お支払い待ち」（unpaid）のまま。期限（due_on）が日本の今日より前で払われていなければ「期限を過ぎた」（overdue）。打ち消し（D-156.32 の取り消し）は負の額の入金の行（書くのは K-982）\n- **支払い条件と振込先は設定の値**（D-125.24：直書きしない）：`BILLING_TERMS`・`BILLING_PAYEE` を `@kaname/config` が読む\n- **運営の会社にプラン 3 つを置く**：無料・チーム・ビジネス（D-125.125・値段は仮）。プランの値段と人数は K-961（選べるプラン）・K-981（請求書を出す）・K-954（プランで選ぶお知らせ）が同じ行を読む\n- 書き出しは作らない（D-156.13）。PDF を読むのは書き出しではない",
+    "完了の条件": "- [ ] 下の表の 18 行（K958-API-001〜016・K958-DB-001〜002）が緑：`apps/api/test/features/F12/billing-read.test.ts`（土台 `billing.harness.ts`・この葉が運ぶ）\n- [ ] 契約の口 2 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-958.json`）\n- [ ] 共有の試験 `k144-contract.test.ts` の回で、葉の行 K144-API-958（道の id）が通る（`k144.d/K-958.ts`・carry）\n- [ ] migration の lint（Squawk・G58）・設定の名前の検査（ci:env-audit・G13）が緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: LIST, PERM, FILE\n\n- **代表の答え 2026-11-23（D-156.29）**：見られるのは管理者と「プランと支払い」を付けた人。状態は お支払い待ち／払われた／期限を過ぎた の 3 つ（差がある入金は お支払い待ち のまま）\n- **代表の答え 2026-11-23（D-156.32）**：足りない・多いは「お支払い待ち」のまま差を残す。打ち間違いは打ち消しの行を足す（消さない）\n- **代表の答え 2026-11-23（D-156.31）**：金額は契約のプランの値段（人数で掛けない）＋消費税 10%。無料は請求書を出さない（この葉は出された請求書を読むだけ）\n- **生成の試験は作る段の最初に作る**：この葉の契約の断片（`05_flow/screen_api.d/K-958.py`・`scripts/ci/contract_shape.d/K-958.py`）を足して作り手で生成の試験を作り直し、**実装より先に 1 つのコミットにする**。生成の試験の名前が変われば `ears-elsewhere.d/K-958.json` の covers を出た名前に合わせる。**先の葉の契約を前提にした前からの試験は carry に入れない**（carry は土台と自分の k144 の葉のファイルだけ）\n- 入力の形（422）：getBilling は入力なし。downloadInvoicePdf は道の id（uuid・入口・K144-API-958）\n- **見えない請求書**（別の会社・無い・消した・出していない＝issued_at が空の下書き）は 404 E-PAGE-001（欄・details なし・在るかを漏らさない）\n- **PDF がまだできていない**（pdf_ref が空）は 409 E-BILL-001（欄なし）。PDF を作るのは請求書を出す葉 K-981\n- 断る番号（控え帳）：能力の無い人・先方の権限の人 403（入口）・ログインなし 401・上限 429（120/分/人）・DB の失敗 503 E-PAGE-003（中身を返さない）\n- 答えは `Cache-Control: private, no-store`\n- **関門の宣言** choke_points は契約と同じ [C2, C4]（KC4）。C2 は関数を通るだけ（書かない）、C4 は PDF の署名 URL を置き場の関門 `objects.signUrl` で出す（証跡は置き場の関門が書く）\n- **hooks の make は材料の config を読まない**（要求の時に `d.config.billing`・`d.config.baseUrl` を読む）。k144 の葉の土台 `leafHooks` は appPool しか渡さないため\n\n### 設定の値（`packages/config/src/index.ts`・`.env.example`）\n\n- `Config.billing: { terms: string; payeeLines: string[] }` を足す\n- `BILLING_TERMS`（無ければ「請求書払い ・ 月末締め 翌月 1 日に出す ・ 月末払い」）・`BILLING_PAYEE`（振込先の行を「|」で区切る。無ければ空の並び＝画面は「まだ決まっていません」・K-960）。`.env.example` に 2 行（値は仮の字・口座の番号を書かない）\n\n### 表と関数（migration `20261128005800_billing_read.sql`・K-958 → 58 分）\n\n- 列 `tenants.billing_contact jsonb`（`{ company, attn, email }`・空なら null）。請求先は契約（subscriptions）ではなく会社に 1 つ（プランを変えても請求先は残る）。書くのは K-959。前の列 `subscriptions.billing_contact` は読まない・書かない（凍結）\n- プランの行：運営の会社（`app.ops_tenant_id()`）の `plans` に `free`（無料・0・`{\"members\":3}`）・`team`（チーム・15000・`{\"members\":10}`）・`business`（ビジネス・40000・`{\"members\":30}`）。`price_monthly` は税別の円。`on conflict (tenant_id, key) do nothing`（運営が直した値を上書きしない）\n- `app.billing_get() returns jsonb`（security definer・`search_path = public, app`・public から外す・`kaname_app` に execute）：ⓐ `app.member_ok()` と `has_permission(app.user_id(), 'tenants', null, 'billing')` でなければ `{\"error\":\"forbidden\"}` ⓑ 今日＝`(now() at time zone 'Asia/Tokyo')::date` ⓒ 請求書＝その会社の `deleted_at is null and issued_at is not null` の行。`paid_total` は消していない入金の額の合計（負の行も足す）。state は `paid_total = amount` なら paid／`due_on < 今日` なら overdue／ほか unpaid。paid のときだけ `paid_on`（最後の入金の日）。month は `to_char(period_start, 'YYYY-MM')`・issued_on は `issued_at` の日本の日付・額は整数 ⓓ 並びは period_start の新しい順 ⓔ overdue は overdue の数と額の合計（0 件なら null）ⓕ contact は `tenants.billing_contact`、空なら `{ company: tenants.name, attn: \"\", email: \"\" }` ⓖ free は今のプランの鍵が free（今のプランの決めは K-954 の `app.tenant_plan_id`。契約が無ければ free）ⓗ can_edit_contact は true（更新の口も同じ能力・入口で確かめた後） ⓘ `{\"data\": {contact, invoices, overdue, free, can_edit_contact}}`（terms・payee は口が設定から足す）\n- `app.billing_invoice_pdf(p_id uuid) returns jsonb`（同じ形の security definer）：ⓐ 同じ ⓑ その会社の消していない・出した請求書でなければ `{\"error\":\"not_found\"}` ⓒ pdf_ref が空なら `{\"error\":\"pdf_missing\"}` ⓓ `{\"pdf_ref\": …}`",
+    "依存の理由": "- K-1005: 要る — getBilling・downloadInvoicePdf の答えの形（7 欄・請求書の行の欄・state の 3 つ）を K-1005 の断片が契約に書く。無いと生成の試験と型が組めない\n- K-954: 要る — 今のプランの決め `app.tenant_plan_id`（契約の行が無ければ無料）を K-954 の migration が作る。free の決めをこの葉で別に書かない（同じ決めを 2 つ作らない）。K-961 が同じ関数を先の契約（予定の下げ）に合わせて直す",
+    "目録で探した結果": "- 使う：`invoices`・`payments`・`plans`・`subscriptions`（0015）・`tenants`・`has_permission`（0080）・`app.member_ok`（0074）・`app.ops_tenant_id`（0003）・`app.tenant_plan_id`（K-954）・`ObjectStore.signUrl`（`@kaname/storage`・関門 C4）・成果物の署名 URL の組み方（`apps/api/src/auth/artifacts.ts` の `${baseUrl}/api/auth-ext${url}`）・`withTenant`・K-949 の「関数の断りの言葉 → 番号」の書き方（`errors.ts`）・K-351 の hooks の書き方（`defineHooks`・`fuzz: \"same\"`）\n- 作る：列 `tenants.billing_contact`・プラン 3 行・関数 2 つ・設定 `Config.billing`・hooks `billing-read.ts`・`features/F12/billing/read.ts`・`errors.ts`。探したが顧客が請求書を読む道は無かった（`invoices` は会社の人なら素の読みで全部見え、能力の区別も状態の決めも無い）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128005800_billing_read.sql`（上の「表と関数」）。一覧は `python3 scripts/ci/gen_migrations.py`（生成物） |\n| 設定 | `packages/config/src/index.ts` の `Config.billing`・`loadConfig`／`.env.example` に 2 行 |\n| 口 | `features/F12/billing/read.ts`：getBilling＝関数を withTenant の 1 取引で → `terms`・`payee: { lines }` を設定から足す → 200。downloadInvoicePdf＝関数 → `objects.signUrl(ctx, pdf_ref, 600)` → `{ url: ${baseUrl}/api/auth-ext${url}, expires_at }`。署名が断られたら 503 E-PAGE-003。断りの言葉 → 番号は `errors.ts`（forbidden 403・not_found 404 E-PAGE-001・pdf_missing 409 E-BILL-001）。想定外の例外は 503 E-PAGE-003（ログは `[billing] 請求書を読めなかった（<例外の種類>）` だけ・請求先の字を出さない） |\n| 口の登録（K-326） | `apps/api/src/hooks/billing-read.ts`（getBilling・downloadInvoicePdf の before・`register`・fuzz `\"same\"`） |\n| 契約の断片 | `05_flow/screen_api.d/K-958.py`：`ERRORS_4XX` に downloadInvoicePdf の 404 E-PAGE-001・409 E-BILL-001。`scripts/ci/contract_shape.d/K-958.py`（空の表） |\n| 誤りの正本 | `07_qa/test-specs/errors.d/K-958.json`：E-BILL-001（class conflict・where billing・「この請求書の PDF はまだできていません」・action「しばらくしてから開き直す」・layers API・source D-156.31）。字は K-960 の画面の字と合わせる |\n| 登録先 | `07_qa/test-plan/ears-elsewhere.d/K-958.json`（下）・`scripts/ci/ci_scope.d/K-958.json`（data_links：`apps/api/src/hooks/billing-read.ts`・`features/F12/billing/**` → この葉の試験と k144-contract.test.ts。土台 billing.harness.ts → この葉と K-959・K-961 の試験）・`08_api/db-columns.json`・`03_architecture/ER図.md`（tenants.billing_contact）。作り手で一覧を作り直す |\n| 共有の試験の葉 | `apps/api/test/features/contract/k144.d/K-958.ts`（carry・切る段が書いた・K144-API-958） |\n\n### 生成の試験（ears-elsewhere.d/K-958.json）\n\n```json\n{\"ops\": {\n \"getBilling\": {\"file\": \"apps/api/test/features/F12/billing-read.test.ts\",\n  \"reason\": \"能力・契約・請求書と入金の行で答えが変わる。種では請求書と入金と能力の行を作れない（K-958）\",\n  \"covers\": {\"test_get_workspace_billing_ok\": \"K958-API-001\", \"test_get_workspace_billing_rejected_401\": \"K958-API-010\",\n             \"test_get_workspace_billing_rejected_403\": \"K958-API-010\", \"test_get_workspace_billing_rejected_422\": \"K958-API-001\",\n             \"test_get_workspace_billing_rate_limited\": \"K958-API-012\",\n             \"test_get_workspace_billing_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_workspace_billing_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {}},\n \"downloadInvoicePdf\": {\"file\": \"apps/api/test/features/F12/billing-read.test.ts\",\n  \"reason\": \"出した請求書と PDF の置き場の参照で答えが変わる。種では作れない（K-958）\",\n  \"covers\": {\"test_get_invoices_id_pdf_ok\": \"K958-API-013\", \"test_get_invoices_id_pdf_rejected_401\": \"K958-API-016\",\n             \"test_get_invoices_id_pdf_rejected_403\": \"K958-API-016\", \"test_get_invoices_id_pdf_not_found\": \"K958-API-014\",\n             \"test_get_invoices_id_pdf_rejected_422\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-958\"},\n             \"test_get_invoices_id_pdf_rate_limited\": \"K958-API-012\",\n             \"test_get_invoices_id_pdf_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_invoices_id_pdf_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {}}}}\n```\n\n（`test_get_workspace_billing_rejected_422` は入力の無い口で、問い合わせの値を付けても答えが同じ 200 になる行。作り手が出さなければ covers から消す。K958-API-012 は getBilling の上限を見る。PDF の上限は同じ入口の数え方で、作り手が 2 つ目を求めれば行を足して切る段に戻す）",
+    "外に影響する手順": "1. DB を読む（請求書・入金・会社・プラン）：`app.billing_get`・`app.billing_invoice_pdf` の 1 取引［残らない］— 失敗の行：K958-API-011（落ちたら 503・中身を返さない）\n2. 置き場の関門 C4 で PDF の期限つきの署名 URL を出す（置き場の関門が証跡を 1 行書く）［残る：証跡］— 失敗の行：K958-API-015（PDF が無ければ署名しない＝証跡も残さない）。署名が断られる（参照が会社の外）は 503（後片付けは要らない：署名は何も作らない）\n3. お知らせ・メール：送らない — 失敗の行：なし（呼ばない）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/billing-read.test.ts`（本物の DB・偽の画面のログイン・請求書と入金の行は DB に直に置く）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 請求書なし・無料 | 設定 › 請求書 | 管理者 | free true・表は空 | このチケット | K958-API-006 |\n| お支払い待ち・払われた・期限を過ぎた | 同じ | 管理者・プランと支払いの人 | 状態 3 つ・注意の数 | このチケット | K958-API-002〜004 |\n| 入金の差・打ち消し | 同じ | 同じ | お支払い待ちのまま | このチケット | K958-API-003 |\n| 下書き・消した | 同じ | 同じ | 出ない | このチケット | K958-API-005 |\n| 出した請求書の PDF | 「PDF」 | 同じ | 署名 URL | このチケット | K958-API-013 |\n| 別の会社・無い・下書き・消した | 直に口・古いリンク | 同じ | 404 | このチケット | K958-API-014 |\n| PDF がまだ無い | 「PDF」 | 同じ | 409 E-BILL-001 | このチケット | K958-API-015 |\n| どれでも | 直に口 | 能力の無い人・先方の権限の人・ログインなし | 403・401 | このチケット | K958-API-010・016 |\n| どれでも | 同じ | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n| 止められた会社 | 同じ | 会社の人 | ログインできない | K-970 | 各葉 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K958-API-001 | 対象の状態 | 答えの形 | 200・鍵ちょうど 7・請求書の行は払われていなければ 6 欄・払われたら paid_on を足して 7 欄・month と amount_total と due_on が置いた値 |\n| K958-API-002 | 時間の流れ | 状態 3 つ | 期限の前で入金なしは unpaid・期限が昨日は overdue・入金の合計が額と同じは paid で paid_on は最後の入金の日 |\n| K958-API-003 | 対象の状態 | 入金の差 | 足りない・多い・打ち消しで合計が減った物はどれも unpaid で paid_on が無い |\n| K958-API-004 | 対象の状態 | 期限の注意 | 1 つも無ければ overdue は null・2 つなら { count 2, amount_total 60500 } |\n| K958-API-005 | 対象の状態 | 並び・下書き・消した | 月の新しい順に 3 件・下書きと消した請求書の id が無い |\n| K958-API-006 | 対象の状態 | 無料 | 契約なしは free true・invoices []・overdue null。チームの会社は free false |\n| K958-API-007 | 入力 | 請求先 | 決めていなければ { company: ワークスペースの名前, attn: \"\", email: \"\" }・決めてあればその 3 つ |\n| K958-API-008 | 守り | 設定の値・貯めない | terms と payee.lines が設定の値・can_edit_contact true・Cache-Control に private と no-store |\n| K958-API-009 | 守り | 別の会社 | 別の会社の請求書の id が出ない |\n| K958-API-010 | 利用者の状態 | 見られる人 | 管理者・プランと支払いの人は 200・能力の無い人・先方の人は 403・ログインなしは 401 |\n| K958-API-011 | 失敗 | DB が落ちる | 503 E-PAGE-003・data が無い |\n| K958-API-012 | 守り | 上限 | 2 回目が 429・retry_after_sec は 1〜60 の整数 |\n| K958-API-013 | 対象の状態 | PDF | 200・鍵ちょうど url と expires_at・url は口の住所の頭＋/api/auth-ext/files/ で始まり sig= を持つ・期限は 10 分の内 |\n| K958-API-014 | 守り | 見えない請求書の PDF | 別の会社・消した・下書き・無い id はどれも 404 E-PAGE-001・field と details が無い |\n| K958-API-015 | 対象の状態 | PDF がまだ無い | 409 E-BILL-001・field と details が無い |\n| K958-API-016 | 利用者の状態 | PDF の見られる人 | 能力の無い人・先方の人は 403・ログインなしは 401 |\n| K958-DB-001 | 対象の状態 | プランの行 | 運営の会社に free・team・business が 無料・チーム・ビジネス／0・15000・40000／人数 3・10・30 で在る |\n| K958-DB-002 | 守り | 2 層目 | 能力の無いメンバーの文脈で app.billing_get() を直に呼ぶと { error: forbidden } |\n\n### テストの型の受け（分類 LIST・PERM・FILE）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-LIST-01 0 件・1 件・境目 | K958-API-006（0 件）・005（3 件）。境目は要らない：1 社の請求書は月に 1 つで、一覧に上限を置かない（月の数だけ・12 か月で 12 行） |\n| TP-LIST-02 同じ値の並び | K958-API-005（月の新しい順。同じ月の請求書は 1 社に 1 つ＝K-981 が出すときに守る） |\n| TP-LIST-03 絞り込みの URL | 要らない：絞り込みを持たない口 |\n| TP-LIST-04 探す語 | 要らない：探す語を受けない口 |\n| TP-PERM-01 役が合わない人 | K958-API-010・016 |\n| TP-PERM-02 権限を外した直後 | 要らない：能力は呼ぶたびに入口と関数で引く（覚えない）。外した直後の振る舞いは K958-API-010 の能力の無い人と同じ |\n| TP-PERM-03 他の会社の ID を指す | K958-API-014 |\n| TP-PERM-04 一覧・数に混ざらない | K958-API-009 |\n| TP-PERM-05 権限を付けた直後 | 要らない：同じく呼ぶたびに引く |\n| TP-FILE-01 大きさの上限・0 バイト | 要らない：この口はファイルを受けない（PDF は運営の葉 K-981 が作って置く） |\n| TP-FILE-02 拡張子と中身の種類が違う | 要らない：ファイルを受けない。PDF の中身は K-981 が作る |\n| TP-FILE-03 名前 | 要らない：置き場の名前は請求書の id（`tenants/<会社>/invoices/<id>.pdf`・K-981）で、利用者が名前を付けない |\n| TP-FILE-04 上げる途中で切れた・同時に上げる | 要らない：上げる口を持たない（読むだけ） |\n| TP-FILE-05 他の人のファイルの URL を直接開く | K958-API-014（別の会社の請求書の PDF は 404）・013（期限つきの署名 URL・10 分の内） |\n| G-11〜G-16 | G-11：置き場は関門 C4（署名だけで置き場に触らない）。PDF の実物が置き場に在るかは K-981。G-12：K958-API-002（期限が昨日＝過ぎた直後）。G-13：N/A（書く操作を持たない）。G-14：止められた会社・抜けた人は入口の共通（K-166・K-970）。G-15：K958-API-011（読めないのに空を返さない）。G-16：1 回の口で関数 1 回・1 取引 |",
+    "前からの試験を替えた所": "請求書・入金・プランの表と口の名前・道、設定の型を読む前からの試験を探した（この葉の新しい試験・土台・k144 の葉のファイルは外した）。\n\n```search\ngit grep -l -E \"billing_contact|getBilling|downloadInvoicePdf|/workspace/billing|/invoices/|BILLING_TERMS|BILLING_PAYEE\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'packages/db/test' 'packages/config/test' 'scripts/ci/*_test.py' 'scripts/ci/*.test.mjs' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/billing*' ':!apps/api/test/features/contract/k144.d/K-958.ts'\n12\n```\n\n- 段 13 のほかの葉が切る段で書いた自分の試験・道具 6 本（apps/api/test/features/F12/flow-billing-plan.test.ts（K-998）、apps/api/test/features/F12/ops-invoice-payments.test.ts（K-982）、apps/api/test/features/F12/ops-invoices-issue.test.ts（K-981）、apps/api/test/features/F12/ops-invoices-pdf.test.ts（K-1013）、apps/api/test/features/F12/plan-terms.test.ts（K-1017）、scripts/ci/k999_staging_spec_test.py（K-999））: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n- apps/api/test/features/F12/ops-invoice-template.test.ts（K-1107）・ops-invoices-mail.test.ts（K-1109）・plan-trial.test.ts（K-1104）: 替えない — この葉の後に作る葉（この葉に依存する）の試験で、この葉が作る形に合わせて書いてある（請求先と請求書の行を読む）\n\n- scripts/ci/k1000_flow_test.py（K-1000）: 替えない — 親 K-72 の apis に口の名前が在ることを見る\n- scripts/ci/k1005_billing_contract_test.py（K-1005）: 替えない — 契約の形を読む。この葉は ERRORS_4XX を足すだけで欄を変えない\n- scripts/ci/k948_inquiry_contract_test.py（K-948）: 替えない — 運営の書き出しの 2 口（`/ops/invoices/export`）が無いことを見る。この葉は運営の口に触らない\n- 場合表の種の作り手（packages/db/test）はプランの行を鍵 `seed-plan` で作り、この葉の 3 行（`on conflict do nothing`）とぶつからない：替えない（作る段で流して確かめる）\n- 設定の型（`packages/config/test/config.test.ts`）は `infisical` の欄だけを等しく比べ、全体を比べない：替えない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.29・31・32）\n- 切る段の決め（2026-11-23）：請求先は会社に 1 つ（`tenants.billing_contact`）。契約の行の `subscriptions.billing_contact` は使わない\n- 切る段の決め（2026-11-23）：支払い条件と振込先は設定の値（`BILLING_TERMS`・`BILLING_PAYEE`）。プランの 3 行は運営の会社に置き、値段は税別の円\n- 切る段の決め（2026-11-23）：払われた＝入金の合計（打ち消しの負の行も足す）が請求の額と同じ。PDF がまだ無いは 409 E-BILL-001",
+    "リスク": "- `invoices` は会社の人なら素の読み（行の守り invoices_tenant_read）で全部読める。この葉の口は関数を通るので能力を見るが、表の守りは変えない（素の口を閉じるかは表の守りを扱う葉の仕事）。**起票先**：まとめ役が「invoices の素の読みを能力（billing）で絞る」を 1 枚起票し、やる順の列の後ろに積む（今のチケットと関係なく前からある別の場所の問題・ai-driven-process §3 の 3）\n- 試験の土台 `billing.harness.ts` の先方の人（guest）は、所属の行（tenant_memberships の role requester）を持たない作り物（段 12 の本当のゲスト K-876・K-878 とは形が違う）。403 になることは同じ。所属の行を持たないので、人数を数える関数（K-961 の `app.tenant_seat_count`）には数えられる側の人として出る（K-961 のリスクと同じ字。土台の注に足すのはまとめ役に頼む）",
+    "申し送り": "- K-981：段 13 の前の試験で、同じ会社・同じ月に出した請求書を 2 枚置く物が無いかを、K-981 の切る段で確かめる（K-981 が足す一意の索引 `invoices_tenant_period_uq (tenant_id, period_start) where issued_at is not null and deleted_at is null`）。この葉の billing-read.test.ts は共有の会社 w の月を試験ごとに分けた（009 は -1、013 は -8、014〜016 は -5・-6・-7、別の会社 far は 009 が -1・014 が -9）\n- K-960（請求書の画面）：上の「画面が使う答えの形」（K-1005）のとおり。`payee.lines` が空なら「まだ決まっていません」・`free` なら無料の字・`overdue` があれば上の注意・PDF は 409 E-BILL-001 を「この請求書の PDF はまだできていません」で出す。見られない人は 403 を「見られない」（E-PAGE-002）で出す\n- K-959：請求先は `tenants.billing_contact`（この葉が列を作る）。試験の土台 `billing.harness.ts` を使う\n- K-961：プランの 3 行（この葉の migration）と土台を使う\n- K-981（請求書を出す）：PDF の置き場の参照は `invoices.pdf_ref`（`tenants/<会社>/invoices/<id>.pdf` の形）・額は税込の円・出したら `issued_at`。インボイスの登録番号は設定の値（`BILLING_INVOICE_NO` を K-981 が足す）\n- K-982（入金を記録）：取り消しは負の額の入金の行（消さない）。払われたかは合計が額と同じかで決まる（この葉の関数）。**状態の決めは K-982 が `app.invoice_state` に寄せる**（D-156.46・答えは同じ）\n- K-968：この葉の `app.billing_get()` の請求書の行の所（ⓒⓓ）を `app.tenant_invoices(p_tenant)` に分け、`app.billing_get()` はそれを呼ぶ形に create or replace する（答えは同じ・この葉の試験を K-968 の回で一緒に流す）",
+    "代表に聞くこと": "- #10 代表の答え 2026-11-23（D-156.29）（見られる人・状態 3 つ）\n- #12 代表の答え 2026-11-23（D-156.31）（金額と税・無料は請求書を出さない）\n- #13 代表の答え 2026-11-23（D-156.32）（入金の差と取り消し）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 18 行（上限 30）。"
+   },
+   "file": "11_tickets/K-958.md"
+  },
+  {
+   "id": "K-961",
+   "title": "選べるプランの口（listWorkspacePlans）とプランを変える口（changePlan）：上げるとすぐ（日割りを次の請求書に）・下げると来月 1 日から・人数が上限を超えると下げられない。本人確認の取り直しが要る（K-72 の葉・W3）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "プラン",
+   "assignee": "実装",
+   "due": "2026-12-10",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-952（書く口・関数で状態を確かめて書く・試験 14 行・見込み 1）と K-958（読む口・関数・試験 18 行・見込み 1）から引いた：migration（列 2 つ・関数 3 つと今のプランの決めの直し）20 分・口 2 本（入力の整え・断りの言葉 → 番号）10 分・登録先（hooks・.d・errors.d・ears・ci_scope）10 分・自分の確かめ 20 分。試験の土台 billing.harness.ts は K-958 が運ぶ",
+   "decisions": [
+    "D-156.43",
+    "D-156.51",
+    "D-156.5",
+    "D-156.9",
+    "D-156.12",
+    "D-156.17",
+    "D-156.29",
+    "D-156.31",
+    "D-156.36",
+    "D-128.65",
+    "D-125.125",
+    "D-156.63",
+    "D-156.68",
+    "D-156.61"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/plans.test.ts",
+    "apps/api/test/generated/get_workspace_plans.test.ts",
+    "apps/api/test/generated/post_workspace_plan.test.ts"
+   ],
+   "carry": [],
+   "depends_on": [
+    "K-958"
+   ],
+   "acts": [
+    "A69"
+   ],
+   "screens": [
+    "company-settings"
+   ],
+   "apis": [
+    "listWorkspacePlans",
+    "changePlan"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。プランを変える小窓は K-962（正は /dev/mock/f12-user の ub-plan・ub-plan-confirm・ub-plan-blocked）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128010100_plan_change.sql",
+    "packages/db/src/migrations.generated.ts",
+    "05_flow/screen_api.d/K-961.py",
+    "scripts/ci/contract_shape.d/K-961.py",
+    "07_qa/test-specs/errors.d/K-961.json",
+    "07_qa/test-plan/ears-elsewhere.d/K-961.json",
+    "scripts/ci/ci_scope.d/K-961.json",
+    "apps/api/src/hooks/plans.ts",
+    "apps/api/src/features/F12/billing/plans.ts",
+    "08_api/db-columns.json",
+    "03_architecture/ER図.md"
+   ],
+   "flow": "困ったときに運営に聞き、お知らせと請求を見る",
+   "sections": {
+    "目的": "設定の「プランと支払い」（画面は段 11 の company-settings・小窓は K-962 が差し込み口につなぐ・D-156.9）が呼ぶ 2 つの口を作る（行為 A69・今は 501）。答えの形は K-1005（選べるプランの 1 行 12 欄・meta `{ members, member_limit }`・changePlan の答え 4 欄）で、この葉は振る舞いだけを書く。\n\n- **選べるプラン**：運営の会社のプラン 3 つ（K-958 が置いた）を値段の安い順に。今のプラン・上げる先・下げる先・人数で選べない物を印で返す\n- **プランを変える**（D-128.65）：上げるとすぐ。下げると次の請求日（来月 1 日・日本の暦）から。人数が上限を超えるプランには下げられない\n- **日割り**（D-156.31）：上げた月は、月の値段の差（税別）× 今日を含む残りの日 ÷ その月の日数（切り捨て）に消費税 10%（切り捨て）。額は頼みの行に残し、請求書を出す葉 K-981 が次の請求書に足す\n- **人数**（D-156.36・D-156.51）：消していない人のメンバーのうち社内の人だけ（AI 社員・自分の AI・ゲスト（役割 requester の人）は数えない）。数え方は関数 `app.tenant_seat_count` の 1 か所で、運営の口（K-968）と招く口の上限（K-1103）も同じ関数を呼ぶ",
+    "完了の条件": "- [ ] 下の表の 22 行（K961-API-001〜020・K961-DB-001〜002）が緑：`apps/api/test/features/F12/plans.test.ts`（土台 `billing.harness.ts`・K-958 が運ぶ）\n- [ ] 契約の口 2 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-961.json`）\n- [ ] K-954 の `notices-read.test.ts`（今のプランの決めを使う・プランで選ぶお知らせ）が、この葉の migration の後も緑\n- [ ] migration の lint（Squawk・G58）が緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: CRUD, PERM, PAY\n\n- **代表の答え 2026-11-23（D-156.31）**：上げた月は日割り（残り日数分）を次の請求書に足す。金額は税込（消費税 10%）\n- **代表の答え 2026-11-23（D-156.36）**：第 1 フェーズは「プランと支払い」の行に人数（いま 5 人 / 10 人まで）だけ\n- **代表の答え 2026-11-23（D-156.51）**：ゲスト（先方の人）はプランの人数に数えない。数えるのは社内の人だけ\n- **代表の答え 2026-11-23（D-156.29）**：選べる・変えられるのは管理者と「プランと支払い」を付けた人（入口の言葉 admin・tenants の billing の能力）\n- **生成の試験は作る段の最初に作る**（K-958 と同じ）。先の葉の契約を前提にした前からの試験は carry に入れない（この葉の carry は空）\n- **入力の形（契約＝422）**は K-1005 の断片：changePlan は `plan_key`（必須）だけ。余計な欄（plan_id など）は受けない。NUL は入口\n- **本人確認の取り直し**：changePlan は契約の step_up が always（入口が 15 分の内かを見る・403 STEP_UP_REQUIRED）。listWorkspacePlans は要らない\n- **断る番号**（控え帳）：プランの鍵が無い・消した → 404 E-PAGE-001（欄なし）。今のプランを選んだ（予定が無いとき）→ 409 E-PLAN-001（欄なし）。人数が上限を超える → 409 E-PLAN-002（field・details なし・字に差す値は detail `{ members, member_limit }`・K-401 の形）。能力の無い人・先方の権限の人 403・ログインなし 401・上限 429（一覧 120・変える 60/分/人）・DB の失敗 503 E-PAGE-003（何も残さない）\n- **上げる・下げる**は月の値段（`plans.price_monthly`）の高い・安いで決める\n- 同時に 2 つ変えたら順に（会社の行を `for update` で取る）。後の方は前の結果を見て決める（同じプランなら 409 E-PLAN-001）\n- **関門の宣言** choke_points は契約と同じ [C2]（KC4）。お知らせ・メールは送らない（D-125.130）\n- 止めている会社（K-970）はログインできないので、この口に来ない（入口の共通）\n\n### 契約の持ち方（今のプラン・予定の下げ）\n\n- 契約の行 `subscriptions`：効いている行＝`deleted_at is null and started_at <= now() and (ended_at is null or ended_at > now())`。契約の行が無ければ無料\n- **上げる**：効いている行の `ended_at = now()`、新しい行（`started_at = now()`・`status_id 'active'`）。予定の下げがあれば取り消す（下を見る）\n- **下げる**：効いている行の `ended_at = 来月 1 日 0 時（日本）`、新しい行（`started_at = 同じ時刻`）。前の予定（まだ始まっていない行）は `deleted_at = now()`\n- **今のプランを選ぶ（予定の下げがあるとき）**：予定の行を `deleted_at = now()`・効いている行の `ended_at = null`・頼みの行を `cancelled`。答えは今のプラン・`effective_from` は今日・日割り 0\n- 無料から上げるときは効いている行が無いので、新しい行だけ。無料に下げるときは効いている行の `ended_at` だけ（新しい行を作らない＝契約なし＝無料）\n- **今のプランの決め `app.tenant_plan_id`**（K-954 が作った）を、上の「効いている行」の決めに直す（`create or replace`）。K-954 の決め（`ended_at is null` の新しい行）のままだと、予定の下げの行（まだ始まっていない）を今のプランと読んでしまう\n- 頼みの行 `plan_change_requests`：1 回に 1 行（`from_plan_id`・`to_plan_id`・`requested_by` 本人・`status_id` は applied（上げた）／scheduled（下げる予定）／cancelled（取り消した））。列を 2 つ足す：`effective_from date`・`prorated_amount integer`（税込の円・下げは 0）。K-981 が scheduled・applied の行を読む\n\n### 関数（migration `20261128010100_plan_change.sql`・K-961 → 61 分）\n\n- `app.tenant_plan_id(p_tenant uuid)`：上の「効いている行」に直す（引数・戻り・security definer は今のまま）\n- `app.tenant_seat_count(p_tenant uuid) returns integer`（stable・security definer・`search_path = public, app, pg_temp`・public から外し kaname_app には渡さない＝関数の中から呼ぶだけ）：その会社の `members` で `kind_id = 'human'`・`deleted_at is null`、かつ同じ会社の `tenant_memberships`（`member_id` が同じ・`deleted_at is null`）に `role = 'requester'` の行が**無い**人の数（D-156.51：ゲストは数えない）。人数を数える所はどれもこれを呼ぶ（この葉の 2 つの関数・K-968・K-1103）\n- プランの 1 行の説明（種）：`update plans set limits = coalesce(limits, '{}'::jsonb) || jsonb_build_object('summary', <字>) where tenant_id = app.ops_tenant_id() and key = <鍵> and deleted_at is null and not (coalesce(limits, '{}'::jsonb) ? 'summary')`（運営が直した値を上書きしない）。字：free「チケット・承認・ナレッジ」・team「＋ ゲストを招く」・business「＋ ゲストのグループ」（代表の答え 2026-11-23・D-156.63：分身の実行の回数とファイルの量はプランで分けないので、下絵の「分身の実行は月 50 回」「分身の実行は人ごとの枠」を使わず、K-987 の中身の行の「使えるもの」の字にそろえた。下絵の側の字は下絵に回す）。**おすすめの印（種）**：`update plans set limits = coalesce(limits, '{}'::jsonb) || '{\"recommended\": true}'::jsonb where tenant_id = app.ops_tenant_id() and key = 'business' and deleted_at is null and not (coalesce(limits, '{}'::jsonb) ? 'recommended')`（運営が付けた印・D-156.68。ほかの 2 つは鍵なし＝印なし。運営が直した値を上書きしない。v1 に印を付け替える口は作らない＝案で変えられるのは値段・人数・無料期間だけ・D-156.61）\n- `app.workspace_plans() returns jsonb`（security definer・`search_path = public, app`・public から外す・`kaname_app` に execute）：ⓐ `app.member_ok()` と `has_permission(app.user_id(), 'tenants', null, 'billing')` でなければ `{\"error\":\"forbidden\"}` ⓑ 人数＝`app.tenant_seat_count(<会社>)` ⓒ 運営の会社の消していないプラン（free・team・business）を `price_monthly` の安い順に。行は plan_key・name・price_monthly（整数）・member_limit（`limits->>'members'`）・current・can_choose・reason・effective_from ⓓ current の行は can_choose false・reason「いまのプランです」・effective_from は効いている行の started_at の日本の日付（無料で契約なしは会社を作った日）。人数が上限を超える行は can_choose false・reason「いま N 人なので、M 人までのプランには下げられません」。ほかは can_choose true・reason null・effective_from は上げる先なら今日・下げる先なら来月 1 日。**下絵の字の 4 欄**（D-156.43）：`summary`＝プランの `limits->>'summary'`（無ければ空の字）・`recommended`＝そのプランに運営が付けた印（`(limits->>'recommended')::boolean` が true）があり、選べる（can_choose true）ときだけ true（ほかは false・画面が決めない＝D-156.68）・`upgrade`＝上げる先で選べる行だけ `{ days: 今日を含む今月の残りの日（日本）, amount: 日割りの額（税込・下の日割りの式と同じ）, invoice_on: 来月 1 日 }`、ほかは null・`upcoming`＝null（決まった値段の版は K-1017 が create or replace で埋める） ⓔ `{\"data\": [...], \"meta\": {\"members\": N, \"member_limit\": 今のプランの上限}}`\n- `app.plan_change(p_key text) returns jsonb`（同じ形の security definer）：ⓐ 同じ ⓑ 会社の行を `for update` ⓒ 鍵のプランが無ければ `{\"error\":\"not_found\"}` ⓓ 今のプランと同じで予定が無ければ `{\"error\":\"same_plan\"}`、予定があれば取り消し ⓔ 人数が上限を超えれば `{\"error\":\"over_limit\",\"detail\":{\"members\":N,\"member_limit\":M}}` ⓕ 上げる・下げる（上の「契約の持ち方」）ⓖ 頼みの行 ⓗ `app.record_audit('plan.change', 'tenants', <会社>, 'C2', {\"from\": 鍵, \"to\": 鍵, \"effective_from\": 日})` ⓘ `{\"data\": {plan_key, effective_from, prorated_amount, next_invoice_on（来月 1 日）}}`",
+    "依存の理由": "- K-958: 要る — プランの 3 行（free・team・business の値段と人数）と試験の土台 `billing.harness.ts` を K-958 が運ぶ。K-958 の依存で K-1005（契約の形）と K-954（`app.tenant_plan_id`・この葉が直す）も揃う",
+    "目録で探した結果": "- 使う：`plans`・`subscriptions`・`plan_change_requests`（0015）・`app.tenant_plan_id`（K-954）・`has_permission`（0080）・`app.member_ok`（0074）・`app.record_audit`（0003）・入口の本人確認の取り直し（op.ts の step_up always・K-308）・`withTenant`・K-958 の `features/F12/billing/errors.ts`・K-351 の hooks の書き方\n- 作る：列 2 つ・関数 2 つ（と `app.tenant_plan_id` の直し）・hooks `plans.ts`・`features/F12/billing/plans.ts`。探したがプランを変える物は無かった（素の口 `POST /plan_change_requests` は頼みの行を作るだけで、契約を変えない・人数を見ない）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128010100_plan_change.sql`（上の「関数」と列 2 つ）。一覧は `python3 scripts/ci/gen_migrations.py` |\n| 口 | `features/F12/billing/plans.ts`：一覧＝関数 → 200 `{ data, meta }`。変える＝関数を withTenant の 1 取引で → 断りの言葉 → 番号（`errors.ts` に same_plan 409 E-PLAN-001・over_limit 409 E-PLAN-002（detail つき）を足す）→ 200。想定外の例外は 503 E-PAGE-003（ログは `[billing] プランを変えられなかった（<例外の種類>）` だけ） |\n| 口の登録（K-326） | `apps/api/src/hooks/plans.ts`（listWorkspacePlans・changePlan の before・`register`・fuzz `\"same\"`） |\n| 契約の断片 | `05_flow/screen_api.d/K-961.py`：`ERRORS_4XX` に changePlan の 404 E-PAGE-001・409 E-PLAN-001・409 E-PLAN-002。`scripts/ci/contract_shape.d/K-961.py`（空の表） |\n| 誤りの正本 | `07_qa/test-specs/errors.d/K-961.json`：E-PLAN-001（class conflict・where company-settings・「いまのプランです」・action「ほかのプランを選ぶ」・source D-128.65）・E-PLAN-002（class conflict・「いまのメンバーは {members} 人で、上限（{member_limit} 人）を超えています」（下絵 ub-plan-blocked の字）・action「人を減らしてから選び直す」・source D-128.65・D-156.36）。字は K-962 の小窓の字（ub-plan-blocked）と合わせる |\n| 登録先 | `07_qa/test-plan/ears-elsewhere.d/K-961.json`（下）・`scripts/ci/ci_scope.d/K-961.json`（data_links：`apps/api/src/hooks/plans.ts`・`features/F12/billing/plans.ts` → この葉の試験。migration → この葉の試験と K-954 の `notices-read.test.ts`）・`08_api/db-columns.json`・`03_architecture/ER図.md`（plan_change_requests の 2 列） |\n\n### 生成の試験（ears-elsewhere.d/K-961.json）\n\n```json\n{\"ops\": {\n \"listWorkspacePlans\": {\"file\": \"apps/api/test/features/F12/plans.test.ts\",\n  \"reason\": \"契約の行・人数・能力で答えが変わる。種では作れない（K-961）\",\n  \"covers\": {\"test_get_workspace_plans_ok\": \"K961-API-001\", \"test_get_workspace_plans_rejected_401\": \"K961-API-016\",\n             \"test_get_workspace_plans_rejected_403\": \"K961-API-016\", \"test_get_workspace_plans_rejected_422\": \"K961-API-001\",\n             \"test_get_workspace_plans_rate_limited\": \"K961-API-018\",\n             \"test_get_workspace_plans_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_workspace_plans_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {}},\n \"changePlan\": {\"file\": \"apps/api/test/features/F12/plans.test.ts\",\n  \"reason\": \"今の契約・人数・本人確認の取り直しで答えが変わる。種では作れない（K-961）\",\n  \"covers\": {\"test_post_workspace_plan_ok\": \"K961-API-007\", \"test_post_workspace_plan_shape\": \"K961-API-007\",\n             \"test_post_workspace_plan_rejected_401\": \"K961-API-016\", \"test_post_workspace_plan_rejected_403\": \"K961-API-006\",\n             \"test_post_workspace_plan_rejected_422\": \"K961-API-012\", \"test_post_workspace_plan_rejected_422_2\": \"K961-API-012\",\n             \"test_post_workspace_plan_not_found\": \"K961-API-011\", \"test_post_workspace_plan_conflict\": \"K961-API-010\",\n             \"test_post_workspace_plan_rate_limited\": {\"file\": \"apps/api/test/features/F12/plans.test.ts\", \"mark\": \"K961-API-018\"},\n             \"test_post_workspace_plan_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_post_workspace_plan_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {\"test_post_workspace_plan_too_large\": \"送る量の守り（1MB）は入口の共通（op.ts・K-144）\"}}}}\n```\n\n（作り手が出す名前が違えば、出た名前に合わせる。`rejected_422` が入力の無い一覧で出なければ covers から消す）",
+    "外に影響する手順": "1. DB に書く：契約の行（終わり・新しい行・予定の取り消し）・頼みの行・記録を `app.plan_change` の 1 取引で［残る］— 失敗の行：K961-API-017（落ちたら契約も頼みの行も記録も変わらない。1 取引なので後片付けは要らない）・K961-API-010・011（断ったら何も書かない）\n2. お知らせ・メール：送らない（D-125.130）— 失敗の行：なし（呼ばない）\n3. 請求：この葉は請求書を作らない。日割りの額は頼みの行に残し、請求書を出す葉 K-981 が読む — 失敗の行：K961-API-007（頼みの行に額と日が残る）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/plans.test.ts`（本物の DB・偽の画面のログイン（本人確認の取り直しの時刻つき）・契約の行は DB に直に置く）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 無料（契約なし）・チーム・ビジネス | 「プランを変える」の小窓を開く | 管理者・プランと支払いの人 | 3 行・今・上げる先・下げる先・人数で選べない | このチケット | K961-API-001〜005 |\n| 上げる | 小窓の「上げる」 | 本人確認 15 分の内 | 200・今日から・日割り | このチケット | K961-API-007・008 |\n| 下げる | 「下げる」 | 同じ | 200・来月 1 日から | このチケット | K961-API-009 |\n| 下げる予定 | 選び直す | 同じ | 置き換え・取り消し | このチケット | K961-API-013 |\n| 人数が上限を超える | 「下げる」 | 同じ | 409 E-PLAN-002 | このチケット | K961-API-010 |\n| 今のプラン・無い鍵 | 直に口 | 同じ | 409・404 | このチケット | K961-API-011 |\n| どれでも | 「変える」 | 本人確認なし・16 分前 | 403 STEP_UP_REQUIRED | このチケット | K961-API-006 |\n| どれでも | 直に口 | 能力の無い人・先方の権限の人・ログインなし | 403・401 | このチケット | K961-API-016 |\n| どれでも | 同じ | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K961-API-001 | 対象の状態 | 一覧 | 200・free・team・business の順・1 行ちょうど 12 欄・名前と値段と上限が 無料 0 3／チーム 15000 10／ビジネス 40000 30・meta は { members 4, member_limit 10 } |\n| K961-API-002 | 対象の状態 | 今のプラン | チームの会社は team が current・選べない・reason「いまのプランです」・effective_from は契約の始まった日。契約なしは free が current・meta の上限は 3 |\n| K961-API-003 | 時間の流れ | 効く日 | 上げる先は effective_from が今日・下げる先は来月 1 日・選べる行の reason は null |\n| K961-API-004 | 入力 | 人数で選べない | free は can_choose false・reason「いま 4 人なので、3 人までのプランには下げられません」 |\n| K961-API-005 | 入力 | 人数の数え方 | 消した人と AI 社員を足しても members は 4 のまま |\n| K961-API-020 | 入力 | ゲストは数えない（D-156.51） | 4 人の会社（チーム）の 1 人を役割 requester にし、ゲストを 2 人足すと meta.members は 3・free は選べる（can_choose true）。無料に下げる口は 200・効く日は来月 1 日 |\n| K961-API-006 | 利用者の状態 | 本人確認 | 取り直していない・16 分前は 403 STEP_UP_REQUIRED で頼みの行 0・14 分前は 200 |\n| K961-API-007 | 対象の状態 | 上げる | 200・data は { business, 今日, prorate(25000), 来月 1 日 }・効いている契約は business だけ・頼みの行は applied で額と日が同じ |\n| K961-API-008 | 対象の状態 | 無料から上げる | 200・prorated_amount は prorate(15000)・効いている契約は team |\n| K961-API-009 | 時間の流れ | 下げる | 200・data は { team, 来月 1 日, 0, 来月 1 日 }・効いている契約は business のまま（終わりは来月 1 日 0 時）・team の行は来月 1 日 0 時に始まる・一覧の current は business |\n| K961-API-010 | 守り | 上限を超えて下げる | 409 E-PLAN-002・field と details が無い・detail は { members 4, member_limit 3 }・頼みの行 0・契約は team のまま |\n| K961-API-011 | 入力 | 今のプラン・無い鍵 | 今のプランは 409 E-PLAN-001・enterprise は 404 E-PAGE-001・どちらも field と details が無い・頼みの行 0 |\n| K961-API-012 | 入力 | 形の誤り | plan_key が無い・plan_id を付けた・NUL はどれも 422・頼みの行 0 |\n| K961-API-013 | 操作の揺れ | 選び直す | 下げる予定の後に今のプランを選ぶと 200・prorated 0・効いている契約は business で終わりが無い・まだ始まっていない行は 0・cancelled の頼みの行が 1 |\n| K961-API-014 | 守り | 記録 | plan.change が 1 行・C2・payload は { from team, to business, effective_from 今日 } |\n| K961-API-015 | 操作の揺れ | 同時に 2 人 | 200 と 409 が 1 つずつ・効いている契約は business の 1 つだけ |\n| K961-API-016 | 利用者の状態 | 変えられない人 | 能力の無い人・先方の人は一覧も変えるも 403・ログインなしは 2 本とも 401・頼みの行 0 |\n| K961-API-017 | 失敗 | DB が落ちる | 503 E-PAGE-003・頼みの行 0・契約は team のまま・記録 0 |\n| K961-API-018 | 守り | 上限 | 一覧の 2 回目が 429・retry_after_sec は 1〜60 の整数 |\n| K961-DB-001 | 時間の流れ | 今のプランの決め | 下げる予定の間 app.tenant_plan_id はビジネスのまま |\n| K961-DB-002 | 守り | 2 層目 | 能力の無いメンバーの文脈で app.plan_change('business') を直に呼ぶと { error: forbidden } |\n| K961-API-019 | 対象の状態 | 下絵の字の 4 欄 | チームの会社：summary は 無料「チケット・承認・ナレッジ」・チーム「＋ ゲストを招く」・ビジネス「＋ ゲストのグループ」・recommended はビジネスだけ true（運営の印）。印を無料に付け替えると無料だけ true（今より高いプランでなくても印のとおり）・upgrade はビジネスだけ { 今月の残りの日, prorate(25000), 来月 1 日 } でほかは null・upcoming は 3 行とも null |\n\n### テストの型の受け（分類 CRUD・PERM・PAY）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-CRUD-01 作った物が読める | K961-API-009（変えた後に一覧で読み直す）・007（DB の契約） |\n| TP-CRUD-02 入力の境界 | K961-API-012（形の誤り）・004（人数の上限ちょうどの境目は 4 人と 3 人まで） |\n| TP-CRUD-03 二重に作らない | K961-API-015（同時に 2 人・効いている契約は 1 つ）・011（同じプランは 409） |\n| TP-CRUD-04 消した物 | K961-API-011（無い・消したプランの鍵は 404） |\n| TP-CRUD-05 保存の途中で失敗 | K961-API-017（1 取引で何も残らない） |\n| TP-CRUD-06 書きかけで戻る・再読み込み・セッション切れ | 要らない：口は 1 回で書き終わる（書きかけを持たない）。小窓を閉じる・戻るの扱いは画面の葉 K-962、セッション切れは 401（K961-API-016） |\n| TP-PERM-01 役が合わない人 | K961-API-016 |\n| TP-PERM-02 権限を外した直後 | 要らない：能力は呼ぶたびに入口と関数で引く。外した直後は K961-API-016 の能力の無い人と同じ |\n| TP-PERM-03 他の会社の ID を指す | 要らない：口は会社の id を受けない（体の余計な欄は 422・K961-API-012）。プランは運営の会社の行で、全社に同じ |\n| TP-PERM-04 一覧・数に混ざらない | K961-API-005（人数は自分の会社の人だけ・消した人と AI を数えない）・020（ゲストを数えない） |\n| TP-PERM-05 権限を付けた直後 | 要らない：同じく呼ぶたびに引く |\n| G-11〜G-16 | G-11：N/A（外の資源を使わない）。G-12：K961-API-009・DB-001（下げる予定の間・来月 1 日 0 時の切り替わり）。G-13：K961-API-013（予定の後に選び直す）・015（同時）。G-14：止めた会社は入口で来ない（K-970）。G-15：K961-API-017。G-16：1 取引・関数 1 回 |\n\n| TP-PAY-01 金額の端数 | K961-API-007・008（日割りは税別の差の切り捨てに 1.1 の切り捨て・円の整数） |\n| TP-PAY-02 二重の請求・入金の二重記録 | K961-API-015（同時に 2 人で上げても契約と頼みの行は 1 回分）。請求書と入金はこの葉で作らない（K-981・K-982） |\n| TP-PAY-03 プランを月の途中で変える | K961-API-007（上げる＝今日から・日割り）・009（下げる＝来月 1 日から・日割り 0）・013（予定の後に選び直す） |\n| TP-PAY-04 外の決済の通知 | 要らない：第 1 フェーズは請求書払いで、外の決済事業者を呼ばない・通知を受けない（カード払いは段階 2・D-125.125） |",
+    "前からの試験を替えた所": "今のプランの決め `app.tenant_plan_id`・契約と頼みの表・口の名前と道を読む前からの試験を探した（この葉の新しい試験と土台は外した）。\n\n```search\ngit grep -l -E \"tenant_plan_id|plan_change_requests|listWorkspacePlans|changePlan\\b|/workspace/plans?\\b\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/plans.test.ts' ':!apps/api/test/features/F12/billing*'\n6\n```\n\n- apps/api/test/features/F12/plan-trial.test.ts（K-1104）・seat-limit.test.ts（K-1103）（段 13 の後の葉が切る段で書いた試験）: 替えない — この葉の後に入る葉が、その葉の振る舞いで書いた物（2026-11-23 に数え直した）\n- 段 13 のほかの葉が切る段で書いた自分の試験・道具 2 本（apps/api/test/features/F12/ops-invoices-issue.test.ts（K-981）、apps/api/test/features/F12/ops-workspace-billing.test.ts（K-968））: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n\n- scripts/ci/k1000_flow_test.py（K-1000）: 替えない — 親 K-72 の apis に口の名前が在ることを見る\n- scripts/ci/k1005_billing_contract_test.py（K-1005）: 替えない — 契約の形を読む。この葉は ERRORS_4XX を足すだけ\n- apps/api/test/features/F12/notices-read.test.ts（K-954・関数の名前を字で持たないので上の命令には当たらない）: 替えない — 今のプランの決めを使う（プランで選ぶお知らせ）。試験はまだ始まっていない契約を作らないので、決めを直しても答えは同じ（完了の条件で同じ回に流す）",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.31・36）\n- 切る段の決め（2026-11-23）：効いている契約＝始まっていて終わっていない行。下げる予定は来月 1 日 0 時（日本）に始まる行と前の行の終わりで持つ（時間で動く仕組みは使わない）。今のプランの決め `app.tenant_plan_id` はこの決めにそろえる\n- 切る段の決め（2026-11-23）：日割り＝月の値段の差（税別）× 今日を含む残りの日 ÷ その月の日数（切り捨て）× 1.1（切り捨て）。頼みの行 `plan_change_requests.prorated_amount` に残し、K-981 が次の請求書に足す\n- 切る段の決め（2026-11-23）：人数は消していない人のメンバー（kind human）のうちゲスト（役割 requester）でない人（D-156.51）・数えるのは `app.tenant_seat_count` の 1 か所。断る番号 E-PLAN-001（今のプラン）・E-PLAN-002（人数が上限を超える）",
+    "リスク": "- K-954 の `app.tenant_plan_id` をこの葉が直す → K-954 の試験を同じ回で流す（ci_scope の data_links に結ぶ）。K-954 の md の決めの字には「K-961 が直す」と書いた\n- ゲストかどうかは `tenant_memberships.role = 'requester'` で見る（段 12 の K-876・K-878 と同じ印）。試験の土台 `billing.harness.ts` の「先方の人」は所属の行を持たない（数える側）ので、K961-API-020 は所属の行を足してゲストにする",
+    "申し送り": "- K-962（プランを変える小窓）：一覧は上の 12 欄と meta（summary・recommended・upgrade はこの葉・upcoming は K-1017）。上げるときは「本人確認を取り直す」を先に（403 STEP_UP_REQUIRED を受けたら取り直してからもう一度）。上げる確かめの字（ub-plan-confirm の「残り N 日分 ¥X」）は答えの prorated_amount と、日数は今日を含む残りの日。409 E-PLAN-002 は ub-plan-blocked の小窓（detail の members と member_limit）\n- 段 11（company-settings の「プランと支払い」の行）：「いま N 人 / M 人まで」は一覧の meta（K-1005 の申し送りと同じ）\n- K-981（請求書を出す）：上げた月の日割りは `plan_change_requests`（status applied・effective_from がその月・prorated_amount）を読んで次の請求書に足す。下げる予定（scheduled）は来月 1 日から新しいプランの値段\n- K-968（運営が代わりにプランを変える）：同じ「契約の持ち方」を運営の関数で使う。**K-968 がこの葉の `app.plan_change` の中身（ⓑ〜ⓖ）を `app.plan_change_for(p_tenant, p_key, p_by)` に分け、`app.plan_change` はそれを呼ぶ形に create or replace する**（答え・断りの言葉は同じ。この葉の試験を K-968 の回で一緒に流す）\n- K-1017：`upcoming` を決まった値段の版から埋め、`price_monthly`・`member_limit` を版の値にする（create or replace）\n- K-963（運営の一覧と数）：運営の `app.workspace_facts` は、今のプランを `app.tenant_plan_id`（この葉が効いている行に直す物）、人数と PC の分母を `app.tenant_seat_count`（この葉）で呼ぶ（K-963 は依存にこの葉を持つ）。同じ決めを運営の側に 2 つ作らない。K-966（1 社の 12 欄）も K-963 の workspace_facts を通るので同じ数になる",
+    "代表に聞くこと": "- #17 代表の答え 2026-11-23（D-156.36）（人数だけを出す）\n- #追加 ゲスト（先方の人）をプランの人数に数えるか → 代表の答え 2026-11-23（D-156.51）：数えない（answer=474977b1ccf8）。数え方は `app.tenant_seat_count` に直した",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 22 行（上限 30）。"
+   },
+   "file": "11_tickets/K-961.md"
+  },
+  {
+   "id": "K-963",
+   "title": "運営の外枠の数（getOpsShell：受信箱・期限を過ぎた請求・ワークスペースの数・今月の実行・照合が使えなかった登録）と全社の一覧（listOpsWorkspaces：数と種類だけ・気にかける 3 つ・絞り込み・並び）を作る（K-72 の葉・W4）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "運営の一覧",
+   "assignee": "実装",
+   "due": "2026-12-10",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-951（読む口 2 本・関数 2 つ・試験 14 行・見込み 1）と K-947（運営の関数の型）から引いた：migration（止める印の列 4 つ・関数 3 つ）20 分・口 2 本と答えの整え 10 分・登録先（hooks・.d・ears・ci_scope）10 分・試験 20 行を流して直す 20 分。試験の土台 ops-ws.harness.ts は切る段で書いた",
+   "decisions": [
+    "D-156.51",
+    "D-156.46",
+    "D-156.49",
+    "D-156.3",
+    "D-156.4",
+    "D-156.12",
+    "D-156.17",
+    "D-156.23",
+    "D-156.24",
+    "D-156.72",
+    "D-156.35",
+    "D-125.129",
+    "D-128.146"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-workspaces.test.ts",
+    "apps/api/test/features/F12/ops-ws.harness.ts",
+    "apps/api/test/generated/get_ops_shell.test.ts",
+    "apps/api/test/generated/get_ops_workspaces.test.ts"
+   ],
+   "carry": [],
+   "depends_on": [
+    "K-947",
+    "K-1006",
+    "K-1001",
+    "K-468",
+    "K-954",
+    "K-961"
+   ],
+   "acts": [
+    "A60"
+   ],
+   "screens": [
+    "ops-home"
+   ],
+   "apis": [
+    "getOpsShell",
+    "listOpsWorkspaces"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。一覧の形は K-965（op-list・op-list-empty）、外枠の数の印は K-946",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128010300_ops_workspaces.sql",
+    "packages/db/src/migrations.generated.ts",
+    "05_flow/screen_api.d/K-963.py",
+    "scripts/ci/contract_shape.d/K-963.py",
+    "07_qa/test-plan/ears-elsewhere.d/K-963.json",
+    "scripts/ci/ci_scope.d/K-963.json",
+    "apps/api/src/hooks/ops-workspaces.ts",
+    "apps/api/src/features/F12/ops/workspaces.ts",
+    "08_api/db-columns.json",
+    "03_architecture/ER図.md"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営が朝ワークスペースの一覧を開いたとき、全社の様子が数と種類だけで分かり、気にかける会社が上に来るようにする（行為 A60・用事 J15）。外枠の左のメニューの数の印（K-946）と一覧の上の数（K-965）は、1 本の口 getOpsShell に寄せる（D-156.4）。\n\n- **getOpsShell**（ops:any）：運営の人・受信箱の 4 つの数・期限を過ぎた請求（お金を持つ人だけ）・ワークスペースの数（使っている・止めている・やめる手続き中・気にかける・プランごと）・今月の実行（先月との比）・照合が使えなかった登録の数（D-156.35）\n- **listOpsWorkspaces**（ops:any）：1 行は数と種類だけ（中身を返さない・D-156.3）。気にかける 3 つ（代表の答え 2026-11-23（D-156.24・上限に近い会社は出さない＝D-156.72））・絞り込み（view・plan）・探す（q）・並び（sort）\n- 止める印の列（D-156.23）を tenants に足す（**書くのは K-970**・この葉は読むだけ）。状態 active・stopped・closing はこの列とやめる手続きの列から決める",
+    "完了の条件": "- [ ] 下の表の 21 行（K963-API-001〜021）が緑：`apps/api/test/features/F12/ops-workspaces.test.ts`（土台 `ops-ws.harness.ts`・この葉が運ぶ）\n- [ ] 契約の口 2 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-963.json`）\n- [ ] 運営の関数の検査（`python3 scripts/ci/ops_definer_gate.py`・K-947）と migration の lint（Squawk・G58）が緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: LIST, PERM\n\n- **生成の試験は作る段の最初に作る**：契約の断片（`05_flow/screen_api.d/K-963.py`・`scripts/ci/contract_shape.d/K-963.py`）を足して作り手で生成の試験を作り、**実装より先に 1 つのコミットにする**。先の葉の契約を前提にした前からの試験は carry に入れない\n- 答えの形は K-1006 の「画面が使う答えの形」。**sort の値は attention・members・runs**（下絵 op-list の並び「気にかけるを上に・人数・今月の実行」）。K-1006 の断片の sort は `attention・members・runs` に直した（D-156.47）。契約が直るまでこの葉は作る段に入らない\n- 問い合わせの値の形は K-1006 の断片の `QUERY_RANGES`（K-468 の仕組み）。q は送られたままの字で 100 字まで・探すときは NFKC・小文字・前後の空白を落とした形で比べる。cursor は形だけ（付けても答えは変わらない・K-468 と同じ）。limit は契約の共通の範囲で、既定のときは全部（数社〜数十社・D-125.129）\n- 運営の文脈は K-947 の `opsTx`（role ops・tenantId null）。関数は K-947 の型：頭で `app.ops_require('any')`。読むだけなので運営の記録は書かない（D-128.108 は書く操作だけ）\n- **数える会社**：tenants のうち `deleted_at is null`・`half_made_at is null`・`id <> app.ops_tenant_id()`\n- **状態**：止めている（`stopped_at is not null or stop_on <= 日本の今日`・止める日が来たら何もしなくても止まる・D-156.49）→ stopped（state_since＝stopped_at、無ければ stop_on の 0 時（日本））・`deletion_requested_at is not null` → closing（＝deletion_requested_at）・ほか active（＝created_at）。stopped が先\n- **プラン**：`app.tenant_plan_id(<会社>)`（K-954 が作り K-961 が「効いている行」に直した 1 か所。来月 1 日から下げる予定の行は今のプランに数えない＝顧客の側と同じ）→ plans（運営の会社の行）の name・key・`limits->>'members'`。null なら plan_name null・limit null。この葉で契約の行を別の式で引かない（同じ決めを 2 つ持たない）\n- **人数**：`app.tenant_seat_count(<会社>)`（K-961 の 1 か所・社内の人だけ・ゲスト〔役割 requester〕・AI 社員・自分の AI は数えない・D-156.51。顧客の「いま N 人 / M 人まで」と同じ数）。**PC がつながる人**：社内の人（人数に数える人）のうち、sessions の `kind_id = 'bridge'`・`revoked_at is null`・`alive_at is not null`・`last_seen_at > now() - interval '90 seconds'`（画面の生きている知らせの窓と同じ）を 1 つ以上持つ人の数（`{ connected, total }`・total は人数＝`app.tenant_seat_count`。ゲストは PC をつなぐ人に数えない）\n- **今月の実行**：action_runs の `phase is not null and status_id is not null`・`deleted_at is null`・作った時刻が今月（日本時間の月）。prev_ratio は 今月 ÷ 先月（先月が 0 なら null・小数 2 桁）\n- **気にかける 3 つ（D-156.24 を D-156.72 で改めた）**・並びは overdue → stuck → pc。**上限に近い会社（前の limit・上限の 90%）は出さない**（代表の答え 2026-11-23・answer=1e8672e4346c）。kind の値は overdue・stuck・pc の 3 つ（K-1006 の断片の enum も 3 つ）：\n  - overdue：invoices の `issued_at is not null`・`deleted_at is null`（出していない下書きと消した請求書は数えない）・`status_id <> 'paid'` で `due_on < 今日（日本時間）` があれば。label_value は いちばん古い期限からの日数。`status_id` は K-982 が入金のたびに書く写し（状態の決めの 1 か所は K-982 の `app.invoice_state`・D-156.46。答えは同じ）\n  - stuck：action_runs の `status_id = 'stopped'` が直近 7 日に 3 件以上。label_value は件数\n  - pc：作ってから 7 日を超え（`created_at < now() - interval '7 days'`）、`alive_at is not null` の bridge のセッションが 1 つも無い。label_value は 作ってからの日数\n- **請求の状態**（billing_state）：出した・消していない請求書（`issued_at is not null and deleted_at is null`）のうちいちばん新しい 1 枚（issued_at）が paid（`status_id` の写し）→ paid・期限（日本時間の今日より前）を過ぎた → overdue・ほか unpaid・無ければ null\n- **受信箱の数**：inquiries の `deleted_at is null`。unassigned＝担当なし・`state <> 'done'`／mine＝担当が自分（`assignee_ops_member_id = app.user_id()`）・`state <> 'done'`／waiting＝`state = 'waiting'`／later＝`state = 'later'`（数える会社のだけ）\n- **期限を過ぎた請求**：`app.ops_require` の行の caps に money が無ければ null。あれば overdue の請求書の件数と金額の合計（税込の円の整数）\n- **照合が使えなかった登録**（pwned.unchecked）：security_events の `pwned_check_unavailable` が、その会社の最後の `pwned_check_acknowledged` より後にある会社の数（0086 と同じ見方）\n- 答えに会社の中身（チケット・会話・問い合わせの題・メール）を入れない。探す q は管理者のメール（kaname_auth の user）を関数の中で比べるだけで返さない\n- 断る番号（控え帳）：ログインなし 401・運営でない・運営の人の行が無い 403（入口）・形の誤り 422（契約）・DB の失敗 503 E-PAGE-003（K-947 の opsErrorReply）・上限 429\n\n### 関数（migration `20261128010300_ops_workspaces.sql`・K-963 → 63 分）\n\n- `alter table tenants add column if not exists stopped_at timestamptz, add column if not exists stop_on date, add column if not exists stop_reason_key text, add column if not exists stop_noticed_at timestamptz`・check `stop_reason_key is null or stop_reason_key in ('unpaid','violation','danger','request')`（D-156.23・K-1006 の stop の 4 欄。書くのは K-970）\n- `app.workspace_facts(p_tenant uuid) returns jsonb`（security definer・内部用・`kaname_app` に execute を出さない）：1 行の 11 欄を作る（上の決まり）。名前が `app.ops_` で始まらないので型の検査の外（K-947 の検査は呼び口の関数を見る）\n- `app.ops_shell() returns jsonb`（security definer・stable）：`app.ops_require('any')` → 6 欄\n- `app.ops_workspaces(p_q text, p_view text, p_plan text, p_sort text, p_limit integer) returns jsonb`（security definer・stable）：`app.ops_require('any')` → 数える会社を絞り込み・`app.workspace_facts` で 1 行ずつ → 並び（attention：気にかけるのある会社を上に、その中は最初の種類の順（overdue・stuck・pc）・同じなら名前／members：人数の多い順・同じなら名前／runs：今月の実行の多い順・同じなら名前）→ `{\"data\": [...]}`\n- どちらも `grant execute … to kaname_app`。索引は今の物で足りる（数社〜数十社）",
+    "依存の理由": "- K-947: 要る — `app.ops_require`・`opsTx`・`opsErrorReply`・運営の関数の検査（この葉の関数がその型に乗る）\n- K-1006: 要る — 2 本の答えの形・問い合わせの値の形（契約の断片）\n- K-1001: 要る — 運営の口の入口の柵（ops_all・x-tenant-id を無視）。無いと会社の文脈で動く\n- K-468: 要る — 問い合わせの値の形を契約に書く仕組み（`QUERY_RANGES`・K-1006 の断片が使う）\n- K-954: 要る — 今のプランの決め `app.tenant_plan_id`（この葉の workspace_facts が呼ぶ）\n- K-961: 要る — `app.tenant_plan_id` を効いている行の決めに直す（下げる予定を今のプランと読まない）と、人数の 1 か所 `app.tenant_seat_count`（社内の人だけ）。この葉はどちらも呼ぶだけ",
+    "目録で探した結果": "- 使う：K-947 の土台・`app.ops_tenant_id()`・`tenants.half_made_at`（0087）・`deletion_requested_at`（0078）・`subscriptions`・`plans`・`invoices`・`usage_meters`（0015）・`tenant_memberships`（0075）・`sessions.alive_at`（0089）・`action_runs`（0011・phase と status_id は 0092）・`inquiries`（0015・state は K-949）・`security_events`（0003・0086）・K-351 の hooks の書き方\n- 作る：列 4 つ・関数 3 つ・`apps/api/src/hooks/ops-workspaces.ts`・`features/F12/ops/workspaces.ts`。探したが運営の全社の数を出す物は無かった（`routes/ops.ts` は契約の道を並べるだけ・501）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128010300_ops_workspaces.sql`（上の「関数」）。一覧は `python3 scripts/ci/gen_migrations.py`（生成物） |\n| 口 | `features/F12/ops/workspaces.ts`：問い合わせの値を整える（q の前後の空白・既定 view all・sort attention）→ `opsTx` の 1 取引で関数を呼ぶ → `{ data }`。DB の断りは `opsErrorReply(e, \"workspaces\")` |\n| 口の登録（K-326） | `apps/api/src/hooks/ops-workspaces.ts`（getOpsShell・listOpsWorkspaces の before・`register`・fuzz `\"same\"`） |\n| 契約の断片 | `05_flow/screen_api.d/K-963.py`（足す鍵なし・空の表）・`scripts/ci/contract_shape.d/K-963.py`（空の表） |\n| 登録先 | `07_qa/test-plan/ears-elsewhere.d/K-963.json`（下）・`scripts/ci/ci_scope.d/K-963.json`（data_links：`apps/api/src/hooks/ops-workspaces.ts`・`features/F12/ops/workspaces.ts`・migration → この葉の試験）。`08_api/db-columns.json`・`03_architecture/ER図.md` に tenants の 4 列 |\n\n### 生成の試験（ears-elsewhere.d/K-963.json）\n\n```json\n{\"ops\": {\n \"getOpsShell\": {\"file\": \"apps/api/test/features/F12/ops-workspaces.test.ts\",\n  \"reason\": \"全社の数は DB の全部の会社と運営の人の caps で答えが変わる。種では足す前と後の差を作れない（K-963）\",\n  \"covers\": {\"test_get_ops_shell_ok\": \"K963-API-001\", \"test_get_ops_shell_rejected_401\": \"K963-API-017\",\n             \"test_get_ops_shell_rejected_403\": \"K963-API-017\", \"test_get_ops_shell_rate_limited\": \"K963-API-020\",\n             \"test_get_ops_shell_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_ops_shell_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {\"test_get_ops_shell_rejected_422\": \"問い合わせも体も受けない口。知らない問い合わせの 422 は入口の共通（K-144）\"}},\n \"listOpsWorkspaces\": {\"file\": \"apps/api/test/features/F12/ops-workspaces.test.ts\",\n  \"reason\": \"気にかける・絞り込み・並びは会社ごとの請求・実行・PC の行で答えが変わる。種では作れない（K-963）\",\n  \"covers\": {\"test_get_ops_workspaces_ok\": \"K963-API-007\", \"test_get_ops_workspaces_rejected_401\": \"K963-API-017\",\n             \"test_get_ops_workspaces_rejected_403\": \"K963-API-017\", \"test_get_ops_workspaces_rejected_422\": \"K963-API-014\",\n             \"test_get_ops_workspaces_rate_limited\": {\"file\": \"apps/api/test/features/F12/ops-workspaces.test.ts\", \"mark\": \"K963-API-020\"},\n             \"test_get_ops_workspaces_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_ops_workspaces_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}}}}}\n```",
+    "外に影響する手順": "- なし — 読むだけの口 2 本。DB の列を足す migration は書き込みの手順を持たない（列は K-970 が書く）。読む失敗は K963-API-019",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/ops-workspaces.test.ts`（本物の DB・本物の入口・偽のログイン fake:ops）。全社の数は足す前と後の差で見る（試験のファイルは直列）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 受信箱・請求・会社・実行・照合 | 外枠を開く | 運営の人（9 つ） | 6 欄の数 | このチケット | K963-API-001〜006 |\n| 同じ | 同じ | お金を持たない運営の人 | invoices null | このチケット | K963-API-003 |\n| 顧客の会社（ふつう・止めた・やめる・作りかけ・消した・運営の会社） | 一覧を開く | 運営の人 | 数える会社だけ・状態 | このチケット | K963-API-004・015 |\n| 気にかける 3 つの境目 | 同じ | 同じ | 入る・入らない | このチケット | K963-API-008 |\n| ゲストが居る・下げる予定がある会社 | 一覧 | 運営の人 | 人数はゲストを数えない・プランは今の物 | このチケット | K963-API-021 |\n| 絞り込み・探す・並び | URL の値 | 同じ | 絞った行・順 | このチケット | K963-API-009〜013 |\n| 形の誤り | 直に口 | 同じ | 422 | このチケット | K963-API-014 |\n| どれでも | 直に口 | ログインなし・会社の人・運営の行が無い人 | 401・403 | このチケット | K963-API-017 |\n| どれでも | 関数を直に | 会社の人の文脈 | 42501 | このチケット | K963-API-018 |\n| どれでも | 同じ | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K963-API-001 | 対象の状態 | 外枠の数 | 200・鍵ちょうど 6・operator は自分の member_id と caps |\n| K963-API-002 | 対象の状態 | 受信箱 | 足した 5 件で unassigned +2・mine +2・waiting +1・later +1（済みは数えない） |\n| K963-API-003 | 守り | 期限を過ぎた請求 | お金を持つ人は件数 +2・合計 +49500（当日と払われたは数えない）・持たない人は null |\n| K963-API-004 | 対象の状態 | ワークスペースの数 | total +5・active +2（止める日が明日の会社を含む）・stopped +2（止めた時刻の会社と、止める日が今日で止めた時刻の無い会社）・closing +1・attention +1・プランごと free +2・team +1・business +2。作りかけ・消した・運営の会社は一覧にも出ない |\n| K963-API-005 | 時間の流れ | 今月の実行 | 今月の 2 件だけ増える（400 日前は数えない）・prev_ratio は null か 0 以上の数 |\n| K963-API-006 | 時間の流れ | 照合 | 2 件の出来事でも会社 1 つ・確かめると 0・その後にまた落ちると 1 |\n| K963-API-007 | 対象の状態 | 一覧の 1 行 | 鍵ちょうど 11・管理者の名前・チーム・人数 3/10・PC 1/3・今月の実行 1・中身の字が無い |\n| K963-API-008 | 時間の流れ | 気にかけるの境目 | 3 件・1 日・8 日は 1 つずつ入り（label_value 3・1・8）、2 件・当日・6 日は空。上限の 95% を使っている会社も空（D-156.72） |\n| K963-API-009 | 対象の状態 | 既定の並び | 両方 → 詰まり → PC → 上限の 95%（気にかけるなし）→ 何もない の順（気にかけるの無い会社は名前の順）・両方の attention は overdue → stuck |\n| K963-API-010 | 入力 | view | attention・stopped・closing・all がそれぞれの会社だけ |\n| K963-API-011 | 入力 | plan | free・business は 1 社ずつ・team は空 |\n| K963-API-012 | 入力 | q | 全角の名前を半角小文字と前後の空白で・管理者のメールを大文字で探せる・合わなければ 200 で空 |\n| K963-API-013 | 入力 | sort | members は人数の多い順・runs は実行の多い順 |\n| K963-API-014 | 入力 | 形の誤り | 知らない view・plan・sort（name）・101 字の q・知らない名前・NUL は 422・100 字は 200 |\n| K963-API-015 | 対象の状態 | 状態 | active・stopped・closing と、その時刻 |\n| K963-API-016 | 対象の状態 | 請求の状態 | なし null・払った paid・過ぎた overdue・まだ unpaid |\n| K963-API-017 | 利用者の状態 | 入口 | ログインなし 401・会社の人 403・運営の行が無い人 403（2 本とも） |\n| K963-API-018 | 守り | 2 層目（G-02） | 会社の人の文脈で関数を直に呼ぶと 42501 |\n| K963-API-019 | 失敗 | DB が落ちる | 2 本とも 503・E-PAGE-003・関数の名前や例外の文を出さない |\n| K963-API-020 | 守り | 上限 | 上限の次が 429・retry_after_sec は 1〜60 の整数 |\n| K963-API-021 | 対象の状態 | 顧客の側と同じ決め | ゲスト（役割 requester）を 1 人足しても members は { count: 3, limit: 10 } のまま・pc の total も同じ。来月 1 日から下げる予定の契約の行を足しても plan_name はチームのまま |\n\n### テストの型の受け（分類 LIST・PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-LIST-01 0 件・1 件・境目 | K963-API-012（0 件）・007（1 件）・008（気にかけるの境目）。ページの境目は無い（cursor は形だけ・数社〜数十社） |\n| TP-LIST-02 同じ値の並び | K963-API-009・013（同じなら名前の順） |\n| TP-LIST-03 絞り込みの URL | K963-API-010・011（URL の問い合わせの値。画面の URL は K-965） |\n| TP-LIST-04 探す語 | K963-API-012・014（全角半角・大文字小文字・空白・100 字） |\n| TP-PERM-01 役が合わない人 | K963-API-017 |\n| TP-PERM-02 権限を外した直後 | 要らない：口は呼ぶたびに ops_members を読む（入口の共通・K-1001。外した直後の 403 は K-1001 の試験） |\n| TP-PERM-03 他の会社の ID を指す | 要らない：会社を指さない口（全社の数だけ） |\n| TP-PERM-04 一覧・数に混ざらない | K963-API-004（運営の会社・作りかけ・消した会社が混ざらない）・007（中身が混ざらない） |\n| TP-PERM-05 権限を付けた直後 | K963-API-003（caps の money の有無で invoices が変わる＝呼ぶたびに読む） |\n| G-11〜G-16 | G-11：N/A（外の資源を使わない）。G-12：K963-API-008（境目の直前と直後）・006（確かめた直後）。G-13：N/A（読むだけ）。G-14：入口の共通（K-1001）。G-15：K963-API-019。G-16：関数 1 回・1 取引（会社ごとに口を呼ばない） |",
+    "前からの試験を替えた所": "tenants に列を足し、2 つの口の振る舞いを作る。口の名前・道・tenants の列を読む前からの試験を探した（2026-11-23）。\n\n```search\ngit grep -l -E \"getOpsShell|listOpsWorkspaces\\b|/ops/shell|stopped_at|stop_reason_key\" -- 'apps/api/test' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/*'\n4\n```\n\n- scripts/ci/k1102_staging_spec_test.py（K-1102・段 13 の後の葉が切る段で書いた試験）: 替えない — staging の試験の名前の一覧に口の名前が在るかを見るだけ（2026-11-23 に数え直した）\n- scripts/ci/k1000_flow_test.py（K-1000）・scripts/ci/k1006_ops_workspace_contract_test.py（K-1006）・scripts/ci/k948_inquiry_contract_test.py（K-948・受信箱の数が getOpsShell に寄ったことを見る）: 替えない — 親の apis と契約の欄を読むだけ（sort の値は K-1006 が直す）\n- apps/api/test/features/F12/ops-entry.test.ts（K-1001・命令のパスで外した）: 替えない — 覗きの hook を差して入口だけを見る（この葉の hook は試験の中で差し替えられる）",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.3・4・24・35）\n- 切る段の決め（作り方・この md に残す）：止める印の列 4 つ（stopped_at・stop_on・stop_reason_key・stop_noticed_at）は、最初に読むこの葉が足す。書くのは K-970。PC がつながる人は bridge のセッションの生きている知らせが 90 秒の内",
+    "リスク": "- 全社の数は会社が増えると関数の中で全社を回す → 数十社の間は 1 回の関数で足りる。数百社を超えたら数の表を持つ形を後の葉で（G-16）",
+    "申し送り": "- K-1006：listOpsWorkspaces の sort は `attention・members・runs`（D-156.47・済み）\n- K-970：止める印の 4 列はこの葉が足す（足し直さない）。書くのは K-970 の関数だけ\n- K-965・K-946：答えの形は K-1006 のまま（sort だけ上のとおり）\n- K-995：照合が使えなかった登録の数は `pwned.unchecked`",
+    "代表に聞くこと": "- #5 代表の答え 2026-11-23（D-156.24）（気にかけるの目安と並び）\n- T 代表の答え 2026-11-23（D-156.72・answer=1e8672e4346c・勧めと違う）：上限に近い会社は気にかける一覧に出さない（上限の 90% の行を外した）\n- #16 代表の答え 2026-11-23（D-156.35）（回収の数）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 21 行（上限 30）。"
+   },
+   "file": "11_tickets/K-963.md"
   },
   {
    "id": "K-964",
@@ -27303,6 +27767,243 @@
     "見込み": "1 時間（実測なし・仮）。試験の行は 10 行（上限 30）。"
    },
    "file": "11_tickets/K-1000.md"
+  },
+  {
+   "id": "K-1001",
+   "title": "運営の口の入口の柵：契約の perm.scope に「全社（ops_all）／1 社を指す（ops_tenant）」を書き、運営の口は x-tenant-id を無視して会社の文脈なしで動かす。1 社の口で運営の会社を指したら 404、運営が会社の人の口で書くのは許可があっても 403（K-944 から分けた・K-72 の葉・W0）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "運営のログイン",
+   "assignee": "実装",
+   "due": "2026-12-04",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 1 の K-14（契約に権限の言葉を載せ入口で確かめる・作り手 contract.mjs と op.ts を直す）と K-427（入口に 1 段の確かめを足す・試験 10 行前後・見込み 0.5〜1）から引いた：permOf に 2 行と型の 1 行・作り手で作り直す 15 分・op.ts に 3 か所（運営の口の文脈・1 社の口の 404・運営の書く口の 403）15 分・運営の会社の id を 1 か所に寄せる 5 分・試験 12 行を流して直す 25 分",
+   "decisions": [
+    "D-156.2",
+    "D-156.3",
+    "D-156.12",
+    "D-125.128",
+    "D-128.70"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-entry.test.ts"
+   ],
+   "carry": [],
+   "depends_on": [
+    "K-940"
+   ],
+   "acts": [
+    "A60",
+    "A64"
+   ],
+   "screens": [],
+   "apis": [],
+   "canvas": [],
+   "canvas_none": "契約の作り手と入口だけ。画面のコードを変えない",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "shared"
+   ],
+   "changes": [
+    "scripts/ci/contract.mjs",
+    "apps/api/src/contract/op.ts",
+    "packages/db/src/id.ts",
+    "apps/api/src/features/F1/sign-up/index.ts",
+    "apps/api/test/features/F12/ops-entry.test.ts"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営の口（契約の auth が ops・47 本）の入口の柵を、運営が別の会社を触る道の決め（D-156.3）に合わせる。\n\n- **契約に「1 社を指す口か」を書く**（D-156.2）：`perm.scope` に、運営の口は `ops_all`（全社・運営の会社の行・受信箱など）か `ops_tenant`（道の `:id` が顧客のワークスペース＝`/api/v1/ops/workspaces/:id…`）を作り手が道から決めて書く\n- **運営の口は会社の文脈で動かない**：今の入口（`middleware/tenant.ts`）は、運営の人が x-tenant-id を付けると文脈の tenantId をその会社にする。運営の口でこれが効くと、行の守りが「その会社の中」として動き、運営の道（security definer の関数だけ・D-156.3）と混ざる。運営の口は x-tenant-id を無視して tenantId を null にしてから振る舞いに渡す\n- **1 社の口で運営の会社を指したら 404**：運営の会社（`app.ops_tenant_id()`）は顧客のワークスペースでない（止める・中を見る・代わりにプランを変えるの的にしない）\n- **運営が会社の人の口を呼ぶのは読むだけ**：中を見る（D-125.128「見るだけ」）の許可があっても、書く口（GET 以外）は 403 で何も書かない。今は行の守りだけが止めている（1 層）ので、入口にもう 1 層足す（G-02）\n\n運営のログイン（解決が role ops を返す）は K-944、運営の会社を触る DB の関数の型は K-947。",
+    "完了の条件": "- [ ] 下の表の 12 行（K1001-API-001〜012）が緑：`apps/api/test/features/F12/ops-entry.test.ts`\n- [ ] 作り手（`node scripts/ci/contract.mjs gen`）で作り直した `packages/contracts/src/registry.ts` の運営の口の perm.scope が ops_all／ops_tenant（生成物・手で書かない）\n- [ ] 前からの試験は「前からの試験を替えた所」のとおり（替える物は無い）で緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: PERM\n\n- **K-944 と並べて作れる**：試験は偽の画面のログイン（`features/fixture.ts` の `fake:ops`）で運営の文脈を作るので、本物の運営のログイン（K-944）を待たない。変えるファイルも重ならない（K-944 は packages/auth・migration）\n- perm.scope は作り手 `scripts/ci/contract.mjs` の `permOf` が道から決める（`05_flow/screen_api.py` に表を足さない。道の形が正本）：言葉が `ops:` で始まる口は、`/api/v1/ops/workspaces/:id` で始まれば `ops_tenant`、ほかは `ops_all`。型の宣言（作り手の中の `EndpointDef` の `scope`）に 2 つの値を足す。運営でない口の値（`workspace`・`any`）は変えない\n- 入口（`apps/api/src/contract/op.ts`）の順：\n  1. 役の段（今の 2・3）の後で、`def.auth === \"ops\"` なら `c.set(\"ctx\", { ...ctx, tenantId: null })`（以後の段と hooks の `a.ctx` は null の文脈を見る。op.ts が hooks に渡す `ctx` は、この書き換えの直後に `c.get(\"ctx\")` から読み直した物にする＝書き換える前に取った変数を hooks に渡さない。K1001-API-002 の覗きが `a.ctx.tenantId` と `c.get(\"ctx\").tenantId` の両方を見る）\n  2. 今の 3.0（道の uuid の確かめ）の直後に、`def.perm.scope === \"ops_tenant\"` で `:id` が運営の会社の id なら `404 NOT_FOUND`（欄・details を付けない・在るかを漏らさない＝控え帳）。501 と入力の確かめより前（何を送っても 404）\n  3. 役の段の `def.auth === \"member\"` で `ctx.role === \"ops\"` の所：今の `opsAllowed`（許可の確かめ）の前に、`def.method !== \"GET\"` なら 403 FORBIDDEN\n- 運営の会社の id は 1 か所に寄せる：`packages/db/src/id.ts` に `export const OPS_TENANT_ID = \"00000000-0000-4000-8000-000000000001\"`（0003 の `app.ops_tenant_id()` と同じ値）。`apps/api/src/features/F1/sign-up/index.ts` の同じ定数はこれを import して使う（同じ値を 2 か所に書かない）\n- 断る番号（控え帳・D-156.12）：運営の会社を指す＝指した物が無い扱いの 404。書く口＝役の段の 403（今の FORBIDDEN）。形の違う :id は今のとおり 422\n- `/api/v1/ops/peeks/:id`（closePeek）の `:id` は許可の行で、会社ではない → `ops_all`（道で決まる・試験 K1001-API-001）",
+    "依存の理由": "- K-940: 要る — 頭の欄の決定（D-156.2・3・12）が本線の決定ログ §156 に在ること\n- K-1000（切り方の見込み）: 外した — 流れの正本と文書だけを直す葉で、この葉の変えるファイルと重ならない\n- K-944: 外した — 試験は偽のログインで運営の文脈を作る。変えるファイルも重ならない（K-944 は packages/auth・migration・errors.d）",
+    "目録で探した結果": "- 使う：入口 `op.ts` の 3.0 の uuid の確かめ・役の段・`repo.opsAllowed`（許可の確かめ）・`permissions.ts` の `ops:*`（できることの確かめ・今のまま）・作り手 `contract.mjs` の `permOf`・試験の土台 `features/fixture.ts`（`fake:ops`・`hooks` を差し替えられる）\n- 作る：試験 1 本。探したが運営の口の文脈を確かめる試験は無かった（`authz.test.ts` は偽の repo で役とできることだけを見る）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| 作り手 | `scripts/ci/contract.mjs` の `permOf`：`if (word.startsWith(\"ops:\")) { out.cap = word.slice(4); out.scope = path.startsWith(\"/api/v1/ops/workspaces/:id\") ? \"ops_tenant\" : \"ops_all\"; }`。型の `scope: \"workspace\" \\| \"any\"` に `\\| \"ops_all\" \\| \"ops_tenant\"` を足す。`node scripts/ci/contract.mjs gen` で作り直す |\n| 入口 | `apps/api/src/contract/op.ts`：前提と制約の 3 か所。コメントに D-156.3・D-125.128 |\n| 運営の会社の id | `packages/db/src/id.ts` に定数・`apps/api/src/features/F1/sign-up/index.ts` は import に替える |\n| 試験 | `apps/api/test/features/F12/ops-entry.test.ts`（切る段が書いた） |",
+    "外に影響する手順": "- なし — 入口で断る段を足すだけ。DB に書かず、外を呼ばない（断るときは何も書かない）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/ops-entry.test.ts`（本物の DB・本物の入口・偽の画面のログイン。振る舞いは試験の中で差す覗きの hook が before で文脈を答えて止める）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 運営の口（全社） | x-tenant-id あり・なし | 運営の人 | 届く・tenantId null | このチケット | K1001-API-002・003 |\n| 1 社の口・顧客の会社 | 道の :id | 運営の人 | 届く・id はその会社 | このチケット | K1001-API-004 |\n| 1 社の口・運営の会社 | 道の :id | 運営の人 | 404 | このチケット | K1001-API-005 |\n| 1 社の口・形の違う id | 道の :id | 運営の人 | 422 | 入口の共通（K-144） | K1001-API-006 |\n| 会社の人の読む口 | x-tenant-id | 運営・許可なし／あり | 403／届く | このチケット | K1001-API-007・008 |\n| 会社の人の書く口 | x-tenant-id | 運営・許可あり | 403・書かない | このチケット | K1001-API-009 |\n| 運営の口 | — | 顧客の会社の人 | 403 | 今の柵 | K1001-API-010 |\n| お金の口 | — | お金を持たない運営 | 403 | 今の柵 | K1001-API-011 |\n| 運営の口 | — | ops_members の無い人 | 403 | 今の柵 | K1001-API-012 |\n| 運営のセッションが無い・切れた | — | — | 401 | K-944 | K944-API-011 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K1001-API-001 | 守り | 契約 | auth ops の口は全部、道が /api/v1/ops/workspaces/:id で始まれば perm.scope ops_tenant・ほかは ops_all。auth ops の口は 30 本より多い。運営でない口は workspace か any |\n| K1001-API-002 | 入口 | 全社の口に x-tenant-id | 200（覗き）・a.ctx.tenantId と c の文脈の tenantId がどちらも null・id null |\n| K1001-API-003 | 入口 | x-tenant-id なし | 200（覗き）・tenantId null |\n| K1001-API-004 | 対象の状態 | 1 社の口・顧客の会社 | 200（覗き）・tenant null・id は顧客の会社の id |\n| K1001-API-005 | 守り | 1 社の口・運営の会社 | GET も POST（stop）も 404・code NOT_FOUND・details と field が無い |\n| K1001-API-006 | 入力 | 形の違う :id | 422 |\n| K1001-API-007 | 守り | 許可なしで会社の人の読む口 | 403 |\n| K1001-API-008 | 対象の状態 | 許可ありで会社の人の読む口 | 200（覗き）・tenantId は指した会社 |\n| K1001-API-009 | 守り | 許可ありで会社の人の書く口 | 403・顧客の会社のチケットの行が増えない |\n| K1001-API-010 | 利用者の状態 | 顧客の会社の人が運営の口 | 403 |\n| K1001-API-011 | 守り | できることが無い | お金の口 403・問い合わせの口は 200（覗き） |\n| K1001-API-012 | 利用者の状態 | ops_members が無い | ops:any の口も 403 |\n\n### テストの型の受け（分類 PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-PERM-01 役が合わない人 | K1001-API-010・011・012（口は 403・振る舞いに届かない） |\n| TP-PERM-02 権限を外した直後 | 要らない：入口は要求ごとに ops_members と許可を引く（覚えない）。外した直後の 401 は K944-API-011 |\n| TP-PERM-03 他の会社の ID を直接指す | K1001-API-005（運営の会社を指すと 404）・K1001-API-007（許可の無い会社は 403） |\n| TP-PERM-04 一覧・数に混ざらない | 要らない：一覧の中身は全社の一覧の葉（K-963）。この葉は入口だけ |\n| TP-PERM-05 権限を付けた直後 | K1001-API-008（許可の行を入れた次の要求で届く） |\n| G-11・G-15・G-16 | N/A：外の資源・外のプロセスを使わず、文の数も増やさない（入口の段は値を比べるだけ） |\n| G-12 | K1001-API-008（許可を入れた直後） |\n| G-13 | K1001-API-009（中を見る × 書く） |\n| G-14 | K944-API-011（運営の人を外した後）が持つ |",
+    "前からの試験を替えた所": "切る段の道具 `cut_check.py prior --files apps/api/src/contract/op.ts scripts/ci/contract.mjs packages/db/src/id.ts` は 10 本。運営の文脈と x-tenant-id・perm.scope・運営の会社の id を読む物を足して探した。\n\n```search\ngit grep -l -E \"perm\\.scope|x-tenant-id|OPS_TENANT_ID\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'scripts/ci/*_test.py' 'scripts/ci/*.test.mjs' ':!apps/api/test/features/F12/*'\n2\n```\n\n- apps/api/src/contract/authz.test.ts: 替えない — 偽の repo で、運営の口は運営の人だけ・できることの有無を見る。perm.scope は読まない。運営の口の :id は試験の uuid（運営の会社の id でない）\n- apps/api/test/qa-d.test.ts・harness.ts: 替えない — 運営の人に x-tenant-id を付けて呼ぶが、表の中の運営の口（/api/v1/ops/…）は 0 本（`grep -c \"/api/v1/ops/\" apps/api/test/qa-d.test.ts` が 0）。会社の人の口を運営として呼ぶのは読む一覧（403 の行）だけ\n- apps/api/test/features/contract/k144-contract.test.ts・k262_edge.test.ts・k427_nul_input.test.ts・F1/my-security.test.ts・F3/credential-resolve.test.ts: 替えない — 入口の uuid・NUL・形の段と顧客の口を見る。足す段は運営の役のときだけ働く\n- packages/db/test/k145-uuid-re.test.ts・repository.test.ts: 替えない — id.ts の uuid の形を見る。定数を 1 つ足すだけ\n- scripts/ci/contract_shape_test.py・ci_lean_test.py: 替えない — 契約の形と範囲の決め方を見る。perm.scope の値は読まない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.2・3）",
+    "リスク": "- 作り手が道で決めるので、1 社を指す運営の口を `/ops/workspaces/:id` の外に足すと ops_all になる → K1001-API-001 が道の形で全部を照らす（新しい口を足す葉が赤で気づく）",
+    "申し送り": "- K-947：運営の口の振る舞いは tenantId null の文脈で、security definer の関数に会社の id を引数で渡す\n- K-966〜K-970：1 社の口は、:id が運営の会社でないことを入口が守る。無い会社（消した・作りかけ）の 404 は各葉の関数が返す\n- 試験の後片付け：afterAll は ops_members・許可に加えて、運営の会社に足した人 3 人と scopes の行を消した印（deleted_at）で消す（共用の DB で回を重ねても運営の会社の人が増えない）",
+    "代表に聞くこと": "- なし（D-156.2・3 は PM の決め。代表の答えに当たる所は無い）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 12 行（上限 30）。"
+   },
+   "file": "11_tickets/K-1001.md"
+  },
+  {
+   "id": "K-1004",
+   "title": "契約の作り直し 2：お知らせ（利用者の一覧・読んだ印・ログイン後の稼働状況と上の帯）と運営のお知らせ（一覧・作る・1 件・直す・出す・障害の続報・1 社に送る）を画面が要る欄に作り直す（契約だけ・振る舞いは後の葉・K-948 から分けた・K-72 の葉・W0）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "契約",
+   "assignee": "実装",
+   "due": "2026-12-05",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-948（同じまとまりの作り直し・11 口・試験 16 行・見込み 1）から引いた：この葉は 10 口・断片と本体の表の直し 25 分・作り手 10 分・試験 12 行を流して直す 15 分・文書 10 分",
+   "decisions": [
+    "D-156.5",
+    "D-156.10",
+    "D-156.12",
+    "D-156.27",
+    "D-156.28",
+    "D-156.33",
+    "D-156.38",
+    "D-156.45",
+    "D-125.127",
+    "D-128.71",
+    "D-128.109",
+    "D-156.57"
+   ],
+   "split": "",
+   "choke_points": [],
+   "choke_none": "契約と文書を直すだけ。データを書かず、外へも出さず、DB・秘密・お知らせに触らない",
+   "tests": [
+    "scripts/ci/k1004_notice_contract_test.py"
+   ],
+   "carry": [
+    "scripts/ci/g65.d/K-1004.txt"
+   ],
+   "depends_on": [
+    "K-948"
+   ],
+   "acts": [
+    "A68",
+    "A71",
+    "A64"
+   ],
+   "screens": [],
+   "apis": [],
+   "canvas": [],
+   "canvas_none": "契約と文書だけで見た目を変えない（changes に apps/web/ の道が無い）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts"
+   ],
+   "ci_wide": [
+    "shared",
+    "ci"
+   ],
+   "changes": [
+    "05_flow/screen_api.py",
+    "05_flow/screen_api.d/K-1004.py",
+    "08_api/phase1/10_運営と困ったとき.md",
+    "scripts/ci/k1004_notice_contract_test.py",
+    "scripts/ci/g65.d/K-1004.txt"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "お知らせのまとまりの契約を、画面（下絵 uh-help・uh-notice・uh-band-*・oq-notices・oq-notice-new・oq-notice・oq-notice-publish・op-ws-notice）が要る欄に作り直す（D-156.5）。後の葉（K-954〜K-957・K-977〜K-980・K-972 の 1 社に送る小窓）は振る舞いだけを書く。\n\n- 利用者の 3 口（listNotices・markNoticeRead・getServiceStatusForMember）：一覧の 1 行に本文と続報まで持たせ、1 件を開く口を作らない（開いた時に読んだ印・D-156.27）。上の帯は getServiceStatusForMember の `bands` の 1 つに並べる（障害・メンテ・止める日・中を見られている間・D-156.10）\n- 運営の 7 口（listOpsNotices・createOpsNotice・getOpsNotice・updateOpsNotice・publishOpsNotice・addIncidentUpdate・sendWorkspaceNotice）：誰に（全部・プランで選ぶ・ワークスペースを選ぶ・D-156.33）・出す場所（上の帯・一覧）・予定（出す日時）・メンテの時間と影響・障害の状態 4 つ\n- ログイン前の getServiceStatus（K-307）の形は変えない",
+    "完了の条件": "- [ ] 下の表の 12 行（K1004-DC-001〜012）が緑：`scripts/ci/k1004_notice_contract_test.py`（G65 の段 `g65.d/K-1004.txt`）\n- [ ] 契約の検査（`python3 scripts/ci/contract_shape_test.py`・`node scripts/ci/contract.mjs check`）が緑\n- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: TOOL\n\n- **生成の試験は作る段の最初に作る**：契約（本体の表の直しと断片）を書いて作り手（K-948 と同じ順）で作り直し、先にコミットする。口は増えない・道も変えない（501 のまま）\n- 本体 `05_flow/screen_api.py`（前からある行の直し・操作 ID の名前で探す）：RESPONSES の `getServiceStatusForMember`（今は components・banner・maintenance）を下の形に（型の名前 ServiceStatus は変えない・K307-API-016 が見る）。QUERIES の `listNotices`（kind・unread のまま）。listOpsNotices の QUERIES（kind・state のまま）\n- 断片 `05_flow/screen_api.d/K-1004.py`（新しい鍵だけ）：INPUTS・REQUIRED_INPUTS・VALUE_RANGES・RESPONSES（getServiceStatusForMember 以外）・QUERY_RANGES（listNotices の kind・unread・listOpsNotices の kind・state）・LIST_DETAILS（sort: False）\n- 断る番号と欄（控え帳）：`_id`・`_ids` の中身は uuid。名前の欄は `_key`。値の形は契約に書ける物だけ 422（DB で決まる断りは振る舞いの葉）\n- **空白だけを断る形**（D-156.38）：createOpsNotice・updateOpsNotice・sendWorkspaceNotice の `title`・`body` と addIncidentUpdate の `body` は、VALUE_RANGES に `\"pattern\": \"\\\\S\"`（問い合わせ・請求先と同じ形・空白だけは 422）\n- **管理者だけ**（代表の答え 2026-11-23・D-156.57）：値段が変わるお知らせは会社の管理者だけに出す。お知らせに絞り `admins_only`（boolean）を足す：運営の一覧の 1 行と 1 件の答えに `admins_only`（11 欄・16 欄）、1 社に送る（sendWorkspaceNotice）の入力に `admins_only`（boolean・任意・既定 false）。管理者だけのお知らせは上の帯に出さない（帯は会社の全員の画面に出る）ので、INPUT_RULES の sendWorkspaceNotice に `{\"not\": {\"properties\": {\"admins_only\": {\"const\": true}, \"placements\": {\"contains\": {\"const\": \"band\"}}}, \"required\": [\"admins_only\", \"placements\"]}}`（管理者だけ × 上の帯は 422）。作る・直す（createOpsNotice・updateOpsNotice）には足さない（全体のお知らせに管理者だけは無い）。届け先の決めは K-954、書くのは K-978（1 社に送る）と K-990（値段が変わる）\n- 運営のお知らせは鈴に出さない（D-156.28）：契約の関連の表に notifications を足さない（今の publishOpsNotice の行の notifications は振る舞いの葉 K-978 が外すかを決める・申し送り）\n- 文書 `08_api/phase1/10_運営と困ったとき.md` のお知らせの行の説明を下の形に合わせる\n\n### 画面が使う答えの形（振る舞いの葉の正本）\n\n| 口 | 入力 | 答え（data） |\n|---|---|---|\n| listNotices | 問い合わせ `kind`（incident・maintenance・release）・`unread`（true だけ）・cursor・limit | `Notice[]`：`id`・`kind`・`title`・`body`・`state`（障害の状態 4 つか null）・`published_at`・`unread`・`maintenance`（`{ from, to, impact }` か null）・`updates`（障害の続報 `{ state, body, at }[]`） |\n| markNoticeRead | `{}` | `{ id, read_at }` |\n| getServiceStatusForMember | — | `{ components: { key, label, state }[], bands: { kind（incident・maintenance・stop・peek）, notice_id?, title, note?, ref?, state?, from?, to?, closable, more }[]（`note`＝帯の 2 行目の字：障害は最新の続報の本文か本文の 1 行目・メンテは影響か本文の 1 行目・止める・中を見るは null。`ref`＝障害の番号「INC-<YYMM>-<NN>」・障害のほかは null・D-156.45。`notice_id` は障害・メンテはお知らせの id、中を見るの運営の側は許可の id（closePeek の `:id`）、顧客の側と止めるは null・K-969）, maintenance_now: { from, to } か null }` |\n| listOpsNotices | 問い合わせ `kind`・`state`（draft・scheduled・published・resolved）・cursor・limit | `OpsNoticeRow[]`：`id`・`kind`・`title`・`audience`（`{ mode, plans, workspaces: { id, name }[] }`）・`state`・`placements`・`publish_at`・`published_at`・`author_name`・`incident_state`（障害の今の状態 4 つか null・一覧の行の札に出す・K-980）・`admins_only`（boolean・管理者だけ・D-156.57）（11 欄） |\n| createOpsNotice・updateOpsNotice | `kind`・`title`（1〜100）・`body`（1〜4000）・`audience_mode`（all・plans・workspaces）・`audience_plans`（free・team・business の並び）・`audience_workspace_ids`（uuid の並び）・`placements`（band・list の 1〜2 つ）・`publish_at`（日時・任意）・`maintenance_from`・`maintenance_to`（日時・任意）・`impact`（1〜200・任意）。作るの必須は kind・title・body・audience_mode・placements、直すは必須なし | `OpsNoticeDetail`：一覧の 11 欄と `body`・`maintenance`・`impact`・`updates`・`reach`（16 欄）（`{ workspaces, members }`＝出すと届く数） |\n| getOpsNotice・publishOpsNotice | — ／ `{}` | `OpsNoticeDetail` |\n| addIncidentUpdate | `state`（investigating・identified・monitoring・resolved）・`body`（1〜4000）（どちらも必須） | `OpsNoticeDetail` |\n| sendWorkspaceNotice | `title`・`body`・`placements`（必須・会社は道の :id）・`admins_only`（boolean・任意・既定 false・true のとき placements に band を入れない＝422） | `OpsNoticeDetail` |",
+    "依存の理由": "- K-948: 要る — 同じ `05_flow/screen_api.py` の本体の表を K-948 が先に直す（書き出しの 2 本を外す・QUERIES・META）。契約の読み方 `scripts/ci/f12_contract_kit.py` を K-948 が運ぶ",
+    "目録で探した結果": "- 使う：K-948 の断片の形と読み方・ログイン前の稼働状況 getServiceStatus（K-307）・帯の読み替え `to-incidents.ts`（段 1・振る舞いの葉が使う）\n- 作る：断片 1 つ・試験 1 本。探したがお知らせの契約の作り直しは無かった",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| 本体の表 | `05_flow/screen_api.py`（前提と制約） |\n| 断片 | `05_flow/screen_api.d/K-1004.py`（上の表の形） |\n| 作り手 | K-948 と同じ順（生成物は手で書かない） |\n| 文書 | `08_api/phase1/10_運営と困ったとき.md` |\n| 試験 | `scripts/ci/k1004_notice_contract_test.py`・G65 の段 `g65.d/K-1004.txt` |",
+    "外に影響する手順": "- なし — 契約と文書を直すだけ。口は今どれも 501（読む口 getServiceStatus は変えない）",
+    "テスト仕様と確認の結果": "`scripts/ci/k1004_notice_contract_test.py`（python の unittest・作り手が出した契約を読む）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 利用者のお知らせの口 3 | 契約を読む | — | 画面の欄 | このチケット | K1004-DC-001〜003 |\n| ログイン前の稼働状況 | 契約を読む | — | 変えない | このチケット | K1004-DC-004 |\n| 運営のお知らせの口 7 | 契約を読む | — | 画面の欄・値の形 | このチケット | K1004-DC-005〜010・012 |\n| 欄の名前・権限 | 契約を読む | — | uuid・今のまま | このチケット | K1004-DC-011 |\n| 振る舞い（届け先・既読・帯・予定・メール） | 口 | 各役 | — | K-954〜K-957・K-977〜K-979 | 各葉 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K1004-DC-001 | 対象の状態 | listNotices | 1 行 9 欄・問い合わせ kind・unread・cursor・limit・kind 3 つ・unread は true だけ |\n| K1004-DC-002 | 入力 | 読んだ印 | 入力は空・答えは id と read_at |\n| K1004-DC-003 | 対象の状態 | 稼働状況 | components・bands・maintenance_now の 3 欄・一覧でない |\n| K1004-DC-004 | 守り | ログイン前 | getServiceStatus は incidents と maintenance のまま |\n| K1004-DC-005 | 対象の状態 | 運営の一覧 | 1 行 11 欄（incident_state・admins_only を含む）・問い合わせ kind・state・cursor・limit・state 4 つ |\n| K1004-DC-006 | 入力 | 作る | 入力 11 欄・必須 5 欄・余計な欄を受けない |\n| K1004-DC-007 | 入力 | 値の形 | kind 3・誰に 3・出す場所 band と list の 1〜2・ワークスペースは uuid・題 1〜100・本文 1〜4000・作る・直す・1 社に送るの題と本文と続報の本文に pattern `\\S`（空白だけを断る） |\n| K1004-DC-008 | 対象の状態 | 1 件・直す・出す | 答えは 16 欄・直すの入力は 11 欄で必須なし・出すは空の体 |\n| K1004-DC-009 | 入力 | 続報 | state 4 つと body（必須）・答え 16 欄 |\n| K1004-DC-010 | 入力 | 1 社に送る | 入力は title・body・placements（必須）と admins_only（boolean・任意）・答え 16 欄 |\n| K1004-DC-012 | 守り | 管理者だけ × 上の帯 | sendWorkspaceNotice の入力の形に「admins_only が true で placements に band がある」を断る not の決まり（422）が在る（D-156.57） |\n| K1004-DC-011 | 守り | 欄の名前・権限 | `_id` は uuid・listNotices は read・markNoticeRead は self・運営の 7 口は ops:notice |\n\n### テストの型の受け（分類 TOOL）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-TOOL-01 日本語の名前のファイル | 要らない：読むのは英数字の名前の生成物（openapi.yaml・endpoints.json）だけ |\n| TP-TOOL-02 何も見ていないのに緑 | K1004-DC-001〜010（欄を集合で等しく比べる） |\n| TP-TOOL-03 容れ物と手元の違い | 要らない：生成物を読むだけ |\n| G-11〜G-16 | N/A：契約だけ |",
+    "前からの試験を替えた所": "作り直す 10 口の名前・道を読む前からの試験を探した。\n\n```search\ngit grep -l -E \"listNotices|markNoticeRead|getServiceStatusForMember|listOpsNotices|createOpsNotice|getOpsNotice|updateOpsNotice|publishOpsNotice|addIncidentUpdate|sendWorkspaceNotice|/service-status\\b\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'apps/web/tests' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!scripts/ci/k1004_*'\n16\n```\n\n- 段 13 のほかの葉が切る段で書いた自分の試験・道具 14 本（apps/api/test/features/F12/notice.harness.ts（K-954）、apps/api/test/features/F12/notices-read.test.ts（K-954）、apps/api/test/features/F12/ops-notice.harness.ts（K-977）、apps/api/test/features/F12/ops-notices-incident.test.ts（K-979）、apps/api/test/features/F12/ops-notices-publish.test.ts（K-978）、apps/api/test/features/F12/ops-notices-read.test.ts（K-977）、apps/api/test/features/F12/ops-notices-write.test.ts（K-1014）、apps/api/test/features/F12/ops-peek.test.ts（K-969）、apps/api/test/features/F12/ops-stop-gate.test.ts（K-1012）、apps/api/test/features/F12/ops-stop.test.ts（K-970）、apps/api/test/features/F12/service-status-member.test.ts（K-955）、apps/api/test/features/contract/k144.d/K-954.ts（K-954）、apps/web/tests/k/k1008-stop-peek.spec.ts（K-1008）、apps/web/tests/k/k956-help-home.spec.ts（K-956））: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n\n- apps/api/test/features/F1/service-status.test.ts（K-307）: 替えない — ログイン前の口 GET /api/v1/auth/service-status（getServiceStatus）を見る。この葉はその形を変えない（K1004-DC-004）。K307-API-016 はログイン後の口の型の名前が ServiceStatus であることも見るので、**型の名前は ServiceStatus のまま**で欄だけ作り直す（本体の RESPONSES の 1 行の中身だけを直す）\n- scripts/ci/k1000_flow_test.py（K-1000）: 替えない — K-72 の apis に口の名前が在ることを見る。名前は変えない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.10・27・28・33）",
+    "リスク": "- 本線の帯の読み替え（`to-incidents.ts`）がログイン前の形を読む → ログイン前の口は変えない（K1004-DC-004）",
+    "申し送り": "- K-954〜K-957・K-977〜K-980：上の「画面が使う答えの形」が正本\n- K-978：publishOpsNotice の関連の表の notifications（鈴）は外す（D-156.28・運営のお知らせは鈴に出さない）。メールは使えなくなるメンテだけ・管理者へ（D-128.109）\n- K-957・K-969・K-970：止める日の帯（管理者だけ）と中を見られている間の帯も `bands` に並べる",
+    "代表に聞くこと": "- #8 代表の答え 2026-11-23（D-156.27）（開いた時に読んだ印・帯の出し方）\n- #9 代表の答え 2026-11-23（D-156.28）（運営のお知らせは鈴に出さない）\n- #14 代表の答え 2026-11-23（D-156.33）（誰に 3 つ・出す日時）\n- 代表の答え 2026-11-23（D-156.57）（値段が変わるお知らせは管理者だけ・お知らせに管理者だけの絞り）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 12 行（上限 30）。"
+   },
+   "file": "11_tickets/K-1004.md"
+  },
+  {
+   "id": "K-1005",
+   "title": "契約の作り直し 3：請求（利用者の請求書・請求先・選べるプラン・プランを変える）と運営の請求（一覧・まとめて出す・入金を記録・1 社のプランと請求・代わりにプランを変える）を画面が要る欄に作り直す（契約だけ・振る舞いは後の葉・K-948 から分けた・K-72 の葉・W0）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "契約",
+   "assignee": "実装",
+   "due": "2026-12-05",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-948（同じまとまりの作り直し・11 口・試験 16 行・見込み 1）から引いた：この葉は 10 口・断片と本体の表の直し 25 分・作り手 10 分・試験 11 行を流して直す 15 分・文書 10 分",
+   "decisions": [
+    "D-156.5",
+    "D-156.4",
+    "D-156.12",
+    "D-156.29",
+    "D-156.30",
+    "D-156.31",
+    "D-156.32",
+    "D-156.36",
+    "D-156.51",
+    "D-156.38",
+    "D-156.43",
+    "D-156.44",
+    "D-125.125",
+    "D-128.65",
+    "D-128.69"
+   ],
+   "split": "",
+   "choke_points": [],
+   "choke_none": "契約と文書を直すだけ。データを書かず、外へも出さず、DB・秘密・お知らせに触らない",
+   "tests": [
+    "scripts/ci/k1005_billing_contract_test.py"
+   ],
+   "carry": [
+    "scripts/ci/g65.d/K-1005.txt"
+   ],
+   "depends_on": [
+    "K-948"
+   ],
+   "acts": [
+    "A69",
+    "A72",
+    "A64"
+   ],
+   "screens": [],
+   "apis": [],
+   "canvas": [],
+   "canvas_none": "契約と文書だけで見た目を変えない（changes に apps/web/ の道が無い）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts"
+   ],
+   "ci_wide": [
+    "shared",
+    "ci"
+   ],
+   "changes": [
+    "05_flow/screen_api.py",
+    "05_flow/screen_api.d/K-1005.py",
+    "08_api/phase1/10_運営と困ったとき.md",
+    "scripts/ci/k1005_billing_contract_test.py",
+    "scripts/ci/g65.d/K-1005.txt"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "請求とプランのまとまりの契約を、画面（下絵 ub-bills・ub-contact・ub-plan・ub-plan-confirm・ub-plan-blocked・oq-bills・oq-bills-issue・oq-pay・oq-pay-diff・op-ws-billing）が要る欄に作り直す（D-156.5）。後の葉（K-958〜K-962・K-968・K-981〜K-984）は振る舞いだけを書く。\n\n- 利用者の 5 口（getBilling・downloadInvoicePdf・updateBillingContact・listWorkspacePlans・changePlan）：請求書の表の 3 つの状態（お支払い待ち・払われた・期限を過ぎた・D-156.29）・請求先 3 欄（D-156.30）・プランは `plan_key`（`plan_id` は uuid でないのでやめる・控え帳）・人数（いま N 人 / M 人まで・D-156.36。N は社内の人だけでゲストは数えない・D-156.51）\n- 運営の 5 口（listOpsInvoices・issueOpsInvoices・recordPayment・getOpsWorkspaceBilling・changeOpsWorkspacePlan）：まとめて出すは下書き（dry_run）と出す（D-156.31）・入金は差を残し・取り消しは打ち消しの行（D-156.32）・代わりにプランを変えるは頼まれた問い合わせを付ける\n- 請求の数（文書だけに在った summary）は getOpsShell に寄せる（D-156.4）：listOpsInvoices の答えの meta から summary を外す",
+    "完了の条件": "- [ ] 下の表の 11 行（K1005-DC-001〜011）が緑：`scripts/ci/k1005_billing_contract_test.py`（G65 の段 `g65.d/K-1005.txt`）\n- [ ] 契約の検査（`python3 scripts/ci/contract_shape_test.py`・`node scripts/ci/contract.mjs check`）が緑\n- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: TOOL\n\n- **生成の試験は作る段の最初に作る**（K-948 と同じ）。口は増えない・道も変えない（501 のまま）\n- 本体 `05_flow/screen_api.py`（前からある行の直し・操作 ID の名前で探す）：RESPONSES の `listWorkspacePlans`（PlanChoice）・`getBilling`（Billing）・`getOpsWorkspaceBilling`（OpsWorkspaceBilling）を下の形に。`downloadInvoicePdf` は変えない。QUERIES の `listOpsInvoices`（month・state のまま）。META の `\"listOpsInvoices\": {\"summary\": \"object\"}` を消し、`listWorkspacePlans` に `{\"members\": \"integer\", \"member_limit\": \"integer\"}` を足す\n- 断片 `05_flow/screen_api.d/K-1005.py`（新しい鍵だけ）：INPUTS・REQUIRED_INPUTS・VALUE_RANGES・RESPONSES（上の 3 口以外）・QUERY_RANGES（listOpsInvoices の month は `^[0-9]{4}-(0[1-9]|1[0-2])$`・state は unpaid・paid・overdue）・LIST_DETAILS（sort: False）\n- 型の書き方（作り手の型の名前）：PlanChoice の `summary` は `string`・`recommended` は `boolean`・`upgrade`・`upcoming` は `object?`（null を許す・中の欄は下の表のとおりで振る舞いの葉が埋める）。OpsInvoiceRow の `payments` は `array`。updateBillingContact の `company`・`attn` は VALUE_RANGES に `\"pattern\": \"\\\\S\"`（空白だけは 422・K959-API-003 が頼る・D-156.38）\n- お金は税込の円の整数（`amount_total`・`paid_total`・`difference`・`prorated_amount`・`amount`）。日付は `YYYY-MM-DD`（`format: date`）\n- 断る番号（控え帳）：形は契約に書ける物だけ 422。人数が上限を超えるプランに下げる・決まった月の請求書が無い・同じ入金の二重は振る舞いの葉の 409／404\n\n### 画面が使う答えの形（振る舞いの葉の正本）\n\n| 口 | 入力 | 答え（data） |\n|---|---|---|\n| getBilling | — | `{ terms, payee: { lines: string[] }, contact: { company, attn, email }, invoices: { id, month, amount_total, issued_on, due_on, state（unpaid・paid・overdue）, paid_on? }[], overdue: { count, amount_total } か null, free, can_edit_contact }` |\n| downloadInvoicePdf | — | `{ url, expires_at }`（今のまま） |\n| updateBillingContact | `company`（1〜100）・`attn`（1〜100）・`email`（形 email）（全部必須。会社名・宛名は空白だけを断る pattern `\\S`・D-156.38） | `{ company, attn, email }` |\n| listWorkspacePlans | — | `PlanChoice[]`：`plan_key`・`name`・`price_monthly`・`member_limit`・`current`・`can_choose`・`reason`（選べない訳・string?）・`effective_from`・`summary`（プランの 1 行の説明・string）・`recommended`（boolean・「おすすめ」の札）・`upgrade`（`{ days, amount, invoice_on }` か null：上げられる行だけ・今月の残り日数・日割りの額（税込）・足す請求書の日）・`upcoming`（`{ price_monthly, member_limit, from_month（YYYY-MM）, noticed_on（date） }` か null：いまのプランの行だけ・決まった値段の版・K-1017 が埋める）（12 欄・D-156.43）。meta `{ members, member_limit }` |\n| changePlan | `plan_key`（必須） | `{ plan_key, effective_from, prorated_amount, next_invoice_on }` |\n| listOpsInvoices | 問い合わせ `month`・`state`・cursor・limit | `OpsInvoiceRow[]`：`id`・`workspace`（`{ id, name }`）・`plan_name`・`month`・`amount_total`・`state`・`paid_total`・`difference`・`due_on`・`can_record_payment`・`payments`（`{ id（uuid）, paid_on, amount, payer_name?, reversed }[]`：その請求書の入金の並び。取り消すときに recordPayment の `reverses_payment_id` へ渡す id・取り消しの行そのものは並べない）（11 欄・D-156.44） |\n| issueOpsInvoices | `month`（必須・YYYY-MM）・`dry_run`（boolean・任意・true なら下書きを返して出さない） | `{ month, count, total, lines: { workspace, plan_name, amount, tax, prorated, total }[] }` |\n| recordPayment | `amount`（1 以上の整数・必須）・`paid_on`（date・必須）・`payer_name`（1〜100・任意）・`reverses_payment_id`（uuid・任意＝取り消しの行） | `OpsInvoiceRow` |\n| getOpsWorkspaceBilling | — | `{ plan: { plan_key, name, price_monthly, since }, members: { count, limit }, payment_terms, invoices: （getBilling の invoices と同じ形）[] }` |\n| changeOpsWorkspacePlan | `plan_key`・`inquiry_id`（uuid）（どちらも必須） | changePlan と同じ 4 欄 |",
+    "依存の理由": "- K-948: 要る — 同じ `05_flow/screen_api.py` の本体の表を K-948 が先に直す（QUERIES・META の近い行）。契約の読み方 `scripts/ci/f12_contract_kit.py` を K-948 が運ぶ",
+    "目録で探した結果": "- 使う：K-948 の断片の形と読み方・表 subscriptions・invoices・payments・plan_versions（0015・0018・振る舞いの葉が使う）\n- 作る：断片 1 つ・試験 1 本。探したが請求の契約の作り直しは無かった",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| 本体の表 | `05_flow/screen_api.py`（前提と制約） |\n| 断片 | `05_flow/screen_api.d/K-1005.py`（上の表の形） |\n| 作り手 | K-948 と同じ順（生成物は手で書かない） |\n| 文書 | `08_api/phase1/10_運営と困ったとき.md` の請求・プランの行の説明を上の形に |\n| 試験 | `scripts/ci/k1005_billing_contract_test.py`・G65 の段 `g65.d/K-1005.txt` |",
+    "外に影響する手順": "- なし — 契約と文書を直すだけ。口は今どれも 501",
+    "テスト仕様と確認の結果": "`scripts/ci/k1005_billing_contract_test.py`（python の unittest・作り手が出した契約を読む）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 利用者の請求とプランの口 5 | 契約を読む | — | 画面の欄・値の形 | このチケット | K1005-DC-001〜005 |\n| 運営の請求の口 5 | 契約を読む | — | 画面の欄・値の形 | このチケット | K1005-DC-006〜010 |\n| 欄の名前・権限 | 契約を読む | — | uuid・今のまま | このチケット | K1005-DC-011 |\n| 振る舞い（見られる人・金額と税・日割り・差・取り消し・期限を過ぎた知らせ） | 口 | 各役 | — | K-958〜K-962・K-968・K-981〜K-983 | 各葉 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K1005-DC-001 | 対象の状態 | getBilling | 答えは 7 欄 |\n| K1005-DC-002 | 守り | PDF | url と expires_at のまま |\n| K1005-DC-003 | 入力 | 請求先 | 入力 3 欄全部必須・email の形・会社名と宛名は 1〜100 で pattern `\\S`（空白だけを断る）・答え 3 欄 |\n| K1005-DC-004 | 対象の状態 | 選べるプラン | 1 行 12 欄（summary・recommended・upgrade・upcoming を含む）・upgrade と upcoming は null を許す object（中の欄は振る舞いの葉 K-961・K-1017 が見る）・plan_id が無い・meta は members と member_limit |\n| K1005-DC-005 | 入力 | プランを変える | 入力は plan_key だけ（必須）・答え 4 欄 |\n| K1005-DC-006 | 対象の状態 | 運営の請求の一覧 | 1 行 11 欄（payments は配列。1 件の中の欄は K-982・K-983 が見る）・問い合わせ month・state・cursor・limit・month の形・state 3 つ・meta に summary が無い |\n| K1005-DC-007 | 入力 | まとめて出す | 入力 month と dry_run（month 必須）・答え 4 欄 |\n| K1005-DC-008 | 入力 | 入金 | 入力 4 欄・必須 amount と paid_on・amount は 1 以上の整数・paid_on は date・取り消しは uuid・答え 11 欄 |\n| K1005-DC-009 | 対象の状態 | 1 社のプランと請求 | 答え 4 欄 |\n| K1005-DC-010 | 入力 | 代わりにプランを変える | 入力 plan_key と inquiry_id（uuid・どちらも必須）・答え 4 欄 |\n| K1005-DC-011 | 守り | 欄の名前・権限 | `_id` は uuid・運営の 5 口は ops:money・利用者の 5 口は endpoints.json の言葉と同じ |\n\n### テストの型の受け（分類 TOOL）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-TOOL-01 日本語の名前のファイル | 要らない：読むのは英数字の名前の生成物だけ |\n| TP-TOOL-02 何も見ていないのに緑 | K1005-DC-001〜010（欄を集合で等しく比べる） |\n| TP-TOOL-03 容れ物と手元の違い | 要らない：生成物を読むだけ |\n| G-11〜G-16 | N/A：契約だけ |",
+    "前からの試験を替えた所": "作り直す 10 口の名前・道を読む前からの試験を探した。\n\n```search\ngit grep -l -E \"getBilling|downloadInvoicePdf|updateBillingContact|listWorkspacePlans|changePlan\\b|listOpsInvoices|issueOpsInvoices|recordPayment|getOpsWorkspaceBilling|changeOpsWorkspacePlan|/workspace/billing|/workspace/plans?\\b\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'apps/web/tests' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!scripts/ci/k1005_*'\n22\n```\n\n- apps/api/test/features/F12/ops-invoice-template.test.ts（K-1107）・apps/api/test/features/F12/ops-invoices-mail.test.ts（K-1109）（段 13 の後の葉 K-1107〜K-1111 が切る段で書いた試験）: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n- 段 13 のほかの葉が切る段で書いた自分の試験・道具 19 本（apps/api/test/features/F12/billing-contact.test.ts（K-959）、apps/api/test/features/F12/billing-ops.harness.ts（K-981）、apps/api/test/features/F12/billing-read.test.ts（K-958）、apps/api/test/features/F12/billing.harness.ts（K-958）、apps/api/test/features/F12/flow-billing-plan.test.ts（K-998）、apps/api/test/features/F12/ops-entry.test.ts（K-1001）、apps/api/test/features/F12/ops-invoice-payments.test.ts（K-982）、apps/api/test/features/F12/ops-invoices-issue.test.ts（K-981）、apps/api/test/features/F12/ops-invoices-list.test.ts（K-983）、apps/api/test/features/F12/ops-invoices-pdf.test.ts（K-1013）、apps/api/test/features/F12/ops-workspace-billing.test.ts（K-968）、apps/api/test/features/F12/plans.test.ts（K-961）、apps/api/test/features/contract/k144.d/K-958.ts（K-958）、apps/web/tests/k/billing-mock.ts（K-960）、apps/web/tests/k/k960-billing.spec.ts（K-960）、apps/web/tests/k/k962-plan-change.spec.ts（K-962）、apps/web/tests/k/ops-bills-mock.ts（K-984）、apps/web/tests/k/ops-ws-answers.ts（K-971）、scripts/ci/k999_staging_spec_test.py（K-999））: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n\n- scripts/ci/k1000_flow_test.py（K-1000）: 替えない — K-72 の apis に口の名前が在ることを見る。名前は変えない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.29〜32・36）",
+    "リスク": "- `plan_id` → `plan_key` の名前替え：段 11 の切る段の枝（c/段11）の画面の葉は listWorkspacePlans・plan_id をまだ読んでいない（2026-11-23 に `git grep` で 11_tickets と features を見て、K-144・K-307 の昔の記録だけ）。段 11 の company-settings の葉が切られたら同じ名前で読むよう申し送る（まとめ役）",
+    "申し送り": "- K-958〜K-962・K-968・K-981〜K-984：上の「画面が使う答えの形」が正本\n- まとめ役：段 11 の company-settings の葉に「プランは plan_key・人数は listWorkspacePlans の meta」を申し送る",
+    "代表に聞くこと": "- #10 代表の答え 2026-11-23（D-156.29）（請求書を見られる人・状態 3 つ）\n- #11 代表の答え 2026-11-23（D-156.30）（請求先 3 欄）\n- #12 代表の答え 2026-11-23（D-156.31）（下書き・金額・税・日割り）\n- #13 代表の答え 2026-11-23（D-156.32）（入金の差と取り消し）\n- #17 代表の答え 2026-11-23（D-156.36）（利用量は人数だけ）\n- 段 12 の問い合わせ 代表の答え 2026-11-23（D-156.51）（ゲストは人数に数えない。meta の members と運営の members.count は社内の人だけ・数えるのは K-961 の `app.tenant_seat_count`。契約の形は変わらない）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 11 行（上限 30）。"
+   },
+   "file": "11_tickets/K-1005.md"
   },
   {
    "id": "K-1006",

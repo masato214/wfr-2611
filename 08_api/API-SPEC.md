@@ -220,7 +220,7 @@
 | EP-205 | DELETE | `/api/v1/memories/:id` | 削除（memories）— 自分の AI に教える（覚えて） | A30 | 1 | member | C2 | 401 403 404 422 429 403 403 503 |
 | EP-206 | POST | `/api/v1/memories/:id/promote` | 作成・実行（memories）— ルールを置く（会社・層・個人・取引先） | A131 A30 | 1 | member | C2 | 401 403 404 409 422 413 429 403 403 503 |
 | EP-207 | POST | `/api/v1/messages/:id/artifacts` | 作成・実行（messages）— 自分のAIの返事を成果物に書き出し、会 | A95 | 1 | member | C2 C4 | 401 403 404 409 422 413 429 403 403 503 |
-| EP-208 | GET | `/api/v1/notices` | 取得（notices）— お知らせを見る | A68 | 1 | member |  | 401 403 422 429 403 403 503 |
+| EP-208 | GET | `/api/v1/notices` | 取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障 | A68 | 1 | member |  | 401 403 422 429 403 403 503 |
 | EP-209 | POST | `/api/v1/notices/:id/read` | 作成・実行（notices）— お知らせを見る | A68 | 1 | member | C2 | 401 403 404 409 422 413 429 403 403 503 |
 | EP-210 | GET | `/api/v1/notifications` | 取得（notifications）— 自分宛ての知らせを新しい順に見る（ | A109 | 1 | member |  | 401 403 422 409 429 403 403 503 |
 | EP-211 | PATCH | `/api/v1/notifications/:id` | 更新（notifications）— 知らせを見てチケットへ行く | A109 | 1 | member | C2 | 401 403 404 422 413 429 403 403 503 |
@@ -230,7 +230,7 @@
 | EP-215 | PATCH | `/api/v1/ops/inquiries/:id` | 更新（ops）— 問い合わせに答える | A70 | 1 | ops | C2 C6 | 401 403 404 422 413 429 403 403 503 |
 | EP-216 | POST | `/api/v1/ops/inquiries/:id/notes` | 作成・実行（ops）— 問い合わせに答える | A70 | 1 | ops | C2 C6 | 401 403 404 409 422 413 429 403 403 503 |
 | EP-217 | POST | `/api/v1/ops/inquiries/:id/replies` | 作成・実行（ops）— 問い合わせに答える | A70 | 1 | ops | C2 C6 | 401 403 404 409 422 413 429 403 403 503 |
-| EP-218 | GET | `/api/v1/ops/invoices` | 取得（ops）— 請求書を出し、入金を記録する | A72 | 1 | ops |  | 401 403 422 429 403 403 503 |
+| EP-218 | GET | `/api/v1/ops/invoices` | 取得（invoices）— 運営が月ごとの請求書を見る（お支払い待ち・払 | A72 | 1 | ops |  | 401 403 422 429 403 403 503 |
 | EP-219 | POST | `/api/v1/ops/invoices/:id/payments` | 作成・実行（ops）— 請求書を出し、入金を記録する | A72 | 1 | ops | C2 | 401 403 404 409 422 413 429 403 403 503 |
 | EP-220 | POST | `/api/v1/ops/invoices/export` | 作成・実行（ops）— 請求書を出し、入金を記録する | A72 | 1 | ops | C2 | 401 403 409 422 413 429 403 403 503 |
 | EP-221 | POST | `/api/v1/ops/invoices/issue` | 作成・実行（ops）— 請求書を出し、入金を記録する | A72 | 1 | ops | C2 | 401 403 409 422 413 429 403 403 503 |
@@ -238,7 +238,7 @@
 | EP-223 | POST | `/api/v1/ops/members` | 作成・実行（ops）— 運営の人を足し、できることを決める | A134 | 1 | ops | C2 C4 | 401 403 409 422 413 429 403 403 503 |
 | EP-224 | PATCH | `/api/v1/ops/members/:id` | 更新（ops）— 運営の人を足し、できることを決める | A134 | 1 | ops | C2 C4 | 401 403 404 422 413 429 403 403 503 |
 | EP-225 | DELETE | `/api/v1/ops/members/:id` | 削除（ops）— 運営の人を足し、できることを決める | A134 | 1 | ops | C2 C4 | 401 403 404 422 429 403 403 503 |
-| EP-226 | GET | `/api/v1/ops/notices` | 取得（ops）— お知らせを出す | A71 | 1 | ops |  | 401 403 422 429 403 403 503 |
+| EP-226 | GET | `/api/v1/ops/notices` | 取得（notices）— 運営のお知らせを新しい順に見る（下書き・予定・ | A71 | 1 | ops |  | 401 403 422 429 403 403 503 |
 | EP-227 | POST | `/api/v1/ops/notices` | 作成・実行（ops）— お知らせを出す | A71 | 1 | ops | C2 C6 | 401 403 409 422 413 429 403 403 503 |
 | EP-228 | GET | `/api/v1/ops/notices/:id` | 取得（ops）— お知らせを出す | A71 | 1 | ops |  | 401 403 404 422 429 403 403 503 |
 | EP-229 | PATCH | `/api/v1/ops/notices/:id` | 更新（ops）— お知らせを出す | A71 | 1 | ops | C2 C6 | 401 403 404 422 413 429 403 403 503 |

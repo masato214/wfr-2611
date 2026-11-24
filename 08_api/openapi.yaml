@@ -14555,6 +14555,308 @@ components:
       required:
       - field_ids
       x-required-by: hooks
+    NoticeReadInput:
+      type: object
+      properties: {}
+      additionalProperties: false
+      x-operation: markNoticeRead
+    OpsNoticeCreateInput:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum:
+          - incident
+          - maintenance
+          - release
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+        body:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+        audience_mode:
+          type: string
+          enum:
+          - all
+          - plans
+          - workspaces
+        audience_plans:
+          type: array
+          items:
+            type: string
+            enum:
+            - free
+            - team
+            - business
+          uniqueItems: true
+        audience_workspace_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+        placements:
+          type: array
+          items:
+            type: string
+            enum:
+            - band
+            - list
+          minItems: 1
+          maxItems: 2
+          uniqueItems: true
+        publish_at:
+          type: string
+          nullable: true
+          format: date-time
+        maintenance_from:
+          type: string
+          nullable: true
+          format: date-time
+        maintenance_to:
+          type: string
+          nullable: true
+          format: date-time
+        impact:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 200
+      additionalProperties: false
+      x-operation: createOpsNotice
+      required:
+      - kind
+      - title
+      - body
+      - audience_mode
+      - placements
+      x-required-by: hooks
+    OpsNoticeUpdateInput:
+      type: object
+      properties:
+        kind:
+          type: string
+          enum:
+          - incident
+          - maintenance
+          - release
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+        body:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+        audience_mode:
+          type: string
+          enum:
+          - all
+          - plans
+          - workspaces
+        audience_plans:
+          type: array
+          items:
+            type: string
+            enum:
+            - free
+            - team
+            - business
+          uniqueItems: true
+        audience_workspace_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          uniqueItems: true
+        placements:
+          type: array
+          items:
+            type: string
+            enum:
+            - band
+            - list
+          minItems: 1
+          maxItems: 2
+          uniqueItems: true
+        publish_at:
+          type: string
+          nullable: true
+          format: date-time
+        maintenance_from:
+          type: string
+          nullable: true
+          format: date-time
+        maintenance_to:
+          type: string
+          nullable: true
+          format: date-time
+        impact:
+          type: string
+          nullable: true
+          minLength: 1
+          maxLength: 200
+      additionalProperties: false
+      x-operation: updateOpsNotice
+    OpsNoticePublishInput:
+      type: object
+      properties: {}
+      additionalProperties: false
+      x-operation: publishOpsNotice
+    IncidentUpdateInput:
+      type: object
+      properties:
+        state:
+          type: string
+          enum:
+          - investigating
+          - identified
+          - monitoring
+          - resolved
+        body:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+      additionalProperties: false
+      x-operation: addIncidentUpdate
+      required:
+      - state
+      - body
+      x-required-by: hooks
+    WorkspaceNoticeInput:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+        body:
+          type: string
+          minLength: 1
+          maxLength: 4000
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+        placements:
+          type: array
+          items:
+            type: string
+            enum:
+            - band
+            - list
+          minItems: 1
+          maxItems: 2
+          uniqueItems: true
+        admins_only:
+          type: boolean
+      additionalProperties: false
+      x-operation: sendWorkspaceNotice
+      required:
+      - title
+      - body
+      - placements
+      x-required-by: hooks
+      not:
+        properties:
+          admins_only:
+            const: true
+          placements:
+            contains:
+              const: band
+        required:
+        - admins_only
+        - placements
+    BillingContactInput:
+      type: object
+      properties:
+        company:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+        attn:
+          type: string
+          minLength: 1
+          maxLength: 100
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+        email:
+          type: string
+          format: email
+      additionalProperties: false
+      x-operation: updateBillingContact
+      required:
+      - company
+      - attn
+      - email
+      x-required-by: hooks
+    PlanChangeInput:
+      type: object
+      properties:
+        plan_key:
+          type: string
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+      additionalProperties: false
+      x-operation: changePlan
+      required:
+      - plan_key
+      x-required-by: hooks
+    OpsInvoiceIssueInput:
+      type: object
+      properties:
+        month:
+          type: string
+          pattern: ^[0-9]{4}-(0[1-9]|1[0-2])$
+        dry_run:
+          type: boolean
+      additionalProperties: false
+      x-operation: issueOpsInvoices
+      required:
+      - month
+      x-required-by: hooks
+    PaymentRecordInput:
+      type: object
+      properties:
+        amount:
+          type: integer
+          minimum: 1
+        paid_on:
+          type: string
+          format: date
+        payer_name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        reverses_payment_id:
+          type: string
+          format: uuid
+      additionalProperties: false
+      x-operation: recordPayment
+      required:
+      - amount
+      - paid_on
+      x-required-by: hooks
+    OpsPlanChangeInput:
+      type: object
+      properties:
+        plan_key:
+          type: string
+          pattern: '[^ \t\n\r\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]'
+        inquiry_id:
+          type: string
+          format: uuid
+      additionalProperties: false
+      x-operation: changeOpsWorkspacePlan
+      required:
+      - plan_key
+      - inquiry_id
+      x-required-by: hooks
     ScopeOverview:
       type: object
       properties:
@@ -15607,7 +15909,7 @@ components:
     PlanChoice:
       type: object
       properties:
-        plan_id:
+        plan_key:
           type: string
         name:
           type: string
@@ -15615,8 +15917,8 @@ components:
         price_monthly:
           type: integer
           nullable: true
-        limits:
-          type: object
+        member_limit:
+          type: integer
           nullable: true
         current:
           type: boolean
@@ -15624,22 +15926,40 @@ components:
           type: boolean
         reason:
           type: string
+          nullable: true
         effective_from:
           type: string
+        summary:
+          type: string
+        recommended:
+          type: boolean
+        upgrade:
+          type: object
+          nullable: true
+        upcoming:
+          type: object
+          nullable: true
       x-operation: listWorkspacePlans
     Billing:
       type: object
       properties:
-        payee:
-          type: object
-        billing_contact:
-          type: object
         terms:
           type: string
+        payee:
+          type: object
+        contact:
+          type: object
         invoices:
           type: array
           items:
             type: object
+        overdue:
+          type: object
+          nullable: true
+        free:
+          type: boolean
+        can_edit_contact:
+          type: boolean
       x-operation: getBilling
     SignedUrl:
       type: object
@@ -16077,7 +16397,7 @@ components:
       properties:
         plan:
           type: object
-        usage:
+        members:
           type: object
         payment_terms:
           type: string
@@ -16177,19 +16497,50 @@ components:
     OpsNoticeDetail:
       type: object
       properties:
-        notice:
+        id:
+          type: string
+          format: uuid
+        kind:
+          type: string
+        title:
+          type: string
+        audience:
           type: object
+        state:
+          type: string
+        placements:
+          type: array
+          items:
+            type: string
+        publish_at:
+          type: string
+          nullable: true
+        published_at:
+          type: string
+          nullable: true
+        author_name:
+          type: string
+          nullable: true
+        incident_state:
+          type: string
+          nullable: true
+        admins_only:
+          type: boolean
+        body:
+          type: string
+        maintenance:
+          type: object
+          nullable: true
+        impact:
+          type: string
+          nullable: true
         updates:
           type: array
           items:
             type: object
-        affects:
+        reach:
           type: object
-        placements:
-          type: array
-          items:
-            type: object
-      x-operation: getOpsNotice
+      x-operation: sendWorkspaceNotice
     PublicServiceStatus:
       type: object
       properties:
@@ -16253,10 +16604,13 @@ components:
           type: array
           items:
             type: object
-        banner:
+        bands:
+          type: array
+          items:
+            type: object
+        maintenance_now:
           type: object
-        maintenance:
-          type: object
+          nullable: true
       x-operation: getServiceStatusForMember
     InvitationResendResult:
       type: object
@@ -17028,6 +17382,140 @@ components:
           type: string
           format: uuid
       x-operation: deleteTicketField
+    Notice:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          type: string
+        title:
+          type: string
+        body:
+          type: string
+        state:
+          type: string
+          nullable: true
+        published_at:
+          type: string
+        unread:
+          type: boolean
+        maintenance:
+          type: object
+          nullable: true
+        updates:
+          type: array
+          items:
+            type: object
+      x-operation: listNotices
+    NoticeRead:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        read_at:
+          type: string
+      x-operation: markNoticeRead
+    OpsNoticeRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        kind:
+          type: string
+        title:
+          type: string
+        audience:
+          type: object
+        state:
+          type: string
+        placements:
+          type: array
+          items:
+            type: string
+        publish_at:
+          type: string
+          nullable: true
+        published_at:
+          type: string
+          nullable: true
+        author_name:
+          type: string
+          nullable: true
+        incident_state:
+          type: string
+          nullable: true
+        admins_only:
+          type: boolean
+      x-operation: listOpsNotices
+    BillingContact:
+      type: object
+      properties:
+        company:
+          type: string
+        attn:
+          type: string
+        email:
+          type: string
+      x-operation: updateBillingContact
+    PlanChange:
+      type: object
+      properties:
+        plan_key:
+          type: string
+        effective_from:
+          type: string
+        prorated_amount:
+          type: integer
+        next_invoice_on:
+          type: string
+      x-operation: changeOpsWorkspacePlan
+    OpsInvoiceRow:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        workspace:
+          type: object
+        plan_name:
+          type: string
+        month:
+          type: string
+        amount_total:
+          type: integer
+        state:
+          type: string
+        paid_total:
+          type: integer
+        difference:
+          type: integer
+        due_on:
+          type: string
+        can_record_payment:
+          type: boolean
+        payments:
+          type: array
+          items:
+            type: object
+      x-operation: recordPayment
+    OpsInvoiceIssue:
+      type: object
+      properties:
+        month:
+          type: string
+        count:
+          type: integer
+        total:
+          type: integer
+        lines:
+          type: array
+          items:
+            type: object
+      x-operation: issueOpsInvoices
     Error:
       type: object
       properties:
@@ -37072,7 +37560,7 @@ paths:
   /api/v1/notices:
     get:
       operationId: listNotices
-      summary: 取得（notices）— お知らせを見る
+      summary: 取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障害の続報まで・1 件を開く口は無い）
       tags:
       - notices
       x-acts:
@@ -37101,11 +37589,17 @@ paths:
         allowEmptyValue: true
         schema:
           type: string
+          enum:
+          - incident
+          - maintenance
+          - release
       - name: unread
         in: query
         allowEmptyValue: true
         schema:
           type: string
+          enum:
+          - 'true'
       - name: cursor
         in: query
         allowEmptyValue: true
@@ -37119,32 +37613,6 @@ paths:
           type: integer
           minimum: 1
           maximum: 200
-      - name: sort
-        in: query
-        allowEmptyValue: true
-        schema:
-          type: string
-          enum:
-          - affects
-          - body
-          - created_at
-          - created_by
-          - deleted_at
-          - emailed_admins_at
-          - id
-          - kind_id
-          - maintenance_from
-          - maintenance_to
-          - placements
-          - publish_at
-          - published_by
-          - state
-          - target_plan_ids
-          - target_tenant_id
-          - tenant_id
-          - title
-          - updated_at
-          - updated_by
       responses:
         '200':
           description: 成功
@@ -37156,7 +37624,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Notices'
+                      $ref: '#/components/schemas/Notice'
                   meta:
                     type: object
         '401':
@@ -37228,7 +37696,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NoticeDeliveriesInput'
+              $ref: '#/components/schemas/NoticeReadInput'
       responses:
         '201':
           description: 成功
@@ -37238,7 +37706,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/NoticeDeliveries'
+                    $ref: '#/components/schemas/NoticeRead'
                   meta:
                     type: object
         '401':
@@ -38040,7 +38508,7 @@ paths:
   /api/v1/ops/invoices:
     get:
       operationId: listOpsInvoices
-      summary: 取得（ops）— 請求書を出し、入金を記録する
+      summary: 取得（invoices）— 運営が月ごとの請求書を見る（お支払い待ち・払われた・期限を過ぎた・入金の並びつき）
       tags:
       - invoices
       x-acts:
@@ -38068,11 +38536,16 @@ paths:
         allowEmptyValue: true
         schema:
           type: string
+          pattern: ^[0-9]{4}-(0[1-9]|1[0-2])$
       - name: state
         in: query
         allowEmptyValue: true
         schema:
           type: string
+          enum:
+          - unpaid
+          - paid
+          - overdue
       - name: cursor
         in: query
         allowEmptyValue: true
@@ -38086,27 +38559,6 @@ paths:
           type: integer
           minimum: 1
           maximum: 200
-      - name: sort
-        in: query
-        allowEmptyValue: true
-        schema:
-          type: string
-          enum:
-          - amount
-          - created_at
-          - created_by
-          - deleted_at
-          - due_on
-          - id
-          - issued_at
-          - pdf_ref
-          - period_end
-          - period_start
-          - status_id
-          - subscription_id
-          - tenant_id
-          - updated_at
-          - updated_by
       responses:
         '200':
           description: 成功
@@ -38118,12 +38570,9 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Invoices'
+                      $ref: '#/components/schemas/OpsInvoiceRow'
                   meta:
                     type: object
-                    properties:
-                      summary:
-                        type: object
         '401':
           description: UNAUTHENTICATED
           content:
@@ -38192,7 +38641,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PaymentsInput'
+              $ref: '#/components/schemas/PaymentRecordInput'
       responses:
         '201':
           description: 成功
@@ -38202,7 +38651,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Payments'
+                    $ref: '#/components/schemas/OpsInvoiceRow'
                   meta:
                     type: object
         '401':
@@ -38370,7 +38819,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/InvoicesInput'
+              $ref: '#/components/schemas/OpsInvoiceIssueInput'
       responses:
         '201':
           description: 成功
@@ -38380,7 +38829,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Invoices'
+                    $ref: '#/components/schemas/OpsInvoiceIssue'
                   meta:
                     type: object
         '401':
@@ -38766,7 +39215,7 @@ paths:
   /api/v1/ops/notices:
     get:
       operationId: listOpsNotices
-      summary: 取得（ops）— お知らせを出す
+      summary: 取得（notices）— 運営のお知らせを新しい順に見る（下書き・予定・出した・直った）
       tags:
       - notices
       x-acts:
@@ -38791,11 +39240,20 @@ paths:
         allowEmptyValue: true
         schema:
           type: string
+          enum:
+          - incident
+          - maintenance
+          - release
       - name: state
         in: query
         allowEmptyValue: true
         schema:
           type: string
+          enum:
+          - draft
+          - scheduled
+          - published
+          - resolved
       - name: cursor
         in: query
         allowEmptyValue: true
@@ -38809,32 +39267,6 @@ paths:
           type: integer
           minimum: 1
           maximum: 200
-      - name: sort
-        in: query
-        allowEmptyValue: true
-        schema:
-          type: string
-          enum:
-          - affects
-          - body
-          - created_at
-          - created_by
-          - deleted_at
-          - emailed_admins_at
-          - id
-          - kind_id
-          - maintenance_from
-          - maintenance_to
-          - placements
-          - publish_at
-          - published_by
-          - state
-          - target_plan_ids
-          - target_tenant_id
-          - tenant_id
-          - title
-          - updated_at
-          - updated_by
       responses:
         '200':
           description: 成功
@@ -38846,7 +39278,7 @@ paths:
                   data:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Notices'
+                      $ref: '#/components/schemas/OpsNoticeRow'
                   meta:
                     type: object
         '401':
@@ -38907,7 +39339,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NoticesInput'
+              $ref: '#/components/schemas/OpsNoticeCreateInput'
       responses:
         '201':
           description: 成功
@@ -38917,7 +39349,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Notices'
+                    $ref: '#/components/schemas/OpsNoticeDetail'
                   meta:
                     type: object
         '401':
@@ -39074,7 +39506,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NoticesInput'
+              $ref: '#/components/schemas/OpsNoticeUpdateInput'
       responses:
         '200':
           description: 成功
@@ -39084,7 +39516,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Notices'
+                    $ref: '#/components/schemas/OpsNoticeDetail'
                   meta:
                     type: object
         '401':
@@ -39165,7 +39597,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NoticesInput'
+              $ref: '#/components/schemas/OpsNoticePublishInput'
       responses:
         '201':
           description: 成功
@@ -39175,7 +39607,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Notices'
+                    $ref: '#/components/schemas/OpsNoticeDetail'
                   meta:
                     type: object
         '401':
@@ -39262,7 +39694,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/StatusIncidentsInput'
+              $ref: '#/components/schemas/IncidentUpdateInput'
       responses:
         '201':
           description: 成功
@@ -39272,7 +39704,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/StatusIncidents'
+                    $ref: '#/components/schemas/OpsNoticeDetail'
                   meta:
                     type: object
         '401':
@@ -41523,7 +41955,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NoticesInput'
+              $ref: '#/components/schemas/WorkspaceNoticeInput'
       responses:
         '201':
           description: 成功
@@ -41533,7 +41965,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Notices'
+                    $ref: '#/components/schemas/OpsNoticeDetail'
                   meta:
                     type: object
         '401':
@@ -41729,7 +42161,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubscriptionsInput'
+              $ref: '#/components/schemas/OpsPlanChangeInput'
       responses:
         '201':
           description: 成功
@@ -41739,7 +42171,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Subscriptions'
+                    $ref: '#/components/schemas/PlanChange'
                   meta:
                     type: object
         '401':
@@ -50566,7 +50998,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubscriptionsInput'
+              $ref: '#/components/schemas/BillingContactInput'
       responses:
         '200':
           description: 成功
@@ -50576,7 +51008,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Subscriptions'
+                    $ref: '#/components/schemas/BillingContact'
                   meta:
                     type: object
         '401':
@@ -51022,7 +51454,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/SubscriptionsInput'
+              $ref: '#/components/schemas/PlanChangeInput'
       responses:
         '201':
           description: 成功
@@ -51032,7 +51464,7 @@ paths:
                 type: object
                 properties:
                   data:
-                    $ref: '#/components/schemas/Subscriptions'
+                    $ref: '#/components/schemas/PlanChange'
                   meta:
                     type: object
         '401':
@@ -51150,6 +51582,11 @@ paths:
                       $ref: '#/components/schemas/PlanChoice'
                   meta:
                     type: object
+                    properties:
+                      members:
+                        type: integer
+                      member_limit:
+                        type: integer
         '401':
           description: UNAUTHENTICATED
           content:
