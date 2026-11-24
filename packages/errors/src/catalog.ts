@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。322 件
+// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。324 件
 export interface CatalogEntry {
   id: string;
   cls: string;
@@ -5782,6 +5782,40 @@ export const CATALOG: Record<string, CatalogEntry> = {
     ],
     "where": {
       "screen": "inquiry"
+    }
+  },
+  "E-OPS-005": {
+    "id": "E-OPS-005",
+    "cls": "conflict",
+    "message": "ほかの人が担当しています",
+    "action": "担当の人に聞く",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-OPS-005",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "ops-support"
+    }
+  },
+  "E-OPS-008": {
+    "id": "E-OPS-008",
+    "cls": "conflict",
+    "message": "後での日時は今より後にしてください",
+    "action": "日時を選び直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-OPS-008",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "ops-support"
     }
   }
 };

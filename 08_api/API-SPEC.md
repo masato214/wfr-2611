@@ -227,7 +227,7 @@
 | EP-212 | POST | `/api/v1/notifications/read-all` | 作成・実行（notifications）— 知らせを見てチケットへ行く | A109 | 1 | member | C2 | 401 403 409 422 413 429 403 403 503 |
 | EP-213 | GET | `/api/v1/ops/inquiries` | 取得（inquiries）— 運営の受信箱（箱と何について で絞る・数は | A70 | 1 | ops |  | 401 403 422 429 403 403 503 |
 | EP-214 | GET | `/api/v1/ops/inquiries/:id` | 取得（ops）— 問い合わせに答える | A70 | 1 | ops |  | 401 403 404 422 429 403 403 503 |
-| EP-215 | PATCH | `/api/v1/ops/inquiries/:id` | 更新（ops）— 問い合わせに答える | A70 | 1 | ops | C2 C6 | 401 403 404 422 413 429 403 403 503 |
+| EP-215 | PATCH | `/api/v1/ops/inquiries/:id` | 更新（ops）— 問い合わせに答える | A70 | 1 | ops | C2 C6 | 401 403 404 422 409 409 413 429 403 403 503 |
 | EP-216 | POST | `/api/v1/ops/inquiries/:id/notes` | 作成・実行（ops）— 問い合わせに答える | A70 | 1 | ops | C2 C6 | 401 403 404 409 422 413 429 403 403 503 |
 | EP-217 | POST | `/api/v1/ops/inquiries/:id/replies` | 作成・実行（ops）— 問い合わせに答える | A70 | 1 | ops | C2 C6 | 401 403 404 409 422 413 429 403 403 503 |
 | EP-218 | GET | `/api/v1/ops/invoices` | 取得（invoices）— 運営が月ごとの請求書を見る（お支払い待ち・払 | A72 | 1 | ops |  | 401 403 422 429 403 403 503 |

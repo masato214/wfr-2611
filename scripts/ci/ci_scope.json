@@ -2215,6 +2215,26 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/ops-inbox-update.ts",
+    "apps/api/src/features/F12/ops/inbox-update.ts",
+    "packages/db/migrations/20261128011400_ops_inbox_update.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-inbox-update.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/ops-inbox-update.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/patch_ops_inquiries_id.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/web/features/F6/progress/progress.css",
     "04_design/DESIGN-kaname.md",
     "apps/web/styles/k-tokens.css"

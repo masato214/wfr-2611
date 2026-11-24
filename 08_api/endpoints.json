@@ -37868,10 +37868,11 @@
      "status": 404,
      "code": "NOT_FOUND",
      "body": {
-      "error": "not_found"
+      "error": "not_found",
+      "code": "NOT_FOUND"
      },
-     "trigger": "無い・消えた・取り消された（期限切れ・削除済み・他社の行）",
-     "ears_form": "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）"
+     "trigger": "問い合わせが無い・消した・作りかけの会社や消した会社の物（欄も details も付けない＝在るかを漏らさない）",
+     "ears_form": "UNWANTED: IF 問い合わせが無いか消してあるなら、Kaname は 404 を返し、担当も状態も変えない"
     },
     {
      "status": 422,
@@ -37882,6 +37883,32 @@
      },
      "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
      "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+    },
+    {
+     "status": 409,
+     "code": "E-OPS-005",
+     "body": {
+      "error": "conflict",
+      "code": "E-OPS-005"
+     },
+     "errors": [
+      "E-OPS-005"
+     ],
+     "trigger": "ほかの人が担当の問い合わせを取る・外す・状態を変える／担当なしの問い合わせの状態を、取らずに変える",
+     "ears_form": "UNWANTED: IF ほかの人が担当か、担当が自分でないなら、Kaname は 409 と E-OPS-005 を返し、担当も状態も変えない"
+    },
+    {
+     "status": 409,
+     "code": "E-OPS-008",
+     "body": {
+      "error": "conflict",
+      "code": "E-OPS-008"
+     },
+     "errors": [
+      "E-OPS-008"
+     ],
+     "trigger": "後での日時が今以前（読むときの時刻で決まる）",
+     "ears_form": "UNWANTED: IF 後での日時が今以前なら、Kaname は 409 と E-OPS-008 を返し、担当も状態も変えない"
     },
     {
      "status": 413,
@@ -37938,8 +37965,10 @@
     "EVENT-DRIVEN: WHEN PATCH /api/v1/ops/inquiries/:id が「受信箱で答える」として呼ばれたとき THEN Kaname は「相手に知らせる」を行い 2xx を返す",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
-    "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
+    "UNWANTED: IF 問い合わせが無いか消してあるなら、Kaname は 404 を返し、担当も状態も変えない",
     "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF ほかの人が担当か、担当が自分でないなら、Kaname は 409 と E-OPS-005 を返し、担当も状態も変えない",
+    "UNWANTED: IF 後での日時が今以前なら、Kaname は 409 と E-OPS-008 を返し、担当も状態も変えない",
     "UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない",
     "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",

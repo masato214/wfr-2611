@@ -1,0 +1,30 @@
+{
+ "ops": {
+  "updateOpsInquiry": {
+   "file": "apps/api/test/features/F12/ops-inbox-update.test.ts",
+   "reason": "今の担当・状態・後での日時で答えが変わり、運営の記録を書く。種では作れない（K-974）",
+   "covers": {
+    "test_patch_ops_inquiries_id_ok": "K974-API-001",
+    "test_patch_ops_inquiries_id_shape": "K974-API-001",
+    "test_patch_ops_inquiries_id_not_found": "K974-API-008",
+    "test_patch_ops_inquiries_id_rejected_401": "K974-API-009",
+    "test_patch_ops_inquiries_id_rejected_403": "K974-API-009",
+    "test_patch_ops_inquiries_id_rejected_422": "K974-API-010",
+    "test_patch_ops_inquiries_id_rate_limited": "K974-API-013",
+    "test_patch_ops_inquiries_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_ops_inquiries_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_ops_inquiries_id_conflict": "K974-API-002",
+    "test_patch_ops_inquiries_id_conflict_2": "K974-API-006"
+   },
+   "na": {
+    "test_patch_ops_inquiries_id_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）"
+   }
+  }
+ }
+}

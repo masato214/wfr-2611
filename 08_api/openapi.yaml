@@ -14704,6 +14704,29 @@ components:
           nullable: true
       additionalProperties: false
       x-operation: updateOpsInquiry
+      allOf:
+      - anyOf:
+        - required:
+          - take
+        - required:
+          - release
+        - required:
+          - state
+        - required:
+          - later_until
+      - not:
+          properties:
+            take:
+              const: true
+            release:
+              const: true
+          required:
+          - take
+          - release
+      - not:
+          required:
+          - state
+          - later_until
     OpsInquiryReplyInput:
       type: object
       properties:
@@ -38594,6 +38617,12 @@ paths:
                 $ref: '#/components/schemas/Error'
         '422':
           description: VALIDATION_ERROR
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: E-OPS-005／E-OPS-008
           content:
             application/json:
               schema:

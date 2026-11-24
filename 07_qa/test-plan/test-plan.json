@@ -841,11 +841,11 @@
   "tickets": 218,
   "l1_rows": 5094,
   "ears_endpoints": 357,
-  "ears_tests": 3982,
+  "ears_tests": 3984,
   "entities": 146,
   "policies": 419,
   "access_cases": 1567,
-  "errors": 322,
+  "errors": 324,
   "journey_rows": 88,
   "critical_tasks": 88
  },

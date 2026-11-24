@@ -1,0 +1,60 @@
+{
+ "errors": [
+  {
+   "id": "E-OPS-005",
+   "class": "conflict",
+   "where": {
+    "screen": "ops-support"
+   },
+   "when": "ほかの人が担当の問い合わせを取る・外す・済みにする・後でにする。担当なしの問い合わせを、取らずに済みにする・後でにする",
+   "false_when": "担当なしを取る・自分の担当を変える・担当なしを取ると一緒に済みにする",
+   "message": "ほかの人が担当しています",
+   "action": "担当の人に聞く",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "運営の人（問い合わせを持つ）で受信箱を開く",
+    "steps": [
+     "ほかの人が担当の問い合わせで［自分が持つ］を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-156.25"
+   ]
+  },
+  {
+   "id": "E-OPS-008",
+   "class": "conflict",
+   "where": {
+    "screen": "ops-support"
+   },
+   "when": "後での日時が今と同じか今より前",
+   "false_when": "今より後の日時・後でを外す（空）",
+   "message": "後での日時は今より後にしてください",
+   "action": "日時を選び直す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "運営の人（問い合わせを持つ）で受信箱を開く",
+    "steps": [
+     "［後で］で過ぎた日時を選んで保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-156.25"
+   ]
+  }
+ ]
+}

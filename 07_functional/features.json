@@ -6694,7 +6694,10 @@
    "happy_path": [
     "A43 顧客のデータを見ずに直す"
    ],
-   "error_paths": [],
+   "error_paths": [
+    "E-OPS-005",
+    "E-OPS-008"
+   ],
    "policies": [
     "C2"
    ],
@@ -7026,7 +7029,9 @@
     "E-ACT-039",
     "E-ACT-041",
     "E-PAY-005",
-    "E-DISC-002"
+    "E-DISC-002",
+    "E-OPS-005",
+    "E-OPS-008"
    ],
    "policies": [
     "C2",
