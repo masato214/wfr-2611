@@ -69,14 +69,19 @@ export function Inert({ children, label = "まだ使えません" }: { children:
   );
 }
 
-function NoticeRow({ n }: { n: NoticeView }) {
+/** 行き先の道を作る関数（既定はモックの道。本番の画面は /notices・/inquiry の道を渡す・K-956） */
+type HrefOf = (id: string) => string;
+const NOTICE_HREF: HrefOf = (id) => `/help/notices/${id}`;
+const INQUIRY_HREF: HrefOf = (id) => `/help/inquiries/${id}`;
+
+function NoticeRow({ n, href }: { n: NoticeView; href: HrefOf }) {
   return (
     <li className="k-uh-item" data-unread={n.unread ? "true" : undefined}>
       <Badge tone={KIND_TONE[n.kind]}>{n.kind}</Badge>
       <div className="k-uh-item-main">
         <h3 className="k-uh-item-title">
           {n.unread ? <span className="k-uh-new" role="img" aria-label="まだ読んでいません" /> : null}
-          <TextLink href={`/help/notices/${n.id}`}>{n.title}</TextLink>
+          <TextLink href={href(n.id)}>{n.title}</TextLink>
         </h3>
         <p className="k-uh-item-body">
           {n.state ? <strong>{n.state} ・ </strong> : null}
@@ -88,7 +93,7 @@ function NoticeRow({ n }: { n: NoticeView }) {
   );
 }
 
-function InquiryRow({ q }: { q: InquiryView }) {
+function InquiryRow({ q, href }: { q: InquiryView; href: HrefOf }) {
   return (
     <li className="k-uh-item">
       {q.done ? (
@@ -100,7 +105,7 @@ function InquiryRow({ q }: { q: InquiryView }) {
       )}
       <div className="k-uh-item-main">
         <h3 className="k-uh-item-title">
-          <TextLink href={`/help/inquiries/${q.id}`}>{q.title}</TextLink>
+          <TextLink href={href(q.id)}>{q.title}</TextLink>
         </h3>
         <p className="k-uh-item-body">
           {q.kind} ・ {q.when}
@@ -121,14 +126,34 @@ export interface HelpHomeProps {
   failed?: boolean;
   onAsk?: () => void;
   onRetry?: () => void;
+  /** お知らせ 1 件の道（既定 /help/notices/<id>） */
+  noticeHref?: HrefOf;
+  /** 問い合わせ 1 件の道（既定 /help/inquiries/<id>） */
+  inquiryHref?: HrefOf;
+  /** 「問い合わせる」の行き先。道があればそこへ、null なら押せない形（まだ無い・D-145.9）。渡さなければ今の見た目のまま */
+  askHref?: string | null;
 }
 
-export function HelpHome({ notices, statuses, inquiries, sent, failed, onAsk, onRetry }: HelpHomeProps) {
-  const ask = (
-    <Button variant="primary" {...(onAsk ? { onClick: onAsk } : {})}>
+export function HelpHome({
+  notices,
+  statuses,
+  inquiries,
+  sent,
+  failed,
+  onAsk,
+  onRetry,
+  noticeHref = NOTICE_HREF,
+  inquiryHref = INQUIRY_HREF,
+  askHref,
+}: HelpHomeProps) {
+  // 部品は道の仕組み（router）を持たない：行き先があれば、その道へ移るだけ
+  const go = askHref ? () => window.location.assign(askHref) : onAsk;
+  const button = (
+    <Button variant="primary" {...(go ? { onClick: go } : {})}>
       問い合わせる
     </Button>
   );
+  const ask = askHref === null ? <Inert>{button}</Inert> : button;
   if (failed) {
     return (
       <PageBody labelledBy="help-title">
@@ -163,7 +188,7 @@ export function HelpHome({ notices, statuses, inquiries, sent, failed, onAsk, on
           {notices.length ? (
             <ul className="k-uh-list">
               {notices.map((n) => (
-                <NoticeRow key={n.id} n={n} />
+                <NoticeRow key={n.id} n={n} href={noticeHref} />
               ))}
             </ul>
           ) : (
@@ -184,7 +209,7 @@ export function HelpHome({ notices, statuses, inquiries, sent, failed, onAsk, on
           {inquiries.length ? (
             <ul className="k-uh-list">
               {inquiries.map((q) => (
-                <InquiryRow key={q.id} q={q} />
+                <InquiryRow key={q.id} q={q} href={inquiryHref} />
               ))}
             </ul>
           ) : (
@@ -207,7 +232,15 @@ export interface NoticeDetailView extends NoticeView {
   full: string;
 }
 
-export function NoticeDetail({ n }: { n: NoticeDetailView }) {
+export interface NoticeDetailProps {
+  n: NoticeDetailView;
+  /** 戻る道（既定 /help） */
+  backHref?: string;
+  /** 読んだ印が付いた（false なら「読みました」の行を出さない・既定 true） */
+  read?: boolean;
+}
+
+export function NoticeDetail({ n, backHref = "/help", read = true }: NoticeDetailProps) {
   return (
     <PageBody labelledBy="notice-title">
       <PageHeader
@@ -235,11 +268,13 @@ export function NoticeDetail({ n }: { n: NoticeDetailView }) {
             <dd>{n.full}</dd>
           </div>
         </dl>
-        <p className="k-uh-read" role="status">
-          読みました（一覧の印が消えます）
-        </p>
+        {read ? (
+          <p className="k-uh-read" role="status">
+            読みました（一覧の印が消えます）
+          </p>
+        ) : null}
         <div>
-          <TextLink href="/help">困ったとき・お知らせへ戻る</TextLink>
+          <TextLink href={backHref}>困ったとき・お知らせへ戻る</TextLink>
         </div>
       </div>
     </PageBody>

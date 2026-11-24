@@ -48,6 +48,8 @@ export const BUILT_ROUTES: readonly string[] = [
   "/login",
   "/members",
   "/mfa-setup",
+  "/notices",
+  "/notices/:id",
   "/onboard/draft",
   "/onboard/golive",
   "/onboard/interview",
