@@ -1,0 +1,59 @@
+{
+ "ops": {
+  "postInquiryMessage": {
+   "file": "apps/api/test/features/F12/inquiry-reply.test.ts",
+   "reason": "本人の問い合わせ・状態の戻り方・添付の確かめで答えが変わる。種では本人の問い合わせと添付を作れない（K-952）",
+   "covers": {
+    "test_post_inquiries_id_messages_ok": "K952-API-001",
+    "test_post_inquiries_id_messages_shape": "K952-API-001",
+    "test_post_inquiries_id_messages_not_found": "K952-API-004",
+    "test_post_inquiries_id_messages_conflict": "K952-API-003",
+    "test_post_inquiries_id_messages_rejected_401": "K952-API-012",
+    "test_post_inquiries_id_messages_rejected_403": "K952-API-012",
+    "test_post_inquiries_id_messages_rejected_422": "K952-API-005",
+    "test_post_inquiries_id_messages_rate_limited": "K952-API-014",
+    "test_post_inquiries_id_messages_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_inquiries_id_messages_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_inquiries_id_messages_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）"
+   }
+  },
+  "resolveMyInquiry": {
+   "file": "apps/api/test/features/F12/inquiry-reply.test.ts",
+   "reason": "本人の問い合わせの状態で答えが変わる（もう済みなら何も変えない）。種では作れない（K-952）",
+   "covers": {
+    "test_post_inquiries_id_resolve_ok": "K952-API-008",
+    "test_post_inquiries_id_resolve_shape": "K952-API-008",
+    "test_post_inquiries_id_resolve_not_found": "K952-API-010",
+    "test_post_inquiries_id_resolve_rejected_401": "K952-API-012",
+    "test_post_inquiries_id_resolve_rejected_403": "K952-API-012",
+    "test_post_inquiries_id_resolve_rejected_422": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-991"
+    },
+    "test_post_inquiries_id_resolve_rate_limited": {
+     "file": "apps/api/test/features/F12/inquiry-reply.test.ts",
+     "mark": "K952-API-014"
+    },
+    "test_post_inquiries_id_resolve_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_inquiries_id_resolve_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_inquiries_id_resolve_too_large": "体は空の {} だけ。送る量の守りは入口の共通"
+   }
+  }
+ }
+}

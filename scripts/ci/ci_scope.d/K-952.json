@@ -1,0 +1,18 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/inquiry-reply.ts",
+    "apps/api/src/features/F12/inquiries/reply.ts",
+    "packages/db/migrations/20261128005200_inquiry_reply.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/inquiry-reply.test.ts",
+    "apps/api/test/features/F12/inquiry-create.test.ts",
+    "apps/api/test/generated/post_inquiries_id_messages.test.ts",
+    "apps/api/test/generated/post_inquiries_id_resolve.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  }
+ ]
+}

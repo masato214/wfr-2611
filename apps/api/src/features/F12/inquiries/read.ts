@@ -51,7 +51,7 @@ const MARK_SQL = `select app.inquiry_mark_read($1::uuid) as ok`;
 
 type InquiryRow = Parameters<typeof toMyInquiry>[0];
 
-interface MessageRow {
+export interface MessageRow {
   id: string;
   body: string | null;
   created_at: Date;
@@ -79,7 +79,7 @@ function toAttachments(raw: unknown): MyInquiryMessage["attachments"] {
   });
 }
 
-const toMessage = (m: MessageRow): MyInquiryMessage => ({
+export const toMessage = (m: MessageRow): MyInquiryMessage => ({
   id: m.id,
   from: m.from,
   author_name: m.author_name,
