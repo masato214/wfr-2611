@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 391（作った 123・後のフェーズの行為だけ 20）・前の道すじ 26・表 151・画面の部品 19・共通の処理 13・エラー 301・部品 68・設定 41
+API 391（作った 124・後のフェーズの行為だけ 20）・前の道すじ 26・表 151・画面の部品 19・共通の処理 13・エラー 301・部品 68・設定 41
 
 ## 共通の処理
 
@@ -457,7 +457,7 @@ API 391（作った 123・後のフェーズの行為だけ 20）・前の道す
 | `deleteKnowledgePage` | DELETE /api/v1/knowledge_pages/:id | 削除（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 作った | K-69,K-681 |
 | `archiveKnowledgePage` | POST /api/v1/knowledge_pages/:id/archive | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 契約だけ（501） | K-69 |
 | `uploadKnowledgeAttachment` | POST /api/v1/knowledge_pages/:id/attachments | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 契約だけ（501） | K-69 |
-| `copyKnowledgePage` | POST /api/v1/knowledge_pages/:id/copy | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 契約だけ（501） | K-69,K-690 |
+| `copyKnowledgePage` | POST /api/v1/knowledge_pages/:id/copy | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 作った | K-69,K-690 |
 | `saveKnowledgeDraft` | PATCH /api/v1/knowledge_pages/:id/draft | 更新（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 作った | K-69,K-679 |
 | `discardKnowledgeDraft` | DELETE /api/v1/knowledge_pages/:id/draft | 削除（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 作った | K-69,K-679 |
 | `getKnowledgeLinks` | GET /api/v1/knowledge_pages/:id/links | 取得（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 契約だけ（501） | K-69 |
