@@ -4415,7 +4415,53 @@
     "nullable": true
    }
   },
+  "notice_updates": {
+   "body": {
+    "type": "text",
+    "nullable": false
+   },
+   "created_at": {
+    "type": "timestamp with time zone",
+    "nullable": false
+   },
+   "created_by": {
+    "type": "uuid",
+    "nullable": true
+   },
+   "deleted_at": {
+    "type": "timestamp with time zone",
+    "nullable": true
+   },
+   "id": {
+    "type": "uuid",
+    "nullable": false
+   },
+   "notice_id": {
+    "type": "uuid",
+    "nullable": false
+   },
+   "state": {
+    "type": "text",
+    "nullable": false
+   },
+   "tenant_id": {
+    "type": "uuid",
+    "nullable": false
+   },
+   "updated_at": {
+    "type": "timestamp with time zone",
+    "nullable": false
+   },
+   "updated_by": {
+    "type": "uuid",
+    "nullable": true
+   }
+  },
   "notices": {
+   "admins_only": {
+    "type": "boolean",
+    "nullable": false
+   },
    "affects": {
     "type": "jsonb",
     "nullable": false
@@ -4443,6 +4489,10 @@
    "id": {
     "type": "uuid",
     "nullable": false
+   },
+   "impact": {
+    "type": "text",
+    "nullable": true
    },
    "kind_id": {
     "type": "text",
@@ -4478,6 +4528,10 @@
    },
    "target_tenant_id": {
     "type": "uuid",
+    "nullable": true
+   },
+   "target_tenant_ids": {
+    "type": "uuid[]",
     "nullable": true
    },
    "tenant_id": {

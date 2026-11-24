@@ -6,7 +6,7 @@
 
 | 種別 | 件数 | 根拠（source）| 備考 |
 |---|---|---|---|
-| エンティティ | 146 | 全件 | ER図 §1〜§14 の表から。table_name・tenant_isolation・access_control_policies |
+| エンティティ | 147 | 全件 | ER図 §1〜§14 の表から。table_name・tenant_isolation・access_control_policies |
 | 機能 | 32 | 全件 | 用事 24 ＋ 関門 8。api_endpoints（下書き）・ears_ac_seed |
 | ロール | 5 | 全件 | 権限の型（誰に×何に×どの層で×できること）を access_predicate_expr で |
 | 画面 | 74 | 全件 | flow.json と 1 対 1。states はモックの状態タブ、transitions はモックのリンクから |
@@ -91,6 +91,7 @@
 | E-074 | `inquiries` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 4 | D-069 D-075 D-075.1 D-076 |
 | E-075 | `notices` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | ops_scoped | 1 | D-069 D-075 D-075.2 D-076 |
 | E-076 | `notice_deliveries` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 4 | D-069 D-075 D-076 |
+| E-148 | `notice_updates` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | ops_scoped | 1 | D-069 D-075 D-076 D-156.33 |
 | E-077 | `status_incidents` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | ops_scoped | 1 | D-069 D-075 D-075.2 D-076 |
 | E-079 | `notification_preferences` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 4 | D-043 D-069 D-075 D-075.3 |
 | E-080 | `notifications` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 3 | D-043 D-069 D-075 D-076 |

@@ -6,7 +6,7 @@
  ],
  "counts": {
   "api": 359,
-  "api_built": 114,
+  "api_built": 116,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
   "db": 149,
@@ -3459,7 +3459,7 @@
    "tables": [
     "notices"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
     "K-72",
     "K-954"
@@ -3477,7 +3477,7 @@
    "tables": [
     "notice_deliveries"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
     "K-72",
     "K-954"

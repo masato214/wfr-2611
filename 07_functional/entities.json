@@ -7388,6 +7388,10 @@
     {
      "to": "notice_deliveries",
      "label": "会社ごとの配達"
+    },
+    {
+     "to": "notice_updates",
+     "label": "続報"
     }
    ],
    "soft_delete": true,
@@ -7526,6 +7530,69 @@
     "D-069",
     "D-075",
     "D-076"
+   ]
+  },
+  {
+   "id": "E-148",
+   "name": "notice_updates",
+   "table_name": "notice_updates",
+   "section": "12. 運営と顧客の間で往復するもの・自分で整えるもの",
+   "fields": [
+    {
+     "name": "<common>",
+     "note": "tenant_id＝運営"
+    },
+    {
+     "name": "notice_id",
+     "note": null
+    },
+    {
+     "name": "state",
+     "note": "investigating ／ identified ／ monitoring ／ resolved"
+    },
+    {
+     "name": "body",
+     "note": null
+    }
+   ],
+   "relations": [
+    {
+     "from": "notices",
+     "label": "続報"
+    }
+   ],
+   "soft_delete": true,
+   "timestamps": true,
+   "tenant_field": "tenant_id",
+   "indexes": [],
+   "computed": [],
+   "tenant_isolation": {
+    "type": "ops_scoped",
+    "column": "tenant_id",
+    "fk_table": "tenants"
+   },
+   "access_control_policies": [
+    {
+     "name": "notice_updates_ops_all",
+     "operation": "all",
+     "role": "ops",
+     "predicate": "tenant_id = app.ops_tenant_id() AND current_setting('app.role', true) = 'ops'",
+     "rationale": "障害の続報は運営が書く（status_incidents と同じ）。会社の人には一覧の関数が届け先を決めて返す",
+     "source": [
+      "D-156.33",
+      "D-156.10"
+     ]
+    }
+   ],
+   "legacy_drift_notes": null,
+   "note": "障害の続報の履歴（K-954・D-156.33）。書くのは運営、会社の人には一覧の関数 `app.member_notices` が返す",
+   "status": "decided",
+   "decided_at": "2026-11-24",
+   "source": [
+    "D-069",
+    "D-075",
+    "D-076",
+    "D-156.33"
    ]
   },
   {
