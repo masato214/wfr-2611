@@ -6152,6 +6152,10 @@
     "type": "timestamp with time zone",
     "nullable": false
    },
+   "login_kind": {
+    "type": "text",
+    "nullable": true
+   },
    "machine_id": {
     "type": "uuid",
     "nullable": true
@@ -6996,6 +7000,22 @@
    },
    "status_id": {
     "type": "uuid",
+    "nullable": true
+   },
+   "stop_noticed_at": {
+    "type": "timestamp with time zone",
+    "nullable": true
+   },
+   "stop_on": {
+    "type": "date",
+    "nullable": true
+   },
+   "stop_reason_key": {
+    "type": "text",
+    "nullable": true
+   },
+   "stopped_at": {
+    "type": "timestamp with time zone",
     "nullable": true
    },
    "tenant_id": {

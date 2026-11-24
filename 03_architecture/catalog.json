@@ -5,14 +5,14 @@
   "D-128.129"
  ],
  "counts": {
-  "api": 359,
-  "api_built": 115,
+  "api": 357,
+  "api_built": 119,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
   "db": 149,
   "ui": 19,
   "packages": 13,
-  "errors": 321,
+  "errors": 322,
   "stack": 68,
   "env": 41
  },
@@ -1780,7 +1780,7 @@
    "op": "listMyInquiries",
    "method": "GET",
    "path": "/api/v1/inquiries",
-   "what": "取得（inquiries）— 運営に問い合わせる",
+   "what": "取得（inquiries）— 自分の問い合わせ（新しい順・返事ありの印つき）",
    "flows": [
     "F12"
    ],
@@ -1965,7 +1965,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-958"
    ]
   },
   {
@@ -3453,7 +3454,7 @@
    "op": "listNotices",
    "method": "GET",
    "path": "/api/v1/notices",
-   "what": "取得（notices）— お知らせを見る",
+   "what": "取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障害の続報まで・1 件を開く口は無い）",
    "flows": [
     "F12"
    ],
@@ -3463,7 +3464,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-954"
    ]
   },
   {
@@ -3480,7 +3482,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-954"
    ]
   },
   {
@@ -3538,7 +3541,7 @@
    "op": "listOpsInquiries",
    "method": "GET",
    "path": "/api/v1/ops/inquiries",
-   "what": "取得（ops）— 問い合わせに答える",
+   "what": "取得（inquiries）— 運営の受信箱（箱と何について で絞る・数は getOpsShell）",
    "flows": [
     "F12"
    ],
@@ -3546,8 +3549,10 @@
    "tables": [
     "inquiries"
    ],
-   "status": "契約だけ（501）",
-   "owner_tickets": []
+   "status": "作った",
+   "owner_tickets": [
+    "K-973"
+   ]
   },
   {
    "op": "getOpsInquiry",
@@ -3561,8 +3566,10 @@
    "tables": [
     "inquiries"
    ],
-   "status": "契約だけ（501）",
-   "owner_tickets": []
+   "status": "作った",
+   "owner_tickets": [
+    "K-973"
+   ]
   },
   {
    "op": "updateOpsInquiry",
@@ -3613,7 +3620,7 @@
    "op": "listOpsInvoices",
    "method": "GET",
    "path": "/api/v1/ops/invoices",
-   "what": "取得（ops）— 請求書を出し、入金を記録する",
+   "what": "取得（invoices）— 運営が月ごとの請求書を見る（お支払い待ち・払われた・期限を過ぎた・入金の並びつき）",
    "flows": [
     "F12"
    ],
@@ -3635,21 +3642,6 @@
    "only_later_phase": false,
    "tables": [
     "payments"
-   ],
-   "status": "契約だけ（501）",
-   "owner_tickets": []
-  },
-  {
-   "op": "exportOpsInvoices",
-   "method": "POST",
-   "path": "/api/v1/ops/invoices/export",
-   "what": "作成・実行（ops）— 請求書を出し、入金を記録する",
-   "flows": [
-    "F12"
-   ],
-   "only_later_phase": false,
-   "tables": [
-    "export_jobs"
    ],
    "status": "契約だけ（501）",
    "owner_tickets": []
@@ -3733,7 +3725,7 @@
    "op": "listOpsNotices",
    "method": "GET",
    "path": "/api/v1/ops/notices",
-   "what": "取得（ops）— お知らせを出す",
+   "what": "取得（notices）— 運営のお知らせを新しい順に見る（下書き・予定・出した・直った）",
    "flows": [
     "F12"
    ],
@@ -4016,8 +4008,10 @@
    "tables": [
     "inquiries"
    ],
-   "status": "契約だけ（501）",
-   "owner_tickets": []
+   "status": "作った",
+   "owner_tickets": [
+    "K-963"
+   ]
   },
   {
    "op": "listOpsTemplates",
@@ -4082,8 +4076,10 @@
    "tables": [
     "tenants"
    ],
-   "status": "契約だけ（501）",
-   "owner_tickets": []
+   "status": "作った",
+   "owner_tickets": [
+    "K-963"
+   ]
   },
   {
    "op": "getOpsWorkspace",
@@ -4246,21 +4242,6 @@
    "only_later_phase": false,
    "tables": [
     "account_events"
-   ],
-   "status": "契約だけ（501）",
-   "owner_tickets": []
-  },
-  {
-   "op": "exportOpsWorkspaces",
-   "method": "POST",
-   "path": "/api/v1/ops/workspaces/export",
-   "what": "作成・実行（ops）— 各ワークスペースの様子を見る（気にかける）",
-   "flows": [
-    "F12"
-   ],
-   "only_later_phase": false,
-   "tables": [
-    "export_jobs"
    ],
    "status": "契約だけ（501）",
    "owner_tickets": []
@@ -5764,7 +5745,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-958"
    ]
   },
   {
@@ -5876,7 +5858,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-961"
    ]
   },
   {
@@ -5893,7 +5876,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-961"
    ]
   },
   {
@@ -6352,7 +6336,6 @@
    "why": "第1フェーズの口が使う（08_api/endpoints.json）",
    "writes": [
     "F10",
-    "F12",
     "F5"
    ],
    "reads": [],

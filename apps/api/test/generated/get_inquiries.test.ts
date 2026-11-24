@@ -39,7 +39,7 @@ describe("GET /api/v1/inquiries", () => {
     expect(readFileSync("apps/api/test/features/contract/k144-contract.test.ts", "utf8")).toContain("K144-API-032");
   });
   it("test_get_inquiries_shape", () => {
-    // UBIQUITOUS: GET /api/v1/inquiries の副作用は関門 C2・C6 を経由し、認可 → ポリシー → 承認 → 副作用 → 記録 の順で行う
+    // UBIQUITOUS: GET /api/v1/inquiries の副作用は関門 C2・C4・C6 を経由し、認可 → ポリシー → 承認 → 副作用 → 記録 の順で行う
     // 本物の試験：apps/api/test/features/F12/inquiry-read.test.ts の「K951-API-001」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F12/inquiry-read.test.ts", "utf8")).toContain("K951-API-001");
   });

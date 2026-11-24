@@ -2887,6 +2887,144 @@
     }
    },
    "na": {}
+  },
+  "listNotices": {
+   "file": "apps/api/test/features/F12/notices-read.test.ts",
+   "reason": "届け先（全部・プラン・ワークスペース）・出したか・読んだかで答えが変わる。生成の試験の種では運営の会社のお知らせ・契約のプラン・既読の行を作れない（K-954）",
+   "covers": {
+    "test_get_notices_ok": "K954-API-001",
+    "test_get_notices_rejected_401": "K954-API-010",
+    "test_get_notices_rejected_403": "K954-API-011",
+    "test_get_notices_rejected_422": "K954-API-014",
+    "test_get_notices_rate_limited": "K954-API-012",
+    "test_get_notices_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_notices_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  },
+  "markNoticeRead": {
+   "file": "apps/api/test/features/F12/notices-read.test.ts",
+   "reason": "見えるお知らせかどうか（届け先）と、本人の既読の行が 1 つであることは、種では作れない（K-954）",
+   "covers": {
+    "test_post_notices_id_read_ok": "K954-API-016",
+    "test_post_notices_id_read_rejected_401": "K954-API-010",
+    "test_post_notices_id_read_rejected_403": "K954-API-011",
+    "test_post_notices_id_read_not_found": "K954-API-018",
+    "test_post_notices_id_read_rejected_422": {
+     "file": "apps/api/test/features/contract/k144.d/K-954.ts",
+     "mark": "K144-API-954"
+    },
+    "test_post_notices_id_read_rejected_422_2": "K954-API-019",
+    "test_post_notices_id_read_rate_limited": {
+     "file": "apps/api/test/features/F12/notices-read.test.ts",
+     "mark": "K954-API-012"
+    },
+    "test_post_notices_id_read_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_notices_id_read_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_notices_id_read_shape": "K954-API-016"
+   },
+   "na": {
+    "test_post_notices_id_read_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）で、口ごとに変わらない。体は空の {} だけ"
+   }
+  },
+  "getOpsShell": {
+   "file": "apps/api/test/features/F12/ops-workspaces.test.ts",
+   "reason": "全社の数は DB の全部の会社と運営の人の caps で答えが変わる。種では足す前と後の差を作れない（K-963）",
+   "covers": {
+    "test_get_ops_shell_ok": "K963-API-001",
+    "test_get_ops_shell_rejected_401": "K963-API-017",
+    "test_get_ops_shell_rejected_403": "K963-API-017",
+    "test_get_ops_shell_rate_limited": "K963-API-020",
+    "test_get_ops_shell_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ops_shell_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_ops_shell_rejected_422": "問い合わせも体も受けない口。知らない問い合わせの 422 は入口の共通（K-144）"
+   }
+  },
+  "listOpsWorkspaces": {
+   "file": "apps/api/test/features/F12/ops-workspaces.test.ts",
+   "reason": "気にかける・絞り込み・並びは会社ごとの請求・実行・PC の行で答えが変わる。種では作れない（K-963）",
+   "covers": {
+    "test_get_ops_workspaces_ok": "K963-API-007",
+    "test_get_ops_workspaces_rejected_401": "K963-API-017",
+    "test_get_ops_workspaces_rejected_403": "K963-API-017",
+    "test_get_ops_workspaces_rejected_422": "K963-API-014",
+    "test_get_ops_workspaces_rate_limited": {
+     "file": "apps/api/test/features/F12/ops-workspaces.test.ts",
+     "mark": "K963-API-020"
+    },
+    "test_get_ops_workspaces_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ops_workspaces_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   }
+  },
+  "listOpsInquiries": {
+   "file": "apps/api/test/features/F12/ops-inbox-read.test.ts",
+   "reason": "箱・担当・状態・種類で答えが変わり、全社をまたぐ。種では作れない（K-973）",
+   "covers": {
+    "test_get_ops_inquiries_ok": "K973-API-001",
+    "test_get_ops_inquiries_shape": "K973-API-001",
+    "test_get_ops_inquiries_rejected_401": "K973-API-008",
+    "test_get_ops_inquiries_rejected_403": "K973-API-008",
+    "test_get_ops_inquiries_rejected_422": "K973-API-009",
+    "test_get_ops_inquiries_rate_limited": "K973-API-012",
+    "test_get_ops_inquiries_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ops_inquiries_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   }
+  },
+  "getOpsInquiry": {
+   "file": "apps/api/test/features/F12/ops-inbox-read.test.ts",
+   "reason": "やり取り・社内メモ・様子で答えが変わる。種では作れない（K-973）",
+   "covers": {
+    "test_get_ops_inquiries_id_ok": "K973-API-005",
+    "test_get_ops_inquiries_id_shape": "K973-API-005",
+    "test_get_ops_inquiries_id_not_found": "K973-API-007",
+    "test_get_ops_inquiries_id_rejected_401": "K973-API-008",
+    "test_get_ops_inquiries_id_rejected_403": "K973-API-008",
+    "test_get_ops_inquiries_id_rejected_422": "K973-API-009",
+    "test_get_ops_inquiries_id_rate_limited": {
+     "file": "apps/api/test/features/F12/ops-inbox-read.test.ts",
+     "mark": "K973-API-012"
+    },
+    "test_get_ops_inquiries_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ops_inquiries_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   }
   }
  }
 }

@@ -135,14 +135,18 @@ function zodOf(p) {
 }
 
 // 「誰が呼べるか」（08_api の permission）を、入口で確かめる形にする（K-14）。
-//   word：言葉（admin・ops:<できること>・self など）／ target・ability：admin の能力（表と能力）／ scope：workspace（会社全体の権限）か any（どこかのグループで持てばよい）
+//   word：言葉（admin・ops:<できること>・self など）／ target・ability：admin の能力（表と能力）／ scope：workspace（会社全体の権限）か any（どこかのグループで持てばよい）。運営の口は ops_all（全社）か ops_tenant（1 社を指す・K-1001）
 //   adminOnly：管理者の役割だけ（権限を個別に付けた人でも通さない）／ stepUp：always（いつも）・それ以外は条件つき（hooks が requireStepUp で確かめる）
 export function permOf(e, table, method) {
   const p = e.permission ?? {};
   const word = String(p.who ?? (e.auth?.role === "public" ? "public" : "read"));
   const path = e.path ?? "";
   const out = { word, target: null, ability: null, scope: "workspace", adminOnly: false, cap: null, stepUp: p.step_up === true ? "always" : p.step_up ? String(p.step_up) : null };
-  if (word.startsWith("ops:")) out.cap = word.slice(4);
+  // 運営の口（K-1001・D-156.2）：道が /api/v1/ops/workspaces/:id で始まれば 1 社を指す口（ops_tenant）、ほかは全社（ops_all）。道の形が正本
+  if (word.startsWith("ops:")) {
+    out.cap = word.slice(4);
+    out.scope = path.startsWith("/api/v1/ops/workspaces/:id") ? "ops_tenant" : "ops_all";
+  }
   if (word !== "admin") return out;
   if (/\/exports\b/.test(path)) Object.assign(out, { target: "tenants", ability: "export", scope: "any" });
   else if (/\/invitations\b/.test(path)) Object.assign(out, { target: "members", ability: "invite" });
@@ -218,7 +222,7 @@ export interface EndpointDef {
     word: string;
     target: string | null;
     ability: string | null;
-    scope: "workspace" | "any";
+    scope: "workspace" | "any" | "ops_all" | "ops_tenant";
     adminOnly: boolean;
     cap: string | null;
     stepUp: string | null;

@@ -39,6 +39,7 @@ import type { Config } from "@kaname/config";
 import type { MailLike } from "@kaname/notify";
 import { bootApi, type BootOptions } from "../../../src/server.js";
 import { addTestEntry } from "../../_pending.js";
+import { assertion as passkeyAssertion, makeAuthenticator, type Authenticator } from "../F12/ops.harness.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const DB_PKG = join(HERE, "..", "..", "..", "..", "..", "packages", "db");
@@ -175,7 +176,9 @@ const person = async (tag: string): Promise<Person> => {
   return { email: e, userId: r.userId, memberId: m.id, tenantId: m.tenant_id };
 };
 /** 運営の人（運営のテナント app.ops_tenant_id() の人・D-128.172）を作り、基準の版に同意済みにする。
- *  会社を作らない登録（signUp に companyName を渡さない）で認証の人だけを作り、運営のテナントの member と運営の人の表（ops_members）に入れる */
+ *  会社を作らない登録（signUp に companyName を渡さない）で認証の人だけを作り、運営のテナントの member と運営の人の表（ops_members）に入れる。
+ *  運営の人はパスキーだけで入る（K-944・D-128.70）ので、仮の認証器のパスキーを 1 本付ける（入るのは下の loginOps） */
+const OPS_KEYS = new Map<string, { a: Authenticator; n: number }>();
 const opsPerson = async (tag: string): Promise<Person> => {
   const e = email(tag);
   const r = await signUp(authFixture.auth, { email: e, password: PW, name: "運営 の人" });
@@ -201,7 +204,13 @@ const opsPerson = async (tag: string): Promise<Person> => {
       "insert into terms_consents (tenant_id, member_id, auth_user_id, terms_version_id, agreed_at) values ($1, $2, $3, $4, now())",
       [opsTenant, memberId, r.userId, v],
     );
-  await addTestEntry(r.userId);
+  const a = makeAuthenticator();
+  await admin.query(
+    `insert into kaname_auth.passkey (id, name, "publicKey", "userId", "credentialID", counter, "deviceType", "backedUp", transports, "createdAt")
+     values (gen_random_uuid()::text, $1, $2, $3, $4, 0, 'singleDevice', false, 'internal', now())`,
+    [`${RUN}-鍵`, a.cose.toString("base64"), r.userId, a.credentialId.toString("base64url")],
+  );
+  OPS_KEYS.set(r.userId, { a, n: 0 });
   return { email: e, userId: r.userId, memberId, tenantId: opsTenant };
 };
 const OPS_API = "/api/v1/ops/members"; // 運営の口（auth ops・listOpsMembers）
@@ -210,11 +219,36 @@ const expectNotTermsBlocked = async (r: Response, what: string) => {
   const code = r.status === 403 ? (await json(r))["code"] : null;
   expect(code, `${what} は同意し直しで止めない（D-128.172）`).not.toBe(NEW_TERMS_REQUIRED);
 };
+/** 運営のセッション（role ops・会社なし・K-944）で呼んだ口：印は解けていて（401 でない）、同意し直し（E-AUTH-010）では止まらない。
+ *  入口は同意し直しを役より先に見るので、印が立っていれば E-AUTH-010 になる。役の段の答え（403・501）は F12 の葉（K-1001 など）の持ち分 */
+const expectOpsNotTermsBlocked = async (r: Response, what: string) => {
+  expect(r.status, `${what}：運営の印が解けている（${await r.clone().text()}）`).not.toBe(401);
+  await expectNotTermsBlocked(r, what);
+};
 /** ログインする（パスワード）。ログインでセッションができたときに、同意し直しが要るかを決める */
 const login = async (p: Person, ua = WEB_UA) => {
   const r = await signInWithLock(authFixture.auth, fixturePool, p.email, PW, ua);
   expect(r.ok, "ログインできる").toBe(true);
   return r.token!;
+};
+/** 運営の人がパスキーで入る（K-944：運営の人のパスワードの道は 403・E-AUTH-022。部品の口でチャレンジ → 応答）。返すのはセッションの印 */
+const loginOps = async (p: Person) => {
+  const key = OPS_KEYS.get(p.userId)!;
+  const o = { ip: nextIp(), headers: { origin: config.webBaseUrl } };
+  const opt = await req("GET", "/api/auth/passkey/generate-authenticate-options", undefined, o);
+  expect(opt.status, await opt.clone().text()).toBe(200);
+  const j = await json(opt);
+  key.n += 1;
+  const r = await req(
+    "POST",
+    "/api/auth/passkey/verify-authentication",
+    { response: passkeyAssertion(key.a, p.userId, String(j["challenge"]), key.n) },
+    { ip: o.ip, headers: { ...o.headers, "x-passkey-challenge": String(j["challenge_token"]) } },
+  );
+  expect(r.status, await r.clone().text()).toBe(200);
+  const t = r.headers.get("set-auth-token");
+  expect(t, "運営の人のセッションの印").toBeTruthy();
+  return t!;
 };
 const other = (token: string) => req("GET", OTHER_API, undefined, { headers: bearer(token) });
 const consent = (token: string | null, body: unknown) =>
@@ -1080,7 +1114,7 @@ describe("K-53 運営の人は同意し直しで止めない（D-128.172）", ()
     const v = await publishBoth("v2-ops-open");
     try {
       expect((await admin.query("select * from app.terms_pending($1)", [o.userId])).rowCount, "同意はまだ").toBe(2);
-      const t = await login(o);
+      const t = await loginOps(o);
       const s = await admin.query<{ terms_pending: boolean }>(
         "select terms_pending from sessions where member_id = $1 and revoked_at is null",
         [o.memberId],
@@ -1089,17 +1123,14 @@ describe("K-53 運営の人は同意し直しで止めない（D-128.172）", ()
         s.rows.map((x) => x.terms_pending),
         "運営の人のセッションには印を立てない",
       ).toEqual([false]);
-      await expectOpen(t);
-      await expectNotTermsBlocked(await req("GET", OPS_API, undefined, { headers: bearer(t) }), "運営の口");
+      await expectOpsNotTermsBlocked(await other(t), "契約のふつうの口");
+      await expectOpsNotTermsBlocked(await req("GET", OPS_API, undefined, { headers: bearer(t) }), "運営の口");
       await expectNotTermsBlocked(
         await req("GET", "/api/auth-ext/setup-state", undefined, { headers: bearer(t) }),
         "前の道すじ",
       );
-      // 運営の人も同意の口は使える（同意すれば行が残る）
-      expect((await consent(t, agreeTo(v))).status).toBe(201);
-      expect((await consentsOf(o.userId)).map((c) => c.terms_version_id)).toEqual(
-        expect.arrayContaining([v.terms, v.privacy]),
-      );
+      // 運営のセッションは会社なし（role ops・K-944）なので、会社の人の同意の口（auth member）には役の段で届かない。同意し直しでは止めない
+      await expectOpsNotTermsBlocked(await consent(t, agreeTo(v)), "同意の口");
     } finally {
       await withdraw(v.terms, v.privacy);
     }
@@ -1111,12 +1142,12 @@ describe("K-53 運営の人は同意し直しで止めない（D-128.172）", ()
     const v = await publishBoth("v2-ops-contrast");
     try {
       const tp = await login(p);
-      const to = await login(o);
+      const to = await loginOps(o);
       await expectBlocked(tp);
       const w = await req("GET", "/api/auth-ext/setup-state", undefined, { headers: bearer(tp) });
       expect(w.status).toBe(403);
       expect((await json(w))["code"]).toBe(NEW_TERMS_REQUIRED);
-      await expectOpen(to);
+      await expectOpsNotTermsBlocked(await other(to), "契約のふつうの口");
     } finally {
       await withdraw(v.terms, v.privacy);
     }
@@ -1126,7 +1157,7 @@ describe("K-53 運営の人は同意し直しで止めない（D-128.172）", ()
     const o = await opsPerson("ops-layer");
     const v = await publishBoth("v2-ops-layer");
     try {
-      const t = await login(o);
+      const t = await loginOps(o);
       await appRole.query("select app.refresh_terms_pending($1)", [o.userId]);
       const after = await admin.query<{ terms_pending: boolean }>(
         "select terms_pending from sessions where member_id = $1 and revoked_at is null",
@@ -1146,8 +1177,8 @@ describe("K-53 運営の人は同意し直しで止めない（D-128.172）", ()
       ).rows[0]!.id;
       const read = await appRole.query<{ p: boolean }>("select app.session_terms_pending($1) as p", [sid]);
       expect(read.rows[0]?.p, "運営のテナントのセッションは常に false").toBe(false);
-      await expectOpen(t);
-      await expectNotTermsBlocked(await req("GET", OPS_API, undefined, { headers: bearer(t) }), "運営の口");
+      await expectOpsNotTermsBlocked(await other(t), "契約のふつうの口");
+      await expectOpsNotTermsBlocked(await req("GET", OPS_API, undefined, { headers: bearer(t) }), "運営の口");
     } finally {
       await withdraw(v.terms, v.privacy);
     }

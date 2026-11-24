@@ -9947,6 +9947,37 @@
    ]
   },
   {
+   "id": "E-AUTH-022",
+   "class": "auth",
+   "where": {
+    "screen": "login",
+    "state": "ops-passkey-only"
+   },
+   "when": "運営の人がメールとパスワードで入ろうとした",
+   "false_when": "運営の人がパスキーで入る・顧客の人がパスワードで入る・パスワードが違う（E-AUTH-001 のまま）",
+   "message": "運営の場所は、パスキーしか使えません（メールとパスワードでは入れません）",
+   "action": "パスキーで入る",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": true,
+   "reproduce": {
+    "setup": "パスワードを持つ運営の人",
+    "steps": [
+     "メールとパスワードで入る"
+    ],
+    "needs": "運営の人にパスワードを付ける（DB に直に）"
+   },
+   "severity": "medium",
+   "source": [
+    "D-128.70",
+    "D-156.2"
+   ],
+   "support_code": "AUTH-022"
+  },
+  {
    "id": "E-INQ-001",
    "class": "conflict",
    "where": {

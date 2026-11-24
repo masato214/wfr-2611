@@ -395,7 +395,6 @@ SCREEN_API = {
     "ops-home": [
         ("GET", "/ops/shell", "A60", "inquiries", "getOpsShell", ["invoices"]),
         ("GET", "/ops/workspaces", "A60", "tenants", "listOpsWorkspaces", ["subscriptions", "usage_meters", "invoices", "sessions", "action_runs"]),
-        ("POST", "/ops/workspaces/export", "A60", "export_jobs", "exportOpsWorkspaces", ["ops_audit_events"]),
     ],
     "ops-tenant": [
         ("GET", "/ops/workspaces/:id", "A64", "tenants", "getOpsWorkspace", ["subscriptions", "usage_meters", "action_runs", "credentials", "ops_audit_events"]),
@@ -430,7 +429,6 @@ SCREEN_API = {
         ("GET", "/ops/invoices", "A72", "invoices", "listOpsInvoices", ["tenants", "subscriptions", "payments"]),
         ("POST", "/ops/invoices/issue", "A72", "invoices", "issueOpsInvoices", ["subscriptions", "plan_versions", "notifications", "ops_audit_events", "audit_events"]),
         ("POST", "/ops/invoices/:id/payments", "A72", "payments", "recordPayment", ["invoices", "ops_audit_events", "audit_events"]),
-        ("POST", "/ops/invoices/export", "A72", "export_jobs", "exportOpsInvoices", ["ops_audit_events"]),
     ],
     "ops-team": [
         ("GET", "/ops/members", "A134", "ops_members", "listOpsMembers", ["passkeys"]),
@@ -1119,8 +1117,11 @@ RESPONSES = {
     "previewMemberRemoval": ("MemberRemovalPreview", {"tickets": "array", "handovers_cancelled": "array", "approvals_reassigned": "array", "sole_approver": "array", "deleted": "array", "kept": "array", "restorable_until": "string"}),
     "getExport": ("ExportStatus", {"status": "string", "url": "string", "expires_at": "string?"}),
     "getWorkspaceSettings": ("WorkspaceSettings", {"workspace": "object", "plan": "object", "subscription": "object", "price_change": "object", "permissions": "array", "fixed_rules": "array", "deletion": "object"}),
-    "listWorkspacePlans": ("PlanChoice", {"plan_id": "string", "name": "string?", "price_monthly": "integer?", "limits": "object?", "current": "boolean", "can_choose": "boolean", "reason": "string", "effective_from": "string"}),
-    "getBilling": ("Billing", {"payee": "object", "billing_contact": "object", "terms": "string", "invoices": "array"}),
+    # K-1005：画面（ub-plan・ub-bills）が要る欄に作り直した。プランは plan_key（plan_id は uuid でないのでやめる）・upgrade と upcoming は振る舞いの葉 K-961・K-1017 が中を埋める（D-156.43）
+    "listWorkspacePlans": ("PlanChoice", {"plan_key": "string", "name": "string?", "price_monthly": "integer?", "member_limit": "integer?", "current": "boolean", "can_choose": "boolean", "reason": "string?", "effective_from": "string",
+                                          "summary": "string", "recommended": "boolean", "upgrade": "object?", "upcoming": "object?"}),
+    # K-1005：請求書の状態は unpaid・paid・overdue（D-156.29）・請求先は会社名・宛名・メールの 3 欄（D-156.30）・期限を過ぎた分の数と額（無ければ null）
+    "getBilling": ("Billing", {"terms": "string", "payee": "object", "contact": "object", "invoices": "array", "overdue": "object?", "free": "boolean", "can_edit_contact": "boolean"}),
     "downloadInvoicePdf": ("SignedUrl", {"url": "string", "expires_at": "string"}),
     "listClients": ("ClientRow", {"id": "string", "name": "string", "summary": "string", "groups": "array", "owner_member_id": "string?", "visibility": "string", "active_tickets": "integer", "open_requests": "integer", "waiting_acceptances": "integer", "last_activity_at": "string"}),
     "listClientLinkCandidates": ("ClientLinkCandidate", {"ticket_id": "string", "number": "string", "title": "string", "reason": "string"}),
@@ -1146,13 +1147,20 @@ RESPONSES = {
     "listOpsWorkspaces": ("OpsWorkspaceRow", {"id": "string", "name": "string", "admin": "object", "plan": "string", "members": "string", "pc_connected": "string", "runs_month": "integer", "attention": "array", "billing": "string", "state": "string"}),
     "getOpsWorkspace": ("OpsWorkspace", {"workspace": "object", "pc": "object", "runs": "object", "stopped": "object", "files": "object", "stop_reasons": "array", "recent": "array", "info": "object"}),
     "listOpsWorkspaceMembers": ("OpsWorkspaceMember", {"name": "string", "email": "string", "role": "string", "last_seen_at": "string", "pc": "string", "login": "string"}),
-    "getOpsWorkspaceBilling": ("OpsWorkspaceBilling", {"plan": "object", "usage": "object", "payment_terms": "string", "invoices": "array"}),
+    "getOpsWorkspaceBilling": ("OpsWorkspaceBilling", {"plan": "object", "members": "object", "payment_terms": "string", "invoices": "array"}),   # K-1005：利用量は人数だけ（D-156.36）
     "getShell": ("Shell", {"approvals_waiting": "integer", "notifications_unread": "integer", "groups": "array", "pc": "object", "setup_left": "integer", "banner": "object", "workspace": "object"}),
     "getOpsShell": ("OpsShell", {"inquiries_unassigned": "integer", "inquiries_mine": "integer", "invoices_overdue": "integer", "banner": "object"}),
     "getTicketShape": ("TicketShape", {"kinds": "array", "stages": "array", "axes": "array", "handover_rules": "array", "limits": "object", "template_updates": "integer"}),
     "previewTicketShapeChange": ("TicketShapeChangePreview", {"removed": "array", "needs_move_to": "array", "affected_tickets": "integer", "over_limits": "array"}),
-    "getOpsInquiry": ("OpsInquiryDetail", {"inquiry": "object", "messages": "array", "context": "object", "workspace": "object"}),
-    "getOpsNotice": ("OpsNoticeDetail", {"notice": "object", "updates": "array", "affects": "object", "placements": "array"}),
+    # 受信箱の 1 件（K-948・D-156.5）：一覧の 1 行の 10 欄と、やり取り（返事と社内メモ）・付いてきた画面の情報・右のワークスペースの様子
+    "getOpsInquiry": ("OpsInquiryDetail", {"id": "uuid", "title": "string", "topic": "string", "state": "string", "workspace": "object", "asker": "object",
+                                           "owner": "object?", "later_until": "string?", "created_at": "string", "last_message_at": "string?",
+                                           "messages": "array", "context": "object", "workspace_status": "object"}),
+    # お知らせの 1 件（K-1004・D-156.5）：一覧の 1 行の 11 欄と本文・メンテ・影響・続報・届く数（16 欄）。作る・直す・出す・続報・1 社に送るも同じ形（断片 K-1004）
+    "getOpsNotice": ("OpsNoticeDetail", {"id": "uuid", "kind": "string", "title": "string", "audience": "object", "state": "string",
+                                         "placements": "string[]", "publish_at": "string?", "published_at": "string?", "author_name": "string?",
+                                         "incident_state": "string?", "admins_only": "boolean", "body": "string", "maintenance": "object?",
+                                         "impact": "string?", "updates": "array", "reach": "object"}),
     # いまの様子（K-307・誰でも）：直っていない障害（公開したお知らせに結んだもの）といま中のメンテナンスだけ。ログイン後の口の型 ServiceStatus とは分ける
     "getServiceStatus": ("PublicServiceStatus", {"incidents": "array", "maintenance": "object?"}),
     # 招待の下見（K-331）：表の写し（token_hash まで出る）でなく、画面が形を決める欄だけ。signed_in はログイン中だけ { email, email_matches, already_member }
@@ -1161,7 +1169,8 @@ RESPONSES = {
                                             "account_exists": "boolean", "signed_in": "object?"}),
     # 招待で参加した（K-332）：ログインの印（部品のセッションの token）・入ったワークスペース・次に移る画面（入った直後は /mfa-setup）
     "acceptInvitation": ("InvitationAccepted", {"token": "string", "workspace_id": "string", "next": "string", "state": "string?", "email": "string?"}),   # K-422：リンクの招待で新しく入る人の 202 は { state, email } だけ（確認のメールを送った・まだ参加していない）
-    "getServiceStatusForMember": ("ServiceStatus", {"components": "array", "banner": "object", "maintenance": "object"}),
+    # ログイン後の稼働状況（K-1004・D-156.10）：部分ごとの様子・上の帯（障害・メンテ・止める日・中を見られている間を 1 つの並びに）・いま中のメンテ。型の名前は ServiceStatus のまま（K307-API-016）
+    "getServiceStatusForMember": ("ServiceStatus", {"components": "array", "bands": "array", "maintenance_now": "object?"}),
 }
 # 一覧の答えの meta に足す数（数だけの API を作らず、一覧の 1 回目で返す・D-128.111）。値は型の名前か、型の決まりの辞書（null を返す欄・K-92）
 META = {
@@ -1170,8 +1179,6 @@ META = {
     "listApprovalQueue": {"counts": "object"},
     "listClients": {"counts": "object"},
     "listOpsWorkspaces": {"summary": "object"},
-    "listOpsInquiries": {"counts": "object"},
-    "listOpsInvoices": {"summary": "object"},
 }
 # 上限の差し替え（operationId → 1 分あたりの回数と鍵）。無い口は public 10/ip・GET 120/user・それ以外 60/user
 RATES = {
@@ -1208,7 +1215,7 @@ QUERIES = {
     "listKnowledgeVerifications": ["mine", "soon"],
     "listKnowledgeProposals": ["mine"],
     "listOpsWorkspaces": ["q", "attention", "state", "plan", "sort"],
-    "listOpsInquiries": ["box", "kind", "sort"],
+    "listOpsInquiries": ["box", "topic"],   # 箱と何について（K-948・D-156.5）。並びは受けない（LIST_DETAILS）
     "listOpsNotices": ["kind", "state"],
     "listOpsInvoices": ["month", "state"],
     "listOpsWorkspaceAudit": ["from", "to"],
@@ -1528,7 +1535,6 @@ PERMS = {
     # 運営の残り（運営の人で、そのできることを持つ人だけ・D-128.70。ops:any は運営の人なら誰でも）
     "getOpsShell": ("ops:any", "運営の人なら誰でも（左のメニューの数だけ。お金の数はお金を持つ人にだけ出す）", False),
     "listOpsWorkspaces": ("ops:any", "運営の人なら誰でも。数と種類だけで中身（チケット・会話）は出さない", False),
-    "exportOpsWorkspaces": ("ops:any", "同上（名前・プラン・数だけ。管理者のメールは入れない）。書き出したことは運営の記録に残る", False),
     "getOpsWorkspace": ("ops:any", "同上。止まった理由は種類と数だけ", False),
     "listOpsWorkspaceMembers": ("ops:inquiry", "問い合わせを持つ運営の人（名前・役割・最後に入った・PC・入り方だけ）。運営は役割も中身も変えない", False),
     "resendOpsVerification": ("ops:inquiry", "同上（本人確認のメールを送り直すだけ）。顧客の記録にも残る", False),
@@ -1555,7 +1561,6 @@ PERMS = {
     "listOpsInvoices": ("ops:money", "お金を持つ運営の人", False),
     "issueOpsInvoices": ("ops:money", "同上。下書きを確かめてまとめて出す。全部のワークスペースに届くので本人確認を取り直す", True),
     "recordPayment": ("ops:money", "同上。差があれば未入金のまま残す。顧客の請求書の画面と記録にも出る（D-128.69）", True),
-    "exportOpsInvoices": ("ops:money", "同上", False),
     "listOpsMembers": ("ops:ops_people", "運営の人を持つ運営の人", False),
     "addOpsMember": ("ops:ops_people", "同上。足した人はパスキーでしか入れない", True),
     "updateOpsMemberCaps": ("ops:ops_people", "同上。自分のできることは変えられない。値段の案と値段を決めるは分ける（D-128.72）", True),

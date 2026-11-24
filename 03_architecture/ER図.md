@@ -36,7 +36,7 @@ erDiagram
 
 | テーブル | 主な列 | 備考 |
 |---|---|---|
-| `tenants` | `<common>` / `name` / `plan_id` / `status_id` / **`live_at`** / **`live_by`**（本番に切り替えた日時と人。切り替える前の確認に赤が無いときだけ `app.onboard_golive_switch` が書く ← D-116.5・D-028.4） | 契約の単位。切り替える前の確認は `app.onboard_golive`（会社モデル・Bridge・承認のルール・AI社員ごとのログイン情報と目標を本物の記録から） |
+| `tenants` | `<common>` / `name` / `plan_id` / `status_id` / **`live_at`** / **`live_by`**（本番に切り替えた日時と人。切り替える前の確認に赤が無いときだけ `app.onboard_golive_switch` が書く ← D-116.5・D-028.4） / **`stopped_at`** / **`stop_on`** / **`stop_reason_key`**（unpaid・violation・danger・request） / **`stop_noticed_at`**（運営が止めた時刻・止める予定の日・理由・管理者に知らせた時刻。書くのは K-970 の関数だけ・運営の一覧は `app.workspace_facts` で読む ← D-156.23・D-156.49・K-963） | 契約の単位。切り替える前の確認は `app.onboard_golive`（会社モデル・Bridge・承認のルール・AI社員ごとのログイン情報と目標を本物の記録から） |
 | `scopes` | `<common>` / `parent_id` / `layer_id` / `name` / `ticket_prefix`（番号の頭・例 EG。後から変えても、作ったチケットの番号は変わらない ← D-128.115）/ `next_ticket_no` | **4 層の実体**（運営／会社／部署／個人）。層は省略可 |
 | `member_kinds` | `key` / `label` | **マスタ**（human / ai_employee / clone / 将来 guest） ← E20 |
 | `members` | `<scoped>` / `kind_id` / `display_name` / `role_id` / `manager_member_id` / `auth_user_id`（認証の利用者。Better Auth の user。AI社員・自分のAI は null） / `setup_step`（はじめの設定をどこまで通したか 0〜6・D-089）/ **`agent_permission_mode`**（自分のAI の許可のモード。既定 default。全部許可は本人が選んだときだけ・D-104.14）/ **`agent_model`** / **`agent_effort`**（本人が選んだモデルと考える強さ・D-104.13） | **人間と AI が同じ席に座る**。はじめの設定の進み具合は人ごと（Bridge はその人の PC・ログイン情報はその人が預ける） |

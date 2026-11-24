@@ -90,7 +90,21 @@ export const LOGIN_BLOCKED: Readonly<Record<string, string>> = {
 /** 止めの確かめができなかった（止めの関数が落ちた）ときの id。止める側に倒す（fail-closed・503） */
 export const LOGIN_GATE_DOWN = "E-PAGE-003";
 /** 部品の道（パスワード・6 けた・パスキー・直に呼ぶ）が止めで断られたときの印。signInWithLock と口はこの id で見分ける */
-export const LOGIN_BLOCKED_CODES: ReadonlySet<string> = new Set([...Object.values(LOGIN_BLOCKED), LOGIN_GATE_DOWN]);
+/** 運営の人がパスキーでない道（パスワードなど）で入ろうとした（K-944・D-128.70・D-156.2）。運営の場所はパスキーしか使えない（403） */
+export const OPS_PASSKEY_ONLY = "E-AUTH-022";
+export const LOGIN_BLOCKED_CODES: ReadonlySet<string> = new Set([
+  ...Object.values(LOGIN_BLOCKED),
+  LOGIN_GATE_DOWN,
+  OPS_PASSKEY_ONLY,
+]);
+/** パスキーで入る部品の道。部品 @better-auth/passkey の版の道の名前。版を上げたらここだけ直す（K944-API-001 が拾う）。
+ *  セッションの hook が「パスキーで入ったか」をこの道で見分ける（K-944。置き換える葉もこの定数を使う） */
+export const PASSKEY_VERIFY_PATH = "/passkey/verify-authentication";
+/** 例外の種類だけ（文や値は出さない） */
+const kindOf = (e: unknown): string => {
+  const x = e as { code?: unknown; name?: unknown } | null;
+  return typeof x?.code === "string" ? x.code : typeof x?.name === "string" ? x.name : "Error";
+};
 /** 部品のパスワードの段の道（2 段階を付けた人はここではセッションを写さない） */
 const PASSWORD_STEP_PATHS = new Set(["/sign-in/email"]);
 
@@ -223,7 +237,7 @@ export function createAuth(o: AuthOptions): { auth: Auth; pool: pg.Pool } {
           // 止めの 1 か所（K-303・D-128.91）：どの道（パスワード・2 段階の 6 けた・パスキー・部品を直に呼ぶ）でも、セッションを作る直前にここを通る。
           //   止められた人・止められた会社・抜けた人は APIError（body.code が errors.json の id・文は口が目録から引く）で断り、セッションを作らせない。
           //   止めの関数が落ちたら止める側に倒す（503・E-PAGE-003）。理由の記録（security_events の login_blocked）は関数が書く
-          before: async (session) => {
+          before: async (session, ctx) => {
             let verdict: string | undefined;
             try {
               const r = await o.appPool.query<{ verdict: string }>("select app.login_gate($1) as verdict", [
@@ -231,16 +245,32 @@ export function createAuth(o: AuthOptions): { auth: Auth; pool: pg.Pool } {
               ]);
               verdict = r.rows[0]?.verdict;
             } catch (e) {
-              const x = e as { code?: unknown; name?: unknown } | null;
-              const why = typeof x?.code === "string" ? x.code : typeof x?.name === "string" ? x.name : "Error";
-              console.error(`[auth] 止めの確かめができなかった（${why}）`); // 文や値は出さない（種類だけ）
+              console.error(`[auth] 止めの確かめができなかった（${kindOf(e)}）`); // 文や値は出さない（種類だけ）
               throw new APIError("SERVICE_UNAVAILABLE", { code: LOGIN_GATE_DOWN });
             }
-            if (verdict === "ok") return;
-            const code = verdict ? LOGIN_BLOCKED[verdict] : undefined;
-            // 知らない答え（関数と部品の版ずれ）も止める側に倒す
-            if (!code) throw new APIError("SERVICE_UNAVAILABLE", { code: LOGIN_GATE_DOWN });
-            throw new APIError("FORBIDDEN", { code });
+            if (verdict !== "ok") {
+              const code = verdict ? LOGIN_BLOCKED[verdict] : undefined;
+              // 知らない答え（関数と部品の版ずれ）も止める側に倒す
+              if (!code) throw new APIError("SERVICE_UNAVAILABLE", { code: LOGIN_GATE_DOWN });
+              throw new APIError("FORBIDDEN", { code });
+            }
+            // 運営の人はパスキーだけで入る（K-944・D-128.70・D-156.2）：パスキーでない道なら 403・E-AUTH-022 でセッションを作らせない。
+            //   運営の人かどうかは DB の関数だけが決める（関門 C2）。関数が落ちたら止める側に倒す（503・E-PAGE-003）
+            const viaPasskey = (ctx as { path?: string } | null)?.path === PASSKEY_VERIFY_PATH;
+            let ops: string | undefined;
+            try {
+              const r = await o.appPool.query<{ v: string }>("select app.ops_login_check($1, $2) as v", [
+                session.userId,
+                viaPasskey,
+              ]);
+              ops = r.rows[0]?.v;
+            } catch (e) {
+              console.error(`[auth] 運営の入り方の確かめができなかった（${kindOf(e)}）`);
+              throw new APIError("SERVICE_UNAVAILABLE", { code: LOGIN_GATE_DOWN });
+            }
+            if (ops === "ok") return;
+            if (ops === "passkey_only") throw new APIError("FORBIDDEN", { code: OPS_PASSKEY_ONLY });
+            throw new APIError("SERVICE_UNAVAILABLE", { code: LOGIN_GATE_DOWN });
           },
           // 認証のセッションができたら public.sessions に写す（失効の正はこちら）。会社に属していない利用者は null（登録の途中）
           after: async (session, ctx) => {
@@ -267,6 +297,23 @@ export function createAuth(o: AuthOptions): { auth: Auth; pool: pg.Pool } {
               // 写せなかったら認証側のセッションも消してから上げる（半分だけ入った状態を残さない・K-301・G-15）
               await pool.query("delete from kaname_auth.session where id = $1", [session.id]).catch(() => undefined);
               throw e;
+            }
+            // 入り方を残す（K-944）：パスキーで入ったセッションに login_kind 'passkey'。解決は運営の人のこの印のセッションだけを運営として解く（2 層目）。
+            //   書けなかったら認証側のセッションを消してから上げる（半分だけ入った状態を残さない）。消すのも落ちたら種類だけをログに出して元の失敗を上げる
+            //   （残った認証側のセッションは入り方が無いので、運営として解けない）
+            if ((ctx as { path?: string } | null)?.path === PASSKEY_VERIFY_PATH) {
+              try {
+                await o.appPool.query("select app.mark_session_login_kind($1, 'passkey')", [session.id]);
+              } catch (e) {
+                await pool
+                  .query("delete from kaname_auth.session where id = $1", [session.id])
+                  .catch((x: unknown) =>
+                    console.error(`[auth] 入り方を書けなかった後の後片付けができなかった（${kindOf(x)}）`),
+                  );
+                // 元の例外をそのまま投げると、部品 @better-auth/passkey が APIError でない例外を 400 に包む。止めの hook と同じ 503・E-PAGE-003 で上げる
+                console.error(`[auth] 入り方を書けなかった（${kindOf(e)}）`);
+                throw new APIError("SERVICE_UNAVAILABLE", { code: LOGIN_GATE_DOWN });
+              }
             }
             // 同意し直しの印（K-53・D-125.162）：今の版の利用規約かプライバシーポリシーにまだ同意していなければ、このセッションに立てる。
             //   パスワード・パスキー・2 段階の後・確認のメールで確定した直後のどれもこの hook を通る。Bridge のセッションには立てない（D-128.137）
