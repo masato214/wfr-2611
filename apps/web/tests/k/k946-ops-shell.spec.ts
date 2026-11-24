@@ -317,7 +317,9 @@ test.describe("K-946 運営の外枠", () => {
     const nav = page.locator(MENU);
     await expect(nav.locator(".k-nav-item", { hasText: "問い合わせ" }).locator(".k-nav-badge")).toHaveText("3");
     await expect(nav.locator(".k-nav-item", { hasText: "請求" }).locator(".k-nav-badge")).toHaveText("2");
-    await expect(page.getByRole("button", { name: "高本 聖斗のメニュー", exact: true })).toHaveText("高");
+    await expect(
+      page.getByRole("button", { name: "高本 聖斗のメニュー", exact: true }).locator(".k-avatar"),
+    ).toHaveText("高");
     m.on.shell = () => ({ status: 200, body: shellBody({ support: 0, billing: 0 }) });
     await page.reload();
     await expect(nav.locator(".k-nav-badge")).toHaveCount(0);
@@ -345,7 +347,9 @@ test.describe("K-946 運営の外枠", () => {
     const nav = page.locator(MENU);
     await expect(nav.locator(".k-nav-item .k-nav-label")).toHaveCount(6);
     await expect(nav.locator(".k-nav-badge")).toHaveCount(0);
-    await expect(page.getByRole("button", { name: "高本 聖斗のメニュー", exact: true })).toHaveText("高");
+    await expect(
+      page.getByRole("button", { name: "高本 聖斗のメニュー", exact: true }).locator(".k-avatar"),
+    ).toHaveText("高");
     m.on.shell = () => "abort";
     await page.reload();
     await expect(nav.locator(".k-nav-item .k-nav-label")).toHaveCount(6);
