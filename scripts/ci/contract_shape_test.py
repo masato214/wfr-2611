@@ -23,6 +23,9 @@ import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "05_flow"))
+sys.path.insert(0, str(ROOT / "scripts" / "ci"))
+import email_patterns as _EP  # noqa: E402  登録・ログインのメールの形（K-1117）
+from portable_regex import walk as _portable  # noqa: E402  作り手が契約に書くときの直し（\s \S \d \w を JS と同じ字に・K-1117）。表の字はそのまま、比べる前に当てる
 
 
 def _load_screen_api():
@@ -116,7 +119,7 @@ VALUE_RANGES: dict[str, dict[str, dict]] = {
     "updateMemory": {"body": {"pattern": "\\S"}},          # apps/api/src/hooks/agent.ts:62〜63
     "createMemory": {"confidence": {"pattern": "^-?(?:[0-8](?:\\.[0-9]+)?|9(?:\\.(?:[0-9]{1,2}|(?:[0-8][0-9]|9[0-8])[0-9]+|99[0-4][0-9]*))?)$"}, "kind_id": {"enum": ["rule", "preference", "example", None]}},   # memories.confidence numeric(3,2)（10 以上は DB が断る）
     "createSignup": {   # apps/api/src/features/F1/sign-up/input.ts:37〜47
-        "email": {"pattern": "^\\s*[^@\\s]+@[^@\\s]+\\.[^@\\s]+\\s*$"},
+        "email": {"pattern": _EP.LOGIN_EMAIL},   # 部品の z.email() の形を前後の空白で挟んだ物（K-1117）
         "name": {"pattern": "\\S", "maxLength": 100},
         "company_name": {"maxLength": 100},
         "password": {"minLength": 12},
@@ -721,7 +724,7 @@ class ContractShapeTest(unittest.TestCase):
         for base in bases:
             for f in sorted(base.rglob("*.ts*")):
                 rel = f.relative_to(ROOT).as_posix()
-                if "node_modules" in rel or "/.next/" in rel or "/dist/" in rel or re.search(r"(\.test\.|\.spec\.|/tests?/)", rel):
+                if "node_modules" in rel or "/.next/" in rel or "/.next-prod/" in rel or "/dist/" in rel or re.search(r"(\.test\.|\.spec\.|/tests?/)", rel):
                     continue
                 for i, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
                     if loose.search(line) or no_version.search(line):
@@ -815,7 +818,7 @@ class ContractShapeTest(unittest.TestCase):
         for (op_id, pname), pat in PATH_PATTERNS.items():
             ps = {x["name"]: x for x in operation(op_id)[2].get("parameters", []) if x["in"] == "path"}
             self.assertIn(pname, ps, f"{op_id} に道の値 {pname} が無い")
-            self.assertEqual(ps[pname]["schema"].get("pattern"), pat, f"{op_id} の {pname} の値域が違う")
+            self.assertEqual(ps[pname]["schema"].get("pattern"), _portable({"pattern": pat})["pattern"], f"{op_id} の {pname} の値域が違う")
         pat = re.compile(PATH_PATTERNS[("downloadBridgeRelease", "name")])
         src = (ROOT / "apps/api/test/features/contract/k144-contract.test.ts").read_text(encoding="utf-8")
         block = re.search(r"RELEASE_NAMES = \[(.*?)\] as const;", src, re.S)
@@ -918,7 +921,7 @@ class ContractShapeTest(unittest.TestCase):
             props = SCHEMAS[name]["properties"]
             for k, want in fields.items():
                 got = props.get(k, {})
-                for key, val in want.items():
+                for key, val in _portable(want).items():
                     if got.get(key) != val:
                         bad.append(f"{op_id}（{name}）.{k}.{key}: 契約 {got.get(key)!r} ／ 口 {val!r}")
             m = re.search(rf"export const {name} = z\.strictObject\(\{{(.*?)\n\}}\);", ZOD, re.S)
@@ -986,7 +989,7 @@ class ContractShapeTest(unittest.TestCase):
                     if name not in params:
                         bad.append(f"{o}: 問い合わせに {name} が無い")
                         continue
-                    for key, val in ws.items():
+                    for key, val in _portable(ws).items():
                         if params[name].get(key) != val:
                             bad.append(f"{o}.{name}.{key}: 契約 {params[name].get(key)!r} ／ 表 {val!r}")
                 for name, sc in params.items():
