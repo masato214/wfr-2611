@@ -554,8 +554,10 @@ test("K683-UI-025 幅 320・375・768・1024・1440：書いている画面・�
   for (const w of [320, 375, 768, 1024, 1440]) {
     await page.setViewportSize({ width: w, height: w < 768 ? 812 : 900 });
     await page.goto(`/knowledge/${P_EXPENSE}`);
-    await edit(page).click();
+    // 初めの幅だけ「直す」で書き始める。2 回目からは前の幅の「書き終える」の前の保存で書きかけが口に在るので、開くとすぐ書いている画面になる（チケットの決め）
+    if (w === 320) await edit(page).click();
     await expect(page.locator(EDIT)).toBeVisible();
+    await expect(edit(page)).toHaveCount(0);
     expect(await overflowX(page), `幅 ${w}`).toBeLessThanOrEqual(0);
     await typeBody(page, "あ");
     await quit(page).click();
