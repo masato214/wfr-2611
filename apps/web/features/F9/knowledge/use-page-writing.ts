@@ -246,7 +246,10 @@ export function usePageWriting({ page, gate, setEditing, go, notify }: WritingDe
     patch({ dialog: "discard", dialogBox: null });
   };
 
+  /** 捨て終えた（もう無い・E-KNW-030 も含む）。小窓を閉じて読む形へ（読み直しの答えにまだ下書きがあっても、押せない小窓を残さない） */
   const discardDone = async (deleted: boolean): Promise<void> => {
+    hasDraft.current = false;
+    patch({ dialog: null, dialogBusy: false, dialogBox: null });
     if (deleted) {
       qc.removeQueries({ queryKey: pageKey(id) });
       go("/knowledge");
