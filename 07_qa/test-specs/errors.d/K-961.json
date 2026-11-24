@@ -1,0 +1,63 @@
+{
+ "errors": [
+  {
+   "id": "E-PLAN-001",
+   "class": "conflict",
+   "where": {
+    "screen": "company-settings"
+   },
+   "when": "プランを変える小窓で、いまのプランを選んだ（下げる予定が無いとき。同時に 2 人が同じプランに上げたときの後の 1 つも）",
+   "false_when": "ほかのプランを選ぶ・下げる予定があるときに今のプランを選ぶ（予定を取り消す）",
+   "message": "いまのプランです",
+   "action": "ほかのプランを選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "設定 › プランと支払い の「プランを変える」を開く",
+    "steps": [
+     "いまのプランを選んで変える（直に API）"
+    ],
+    "needs": "本人確認の取り直し（15 分の内）"
+   },
+   "severity": "low",
+   "source": [
+    "D-128.65"
+   ]
+  },
+  {
+   "id": "E-PLAN-002",
+   "class": "conflict",
+   "where": {
+    "screen": "company-settings"
+   },
+   "when": "人数（社内の人・ゲストは数えない）が選んだプランの上限を超えるのに下げようとした",
+   "false_when": "人数が上限の内のプランを選ぶ",
+   "message": "いまのメンバーは {members} 人で、上限（{member_limit} 人）を超えています",
+   "action": "人を減らしてから選び直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "4 人の会社で 設定 › プランと支払い の「プランを変える」を開く",
+    "steps": [
+     "3 人までの無料を選んで変える"
+    ],
+    "needs": "本人確認の取り直し（15 分の内）"
+   },
+   "severity": "medium",
+   "source": [
+    "D-128.65",
+    "D-156.36"
+   ]
+  }
+ ]
+}
