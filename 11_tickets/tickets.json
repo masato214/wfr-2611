@@ -27120,6 +27120,78 @@
    "file": "11_tickets/K-1000.md"
   },
   {
+   "id": "K-1001",
+   "title": "運営の口の入口の柵：契約の perm.scope に「全社（ops_all）／1 社を指す（ops_tenant）」を書き、運営の口は x-tenant-id を無視して会社の文脈なしで動かす。1 社の口で運営の会社を指したら 404、運営が会社の人の口で書くのは許可があっても 403（K-944 から分けた・K-72 の葉・W0）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "運営のログイン",
+   "assignee": "実装",
+   "due": "2026-12-04",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 1 の K-14（契約に権限の言葉を載せ入口で確かめる・作り手 contract.mjs と op.ts を直す）と K-427（入口に 1 段の確かめを足す・試験 10 行前後・見込み 0.5〜1）から引いた：permOf に 2 行と型の 1 行・作り手で作り直す 15 分・op.ts に 3 か所（運営の口の文脈・1 社の口の 404・運営の書く口の 403）15 分・運営の会社の id を 1 か所に寄せる 5 分・試験 12 行を流して直す 25 分",
+   "decisions": [
+    "D-156.2",
+    "D-156.3",
+    "D-156.12",
+    "D-125.128",
+    "D-128.70"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-entry.test.ts"
+   ],
+   "carry": [],
+   "depends_on": [
+    "K-940"
+   ],
+   "acts": [
+    "A60",
+    "A64"
+   ],
+   "screens": [],
+   "apis": [],
+   "canvas": [],
+   "canvas_none": "契約の作り手と入口だけ。画面のコードを変えない",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "shared"
+   ],
+   "changes": [
+    "scripts/ci/contract.mjs",
+    "apps/api/src/contract/op.ts",
+    "packages/db/src/id.ts",
+    "apps/api/src/features/F1/sign-up/index.ts",
+    "apps/api/test/features/F12/ops-entry.test.ts"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営の口（契約の auth が ops・47 本）の入口の柵を、運営が別の会社を触る道の決め（D-156.3）に合わせる。\n\n- **契約に「1 社を指す口か」を書く**（D-156.2）：`perm.scope` に、運営の口は `ops_all`（全社・運営の会社の行・受信箱など）か `ops_tenant`（道の `:id` が顧客のワークスペース＝`/api/v1/ops/workspaces/:id…`）を作り手が道から決めて書く\n- **運営の口は会社の文脈で動かない**：今の入口（`middleware/tenant.ts`）は、運営の人が x-tenant-id を付けると文脈の tenantId をその会社にする。運営の口でこれが効くと、行の守りが「その会社の中」として動き、運営の道（security definer の関数だけ・D-156.3）と混ざる。運営の口は x-tenant-id を無視して tenantId を null にしてから振る舞いに渡す\n- **1 社の口で運営の会社を指したら 404**：運営の会社（`app.ops_tenant_id()`）は顧客のワークスペースでない（止める・中を見る・代わりにプランを変えるの的にしない）\n- **運営が会社の人の口を呼ぶのは読むだけ**：中を見る（D-125.128「見るだけ」）の許可があっても、書く口（GET 以外）は 403 で何も書かない。今は行の守りだけが止めている（1 層）ので、入口にもう 1 層足す（G-02）\n\n運営のログイン（解決が role ops を返す）は K-944、運営の会社を触る DB の関数の型は K-947。",
+    "完了の条件": "- [ ] 下の表の 12 行（K1001-API-001〜012）が緑：`apps/api/test/features/F12/ops-entry.test.ts`\n- [ ] 作り手（`node scripts/ci/contract.mjs gen`）で作り直した `packages/contracts/src/registry.ts` の運営の口の perm.scope が ops_all／ops_tenant（生成物・手で書かない）\n- [ ] 前からの試験は「前からの試験を替えた所」のとおり（替える物は無い）で緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: PERM\n\n- **K-944 と並べて作れる**：試験は偽の画面のログイン（`features/fixture.ts` の `fake:ops`）で運営の文脈を作るので、本物の運営のログイン（K-944）を待たない。変えるファイルも重ならない（K-944 は packages/auth・migration）\n- perm.scope は作り手 `scripts/ci/contract.mjs` の `permOf` が道から決める（`05_flow/screen_api.py` に表を足さない。道の形が正本）：言葉が `ops:` で始まる口は、`/api/v1/ops/workspaces/:id` で始まれば `ops_tenant`、ほかは `ops_all`。型の宣言（作り手の中の `EndpointDef` の `scope`）に 2 つの値を足す。運営でない口の値（`workspace`・`any`）は変えない\n- 入口（`apps/api/src/contract/op.ts`）の順：\n  1. 役の段（今の 2・3）の後で、`def.auth === \"ops\"` なら `c.set(\"ctx\", { ...ctx, tenantId: null })`（以後の段と hooks の `a.ctx` は null の文脈を見る。op.ts が hooks に渡す `ctx` は、この書き換えの直後に `c.get(\"ctx\")` から読み直した物にする＝書き換える前に取った変数を hooks に渡さない。K1001-API-002 の覗きが `a.ctx.tenantId` と `c.get(\"ctx\").tenantId` の両方を見る）\n  2. 今の 3.0（道の uuid の確かめ）の直後に、`def.perm.scope === \"ops_tenant\"` で `:id` が運営の会社の id なら `404 NOT_FOUND`（欄・details を付けない・在るかを漏らさない＝控え帳）。501 と入力の確かめより前（何を送っても 404）\n  3. 役の段の `def.auth === \"member\"` で `ctx.role === \"ops\"` の所：今の `opsAllowed`（許可の確かめ）の前に、`def.method !== \"GET\"` なら 403 FORBIDDEN\n- 運営の会社の id は 1 か所に寄せる：`packages/db/src/id.ts` に `export const OPS_TENANT_ID = \"00000000-0000-4000-8000-000000000001\"`（0003 の `app.ops_tenant_id()` と同じ値）。`apps/api/src/features/F1/sign-up/index.ts` の同じ定数はこれを import して使う（同じ値を 2 か所に書かない）\n- 断る番号（控え帳・D-156.12）：運営の会社を指す＝指した物が無い扱いの 404。書く口＝役の段の 403（今の FORBIDDEN）。形の違う :id は今のとおり 422\n- `/api/v1/ops/peeks/:id`（closePeek）の `:id` は許可の行で、会社ではない → `ops_all`（道で決まる・試験 K1001-API-001）",
+    "依存の理由": "- K-940: 要る — 頭の欄の決定（D-156.2・3・12）が本線の決定ログ §156 に在ること\n- K-1000（切り方の見込み）: 外した — 流れの正本と文書だけを直す葉で、この葉の変えるファイルと重ならない\n- K-944: 外した — 試験は偽のログインで運営の文脈を作る。変えるファイルも重ならない（K-944 は packages/auth・migration・errors.d）",
+    "目録で探した結果": "- 使う：入口 `op.ts` の 3.0 の uuid の確かめ・役の段・`repo.opsAllowed`（許可の確かめ）・`permissions.ts` の `ops:*`（できることの確かめ・今のまま）・作り手 `contract.mjs` の `permOf`・試験の土台 `features/fixture.ts`（`fake:ops`・`hooks` を差し替えられる）\n- 作る：試験 1 本。探したが運営の口の文脈を確かめる試験は無かった（`authz.test.ts` は偽の repo で役とできることだけを見る）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| 作り手 | `scripts/ci/contract.mjs` の `permOf`：`if (word.startsWith(\"ops:\")) { out.cap = word.slice(4); out.scope = path.startsWith(\"/api/v1/ops/workspaces/:id\") ? \"ops_tenant\" : \"ops_all\"; }`。型の `scope: \"workspace\" \\| \"any\"` に `\\| \"ops_all\" \\| \"ops_tenant\"` を足す。`node scripts/ci/contract.mjs gen` で作り直す |\n| 入口 | `apps/api/src/contract/op.ts`：前提と制約の 3 か所。コメントに D-156.3・D-125.128 |\n| 運営の会社の id | `packages/db/src/id.ts` に定数・`apps/api/src/features/F1/sign-up/index.ts` は import に替える |\n| 試験 | `apps/api/test/features/F12/ops-entry.test.ts`（切る段が書いた） |",
+    "外に影響する手順": "- なし — 入口で断る段を足すだけ。DB に書かず、外を呼ばない（断るときは何も書かない）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/ops-entry.test.ts`（本物の DB・本物の入口・偽の画面のログイン。振る舞いは試験の中で差す覗きの hook が before で文脈を答えて止める）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 運営の口（全社） | x-tenant-id あり・なし | 運営の人 | 届く・tenantId null | このチケット | K1001-API-002・003 |\n| 1 社の口・顧客の会社 | 道の :id | 運営の人 | 届く・id はその会社 | このチケット | K1001-API-004 |\n| 1 社の口・運営の会社 | 道の :id | 運営の人 | 404 | このチケット | K1001-API-005 |\n| 1 社の口・形の違う id | 道の :id | 運営の人 | 422 | 入口の共通（K-144） | K1001-API-006 |\n| 会社の人の読む口 | x-tenant-id | 運営・許可なし／あり | 403／届く | このチケット | K1001-API-007・008 |\n| 会社の人の書く口 | x-tenant-id | 運営・許可あり | 403・書かない | このチケット | K1001-API-009 |\n| 運営の口 | — | 顧客の会社の人 | 403 | 今の柵 | K1001-API-010 |\n| お金の口 | — | お金を持たない運営 | 403 | 今の柵 | K1001-API-011 |\n| 運営の口 | — | ops_members の無い人 | 403 | 今の柵 | K1001-API-012 |\n| 運営のセッションが無い・切れた | — | — | 401 | K-944 | K944-API-011 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K1001-API-001 | 守り | 契約 | auth ops の口は全部、道が /api/v1/ops/workspaces/:id で始まれば perm.scope ops_tenant・ほかは ops_all。auth ops の口は 30 本より多い。運営でない口は workspace か any |\n| K1001-API-002 | 入口 | 全社の口に x-tenant-id | 200（覗き）・a.ctx.tenantId と c の文脈の tenantId がどちらも null・id null |\n| K1001-API-003 | 入口 | x-tenant-id なし | 200（覗き）・tenantId null |\n| K1001-API-004 | 対象の状態 | 1 社の口・顧客の会社 | 200（覗き）・tenant null・id は顧客の会社の id |\n| K1001-API-005 | 守り | 1 社の口・運営の会社 | GET も POST（stop）も 404・code NOT_FOUND・details と field が無い |\n| K1001-API-006 | 入力 | 形の違う :id | 422 |\n| K1001-API-007 | 守り | 許可なしで会社の人の読む口 | 403 |\n| K1001-API-008 | 対象の状態 | 許可ありで会社の人の読む口 | 200（覗き）・tenantId は指した会社 |\n| K1001-API-009 | 守り | 許可ありで会社の人の書く口 | 403・顧客の会社のチケットの行が増えない |\n| K1001-API-010 | 利用者の状態 | 顧客の会社の人が運営の口 | 403 |\n| K1001-API-011 | 守り | できることが無い | お金の口 403・問い合わせの口は 200（覗き） |\n| K1001-API-012 | 利用者の状態 | ops_members が無い | ops:any の口も 403 |\n\n### テストの型の受け（分類 PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-PERM-01 役が合わない人 | K1001-API-010・011・012（口は 403・振る舞いに届かない） |\n| TP-PERM-02 権限を外した直後 | 要らない：入口は要求ごとに ops_members と許可を引く（覚えない）。外した直後の 401 は K944-API-011 |\n| TP-PERM-03 他の会社の ID を直接指す | K1001-API-005（運営の会社を指すと 404）・K1001-API-007（許可の無い会社は 403） |\n| TP-PERM-04 一覧・数に混ざらない | 要らない：一覧の中身は全社の一覧の葉（K-963）。この葉は入口だけ |\n| TP-PERM-05 権限を付けた直後 | K1001-API-008（許可の行を入れた次の要求で届く） |\n| G-11・G-15・G-16 | N/A：外の資源・外のプロセスを使わず、文の数も増やさない（入口の段は値を比べるだけ） |\n| G-12 | K1001-API-008（許可を入れた直後） |\n| G-13 | K1001-API-009（中を見る × 書く） |\n| G-14 | K944-API-011（運営の人を外した後）が持つ |",
+    "前からの試験を替えた所": "切る段の道具 `cut_check.py prior --files apps/api/src/contract/op.ts scripts/ci/contract.mjs packages/db/src/id.ts` は 10 本。運営の文脈と x-tenant-id・perm.scope・運営の会社の id を読む物を足して探した。\n\n```search\ngit grep -l -E \"perm\\.scope|x-tenant-id|OPS_TENANT_ID\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'scripts/ci/*_test.py' 'scripts/ci/*.test.mjs' ':!apps/api/test/features/F12/*'\n2\n```\n\n- apps/api/src/contract/authz.test.ts: 替えない — 偽の repo で、運営の口は運営の人だけ・できることの有無を見る。perm.scope は読まない。運営の口の :id は試験の uuid（運営の会社の id でない）\n- apps/api/test/qa-d.test.ts・harness.ts: 替えない — 運営の人に x-tenant-id を付けて呼ぶが、表の中の運営の口（/api/v1/ops/…）は 0 本（`grep -c \"/api/v1/ops/\" apps/api/test/qa-d.test.ts` が 0）。会社の人の口を運営として呼ぶのは読む一覧（403 の行）だけ\n- apps/api/test/features/contract/k144-contract.test.ts・k262_edge.test.ts・k427_nul_input.test.ts・F1/my-security.test.ts・F3/credential-resolve.test.ts: 替えない — 入口の uuid・NUL・形の段と顧客の口を見る。足す段は運営の役のときだけ働く\n- packages/db/test/k145-uuid-re.test.ts・repository.test.ts: 替えない — id.ts の uuid の形を見る。定数を 1 つ足すだけ\n- scripts/ci/contract_shape_test.py・ci_lean_test.py: 替えない — 契約の形と範囲の決め方を見る。perm.scope の値は読まない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.2・3）",
+    "リスク": "- 作り手が道で決めるので、1 社を指す運営の口を `/ops/workspaces/:id` の外に足すと ops_all になる → K1001-API-001 が道の形で全部を照らす（新しい口を足す葉が赤で気づく）",
+    "申し送り": "- K-947：運営の口の振る舞いは tenantId null の文脈で、security definer の関数に会社の id を引数で渡す\n- K-966〜K-970：1 社の口は、:id が運営の会社でないことを入口が守る。無い会社（消した・作りかけ）の 404 は各葉の関数が返す\n- 試験の後片付け：afterAll は ops_members・許可に加えて、運営の会社に足した人 3 人と scopes の行を消した印（deleted_at）で消す（共用の DB で回を重ねても運営の会社の人が増えない）",
+    "代表に聞くこと": "- なし（D-156.2・3 は PM の決め。代表の答えに当たる所は無い）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 12 行（上限 30）。"
+   },
+   "file": "11_tickets/K-1001.md"
+  },
+  {
    "id": "K-1005",
    "title": "契約の作り直し 3：請求（利用者の請求書・請求先・選べるプラン・プランを変える）と運営の請求（一覧・まとめて出す・入金を記録・1 社のプランと請求・代わりにプランを変える）を画面が要る欄に作り直す（契約だけ・振る舞いは後の葉・K-948 から分けた・K-72 の葉・W0）",
    "kind": "タスク",

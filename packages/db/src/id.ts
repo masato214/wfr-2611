@@ -20,3 +20,6 @@ export function uuidv7(now: number = Date.now()): string {
  *  nil と max は通す・大文字は通す・前後の空白は通さない。apps/bridge/src/pairing.ts に同じ文字列を 1 つ置く（K144-SHAPE-019 が同じことを見る） */
 export const UUID_RE =
   /^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/;
+
+/** 運営の会社の id（0003 の app.ops_tenant_id() と同じ値・K-1001）。同じ値を 2 か所に書かない */
+export const OPS_TENANT_ID = "00000000-0000-4000-8000-000000000001";
