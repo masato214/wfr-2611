@@ -1938,6 +1938,14 @@
   },
   {
    "paths": [
+    "apps/web/features/F9/knowledge/**"
+   ],
+   "tests": [
+    "apps/web/tests/k/k683-knowledge-write.spec.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/ticket-stages-write.ts",
     "apps/api/src/features/F9/settings/stages.ts"
    ],
@@ -2225,6 +2233,7 @@
   "apps/api/test/features/contract/k144.d/K-680.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-680",
   "apps/web/tests/k/knowledge-mock.ts": "ナレッジの口の差し替えの道具。正本 07_qa/test-specs/errors.json の文を readFileSync で読む（エラーの文を比べるため・ファイルは書かない）・K-682",
   "apps/web/tests/k/f9-match.ts": "モックと本番の見た目の比べ方。scripts/ci/fidelity_compare.mjs を import して値を比べ、写しを test-results/f9-match/ に書く（人が見る用・判定に使わない）・K-682",
+  "apps/web/tests/k/k683-knowledge-write.spec.ts": "K683-UI-011 が use-page-writing.ts と publish-gate.tsx を readFileSync で読む（書き終える手順が公開の口の前に差し込み口を呼ぶかを見る・ファイルは書かない）・K-683",
   "apps/api/test/features/F9/settings.harness.ts": "入っている葉の hooks のファイル（ticket-stages-write ほか）を F3/leaf-hooks.ts の動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-705",
   "apps/api/test/features/contract/k144.d/K-705.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-705",
   "apps/api/test/features/contract/k144.d/K-706.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-706",
