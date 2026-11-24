@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 357（作った 119・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 324・部品 68・設定 41
+API 357（作った 120・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 324・部品 68・設定 41
 
 ## 共通の処理
 
@@ -251,7 +251,7 @@ API 357（作った 119・後のフェーズの行為だけ 20）・前の道す
 | `markNoticeRead` | POST /api/v1/notices/:id/read | 作成・実行（notices）— お知らせを見る | F12 | 契約だけ（501） | K-72,K-954 |
 | `listOpsInquiries` | GET /api/v1/ops/inquiries | 取得（inquiries）— 運営の受信箱（箱と何について で絞る・数は getOpsShell） | F12 | 作った | K-973 |
 | `getOpsInquiry` | GET /api/v1/ops/inquiries/:id | 取得（ops）— 問い合わせに答える | F12 | 作った | K-973 |
-| `updateOpsInquiry` | PATCH /api/v1/ops/inquiries/:id | 更新（ops）— 問い合わせに答える | F12 | 契約だけ（501） | K-974 |
+| `updateOpsInquiry` | PATCH /api/v1/ops/inquiries/:id | 更新（ops）— 問い合わせに答える | F12 | 作った | K-974 |
 | `addOpsInquiryNote` | POST /api/v1/ops/inquiries/:id/notes | 作成・実行（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
 | `replyOpsInquiry` | POST /api/v1/ops/inquiries/:id/replies | 作成・実行（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
 | `listOpsInvoices` | GET /api/v1/ops/invoices | 取得（invoices）— 運営が月ごとの請求書を見る（お支払い待ち・払われた・期限を過ぎた・入金の並びつき） | F12 | 契約だけ（501） |  |

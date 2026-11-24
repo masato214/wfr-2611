@@ -178,4 +178,5 @@ export const MIGRATIONS = [
   "20261128005100_inquiry_read.sql",
   "20261128010300_ops_workspaces.sql",
   "20261128011300_ops_inbox_read.sql",
+  "20261128011400_ops_inbox_update.sql",
 ] as const;
