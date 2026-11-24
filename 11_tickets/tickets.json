@@ -26983,6 +26983,89 @@
    "file": "11_tickets/K-954.md"
   },
   {
+   "id": "K-955",
+   "title": "ログイン後の稼働状況と上の帯（getServiceStatusForMember）：様子 3 行（画面・分身の実行・PC とのつながり）と、障害・メンテの帯と、いま中のメンテを返す。止める日と中を見られている間の帯は空の関数を置いて K-970・K-969 が入れる（K-72 の葉・W2）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "お知らせ",
+   "assignee": "実装",
+   "due": "2026-12-08",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 2 の K-307（ログイン前の稼働状況：DB の関数 1 つと読む口 1 本・試験 16 行・見込み 1）と、この段の K-954（届け先の関数を使う読む口）から引いた：migration（関数 4 つ）20 分・口 1 本と答えの形 10 分・登録先 10 分・自分の確かめ 15 分。試験の土台は K-954 の notice.harness.ts を使う",
+   "decisions": [
+    "D-156.45",
+    "D-156.10",
+    "D-156.17",
+    "D-156.27",
+    "D-125.127",
+    "D-128.71"
+   ],
+   "split": "",
+   "choke_points": [],
+   "choke_none": "読むだけの口。DB に書かず、お知らせ・メール・外への送り出しを持たない（契約の関門も無い）",
+   "tests": [
+    "apps/api/test/features/F12/service-status-member.test.ts",
+    "apps/api/test/generated/get_service_status.test.ts"
+   ],
+   "carry": [
+    "05_flow/screen_api.d/K-955.py",
+    "07_qa/test-plan/ears-elsewhere.d/K-955.json"
+   ],
+   "depends_on": [
+    "K-954"
+   ],
+   "acts": [
+    "A68"
+   ],
+   "screens": [
+    "notices"
+   ],
+   "apis": [
+    "getServiceStatusForMember"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。帯と画面いっぱいの形は K-957・K-1008、稼働状況の区画は K-956",
+   "affects": [
+    "@kaname/api",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128005500_member_service_status.sql",
+    "packages/db/src/migrations.generated.ts",
+    "05_flow/screen_api.d/K-955.py",
+    "scripts/ci/contract_shape.d/K-955.py",
+    "07_qa/test-plan/ears-elsewhere.d/K-955.json",
+    "scripts/ci/ci_scope.d/K-955.json",
+    "apps/api/src/hooks/service-status-member.ts",
+    "apps/api/src/features/F12/notices/status.ts"
+   ],
+   "flow": "困ったときに運営に聞き、お知らせと請求を見る",
+   "sections": {
+    "目的": "ログインした顧客の画面が、上の帯（障害・メンテ）と「いまの稼働状況」と「いまメンテ中か」を 1 本で読む口 `getServiceStatusForMember`（GET /api/v1/service-status・今は 501）を作る（行為 A68・D-156.10）。答えの形は K-1004 の「画面が使う答えの形」（`components`・`bands`・`maintenance_now`）で、この葉は振る舞いだけを書く。\n\n- 様子は 3 行：画面（web）・分身の実行（runs）・PC とのつながり（pc）。下絵 uh-help の「いまの稼働状況」の行と同じ（`features/F12/help/views.tsx` の StatusView）\n- 帯は **障害とメンテだけをこの葉が作る**。止める日（stop・管理者だけ・D-156.23）は K-970、中を見られている間（peek）は K-969 が中身を入れる。この葉は空を返す小さな関数を 2 つ置き、後の葉はそれぞれ自分の関数だけを差し替える（ぶつからない）\n- 届け先（誰に・出したか）は K-954 の `app.notice_for_tenant` を使う（同じ決めを 2 つ作らない）。ログイン前の `getServiceStatus`（K-307）は変えない",
+    "完了の条件": "- [ ] 下の表の 17 行（K955-API-001〜015・K955-DB-001・002）が緑：`apps/api/test/features/F12/service-status-member.test.ts`（土台は K-954 の `notice.harness.ts`）\n- [ ] 契約の口が 501 でない。生成の試験 `get_service_status.test.ts` の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-955.json` の covers）\n- [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑\n- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: LIST\n\n- **生成の試験は作る段の最初に作る**：契約は K-1004 の形のまま（`05_flow/screen_api.d/K-955.py` は住所だけ）。作る段の最初に作り手（`python3 scripts/ci/build_registries.py && python3 scripts/tickets/regen_all.py`）で生成の試験を作り直し、**実装より先に 1 つのコミットにする**。先の葉の契約を前提にした前からの試験は carry に入れない\n- **関数**（migration `20261128005500_member_service_status.sql`・K-955 → 55 分・どれも security definer・`search_path = public, app, pg_temp`・`public` から外す・`kaname_app` に execute）：\n  - `app.member_status_ok() returns boolean`（stable）：`app.role() = 'member' and app.tenant_id() is not null and app.user_id() is not null`。頭の確かめの 1 か所（K-969 が create or replace で「または中を見ている運営の人」を足す）\n  - `app.member_service_status() returns jsonb`：頭で `app.member_status_ok()` でなければ `errcode = 'insufficient_privilege'`（42501・2 層目）。会社 T = `app.tenant_id()`。「見えるお知らせ」は `app.notice_for_tenant(n.id, T)`（K-954）。前提：`app.notice_for_tenant` は会社単位の届け先で、管理者だけ（admins_only）を見ない。管理者だけのお知らせは種類 release の 1 社に送る形でしか作れない（K-978）ので、障害・メンテの帯と `maintenance_now` に管理者だけの物は来ない（来るようになったら、管理者でない人の画面がいっぱいの「メンテ中」になるので、この関数で admins_only を見る）\n  - `app.member_stop_band() returns jsonb`・`app.member_peek_band() returns jsonb`：この葉では `select null::jsonb`（中身は K-970・K-969 が create or replace で入れる。形は下の帯の 1 つ）\n- **様子 `components`**（並びは固定）：`[{ key: \"web\", label: \"画面\" }, { key: \"runs\", label: \"分身の実行\" }, { key: \"pc\", label: \"PC とのつながり\" }]` に `state` を付ける。state は見えるお知らせのうち、直っていない障害（そのお知らせに結んだ `status_incidents` が消していない・`state <> 'resolved'`・`resolved_at is null`）の `notices.affects`（`{ \"<key>\": \"degraded\" | \"down\" }`）の、その鍵の重い方（down ＞ degraded）。どれにも当たらなければ `normal`。出す場所（placements）は見ない（様子は事実なので、帯の付け忘れで隠れない・0105 と同じ考え）。affects の無い障害は様子を変えない\n  - 字の読み替え（画面の葉 K-956 が持つ）：`normal` → ふつう・`degraded` → 遅れている・`down` → 止まっている\n- **帯 `bands`**（並びは 障害 → メンテ → 止める日 → 中を見る。種類ごとに 1 つまで・同じ種類のほかの数を `more`。「新しい 1 つと ほか N 件」の重ね方は画面の葉 K-957・D-156.27）：\n  - 障害：見えるお知らせのうち、出す場所に帯（DB の値 `'banner'`＝契約の `band`）があり、直っていない障害。始まり（`status_incidents.started_at`）の新しい 1 つ → `{ kind: \"incident\", notice_id, title, note, ref, state（status_incidents.state）, from（started_at）, to: null, closable: true, more }`。`note`＝そのお知らせの続報 `notice_updates` の最新（`created_at` の新しい 1 つ）の本文、無ければ `notices.body` の 1 行目（改行の前）。`ref`＝障害の番号 `'INC-' || to_char(started_at at time zone 'Asia/Tokyo', 'YYMM') || '-' || lpad(<その月（日本）に始まった、消していない障害の中の started_at, id の順の番号>, 2, '0')`（D-156.45・下絵の「INC-2611-03」の形）\n  - メンテ：見えるお知らせのうち、帯があり、`kind_id = 'maintenance'`・`maintenance_from` と `maintenance_to` が両方あり、`maintenance_to > now()`（予定といま中）。始まりの早い 1 つ → `{ kind: \"maintenance\", notice_id, title, note（`notices.impact`、無ければ本文の 1 行目）, ref: null, state: null, from, to, closable: true, more }`\n  - 止める日・中を見る：`app.member_stop_band()`・`app.member_peek_band()` が null でなければ、その値を 1 つ足す\n  - closable は 障害・メンテとも true（閉じても障害は次の画面で出る・メンテは閉じたら消える、の違いは画面の葉 K-957 が持つ・D-156.27）\n- **いま中のメンテ `maintenance_now`**：見えるお知らせのうち、`maintenance_from <= now() < maintenance_to` の物（出す場所は見ない）。2 つ以上なら終わりの早い物 → `{ from, to }`。無ければ null。予定（これから）は入れない（K-307 と同じ）\n- **口**：`apps/api/src/features/F12/notices/status.ts`。`withTenant` の 1 取引で `select app.member_service_status()` を呼び、そのまま `{ data }` で返す（200・`Cache-Control: private, no-store`）。答えが空・形が違えば読めないのと同じ（ふつうを返さない・G-15）。DB の失敗は 503 E-PAGE-003（K-954 の `errors.ts`）。ログは `[service-status] ログイン後の稼働状況の DB が失敗した（<SQLSTATE>）` だけ\n- 時刻の比べは DB の `now()`。運営の本文・メモ・テナントの id は返さない（帯の題とお知らせの id だけ）\n- 口の登録：`apps/api/src/hooks/service-status-member.ts` に `serviceStatusMemberHooks(d)`（getServiceStatusForMember の before）と `register`（`fuzz: \"same\"`）。ログイン前の `service-status.ts`（K-307）は触らない",
+    "依存の理由": "- K-954: 要る — 届け先の関数 `app.notice_for_tenant`・列 `notices.target_tenant_ids`・言葉 → 番号の `features/F12/notices/errors.ts`・試験の土台 `notice.harness.ts` を K-954 が作る",
+    "目録で探した結果": "- 使う：K-954 の `app.notice_for_tenant`・`errors.ts`・`notice.harness.ts`・`status_incidents`（0078 の notice_id・state）・`notices.affects`・`placements`（0078）・K-307 の考え（0105：様子と今のメンテは出す場所を見ない・予定は今のメンテに入れない）\n- 作る：関数 4 つ・hooks `service-status-member.ts`・`features/F12/notices/status.ts`。探したがログイン後の稼働状況の道は無かった（0105 はログイン前の全部向けだけで、会社ごとの届け先・帯・様子を持たない）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128005500_member_service_status.sql`：関数 4 つ（前提と制約）。一覧は作り手 `python3 scripts/ci/gen_migrations.py` |\n| 口 | `apps/api/src/features/F12/notices/status.ts` |\n| 口の登録 | `apps/api/src/hooks/service-status-member.ts` |\n| 登録先 | `05_flow/screen_api.d/K-955.py`（住所だけ）・`scripts/ci/contract_shape.d/K-955.py`（空の表）・`07_qa/test-plan/ears-elsewhere.d/K-955.json`・`scripts/ci/ci_scope.d/K-955.json`（hooks・口・K-954 の土台と口 → この葉の試験）。`python3 scripts/ci/build_registries.py`・`python3 scripts/ci/gen_ts_registries.py` |",
+    "外に影響する手順": "- なし — 読むだけ（DB に書かず、お知らせ・メール・鈴・外への送り出しを持たない）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/service-status-member.test.ts`（本物の DB・本物の hooks・偽の画面のログイン。土台は K-954 の `notice.harness.ts`。共用の DB なので、この回の会社だけに向けたお知らせで確かめる）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 障害なし・影響の印なし | 画面を開く | 会社の人 | 3 行とも normal | このチケット | K955-API-001・002 |\n| 直っていない障害（影響あり） | 画面を開く | 会社の人 | degraded／down・帯 | このチケット | K955-API-003・004・005 |\n| 障害が直った（切り替わりの直後） | 画面を開く | 会社の人 | 帯が消える・normal | このチケット | K955-API-003・005 |\n| メンテの予定・いま中・終わった | 画面を開く | 会社の人 | 帯・maintenance_now | このチケット | K955-API-006・007 |\n| ほかのプラン・ほかのワークスペース向け・下書き・消した | 画面を開く | 会社の人 | 効かない | このチケット | K955-API-008 |\n| 止める日・中を見られている間 | 画面を開く | 管理者・会社の人 | この葉では無い | K-970・K-969 | K955-API-009 |\n| どれでも | 画面を開く | ログインしていない／先方の権限 | 401／403 | このチケット | K955-API-010・011 |\n| どれでも | 画面を開く | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n| どれでも | 画面を開く | 付けるまで進めない | 403・MFA_REQUIRED | 入口の共通（K-321） | 生成の試験 mfa_pending |\n| DB が落ちた | 画面を開く | 会社の人 | 503 | このチケット | K955-API-014 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K955-API-001 | 対象の状態 | 答えの形 | 200・鍵はちょうど bands・components・maintenance_now・様子は web 画面・runs 分身の実行・pc PC とのつながりの 3 行で鍵は key・label・state |\n| K955-API-002 | 対象の状態 | 影響の印の無い障害 | 3 行とも normal |\n| K955-API-003 | 対象の状態 | 影響の重さ | runs は degraded と down の重なりで down・pc は degraded・直った障害の web は normal・ほかのワークスペース向けの障害は相手の会社の web だけ down |\n| K955-API-004 | 対象の状態 | 障害の帯 | 帯のある直っていない障害だけ 1 つ・notice_id・題・state identified・from は時刻の字・closable true・more 0・note は最新の続報の本文（続報が無ければ本文の 1 行目）・ref は「INC-<始まりの YYMM>-<2 けた>」の形。一覧だけの障害は帯にならない |\n| K955-API-005 | 時間の流れ | 帯の重なりと直った直後 | 始まりの新しい 1 つと more 1・2 つとも直すと障害の帯は空 |\n| K955-API-006 | 時間の流れ | メンテの帯 | 近い予定の 1 つ（notice_id・題・note は影響の字・ref は null・closable true・more 1）・from から to は 1 時間・終わったメンテは数えない |\n| K955-API-007 | 時間の流れ | いま中のメンテ | 予定だけのときは、その予定の to が maintenance_now に入らない・いま中を足すと鍵 from・to で to はその物 |\n| K955-API-008 | 守り | 届け先 | ほかのプラン・ほかのワークスペース向け・下書き・消した障害は、web を変えず帯にも出ない |\n| K955-API-009 | 対象の状態 | 止める日・中を見る | app.member_stop_band() と app.member_peek_band() は null・帯に stop・peek が無い |\n| K955-API-010 | 利用者の状態 | ログインしていない | 401・data が無い |\n| K955-API-011 | 守り | 先方の権限の人 | 403 |\n| K955-API-012 | 守り | 上限を超える | 429・retry_after_sec は 1〜60 |\n| K955-API-013 | 守り | 貯めない | Cache-Control に private と no-store |\n| K955-API-014 | 失敗 | DB が落ちた | 帯の関数が呼べないと 503・E-PAGE-003・data が無い・戻すと 200 |\n| K955-API-015 | 守り | ログイン前の口 | GET /api/v1/auth/service-status は 200 で鍵はちょうど incidents・maintenance |\n| K955-DB-001 | 守り | 関数の権限 | 関数 4 つ（member_peek_band・member_service_status・member_status_ok・member_stop_band）は security definer・kaname_app は呼べ・PUBLIC は呼べない |\n| K955-DB-002 | 守り | 2 層目 | 運営の文脈（会社なし）で app.member_service_status() は 42501 |\n\n### テストの型の受け（分類 LIST）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-LIST-01 0 件・1 件・境目 | 帯 0（K955-API-005 の直した後・009）・1（004）・2 で more 1（005・006）。様子は 3 行で固定 |\n| TP-LIST-02 同じ値の並び | 帯の種類の並びは固定・同じ種類は始まりで 1 つを選ぶ（K955-API-005・006） |\n| TP-LIST-03 絞り込みの URL | 要らない：絞り込みを受けない口 |\n| TP-LIST-04 探す語 | 要らない：探す語を受けない口 |\n| G-11〜G-16 | G-11：N/A（外の資源を使わない）。G-12：K955-API-005（直った直後に帯が消える）・007（いま中に入った直後）。G-13：K955-API-003（影響の重なり）。G-14：止められた会社の帯は K-970。G-15：K955-API-014（読めないのにふつうを返さない）。G-16：1 回の口で関数 1 回・1 取引 |",
+    "速さ（今の値と目標の値）": "| 項目 | 今 | 目標 |\n|---|---|---|\n| 画面ごとの口の数 | — | 外枠の帯は全画面で 1 本（K-957 が外枠で 1 回だけ呼ぶ）。困ったとき・お知らせでは一覧（K-954）と同時に始める |\n| 口ごとの文の数・取引の数 | — | 1 取引・文 1 つ |\n| 認証の要る答えの Cache-Control | — | private, no-store（K955-API-013） |",
+    "前からの試験を替えた所": "稼働状況の口の名前・道・新しい関数の名前を読む前からの試験を探した（段 13 の F12 の試験は外した）。\n\n```search\ngit grep -l -E \"getServiceStatusForMember|member_service_status|member_stop_band|member_peek_band|\\\"/service-status\\\"\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/*'\n5\n```\n\n- 段 13 のほかの葉が切る段で書いた自分の試験・道具 1 本（scripts/ci/k999_staging_spec_test.py（K-999））: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n- scripts/ci/k1102_staging_spec_test.py（K-1102）: 替えない — この葉の後に作る葉（この葉に依存する）の試験で、この葉が作る形に合わせて書いてある（ステージの通しの試験の形を見る）\n\n- apps/api/test/features/F1/service-status.test.ts（K-307）: 替えない — ログイン前の口と、ログイン後の口の型の名前 ServiceStatus を見る（K307-API-016）。この葉は契約を変えず、ログイン前の関数も変えない\n- scripts/ci/k1000_flow_test.py（K-1000）: 替えない — 親 K-72 の apis に口の名前が在ることを見る。この葉は K-72.md を触らない\n- scripts/ci/k1004_notice_contract_test.py（K-1004）: 替えない — 契約の形を読む。この葉は契約を変えない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.10・27）\n- 切る段の決め（2026-11-23）：様子の 3 行（web・runs・pc）と重さは `notices.affects`（運営の葉 K-977 が書く）。止める日・中を見るの帯は葉ごとの関数（`app.member_stop_band`・`app.member_peek_band`）を K-970・K-969 が差し替える",
+    "リスク": "- 共用の DB で、ほかの試験の帯のある障害が混ざる → 試験はこの回の会社だけに向けた行で確かめる。障害の帯の 1 つと more は、この回の会社に向けた行の始まりを「今」に近くして選ばれるようにした\n- K-955-API-007 の「予定だけ」の確かめは、ほかの試験のいま中の全部向けのメンテが混ざっても、この回の予定の to が入らないことを見る",
+    "申し送り": "- K-970：`app.member_stop_band()` を create or replace で入れる（止める日が先なら管理者だけ・止めた後はその会社の全員に `{ kind: \"stop\", notice_id: null, title: <理由>, note: null, ref: null, state: null, from: <止める日の 0 時（日本）か止めた時刻>, to: null, closable: false, more: 0 }`・D-156.23。K-1008 の `stopView` が `from > now` で予定と止めたを分ける）。ほかの関数は触らない\n- K-969：`app.member_peek_band()` と `app.member_status_ok()` を create or replace で入れる（中を見る許可が開いている間、運営の側は `notice_id` に**許可の id**（closePeek の `:id`）・顧客の側は `notice_id: null`・`title: \"運営が中を見ています\"`。どちらも `state: <理由>`・`from: <開いた時刻>`・`to: <期限>`・`closable: false`）\n- K-956：様子の字の読み替え（normal → ふつう など）・K-957：帯の重ね方（新しい 1 つと ほか N 件）と閉じたときの扱い。障害の帯の一言（下絵の note）と障害の番号は帯の `note`・`ref`（この葉が返す・D-156.45）\n- K-977：届け先の関数 `app.notice_for_tenant` を `app.notice_audience_ok` に分けて create or replace で寄せ直し、止めている会社（`app.tenant_stopped`）を届け先から外す（D-156.82・それ以外の中身は同じ）。K-977 の `ci_scope.d` の data_links にこの葉の `service-status-member.test.ts` を入れて一緒に流す（K-977 の md に在る）\n- 登録先の下書き `05_flow/screen_api.d/K-955.py`（住所だけ）・`07_qa/test-plan/ears-elsewhere.d/K-955.json` は切る段で書いた（carry で運ぶ）\n- K-977：様子の重さは `notices.affects` に `{ \"web\" | \"runs\" | \"pc\": \"degraded\" | \"down\" }` で書く",
+    "代表に聞くこと": "- #8 代表の答え 2026-11-23（D-156.27）（帯は出す場所に上の帯を選んだ物だけ・障害は直るまで出る・重なったら新しい 1 つと ほか 1 件）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 17 行（上限 30）。"
+   },
+   "file": "11_tickets/K-955.md"
+  },
+  {
    "id": "K-1000",
    "title": "段 13 の流れと文書：flow.json の A80 を「操作の版を見る（読むだけ）」に・回収の行為 A138 を足す・配るもの（ops-skills）の目的と第 2 ナビ・運営の役と用事の文、親 K-72 の apis に利用者の口 14 本、文書 08_api/phase1/10 から上の数の 3 本を消す（流れの正本と文書だけ・K-940 から分けた・K-72 の葉・W0）",
    "kind": "タスク",

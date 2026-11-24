@@ -1,0 +1,25 @@
+{
+ "ops": {
+  "getServiceStatusForMember": {
+   "file": "apps/api/test/features/F12/service-status-member.test.ts",
+   "reason": "様子と帯は運営のお知らせ・障害の行と届け先で決まる。種では作れない（K-955）",
+   "covers": {
+    "test_get_service_status_ok": "K955-API-001",
+    "test_get_service_status_rejected_401": "K955-API-010",
+    "test_get_service_status_rejected_403": "K955-API-011",
+    "test_get_service_status_rate_limited": "K955-API-012",
+    "test_get_service_status_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_service_status_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_service_status_rejected_422": "入力を受けない GET（問い合わせの値も持たない）"
+   }
+  }
+ }
+}
