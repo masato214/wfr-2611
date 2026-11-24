@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 359（作った 112・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 321・部品 68・設定 41
+API 359（作った 114・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 321・部品 68・設定 41
 
 ## 共通の処理
 
@@ -279,11 +279,11 @@ API 359（作った 112・後のフェーズの行為だけ 20）・前の道す
 | `returnPlanProposal` | POST /api/v1/ops/plan_proposals/:id/return | 作成・実行（ops）— プランの値段・中身を変える案を作り、別の人が決める | F12 | 契約だけ（501） | K-72 |
 | `submitPlanProposal` | POST /api/v1/ops/plan_proposals/:id/submit | 作成・実行（ops）— プランの値段・中身を変える案を作り、別の人が決める | F12 | 契約だけ（501） | K-72 |
 | `listOpsPlans` | GET /api/v1/ops/plans | 取得（ops）— プランの値段・中身を変える案を作り、別の人が決める | F12 | 契約だけ（501） | K-72 |
-| `getOpsShell` | GET /api/v1/ops/shell | 取得（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 契約だけ（501） | K-963 |
+| `getOpsShell` | GET /api/v1/ops/shell | 取得（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 作った | K-963 |
 | `listOpsTemplates` | GET /api/v1/ops/templates | 取得（ops）— ひな形（層・マスタ）を作って配る | F12 | 契約だけ（501） | K-72 |
 | `getOpsTemplate` | GET /api/v1/ops/templates/:id | 取得（ops）— ひな形（層・マスタ）を作って配る | F12 | 契約だけ（501） | K-72 |
 | `releaseOpsTemplate` | POST /api/v1/ops/templates/:id/versions | 作成・実行（ops）— ひな形（層・マスタ）を作って配る | F12 | 契約だけ（501） | K-72 |
-| `listOpsWorkspaces` | GET /api/v1/ops/workspaces | 取得（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 契約だけ（501） | K-963 |
+| `listOpsWorkspaces` | GET /api/v1/ops/workspaces | 取得（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 作った | K-963 |
 | `getOpsWorkspace` | GET /api/v1/ops/workspaces/:id | 取得（ops）— ワークスペースの 1 社を扱う（いまの状態・メンバー・プ | F12 | 契約だけ（501） |  |
 | `listOpsWorkspaceAudit` | GET /api/v1/ops/workspaces/:id/audit | 取得（ops）— ワークスペースの 1 社を扱う（いまの状態・メンバー・プ | F12 | 契約だけ（501） |  |
 | `getOpsWorkspaceBilling` | GET /api/v1/ops/workspaces/:id/billing | 取得（ops）— ワークスペースの 1 社を扱う（いまの状態・メンバー・プ | F12 | 契約だけ（501） |  |
