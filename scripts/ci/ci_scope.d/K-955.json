@@ -1,0 +1,18 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/service-status-member.ts",
+    "apps/api/src/features/F12/notices/status.ts",
+    "apps/api/src/features/F12/notices/errors.ts",
+    "packages/db/migrations/20261128005400_member_notices.sql",
+    "packages/db/migrations/20261128005500_member_service_status.sql",
+    "apps/api/test/features/F12/notice.harness.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/service-status-member.test.ts",
+    "apps/api/test/generated/get_service_status.test.ts"
+   ]
+  }
+ ]
+}
