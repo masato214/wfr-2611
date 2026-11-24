@@ -2236,6 +2236,16 @@
   },
   {
    "paths": [
+    "apps/web/features/F12/help/**",
+    "apps/web/app/(work)/notices/**"
+   ],
+   "tests": [
+    "apps/web/tests/k/k956-help-home.spec.ts",
+    "apps/web/test/k956-help-shape.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/web/components/k/k.css"
    ],
    "tests": [
@@ -2445,6 +2455,7 @@
   "apps/api/test/features/F12/inquiry.harness.ts": "入っている葉の hooks のファイル（inquiry-create ほか）と上げる先の受け口（F12/inquiries/upload-route.ts・K-950）を動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-949",
   "apps/api/test/features/F12/notice.harness.ts": "葉の hooks のファイル（notices-read ほか）を F3/leaf-hooks.ts の動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-954",
   "apps/api/test/features/contract/k144.d/K-954.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-954",
+  "apps/web/lib/built-routes.ts": "K956-UI-010 が道の一覧に /inquiry があるかを字で読む（K-956）",
   "apps/web/tests/k/k964-table-wrap.spec.ts": "部品 apps/web/components/k/k.css を readFileSync で読み、.k-table-wrap の規則を見る（K-964）",
   "apps/web/tests/k/k1100-stage-locked.spec.ts": "鍵の札の CSS apps/web/features/F6/progress/progress.css を読み、余白と間が正本のトークンだけを読むかを見る（K1100-UI-004）。正本と生成物の変更でも流れるよう data_links で結ぶ（K-1100）"
  },
