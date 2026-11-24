@@ -130,7 +130,7 @@
 | EP-115 | DELETE | `/api/v1/invitations/:id` | 削除（invitations）— 人を招く（層・権限の束） | A36 | 1 | member | C2 C6 | 401 403 404 422 429 403 403 503 |
 | EP-116 | POST | `/api/v1/invitations/:id/resend` | 作成・実行（invitations）— 人を招く（層・権限の束） | A36 | 1 | member | C2 C6 | 401 403 404 409 422 413 429 403 403 503 |
 | EP-117 | POST | `/api/v1/invitations/link` | 作成・実行（invitations）— 人を招く（層・権限の束） | A36 | 1 | member | C2 C6 | 401 403 422 404 503 413 429 403 403 503 |
-| EP-118 | GET | `/api/v1/invoices/:id/pdf` | 取得（invoices）— プラン・利用量・請求書を見る | A69 | 1 | member |  | 401 403 404 422 429 403 403 503 |
+| EP-118 | GET | `/api/v1/invoices/:id/pdf` | 取得（invoices）— プラン・利用量・請求書を見る | A69 | 1 | member |  | 401 403 404 422 409 429 403 403 503 |
 | EP-119 | POST | `/api/v1/knowledge/ask` | 作成・実行（knowledge）— ナレッジのページを書く・直す（会社・ | A114 | 1 | member | C2 | 401 403 409 422 413 429 403 403 503 |
 | EP-120 | POST | `/api/v1/knowledge/ask/feedback` | 作成・実行（knowledge）— ナレッジのページを書く・直す（会社・ | A114 | 1 | member | C2 | 401 403 409 422 413 429 403 403 503 |
 | EP-121 | POST | `/api/v1/knowledge/folders` | 作成・実行（knowledge）— ナレッジのページを書く・直す（会社・ | A114 | 1 | member | C2 | 401 403 409 422 404 409 503 413 429 403 403 503 |
@@ -380,7 +380,7 @@
 
 ## 4. 逆カバレッジ（フィールド → 画面）
 
-- 検査したフィールド 1089 ／ 内部専用 278 ／ どの画面にも出ない 11
+- 検査したフィールド 1090 ／ 内部専用 278 ／ どの画面にも出ない 11
   - ★ learned_procedures.duty_id
   - ★ learned_procedures.target_service_id
   - ★ learned_procedures.status_id

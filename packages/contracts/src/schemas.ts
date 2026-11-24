@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:c22682d5db7e7633
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:fdce95fa521aef07
 import { z } from "zod";
 
 export const Tenants = z.strictObject({
@@ -7,6 +7,7 @@ export const Tenants = z.strictObject({
   status_id: z.uuid().nullable().optional(),
   live_at: z.iso.datetime({ offset: true }).nullable().optional(),
   live_by: z.uuid().nullable().optional(),
+  billing_contact: z.unknown().nullable().optional(),
   id: z.uuid(),
   tenant_id: z.uuid().optional(),
   created_at: z.iso.datetime({ offset: true }).optional(),
@@ -28,6 +29,7 @@ export const TenantsInput = z.strictObject({
   status_id: z.uuid().nullable().optional(),
   live_at: z.iso.datetime({ offset: true }).nullable().optional(),
   live_by: z.uuid().nullable().optional(),
+  billing_contact: z.unknown().nullable().optional(),
 });
 export const Scopes = z.strictObject({
   parent_id: z.uuid().nullable().optional(),

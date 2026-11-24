@@ -6,15 +6,15 @@
  ],
  "counts": {
   "api": 359,
-  "api_built": 115,
+  "api_built": 117,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
   "db": 149,
   "ui": 19,
   "packages": 13,
-  "errors": 325,
+  "errors": 326,
   "stack": 68,
-  "env": 41
+  "env": 43
  },
  "api": [
   {
@@ -1960,7 +1960,7 @@
    "tables": [
     "invoices"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
     "K-72",
     "K-958"
@@ -5764,7 +5764,7 @@
    "tables": [
     "invoices"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
     "K-72",
     "K-958"
@@ -8040,6 +8040,14 @@
    {
     "name": "KANAME_EDGE_ECHO",
     "what": "確かめの口 GET /api/edge/echo を開く（1 で開く）。staging の確かめ（scripts/ci/staging_edge_check.py）の間だけ。本番には入れない"
+   },
+   {
+    "name": "BILLING_TERMS",
+    "what": "請求書の画面の支払い条件（K-958）。空なら「請求書払い ・ 月末締め 翌月 1 日に出す ・ 月末払い」"
+   },
+   {
+    "name": "BILLING_PAYEE",
+    "what": "請求書の画面の振込先（K-958）。行を「|」で区切る。空なら画面は「まだ決まっていません」。口座の番号はここに書かない（環境ごとに入れる）"
    }
   ]
  }

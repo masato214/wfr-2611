@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 359（作った 115・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 325・部品 68・設定 41
+API 359（作った 117・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 326・部品 68・設定 43
 
 ## 共通の処理
 
@@ -246,7 +246,7 @@ API 359（作った 115・後のフェーズの行為だけ 20）・前の道す
 | `postInquiryMessage` | POST /api/v1/inquiries/:id/messages | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `resolveMyInquiry` | POST /api/v1/inquiries/:id/resolve | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `uploadInquiryAttachment` | POST /api/v1/inquiries/attachments | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
-| `downloadInvoicePdf` | GET /api/v1/invoices/:id/pdf | 取得（invoices）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72,K-958 |
+| `downloadInvoicePdf` | GET /api/v1/invoices/:id/pdf | 取得（invoices）— プラン・利用量・請求書を見る | F12 | 作った | K-72,K-958 |
 | `listNotices` | GET /api/v1/notices | 取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障害の続報まで・1 件を開く口は無い） | F12 | 契約だけ（501） | K-72,K-954 |
 | `markNoticeRead` | POST /api/v1/notices/:id/read | 作成・実行（notices）— お知らせを見る | F12 | 契約だけ（501） | K-72,K-954 |
 | `listOpsInquiries` | GET /api/v1/ops/inquiries | 取得（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
@@ -297,7 +297,7 @@ API 359（作った 115・後のフェーズの行為だけ 20）・前の道す
 | `stopWorkspace` | POST /api/v1/ops/workspaces/:id/stop | 作成・実行（ops）— ワークスペースを止める・再開する（理由・先に知らせる） | F12 | 契約だけ（501） |  |
 | `exportOpsWorkspaces` | POST /api/v1/ops/workspaces/export | 作成・実行（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 契約だけ（501） |  |
 | `getServiceStatusForMember` | GET /api/v1/service-status | 取得（service-status）— お知らせを見る | F12 | 契約だけ（501） | K-72 |
-| `getBilling` | GET /api/v1/workspace/billing | 取得（workspace）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72,K-958 |
+| `getBilling` | GET /api/v1/workspace/billing | 取得（workspace）— プラン・利用量・請求書を見る | F12 | 作った | K-72,K-958 |
 | `updateBillingContact` | PATCH /api/v1/workspace/billing-contact | 更新（workspace）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72 |
 | `changePlan` | POST /api/v1/workspace/plan | 作成・実行（workspace）— プラン・利用量・請求書を見る | F12 | 作った | K-72,K-961 |
 | `listWorkspacePlans` | GET /api/v1/workspace/plans | 取得（workspace）— プラン・利用量・請求書を見る | F12 | 作った | K-72,K-961 |
@@ -580,6 +580,8 @@ API 359（作った 115・後のフェーズの行為だけ 20）・前の道す
 | `BRIDGE_RELEASE_BASE` | 空＝まだ配布していない（画面は「まだ配布していません」と言い、自動更新も見に行かない） |
 | `KANAME_EDGE_SECRET` | 画面と口の両方のプロジェクトに同じ値をサーバーだけの環境変数で入れる（NEXT_PUBLIC にしない）。空なら写した頭を消すだけ。値は K-263 で入れる |
 | `KANAME_EDGE_ECHO` | 確かめの口 GET /api/edge/echo を開く（1 で開く）。staging の確かめ（scripts/ci/staging_edge_check.py）の間だけ。本番には入れない |
+| `BILLING_TERMS` | 請求書の画面の支払い条件（K-958）。空なら「請求書払い ・ 月末締め 翌月 1 日に出す ・ 月末払い」 |
+| `BILLING_PAYEE` | 請求書の画面の振込先（K-958）。行を「|」で区切る。空なら画面は「まだ決まっていません」。口座の番号はここに書かない（環境ごとに入れる） |
 
 ## 使っている部品
 
