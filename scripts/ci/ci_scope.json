@@ -2163,6 +2163,18 @@
   },
   {
    "paths": [
+    "apps/web/features/F12/ops/ws-list-*",
+    "apps/web/features/F12/ops/use-ops-workspaces.ts",
+    "apps/web/features/F12/ops/views-list.tsx",
+    "apps/web/app/(ops)/ops/page.tsx"
+   ],
+   "tests": [
+    "apps/web/tests/k/k965-ws-list.spec.ts",
+    "apps/web/test/k965-ws-list-shape.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/web/features/F6/progress/progress.css",
     "04_design/DESIGN-kaname.md",
     "apps/web/styles/k-tokens.css"
@@ -2361,6 +2373,8 @@
   "apps/web/tests/k/k941-f12-ops-parts.spec.ts": "開発用の置き場 apps/web/app/(dev)/dev/mock/f12-ops の mocks.tsx・render.tsx・[id]/page.tsx と部品 apps/web/features/F12/ops・shared の .ts・.tsx・.css を読み、scripts/ci/canvas_field_gate.py と scripts/ci/design_gate.py を子プロセスで流す（K-941）",
   "apps/web/tests/k/f12-mock-kit.ts": "段 13 の下絵の試験の道具。開発用の置き場 apps/web/app/(dev)/dev/mock/f12-* の mocks.tsx と部品 apps/web/features/F12 のファイルを読む（K-941 が運ぶ・K-942・K-943 の試験も読む）",
   "apps/web/tests/k/k964-table-wrap.spec.ts": "部品 apps/web/components/k/k.css を readFileSync で読み、.k-table-wrap の規則を見る（K-964）",
+  "apps/web/tests/k/k965-ws-list.spec.ts": "stage2-match.ts を通してモックの頁 /dev/mock/f12-ops を開き scripts/ci/fidelity_compare.mjs を読む。答えの見本 ops-answers.ts を読む（実ブラウザの試験は web の組が流す）・K-965",
+  "apps/web/test/k965-ws-list-shape.test.ts": "下絵の見本 apps/web/features/F12/ops/ops-sample.ts と答えの見本 apps/web/tests/k/ops-answers.ts を読む（画面の外の純粋な関数の試験）・K-965",
   "apps/web/tests/k/k1100-stage-locked.spec.ts": "鍵の札の CSS apps/web/features/F6/progress/progress.css を読み、余白と間が正本のトークンだけを読むかを見る（K1100-UI-004）。正本と生成物の変更でも流れるよう data_links で結ぶ（K-1100）"
  },
  "web_select": {
