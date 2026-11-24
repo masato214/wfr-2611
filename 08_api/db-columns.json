@@ -5140,6 +5140,10 @@
     "type": "uuid",
     "nullable": true
    },
+   "effective_from": {
+    "type": "date",
+    "nullable": true
+   },
    "from_plan_id": {
     "type": "uuid",
     "nullable": true
@@ -5147,6 +5151,10 @@
    "id": {
     "type": "uuid",
     "nullable": false
+   },
+   "prorated_amount": {
+    "type": "integer",
+    "nullable": true
    },
    "requested_by": {
     "type": "uuid",

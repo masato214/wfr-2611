@@ -6,13 +6,13 @@
  ],
  "counts": {
   "api": 359,
-  "api_built": 112,
+  "api_built": 114,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
   "db": 149,
   "ui": 19,
   "packages": 13,
-  "errors": 321,
+  "errors": 323,
   "stack": 68,
   "env": 41
  },
@@ -1962,7 +1962,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-958"
    ]
   },
   {
@@ -3450,7 +3451,7 @@
    "op": "listNotices",
    "method": "GET",
    "path": "/api/v1/notices",
-   "what": "取得（notices）— お知らせを見る",
+   "what": "取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障害の続報まで・1 件を開く口は無い）",
    "flows": [
     "F12"
    ],
@@ -3460,7 +3461,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-954"
    ]
   },
   {
@@ -3477,7 +3479,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-954"
    ]
   },
   {
@@ -3730,7 +3733,7 @@
    "op": "listOpsNotices",
    "method": "GET",
    "path": "/api/v1/ops/notices",
-   "what": "取得（ops）— お知らせを出す",
+   "what": "取得（notices）— 運営のお知らせを新しい順に見る（下書き・予定・出した・直った）",
    "flows": [
     "F12"
    ],
@@ -5761,7 +5764,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-958"
    ]
   },
   {
@@ -5871,9 +5875,10 @@
    "tables": [
     "subscriptions"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-961"
    ]
   },
   {
@@ -5888,9 +5893,10 @@
    "tables": [
     "plans"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-961"
    ]
   },
   {

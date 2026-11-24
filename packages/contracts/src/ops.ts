@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml）。手で直さない。openapi:2b5a032b5dc6ce94
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml）。手で直さない。openapi:d990b75997ac3c62
 import type * as T from "./types.js";
 
 /** 口ごとの型：path の値・問い合わせ・入力・成功の答えの data */
@@ -210,8 +210,8 @@ export interface Ops {
   deleteMemory: { params: { id: string }; query: never; body: never; data: T.Memories };
   promoteMemoryToRule: { params: { id: string }; query: never; body: T.PoliciesInput; data: T.Policies };
   createArtifactFromMessage: { params: { id: string }; query: never; body: T.ArtifactsInput; data: T.Artifacts };
-  listNotices: { params: never; query: { "kind"?: string | number; "unread"?: string | number; "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.Notices[] };
-  markNoticeRead: { params: { id: string }; query: never; body: T.NoticeDeliveriesInput; data: T.NoticeDeliveries };
+  listNotices: { params: never; query: { "kind"?: string | number; "unread"?: string | number; "cursor"?: string | number; "limit"?: string | number }; body: never; data: T.Notice[] };
+  markNoticeRead: { params: { id: string }; query: never; body: T.NoticeReadInput; data: T.NoticeRead };
   listNotifications: { params: never; query: { "unread"?: string | number; "actor_member_id"?: string | number; "cursor"?: string | number; "limit"?: string | number }; body: never; data: T.Notification[] };
   readNotification: { params: { id: string }; query: never; body: T.NotificationsInput; data: T.Notifications };
   readAllNotifications: { params: never; query: never; body: T.NotificationsInput; data: T.Notifications };
@@ -228,12 +228,12 @@ export interface Ops {
   addOpsMember: { params: never; query: never; body: T.OpsMembersInput; data: T.OpsMembers };
   updateOpsMemberCaps: { params: { id: string }; query: never; body: T.OpsMembersInput; data: T.OpsMembers };
   removeOpsMember: { params: { id: string }; query: never; body: never; data: T.OpsMembers };
-  listOpsNotices: { params: never; query: { "kind"?: string | number; "state"?: string | number; "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.Notices[] };
-  createOpsNotice: { params: never; query: never; body: T.NoticesInput; data: T.Notices };
+  listOpsNotices: { params: never; query: { "kind"?: string | number; "state"?: string | number; "cursor"?: string | number; "limit"?: string | number }; body: never; data: T.OpsNoticeRow[] };
+  createOpsNotice: { params: never; query: never; body: T.OpsNoticeCreateInput; data: T.OpsNoticeDetail };
   getOpsNotice: { params: { id: string }; query: never; body: never; data: T.OpsNoticeDetail };
-  updateOpsNotice: { params: { id: string }; query: never; body: T.NoticesInput; data: T.Notices };
-  publishOpsNotice: { params: { id: string }; query: never; body: T.NoticesInput; data: T.Notices };
-  addIncidentUpdate: { params: { id: string }; query: never; body: T.StatusIncidentsInput; data: T.StatusIncidents };
+  updateOpsNotice: { params: { id: string }; query: never; body: T.OpsNoticeUpdateInput; data: T.OpsNoticeDetail };
+  publishOpsNotice: { params: { id: string }; query: never; body: T.OpsNoticePublishInput; data: T.OpsNoticeDetail };
+  addIncidentUpdate: { params: { id: string }; query: never; body: T.IncidentUpdateInput; data: T.OpsNoticeDetail };
   listOperations: { params: never; query: { "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.Operations[] };
   closePeek: { params: { id: string }; query: never; body: never; data: T.SupportAccessGrants };
   listPlanHistory: { params: never; query: { "plan_id"?: string | number; "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.OpsAuditEvents[] };
@@ -256,7 +256,7 @@ export interface Ops {
   listOpsWorkspaceInquiries: { params: { id: string }; query: { "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.Inquiries[] };
   listOpsWorkspaceMembers: { params: { id: string }; query: { "scope_id"?: string | number; "cursor"?: string | number; "limit"?: string | number; "sort"?: string | number }; body: never; data: T.OpsWorkspaceMember[] };
   resendOpsVerification: { params: { id: string; mid: string }; query: never; body: T.SecurityEventsInput; data: T.SecurityEvents };
-  sendWorkspaceNotice: { params: { id: string }; query: never; body: T.NoticesInput; data: T.Notices };
+  sendWorkspaceNotice: { params: { id: string }; query: never; body: T.WorkspaceNoticeInput; data: T.OpsNoticeDetail };
   openPeek: { params: { id: string }; query: never; body: T.SupportAccessGrantsInput; data: T.SupportAccessGrants };
   changeOpsWorkspacePlan: { params: { id: string }; query: never; body: T.OpsPlanChangeInput; data: T.PlanChange };
   resumeWorkspace: { params: { id: string }; query: never; body: T.AccountEventsInput; data: T.AccountEvents };

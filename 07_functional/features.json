@@ -4848,7 +4848,9 @@
     "E-FMS-004",
     "E-FMS-002",
     "E-FMS-003",
-    "E-FMS-005"
+    "E-FMS-005",
+    "E-PLAN-001",
+    "E-PLAN-002"
    ],
    "policies": [
     "C2",
