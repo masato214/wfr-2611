@@ -39,6 +39,22 @@
     {
      "name": "live_by",
      "note": "本番に切り替えた日時と人。切り替える前の確認に赤が無いときだけ app.onboard_golive_switch が書く ← D-116.5・D-028.4"
+    },
+    {
+     "name": "stopped_at",
+     "note": null
+    },
+    {
+     "name": "stop_on",
+     "note": null
+    },
+    {
+     "name": "stop_reason_key",
+     "note": "unpaid・violation・danger・request"
+    },
+    {
+     "name": "stop_noticed_at",
+     "note": "運営が止めた時刻・止める予定の日・理由・管理者に知らせた時刻。書くのは K-970 の関数だけ・運営の一覧は app.workspace_facts で読む ← D-156.23・D-156.49・K-963"
     }
    ],
    "relations": [

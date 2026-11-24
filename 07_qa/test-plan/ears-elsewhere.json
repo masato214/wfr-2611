@@ -2863,6 +2863,49 @@
    "na": {
     "test_post_notices_id_read_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）で、口ごとに変わらない。体は空の {} だけ"
    }
+  },
+  "getOpsShell": {
+   "file": "apps/api/test/features/F12/ops-workspaces.test.ts",
+   "reason": "全社の数は DB の全部の会社と運営の人の caps で答えが変わる。種では足す前と後の差を作れない（K-963）",
+   "covers": {
+    "test_get_ops_shell_ok": "K963-API-001",
+    "test_get_ops_shell_rejected_401": "K963-API-017",
+    "test_get_ops_shell_rejected_403": "K963-API-017",
+    "test_get_ops_shell_rate_limited": "K963-API-020",
+    "test_get_ops_shell_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ops_shell_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_ops_shell_rejected_422": "問い合わせも体も受けない口。知らない問い合わせの 422 は入口の共通（K-144）"
+   }
+  },
+  "listOpsWorkspaces": {
+   "file": "apps/api/test/features/F12/ops-workspaces.test.ts",
+   "reason": "気にかける・絞り込み・並びは会社ごとの請求・実行・PC の行で答えが変わる。種では作れない（K-963）",
+   "covers": {
+    "test_get_ops_workspaces_ok": "K963-API-007",
+    "test_get_ops_workspaces_rejected_401": "K963-API-017",
+    "test_get_ops_workspaces_rejected_403": "K963-API-017",
+    "test_get_ops_workspaces_rejected_422": "K963-API-014",
+    "test_get_ops_workspaces_rate_limited": {
+     "file": "apps/api/test/features/F12/ops-workspaces.test.ts",
+     "mark": "K963-API-020"
+    },
+    "test_get_ops_workspaces_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ops_workspaces_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   }
   }
  }
 }

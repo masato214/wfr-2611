@@ -380,7 +380,7 @@
 
 ## 4. 逆カバレッジ（フィールド → 画面）
 
-- 検査したフィールド 1083 ／ 内部専用 278 ／ どの画面にも出ない 11
+- 検査したフィールド 1087 ／ 内部専用 278 ／ どの画面にも出ない 11
   - ★ learned_procedures.duty_id
   - ★ learned_procedures.target_service_id
   - ★ learned_procedures.status_id
