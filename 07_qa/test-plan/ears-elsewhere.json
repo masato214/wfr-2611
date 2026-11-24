@@ -2931,6 +2931,50 @@
      "mark": "K144-API-032"
     }
    }
+  },
+  "listOpsInquiries": {
+   "file": "apps/api/test/features/F12/ops-inbox-read.test.ts",
+   "reason": "箱・担当・状態・種類で答えが変わり、全社をまたぐ。種では作れない（K-973）",
+   "covers": {
+    "test_get_ops_inquiries_ok": "K973-API-001",
+    "test_get_ops_inquiries_shape": "K973-API-001",
+    "test_get_ops_inquiries_rejected_401": "K973-API-008",
+    "test_get_ops_inquiries_rejected_403": "K973-API-008",
+    "test_get_ops_inquiries_rejected_422": "K973-API-009",
+    "test_get_ops_inquiries_rate_limited": "K973-API-012",
+    "test_get_ops_inquiries_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ops_inquiries_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   }
+  },
+  "getOpsInquiry": {
+   "file": "apps/api/test/features/F12/ops-inbox-read.test.ts",
+   "reason": "やり取り・社内メモ・様子で答えが変わる。種では作れない（K-973）",
+   "covers": {
+    "test_get_ops_inquiries_id_ok": "K973-API-005",
+    "test_get_ops_inquiries_id_shape": "K973-API-005",
+    "test_get_ops_inquiries_id_not_found": "K973-API-007",
+    "test_get_ops_inquiries_id_rejected_401": "K973-API-008",
+    "test_get_ops_inquiries_id_rejected_403": "K973-API-008",
+    "test_get_ops_inquiries_id_rejected_422": "K973-API-009",
+    "test_get_ops_inquiries_id_rate_limited": {
+     "file": "apps/api/test/features/F12/ops-inbox-read.test.ts",
+     "mark": "K973-API-012"
+    },
+    "test_get_ops_inquiries_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ops_inquiries_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   }
   }
  }
 }

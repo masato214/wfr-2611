@@ -71,7 +71,7 @@ QUERIES = {
 
 LIST_DETAILS = {
     "listMyInquiries": {"sort": False, "desc": "取得（inquiries）— 自分の問い合わせ（新しい順・返事ありの印つき）"},
-    "listOpsInquiries": {"sort": False, "desc": "取得（inquiries）— 運営の受信箱（箱と何について で絞る・数は getOpsShell）"},
+    "listOpsInquiries": {"sort": False, "limit_max": 100, "desc": "取得（inquiries）— 運営の受信箱（箱と何について で絞る・数は getOpsShell）"},
 }
 
 QUERY_RANGES = {
