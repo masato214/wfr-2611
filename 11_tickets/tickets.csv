@@ -3492,6 +3492,14 @@ K-955,ログイン後の稼働状況と上の帯（getServiceStatusForMember）�
 - [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑
 - [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑
 - [ ] 手元の CI（このチケットの範囲）が緑"
+K-956,困ったとき・お知らせの画面：ホーム（/notices・お知らせの一覧・いまの稼働状況・自分の問い合わせ）とお知らせ 1 件（/notices/[id]・開いたら読んだ印）を口につなぐ（K-72 の葉・W2）,タスク,K-72,未着手,実装,2026-12-09,F12・画面,"利用者が右上の顔 › 困ったとき・お知らせ で、運営からのお知らせ（リリース・障害・メンテ）と、いまの稼働状況と、自分の問い合わせを 1 か所で見られるようにする（行為 A68・A67・用事 J14）。お知らせは開いた時に読んだ印が付く（D-156.27）。
+
+- ホーム `/notices`：画面の表の道（flow.json の画面 `notices` の route）。ログイン後の外枠（`TicketShell`・screen `notices`）の中。**ログイン前の `/help`（K-315）は変えない**
+- お知らせ 1 件 `/notices/[id]`：一覧の答えから選んで出し、開いたら `markNoticeRead` を 1 回
+- 自分の問い合わせの一覧（読むだけ）。問い合わせる小窓は K-953、1 件のやり取りは K-1007","- [ ] 下の表の 16 行（K956-UI-001〜012・K956-UN-001〜004）が緑：`apps/web/tests/k/k956-help-home.spec.ts`・`apps/web/test/k956-help-shape.test.ts`（画面の試験は取り込んだ後に流す・ticket-flow.yaml の web_defer）
+- [ ] モック /dev/mock/f12-user の uh-help・uh-help-empty・uh-help-error・uh-notice と本番が幅 375・768・1440 で同じ（K956-UI-001・f12-user-match.ts の matchUser）
+- [ ] `npx tsc --noEmit -p apps/web` が通る・デザインの検査 G37・G72 が緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
 K-964,共通の表の箱 .k-table-wrap を位置の基準にする（position: relative）。表の中の読み上げ用の字（sr-only）が箱の外へ逃げて、狭い幅でページを横に広げるのを止める（段 13 で一番先に入れる・ほかの段の表にも効く・K-72 の葉・W0）,タスク,K-72,未着手,実装,2026-12-01,F12・画面,"共通の部品の表（`components/k/table.tsx` の `Table`）の箱 `.k-table-wrap` は `overflow-x: auto` を持つが、位置の基準（`position`）を持たない。表の中に読み上げ用の字（`.sr-only`・`position: absolute`）が在ると、その字の位置の基準が箱より外の祖先になり、箱のスクロールに切り取られずにページ（document）を横に広げる。段 13 の下絵（運営の表）を狭い幅で測ったときに見つけ、下絵の `features/F12/ops/ops.css` の `.k-op-shell .k-table-wrap` で受けていた。**受けを共通の部品に移し**、ほかの段の表にも同じ守りを効かせる。
 
 - `components/k/k.css` の `.k-table-wrap` に `position: relative` を足す（切る段の枝で足した・carry で写す）

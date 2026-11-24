@@ -27471,6 +27471,93 @@
    "file": "11_tickets/K-955.md"
   },
   {
+   "id": "K-956",
+   "title": "困ったとき・お知らせの画面：ホーム（/notices・お知らせの一覧・いまの稼働状況・自分の問い合わせ）とお知らせ 1 件（/notices/[id]・開いたら読んだ印）を口につなぐ（K-72 の葉・W2）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "画面",
+   "assignee": "実装",
+   "due": "2026-12-09",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 10 の K-707（外枠の中の画面を口につなぐ・道と入れ物・読む・状態の出し分け・部品に任意の props・試験 29 行・見込み 1）から引いた：道 2 つと入れ物（外枠・頭・読めない・見つからない）15 分・読む口 3 本と答え → 部品の値 help-shape.ts 15 分・1 件と読んだ印 10 分・部品に任意の props（行き先の道・押せない形・読みました の行）5 分・試験 16 行を流して直す 15 分。部品とモックは K-943 が運ぶ（この見込みに入れない）",
+   "decisions": [
+    "D-156.10",
+    "D-156.18",
+    "D-156.25",
+    "D-156.27",
+    "D-156.28",
+    "D-145.9",
+    "D-128.71"
+   ],
+   "split": "",
+   "choke_points": [],
+   "choke_none": "画面だけ。読む口 3 本（listNotices・getServiceStatusForMember・listMyInquiries）と読んだ印の口 1 本（markNoticeRead・関門 C2 は口の葉 K-954）を呼ぶだけ。DB・外への送り出し・秘密に触らない",
+   "tests": [
+    "apps/web/tests/k/k956-help-home.spec.ts",
+    "apps/web/test/k956-help-shape.test.ts",
+    "apps/web/tests/k/help-mock.ts",
+    "apps/web/tests/k/f12-user-match.ts"
+   ],
+   "carry": [],
+   "depends_on": [
+    "K-943",
+    "K-951",
+    "K-954",
+    "K-955"
+   ],
+   "acts": [
+    "A68",
+    "A67"
+   ],
+   "screens": [
+    "notices"
+   ],
+   "apis": [],
+   "mock": [
+    "uh-help",
+    "uh-help-empty",
+    "uh-help-error",
+    "uh-notice"
+   ],
+   "flow": "困ったときに運営に聞き、お知らせと請求を見る",
+   "affects": [
+    "@kaname/web"
+   ],
+   "ci_wide": [],
+   "changes": [
+    "apps/web/app/(work)/notices/page.tsx",
+    "apps/web/app/(work)/notices/[id]/page.tsx",
+    "apps/web/features/F12/help/help-screen.tsx",
+    "apps/web/features/F12/help/notice-screen.tsx",
+    "apps/web/features/F12/help/use-help.ts",
+    "apps/web/features/F12/help/help-shape.ts",
+    "apps/web/features/F12/help/views.tsx",
+    "scripts/ci/ci_scope.d/K-956.json"
+   ],
+   "sections": {
+    "目的": "利用者が右上の顔 › 困ったとき・お知らせ で、運営からのお知らせ（リリース・障害・メンテ）と、いまの稼働状況と、自分の問い合わせを 1 か所で見られるようにする（行為 A68・A67・用事 J14）。お知らせは開いた時に読んだ印が付く（D-156.27）。\n\n- ホーム `/notices`：画面の表の道（flow.json の画面 `notices` の route）。ログイン後の外枠（`TicketShell`・screen `notices`）の中。**ログイン前の `/help`（K-315）は変えない**\n- お知らせ 1 件 `/notices/[id]`：一覧の答えから選んで出し、開いたら `markNoticeRead` を 1 回\n- 自分の問い合わせの一覧（読むだけ）。問い合わせる小窓は K-953、1 件のやり取りは K-1007",
+    "完了の条件": "- [ ] 下の表の 16 行（K956-UI-001〜012・K956-UN-001〜004）が緑：`apps/web/tests/k/k956-help-home.spec.ts`・`apps/web/test/k956-help-shape.test.ts`（画面の試験は取り込んだ後に流す・ticket-flow.yaml の web_defer）\n- [ ] モック /dev/mock/f12-user の uh-help・uh-help-empty・uh-help-error・uh-notice と本番が幅 375・768・1440 で同じ（K956-UI-001・f12-user-match.ts の matchUser）\n- [ ] `npx tsc --noEmit -p apps/web` が通る・デザインの検査 G37・G72 が緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: LIST, XSS\n\n- **代表の答え 2026-11-23（D-156.25・D-156.27・D-156.28）**：開いた時に読んだ印（ボタンは無い）・未読はお知らせの行に点・運営のお知らせは鈴に出さない（この画面と帯で見る）・問い合わせは書いた本人だけ（口が絞る）\n- **道**：`app/(work)/notices/page.tsx`（ホーム）・`app/(work)/notices/[id]/page.tsx`（1 件・`params` を待って入れ物に渡す）。`(work)`＝PC をつないでいなくても開く。道の一覧 `built-routes.ts` は作り手 `python3 scripts/ci/gen_built_routes.py --app apps/web/app --out apps/web/lib/built-routes.ts` で作り直す（生成物。左のバー・右上の顔の行き先が自動で生きる）\n- **外枠**：`TicketShell`（screen `notices`・crumbs「困ったとき・お知らせ」→ `/notices`、1 件は「困ったとき・お知らせ › <題>」）\n- **読む（`use-help.ts`）**：`useNotices()`＝`call(\"listNotices\", { screenId: \"notices\" })`・鍵 `[\"k956\",\"notices\"]`／`useServiceStatus()`＝`call(\"getServiceStatusForMember\")`・鍵 `[\"k956\",\"status\"]`（K-957 の帯も同じ鍵を読む＝二重に呼ばない）／`useMyInquiries()`＝`call(\"listMyInquiries\")`・鍵 `[\"k956\",\"inquiries\"]`（K-953・K-1007 が書いた後に invalidate する）。どれも `retry: false`・`staleTime: Infinity`・窓に戻っても読み直さない。StrictMode でも 1 回ずつ（K956-UI-002）。3 本を同時に始める（直列にしない）\n- **答え → 部品の値（`help-shape.ts`・画面の外の純粋な関数・`@/` を読まない）**（K-1004・K-948 の「画面が使う答えの形」）：\n  - `noticeView(n)`：kind incident・maintenance・release →「障害」「メンテ」「リリース」。`body` は本文の **1 行目**（要約）。`when` は日本時間で、障害は「MM/DD HH:MM」・ほかは「MM/DD」。`unread` は真のときだけ。障害の状態 investigating・identified・monitoring・resolved →「調べている」「原因が分かった」「様子を見ている」「直った」（null なら欄なし）\n  - `noticeDetailView(n)`：上に足して `window`（`maintenance` の from・to を「11/10（月）2:00〜3:00」・日本時間・曜日つき）・`impact`（maintenance.impact）・`full`（本文の **2 行目から**。1 行だけなら 1 行目）\n  - `statusView(c)`：components の state normal・degraded・down →「ふつう」「遅れている」「止まっている」。知らない値は「遅れている」（ふつうに見せない・G-15）。label は口の字のまま\n  - `inquiryView(q, now)`：topic usage・trouble・billing・other →「使い方」「うまく動かない」「お金・プラン」「ほか」。state waiting → `waiting`・replied → `replied`・done → `replied` と `done`。`when` は作った時刻が 1 分以内なら「いま」・ほかは「MM/DD」\n  - `windowOf(from, to)`・`jstWhen(iso, withTime)`（K-957 の帯も使う＝同じ読み替えを 2 つ作らない・D-156.10）\n- **読めない**：3 本のどれかが 503・網の切れ・形が違うなら、ホームは `failed`（ErrorState E-PAGE-007・「もう一度」で 3 本を読み直す）。**ふつうに見せない**（G-15）\n- **1 件**：一覧の答え（鍵 `[\"k956\",\"notices\"]`）から id で選ぶ（1 件を読む口は無い・K-1004）。出す場所が帯だけのお知らせは一覧の答えに無いので 1 件の画面に来ない：帯の「詳しく」は一覧に在るお知らせにだけ出す（K-957 の決め・K957-UI-014）。無ければ `ThreadNotFound` と同じ形の見つからない（E-PAGE-001）で、読んだ印の口を呼ばない。あれば描いた後に `markNoticeRead`（体 `{}`）を 1 回（二度開いても 1 回・鍵 `[\"k956\",\"read\",id]` の mutation）。成功したら「読みました（一覧の印が消えます）」を出し、一覧を invalidate。失敗しても中身は出し、「読みました」の行は出さない（K956-UI-008）\n- **部品に足す物（見た目と並びは変えない・任意の props だけ・K-707 の形）**：`views.tsx` の `HelpHome`（`noticeHref`・`inquiryHref`＝行き先の道を作る関数・既定は今の `/help/…`／`askHref`＝あれば「問い合わせる」をその道へのボタンに・無ければ押せない形 `Inert`（D-145.9））・`NoticeDetail`（`backHref`・`read`＝false なら「読みました」の行を出さない・既定 true）。渡さない呼び方（モック）は今の見た目のまま\n- **「問い合わせる」**：この葉では `askHref` を、道の一覧（`BUILT_ROUTES`）に `/inquiry` があるときだけ渡す（K-953 が入ると押せる。入るまで押せない形）\n- 画面の字は下絵が正（「困ったとき・お知らせ」「お知らせ」「いまの稼働状況」「自分の問い合わせ」「まだお知らせも問い合わせもありません」）。「知らせ」でなく「お知らせ」。設計の言葉・内部 ID を出さない（D-156.18）",
+    "依存の理由": "- K-943: 要る — 部品（`HelpHome`・`NoticeDetail`・`Inert`・`help.css`）とモック /dev/mock/f12-user の 4 状態・試験の道具 `f12-mock-kit.ts`。同じ `views.tsx` に任意の props を足す\n- K-954: 要る — 画面が呼ぶ `listNotices`・`markNoticeRead`（届け先・既読）。契約の型が無いと画面の型が組めない\n- K-955: 要る — `getServiceStatusForMember` の components（いまの稼働状況）\n- K-951: 要る — `listMyInquiries`（自分の問い合わせの一覧・本人だけ）",
+    "目録で探した結果": "- 使う：`TicketShell`（features/F4/create-ticket/ticket-shell.tsx）・`call`（lib/api/call.ts）・`ErrorState`・`PAGE_ERROR`（components/k）・`@tanstack/react-query`・`BUILT_ROUTES`（lib/built-routes.ts）・K-943 の部品\n- 使う（試験）：`signupViaApi`・`loginAs`（tests/_lib/api.ts）・`scripts/ci/fidelity_compare.mjs`\n- 作る：入れ物 `help-screen.tsx`・`notice-screen.tsx`・読む `use-help.ts`・形 `help-shape.ts`。試験の道具 `help-mock.ts`（K-953・K-1007・K-957・K-1008 も使う・口の差し替え）と `f12-user-match.ts`（同じ 4 本も使う・段 10 の f9-ws-match.ts と同じ形）。探したが同じ形の物は無い（ログイン前の `/help`（K-315・features/F1/help）は稼働状況だけで、お知らせ・既読・自分の問い合わせを持たない）\n- 時刻の読み替え：段 1 の `to-incidents.ts` の `jstShort`（M/D H:MM）は 0 埋めしない字なので、下絵の「11/02 10:20」と合わない。`help-shape.ts` の `jstWhen` は下絵の字（0 埋め）で書く。帯の読み替え（障害・メンテ → 帯）は K-957 が `to-incidents.ts` を使う",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| 道 | `app/(work)/notices/page.tsx` → `<HelpScreen />`・`app/(work)/notices/[id]/page.tsx` → `<NoticeScreen id={id} />`。`built-routes.ts` を作り手で作り直す（生成物） |\n| 入れ物 | `help-screen.tsx`（`TicketShell` → `HelpHome` に 3 本の答えを形にして渡す・読めないは `failed`・`onRetry` で 3 本を `refetch`）・`notice-screen.tsx`（`TicketShell` → `NoticeDetail` か見つからない・読んだ印） |\n| 読む・形 | `use-help.ts`・`help-shape.ts`（前提と制約） |\n| 部品に口を足す | `views.tsx`（任意の props だけ） |\n| CI の範囲の地図 | `scripts/ci/ci_scope.d/K-956.json`：`data_links` に `{\"paths\": [\"apps/web/features/F12/help/**\", \"apps/web/app/(work)/notices/**\"], \"tests\": [\"apps/web/tests/k/k956-help-home.spec.ts\", \"apps/web/test/k956-help-shape.test.ts\"]}`・`reads_ok` に試験が読む物（`apps/web/lib/built-routes.ts`：K956-UI-010 が字で読む・`scripts/ci/fidelity_compare.mjs`） |\n| 画面を目で 1 回 | 3 幅（375・768・1440）でホームと 1 件を見る（人が確かめる・数えない） |",
+    "外に影響する手順": "- なし — 読む口 3 本と、読んだ印の口 1 本を呼ぶだけ。外へ送る・知らせる手順を持たない（読んだ印を DB に書く手順と失敗の行は口の葉 K-954 が持つ。画面の失敗は K956-UI-006・008）",
+    "テスト仕様と確認の結果": "`apps/web/tests/k/k956-help-home.spec.ts`（実 Chrome・本物のログインと外枠・利用者の口だけ網の手前で差し替え `help-mock.ts`）と `apps/web/test/k956-help-shape.test.ts`（画面の外の純粋な関数）。答えの形は K-948・K-1004 の「画面が使う答えの形」（違えば `help-mock.ts` だけを合わせる）。\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち・テスト |\n|---|---|---|---|---|\n| お知らせ 4・問い合わせ 2 | 直に /notices | ログイン中のメンバー | 区画 3 つ・未読の印・口 3 本を 1 回ずつ | K956-UI-001〜004 |\n| 0 件 | 同じ | はじめての人 | はじめの字 | K956-UI-001・005 |\n| 読めない | 同じ | 同じ | 読めなかった旨・もう一度 | K956-UI-001・006 |\n| お知らせ 1 件（未読） | 一覧の題を押す・直に道 | 同じ | 中身・読んだ印 1 回・戻ると印が減る | K956-UI-001・007 |\n| 読んだ印が失敗 | 直に道 | 同じ | 中身は出る | K956-UI-008 |\n| 無い・見えないお知らせ | 古いリンク・別の会社の id | 同じ | 見つからない・口を呼ばない | K956-UI-009 |\n| 問い合わせる小窓がまだ無い／在る | 「問い合わせる」 | 同じ | 押せない形／/inquiry へ | K956-UI-010 |\n| ログインしていない・先方の権限の人 | 直に道 | — | 外枠の共通の扱い（ログインへ・入口の口が 401／403）。口の絞り込みは K-951・K-954 | 外枠（K-138）・口の葉 |\n\n### 行の表\n\n| 行 ID | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K956-UI-001 | 画面 | モックと同じ | uh-help・uh-help-empty・uh-help-error・uh-notice × 幅 375・768・1440：見出し・区画・お知らせの行・稼働状況・自分の問い合わせ・1 件の時間と影響の位置と大きさと字がモックと同じ（matchUser の bad が 0） |\n| K956-UI-002 | 対象の状態 | 開く | 区画 3 つの見出し・お知らせ 4 行・稼働状況 3 行（分身の実行 遅れている）・口 3 本が 1 回ずつ・読んだ印の口 0 回 |\n| K956-UI-003 | 対象の状態 | お知らせの行 | 「まだ読んでいません」の印が 2 つ・障害の行は「原因が分かった ・ 」で始まる・題の道は /notices/<id> |\n| K956-UI-004 | 対象の状態 | 自分の問い合わせ | 返事あり・済みの札・「うまく動かない ・ 11/02 ・ 運営から返事あり」・道は /inquiry/<id> |\n| K956-UI-005 | 対象の状態 | 0 件 | 「まだお知らせも問い合わせもありません」と各区画の「…まだありません。」 |\n| K956-UI-006 | 失敗 | 読めない | 1 本が網の切れで E-PAGE-007 の形・区画を出さない・「もう一度」で読み直して区画が出る（問い合わせの口 2 回） |\n| K956-UI-007 | 時間の流れ | 1 件を開く | 題の見出し・時間と内容・「読みました（一覧の印が消えます）」・読んだ印の口 1 回（体 {}）・戻ると印が 1 つ |\n| K956-UI-008 | 失敗 | 読んだ印が失敗 | 見出しは出る・「読みました」の行は出ない・口は 1 回 |\n| K956-UI-009 | 入口 | 無い id | E-PAGE-001 の形・読んだ印の口 0 回 |\n| K956-UI-010 | 入口 | 問い合わせる | 道の一覧に /inquiry があれば押して /inquiry へ。無ければ押せない形（aria-disabled）で押しても道は変わらない |\n| K956-UI-011 | 守り | 字の守り | HTML の入った題・本文が字のまま出て、スクリプトが動かない |\n| K956-UI-012 | 入力 | 幅 | 幅 320・375・768・1024・1440 でホームと 1 件の横のはみ出しが 0 以下 |\n| K956-UN-001 | 入力 | お知らせの 1 行 | 種類 3 つの字・障害は「11/02 10:20」ほかは「11/03」・状態 4 つの字・要約は本文の 1 行目・未読の印 |\n| K956-UN-002 | 入力 | お知らせ 1 件 | 時間「11/10（月）2:00〜3:00」・影響・内容は 2 行目から（1 行だけなら 1 行目）・メンテでなければ時間と影響なし |\n| K956-UN-003 | 失敗 | 稼働状況 | normal・degraded・down の字・知らない値は「遅れている」 |\n| K956-UN-004 | 入力 | 自分の問い合わせ | 何について 4 つの字・状態 3 つの印・1 分以内は「いま」 |",
+    "分類の型の受け": "| 型 | どこで受けるか |\n|---|---|\n| TP-LIST-01 0 件・1 件・境目 | K956-UI-005（0 件）・002（4 件と 2 件）。ページの境目は無い（口は一覧の上限まで返す・cursor は使わない） |\n| TP-LIST-02 同じ値の並び | 要らない：並びは口の答えの順（出した日の新しい順）のまま。画面は並べ替えない |\n| 要らない: TP-LIST-03 絞り込みの URL | この画面は絞り込みを持たない（下絵に無い） |\n| 要らない: TP-LIST-04 探す語 | 探す欄を持たない |\n| TP-XSS-L01 画面に出す文の守り | K956-UI-011 |\n| G-11〜G-16 | G-11：N/A（外の資源を使わない）。G-12：K956-UI-007（読んだ直後の一覧の印）。G-13：N/A（書く操作を持たない）。G-14：外枠の共通の扱い（上の表の最後の行）。G-15：K956-UI-006・K956-UN-003（読めない・知らない値をふつうに見せない）。G-16：K956-UI-002（口の数） |",
+    "速さの今の値と目標の値": "| 画面 | 今の値 | 目標の値 |\n|---|---|---|\n| /notices を開いたとき | 画面が無い | 外枠の口（me・scopes）＋ 3 本を同時に 1 回ずつ。直列の段 1・二重の要求なし（StrictMode でも・K956-UI-002） |\n| /notices/[id] | 画面が無い | 一覧 1 本（鍵を分け合うので一覧から来たら 0）＋読んだ印 1 本 |\n| 新しい住所 | — | 2 つ（/notices・/notices/[id]・flow.json の画面 notices の道） |",
+    "前からの試験を替えた所": "道 `/notices` を足し、部品 `views.tsx` に任意の props を足す。道の一覧・部品の名前を読む前からの試験を探した（2026-11-23）。\n\n```search\ngit grep -l -E \"/notices|features/F12/help|HelpHome|NoticeDetail\" -- apps/web/tests apps/web/test ':!apps/web/tests/k/k94*' ':!apps/web/tests/k/k95*' ':!apps/web/tests/k/k1007*' ':!apps/web/tests/k/k1008*' ':!apps/web/tests/k/help-mock.ts' ':!apps/web/tests/k/f12-*' ':!apps/web/test/k95*'\n9\n```\n\n- 前からの試験は 0 本。K-943 の `k943-f12-user-parts.spec.ts`（モックの 27 状態）は任意の props を渡さない呼び方なので見た目は変わらない：替えない。道の一覧を読む前からの試験（K-941 が見た 8 本）は、道が 1 つ増えるだけで替えない\n- apps/web/test/k1007-notice-text.test.ts・k1007-thread-shape.test.ts（K-1007）・apps/web/test/k1008-stop-peek-shape.test.ts（K-1008）: 替えない — この葉の後に作る葉（この葉に依存する）の試験で、この葉が作る形に合わせて書いてある（`/notices` への道と知らせの文を見る）\n- apps/web/test/k980-notices-shape.test.ts・apps/web/tests/k/k980-notices.spec.ts・ops-notices-mock.ts（K-980）・k1015-notice-write.spec.ts（K-1015）・k972-ws-dialogs.spec.ts（K-972）・ops-ws-mock.ts（K-971）: 替えない — 運営の画面の道（`/ops/notices`・`/ops/workspaces/…/notices`）と `features/F12/ops2` に当たっただけ。この葉の顧客の `/notices` と `features/F12/help` を読まない",
+    "表の住所": "- 画面の道：`apps/web/app/(work)/notices/`。表（DB）は触らない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ。この葉は D-156.10・18・25・27・28 に従う）\n- 切る段の決め（2026-11-23）：ログイン後の困ったとき・お知らせは `/notices`（画面の表の道）。ログイン前の `/help`（K-315）とは別の道で、`/help` は変えない\n- 切る段の決め（2026-11-23）：お知らせの本文は 1 行目を一覧の要約、2 行目からを中身として出す（運営のお知らせを書く K-977 の画面に同じ決めを申し送る）",
+    "リスク": "- 部品の既定の行き先（`/help/notices/…`・`/help/inquiries/…`）は道と違う → この葉が任意の props で本番の道を渡す。モックは既定のまま\n- 稼働状況の state の値（normal・degraded・down）は K-955 の答えの値（K-955.md の「様子 components」）と同じ",
+    "申し送り": "- 土台 `help-mock.ts` の帯の見本（BandA）は K-955 の帯の答えの `note`・`ref`（D-156.45）を持たない。この葉の画面は帯の 2 行目を読まないので要らない。2 行目を見る K-957 は自分の試験で `note` を足して渡す（K957-UI-014）。作る段で道具を直さない（精査 2 回目 2026-11-23）\n\n- K-953：`askHref=\"/inquiry\"` は道ができると自動で渡る。書いた後は鍵 `[\"k956\",\"inquiries\"]` を invalidate\n- K-1007：1 件のやり取りの道は `/inquiry/[id]`（この葉の `inquiryHref`）\n- K-957：稼働状況は同じ鍵 `[\"k956\",\"status\"]` を読む（二重に呼ばない）。時刻の字は `help-shape.ts` の `jstWhen`・`windowOf`\n- K-955：components の state の値は normal・degraded・down の 3 つ（K-955 の決めと同じ）\n- K-977：お知らせの本文は 1 行目が要約（上の決定ログ）",
+    "代表に聞くこと": "- #8 代表の答え 2026-11-23（D-156.27）（開いた時に読んだ印・未読は行に点）\n- #9 代表の答え 2026-11-23（D-156.28）（運営のお知らせは鈴に出さない）\n- #6 代表の答え 2026-11-23（D-156.25）（問い合わせの状態 3 つ・本人だけ）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 16 行（上限 30・人が確かめる行は数えない）。"
+   },
+   "file": "11_tickets/K-956.md"
+  },
+  {
    "id": "K-964",
    "title": "共通の表の箱 .k-table-wrap を位置の基準にする（position: relative）。表の中の読み上げ用の字（sr-only）が箱の外へ逃げて、狭い幅でページを横に広げるのを止める（段 13 で一番先に入れる・ほかの段の表にも効く・K-72 の葉・W0）",
    "kind": "タスク",
