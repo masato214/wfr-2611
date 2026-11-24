@@ -6383,6 +6383,7 @@
    "backstage": "受信箱に届ける",
    "choke_points": [
     "C2",
+    "C4",
     "C6"
    ],
    "source": [

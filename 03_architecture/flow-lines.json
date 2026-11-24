@@ -250,18 +250,13 @@
   "export_jobs": {
    "writes": [
     "F10",
-    "F12",
     "F5"
    ],
    "reads": [],
    "boundary": true,
    "lines": [
-    "F10→F12",
     "F10→F5",
-    "F12→F10",
-    "F12→F5",
-    "F5→F10",
-    "F5→F12"
+    "F5→F10"
    ]
   },
   "handover_rules": {

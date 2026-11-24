@@ -510,6 +510,18 @@
    "path": "/api/v1/ops/work_types/{id}/versions/{v}/rollback",
    "decision": "D-152.20",
    "reason": "運営の業務の型は無くした。運営のひな形は別の口で残る（代表の決め 8）（rollbackOpsWorkType・K-711）"
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/ops/workspaces/export",
+   "decision": "D-156.13",
+   "reason": "書き出し（持ち出し）は作らない（代表 2026-11-22・answer=3781e90d23e0）（exportOpsWorkspaces・K-948）"
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/ops/invoices/export",
+   "decision": "D-156.13",
+   "reason": "書き出し（持ち出し）は作らない（代表 2026-11-22・answer=3781e90d23e0）（exportOpsInvoices・K-948）"
   }
  ]
 }

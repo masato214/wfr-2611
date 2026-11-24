@@ -1699,14 +1699,11 @@
     "E-074 inquiries",
     "E-001 tenants",
     "E-061 sessions",
-    "E-039 action_runs",
-    "E-093 export_jobs",
-    "E-072 ops_audit_events"
+    "E-039 action_runs"
    ],
    "related_apis": [
     "GET /api/ops/shell",
     "GET /api/ops/workspaces",
-    "POST /api/ops/workspaces/export",
     "navigate /account",
     "navigate /settings/close",
     "navigate /ai-staff/activity",
@@ -2183,6 +2180,7 @@
    "features": [
     "F-015",
     "F-026",
+    "F-028",
     "F-030"
    ],
    "entities": [
@@ -2483,14 +2481,12 @@
     "E-001 tenants",
     "E-080 notifications",
     "E-072 ops_audit_events",
-    "E-052 audit_events",
-    "E-093 export_jobs"
+    "E-052 audit_events"
    ],
    "related_apis": [
     "GET /api/ops/invoices",
     "POST /api/ops/invoices/issue",
     "POST /api/ops/invoices/:id/payments",
-    "POST /api/ops/invoices/export",
     "navigate /account",
     "navigate /settings/close",
     "navigate /ai-staff/activity",
@@ -6918,12 +6914,6 @@
      "path_draft": "/api/ops/workspaces"
     },
     {
-     "act": "A60",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/ops/workspaces/export"
-    },
-    {
      "role": "transition",
      "method": "navigate",
      "path_draft": "/account",
@@ -9538,12 +9528,6 @@
      "role": "action",
      "method": "POST",
      "path_draft": "/api/ops/invoices/:id/payments"
-    },
-    {
-     "act": "A72",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/ops/invoices/export"
     },
     {
      "role": "transition",
@@ -13015,7 +12999,6 @@
     "disclosure",
     "account-close",
     "ops-support",
-    "ops-home",
     "ops-skills",
     "ops-notices",
     "ops-billing",
@@ -13460,9 +13443,7 @@
     "audit",
     "export",
     "account-close",
-    "ops-home",
-    "company-settings",
-    "ops-billing"
+    "company-settings"
    ],
    "used_by_features": [
     "F-005",
@@ -13470,7 +13451,6 @@
     "F-010",
     "F-011",
     "F-012",
-    "F-016",
     "F-023"
    ]
   },
@@ -15475,7 +15455,6 @@
     "E-087",
     "E-088",
     "E-091",
-    "E-093",
     "E-094",
     "E-101",
     "E-104",
@@ -15999,6 +15978,7 @@
     "disclosure",
     "export",
     "import",
+    "inquiry",
     "ops-disclosure",
     "ops-skills",
     "ops-team"

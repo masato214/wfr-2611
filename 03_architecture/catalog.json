@@ -5,7 +5,7 @@
   "D-128.129"
  ],
  "counts": {
-  "api": 359,
+  "api": 357,
   "api_built": 113,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
@@ -1780,7 +1780,7 @@
    "op": "listMyInquiries",
    "method": "GET",
    "path": "/api/v1/inquiries",
-   "what": "取得（inquiries）— 運営に問い合わせる",
+   "what": "取得（inquiries）— 自分の問い合わせ（新しい順・返事ありの印つき）",
    "flows": [
     "F12"
    ],
@@ -3536,7 +3536,7 @@
    "op": "listOpsInquiries",
    "method": "GET",
    "path": "/api/v1/ops/inquiries",
-   "what": "取得（ops）— 問い合わせに答える",
+   "what": "取得（inquiries）— 運営の受信箱（箱と何について で絞る・数は getOpsShell）",
    "flows": [
     "F12"
    ],
@@ -3633,21 +3633,6 @@
    "only_later_phase": false,
    "tables": [
     "payments"
-   ],
-   "status": "契約だけ（501）",
-   "owner_tickets": []
-  },
-  {
-   "op": "exportOpsInvoices",
-   "method": "POST",
-   "path": "/api/v1/ops/invoices/export",
-   "what": "作成・実行（ops）— 請求書を出し、入金を記録する",
-   "flows": [
-    "F12"
-   ],
-   "only_later_phase": false,
-   "tables": [
-    "export_jobs"
    ],
    "status": "契約だけ（501）",
    "owner_tickets": []
@@ -4244,21 +4229,6 @@
    "only_later_phase": false,
    "tables": [
     "account_events"
-   ],
-   "status": "契約だけ（501）",
-   "owner_tickets": []
-  },
-  {
-   "op": "exportOpsWorkspaces",
-   "method": "POST",
-   "path": "/api/v1/ops/workspaces/export",
-   "what": "作成・実行（ops）— 各ワークスペースの様子を見る（気にかける）",
-   "flows": [
-    "F12"
-   ],
-   "only_later_phase": false,
-   "tables": [
-    "export_jobs"
    ],
    "status": "契約だけ（501）",
    "owner_tickets": []
@@ -6350,7 +6320,6 @@
    "why": "第1フェーズの口が使う（08_api/endpoints.json）",
    "writes": [
     "F10",
-    "F12",
     "F5"
    ],
    "reads": [],
