@@ -1,0 +1,33 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/notices-read.ts",
+    "apps/api/src/features/F12/notices/**",
+    "packages/db/migrations/20261128005400_member_notices.sql",
+    "packages/db/policies/20261128005400_member_notices.sql",
+    "apps/api/test/features/F12/notice.harness.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/notices-read.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/notices-read.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/contract/k144.d/K-954.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_notices.test.ts",
+    "apps/api/test/generated/post_notices_id_read.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F12/notice.harness.ts": "葉の hooks のファイル（notices-read ほか）を F3/leaf-hooks.ts の動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-954",
+  "apps/api/test/features/contract/k144.d/K-954.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-954"
+ }
+}
