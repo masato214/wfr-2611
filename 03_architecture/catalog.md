@@ -457,7 +457,7 @@ API 391（作った 120・後のフェーズの行為だけ 20）・前の道す
 | `deleteKnowledgePage` | DELETE /api/v1/knowledge_pages/:id | 削除（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 作った | K-69,K-681 |
 | `archiveKnowledgePage` | POST /api/v1/knowledge_pages/:id/archive | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 契約だけ（501） | K-69 |
 | `uploadKnowledgeAttachment` | POST /api/v1/knowledge_pages/:id/attachments | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 契約だけ（501） | K-69 |
-| `copyKnowledgePage` | POST /api/v1/knowledge_pages/:id/copy | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 契約だけ（501） | K-69 |
+| `copyKnowledgePage` | POST /api/v1/knowledge_pages/:id/copy | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 契約だけ（501） | K-69,K-690 |
 | `saveKnowledgeDraft` | PATCH /api/v1/knowledge_pages/:id/draft | 更新（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 作った | K-69,K-679 |
 | `discardKnowledgeDraft` | DELETE /api/v1/knowledge_pages/:id/draft | 削除（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 作った | K-69,K-679 |
 | `getKnowledgeLinks` | GET /api/v1/knowledge_pages/:id/links | 取得（knowledge_pages）— ナレッジのページを書く・直す（会社・グループ・自分の棚。 | F9 | 契約だけ（501） | K-69 |
