@@ -88,7 +88,7 @@
 | E-071 | `ops_members` | 11. 運営 | ops_scoped | 1 | D-073 D-073.7 D-074.4 D-076.10 |
 | E-072 | `ops_audit_events` | 11. 運営 | ops_scoped | 2 | D-073.7 D-074 D-074.4 D-076.10 |
 | E-073 | `security_events` | 11. 運営 | account_scoped | 3 | D-073.7 D-074.4 D-075 D-075.6 |
-| E-074 | `inquiries` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 4 | D-069 D-075 D-075.1 D-076 |
+| E-074 | `inquiries` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 2 | D-069 D-075 D-075.1 D-076 |
 | E-075 | `notices` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | ops_scoped | 1 | D-069 D-075 D-075.2 D-076 |
 | E-076 | `notice_deliveries` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | account_scoped | 4 | D-069 D-075 D-076 |
 | E-077 | `status_incidents` | 12. 運営と顧客の間で往復するもの・自分で整えるもの | ops_scoped | 1 | D-069 D-075 D-075.2 D-076 |

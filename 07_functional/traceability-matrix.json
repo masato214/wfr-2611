@@ -15470,11 +15470,11 @@
     "GET /api/invoices",
     "GET /api/plans",
     "PATCH /api/disclosure_versions/:id",
-    "PATCH /api/inquiries/:id",
     "PATCH /api/llm_routes/:id",
     "PATCH /api/operations/:id",
     "PATCH /api/ops_members/:id",
     "PATCH /api/plans/:id",
+    "POST /api/inquiries",
     "POST /api/notices",
     "POST /api/payments",
     "POST /api/plans"

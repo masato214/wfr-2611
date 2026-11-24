@@ -2708,6 +2708,10 @@
     "type": "timestamp with time zone",
     "nullable": true
    },
+   "asker_read_at": {
+    "type": "timestamp with time zone",
+    "nullable": true
+   },
    "assignee_ops_member_id": {
     "type": "uuid",
     "nullable": true
@@ -2740,6 +2744,10 @@
     "type": "text",
     "nullable": true
    },
+   "last_message_at": {
+    "type": "timestamp with time zone",
+    "nullable": true
+   },
    "later_until": {
     "type": "timestamp with time zone",
     "nullable": true
@@ -2748,6 +2756,10 @@
     "type": "uuid",
     "nullable": true
    },
+   "state": {
+    "type": "text",
+    "nullable": false
+   },
    "status_id": {
     "type": "text",
     "nullable": true
@@ -2755,6 +2767,14 @@
    "tenant_id": {
     "type": "uuid",
     "nullable": false
+   },
+   "title": {
+    "type": "text",
+    "nullable": true
+   },
+   "topic_key": {
+    "type": "text",
+    "nullable": true
    },
    "updated_at": {
     "type": "timestamp with time zone",
@@ -4292,6 +4312,10 @@
     "type": "jsonb",
     "nullable": true
    },
+   "author_name": {
+    "type": "text",
+    "nullable": true
+   },
    "body": {
     "type": "text",
     "nullable": true
@@ -4375,6 +4399,10 @@
    "updated_by": {
     "type": "uuid",
     "nullable": true
+   },
+   "visibility": {
+    "type": "text",
+    "nullable": false
    },
    "work": {
     "type": "jsonb",
