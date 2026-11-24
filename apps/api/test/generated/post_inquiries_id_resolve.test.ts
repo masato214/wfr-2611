@@ -25,6 +25,6 @@ describe("POST /api/v1/inquiries/:id/resolve", () => {
   it.todo("test_post_inquiries_id_resolve_mfa_pending");
   // UNWANTED: IF 入口でセッションを解く所が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、止める側に倒して副作用を起こさない
   it.todo("test_post_inquiries_id_resolve_session_unresolved");
-  // UBIQUITOUS: POST /api/v1/inquiries/:id/resolve の副作用は関門 C2・C6 を経由し、認可 → ポリシー → 承認 → 副作用 → 記録 の順で行う
+  // UBIQUITOUS: POST /api/v1/inquiries/:id/resolve の副作用は関門 C2・C4・C6 を経由し、認可 → ポリシー → 承認 → 副作用 → 記録 の順で行う
   it.todo("test_post_inquiries_id_resolve_shape");
 });

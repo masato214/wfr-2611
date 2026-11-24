@@ -104,7 +104,9 @@ class OpsInbox(unittest.TestCase):
         self.assertEqual(k.input_fields("addOpsInquiryNote"), {"body"})
         for op in ("replyOpsInquiry", "addOpsInquiryNote"):
             self.assertEqual(k.output_fields(op), OPS_MESSAGE, op)
-        self.assertEqual(k.output_prop("replyOpsInquiry", "kind").get("enum"), ["customer", "reply", "note"])
+        # kind の値（customer・reply・note）は契約の答えの形に書けない（作り手の答えの表は型だけ）。値は振る舞いの葉 K-973・K-975 の試験が見る
+        for op in ("replyOpsInquiry", "addOpsInquiryNote"):
+            self.assertEqual(k.output_prop(op, "kind").get("type"), "string", op)
 
     def test_K948_DC_012_uuid_fields(self) -> None:
         """K948-DC-012 この葉の口の入力と答えで `_id` で終わる欄は全部 uuid（控え帳）"""
@@ -164,9 +166,17 @@ class Retire(unittest.TestCase):
 
     def test_K948_DC_017_blank_only(self) -> None:
         """K948-DC-017 空白だけの題・内容を契約の形で断る（D-156.38）：createInquiry の title・body、postInquiryMessage・replyOpsInquiry・addOpsInquiryNote の body に pattern \\S"""
+        # 作り手は契約を書く前に pattern を JS と同じ字の組に直す（portable_regex・K-1117）ので、直した形と比べ、実際の字でも確かめる
+        import re
+
+        from portable_regex import portable
+
         for op, field in (("createInquiry", "title"), ("createInquiry", "body"), ("postInquiryMessage", "body"),
                           ("replyOpsInquiry", "body"), ("addOpsInquiryNote", "body")):
-            self.assertEqual(k.input_prop(op, field).get("pattern"), "\\S", f"{op}.{field}")
+            pat = k.input_prop(op, field).get("pattern")
+            self.assertEqual(pat, portable("\\S"), f"{op}.{field}")
+            self.assertIsNone(re.search(pat, " \u3000\t\n"), f"{op}.{field}：空白だけを通した")
+            self.assertIsNotNone(re.search(pat, " a "), f"{op}.{field}：字のある内容を断った")
 
 
 if __name__ == "__main__":

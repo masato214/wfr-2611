@@ -9973,6 +9973,61 @@
    "source": [
     "D-156.26"
    ]
+  },
+  {
+   "id": "E-INQ-003",
+   "class": "validation",
+   "where": {
+    "screen": "inquiry"
+   },
+   "when": "上げ終わりのとき、置き場に置いた中身の頭が名乗った種類（画像・PDF・zip）と合わない",
+   "false_when": "名乗った種類の頭で始まる中身（png・jpeg・gif・webp・pdf・zip）",
+   "message": "このファイルは付けられません（画像・PDF・zip だけ）",
+   "action": "付け直す",
+   "undo": false,
+   "layers": [
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "会社の人で 困ったとき・お知らせ › 問い合わせる を開く",
+    "steps": [
+     "拡張子を .png に変えた文字のファイルを付ける"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-156.26"
+   ]
+  },
+  {
+   "id": "E-INQ-004",
+   "class": "validation",
+   "where": {
+    "screen": "inquiry"
+   },
+   "when": "上げ終わりのとき、置き場に置いた物の大きさが名乗った大きさと違う・10MB を超える・まだ置いていない",
+   "false_when": "名乗ったとおりの大きさ（1 つ 10MB まで）で置き終わった物",
+   "message": "大きすぎて付けられません（1 つ 10MB まで・5 つまで）",
+   "action": "小さくして付け直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "会社の人で 困ったとき・お知らせ › 問い合わせる を開く",
+    "steps": [
+     "10MB を超えるファイルを付ける"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-156.26"
+   ]
   }
  ],
  "meta": {

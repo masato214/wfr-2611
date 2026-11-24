@@ -1,0 +1,31 @@
+{
+ "ops": {
+  "uploadInquiryAttachment": {
+   "file": "apps/api/test/features/F12/inquiry-upload.test.ts",
+   "reason": "上げる先は本人と会社の添付の行・1 回だけの印・関門 C4 の署名つき上げ先を作る。中身の検査は契約の外の上げ終わりの受け口で、生成の試験の種では受け口を叩けない（K-950）",
+   "covers": {
+    "test_post_inquiries_attachments_ok": "K950-API-001",
+    "test_post_inquiries_attachments_shape": "K950-API-001",
+    "test_post_inquiries_attachments_rejected_401": "K950-API-004",
+    "test_post_inquiries_attachments_rejected_403": "K950-API-004",
+    "test_post_inquiries_attachments_rejected_422": "K950-API-002",
+    "test_post_inquiries_attachments_rejected_422_2": "K950-API-002",
+    "test_post_inquiries_attachments_rate_limited": {
+     "file": "apps/api/test/features/F12/inquiry-create.test.ts",
+     "mark": "K949-API-011"
+    },
+    "test_post_inquiries_attachments_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_inquiries_attachments_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_inquiries_attachments_too_large": "体は名前・種類・大きさの 3 つだけ。送る量の守り（1MB）は入口の共通（op.ts・K-144）"
+   }
+  }
+ }
+}
