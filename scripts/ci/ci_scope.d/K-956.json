@@ -1,12 +1,17 @@
 {
  "data_links": [
   {
-   "paths": ["apps/web/features/F12/help/**", "apps/web/app/(work)/notices/**"],
-   "tests": ["apps/web/tests/k/k956-help-home.spec.ts", "apps/web/test/k956-help-shape.test.ts"]
+   "paths": [
+    "apps/web/features/F12/help/**",
+    "apps/web/app/(work)/notices/**"
+   ],
+   "tests": [
+    "apps/web/tests/k/k956-help-home.spec.ts",
+    "apps/web/test/k956-help-shape.test.ts"
+   ]
   }
  ],
  "reads_ok": {
-  "apps/web/lib/built-routes.ts": "K956-UI-010 が道の一覧に /inquiry があるかを字で読む（K-956）",
-  "scripts/ci/fidelity_compare.mjs": "f12-user-match.ts がモックと本番の値を比べるのに読む（K-956）"
+  "apps/web/lib/built-routes.ts": "K956-UI-010 が道の一覧に /inquiry があるかを字で読む（K-956）"
  }
 }
