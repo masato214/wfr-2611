@@ -26983,6 +26983,104 @@
    "file": "11_tickets/K-954.md"
   },
   {
+   "id": "K-958",
+   "title": "請求書を読む口（getBilling）と請求書の PDF の口（downloadInvoicePdf）：支払い条件・振込先（設定の値）・請求先・請求書の表（お支払い待ち・払われた・期限を過ぎた）・期限を過ぎた数を、プランと支払いの能力の人にだけ返す。運営の会社にプラン 3 つを置く（K-72 の葉・W3）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "請求",
+   "assignee": "実装",
+   "due": "2026-12-08",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-951（読む口 2 本・関数で本人に絞る・試験 13 行・見込み 1）と K-954（読む口・migration で列と関数・試験 24 行・見込み 1）から引いた：migration（列 1 つ・プラン 3 行・関数 2 つ）15 分・口 2 本と設定の値 15 分・登録先（hooks・.d・errors.d・ears・ci_scope・k144・.env.example）10 分・自分の確かめ 15 分。試験の土台 billing.harness.ts は切る段で書いた",
+   "decisions": [
+    "D-156.5",
+    "D-156.12",
+    "D-156.13",
+    "D-156.17",
+    "D-156.29",
+    "D-156.31",
+    "D-156.32",
+    "D-125.24",
+    "D-125.125",
+    "D-128.69"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2",
+    "C4"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/billing-read.test.ts",
+    "apps/api/test/generated/get_workspace_billing.test.ts",
+    "apps/api/test/generated/get_invoices_id_pdf.test.ts"
+   ],
+   "carry": [
+    "apps/api/test/features/F12/billing.harness.ts",
+    "apps/api/test/features/contract/k144.d/K-958.ts"
+   ],
+   "depends_on": [
+    "K-1005",
+    "K-954"
+   ],
+   "acts": [
+    "A69"
+   ],
+   "screens": [
+    "billing"
+   ],
+   "apis": [
+    "getBilling",
+    "downloadInvoicePdf"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。請求書の画面は K-960（正は /dev/mock/f12-user の ub-bills・ub-bills-overdue・ub-bills-empty・ub-bills-noaccess）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/db",
+    "@kaname/config"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128005800_billing_read.sql",
+    "packages/db/src/migrations.generated.ts",
+    "packages/config/src/index.ts",
+    ".env.example",
+    "05_flow/screen_api.d/K-958.py",
+    "scripts/ci/contract_shape.d/K-958.py",
+    "07_qa/test-specs/errors.d/K-958.json",
+    "07_qa/test-plan/ears-elsewhere.d/K-958.json",
+    "scripts/ci/ci_scope.d/K-958.json",
+    "apps/api/src/hooks/billing-read.ts",
+    "apps/api/src/features/F12/billing/read.ts",
+    "apps/api/src/features/F12/billing/errors.ts",
+    "08_api/db-columns.json",
+    "03_architecture/ER図.md"
+   ],
+   "flow": "困ったときに運営に聞き、お知らせと請求を見る",
+   "sections": {
+    "目的": "ワークスペースの管理 › 設定 › 請求書（画面は K-960）が呼ぶ、請求書を読む口と PDF の口を作る（行為 A69・今は 501）。答えの形は K-1005 の「画面が使う答えの形」（getBilling の 7 欄・PDF は `{ url, expires_at }`）で、この葉は振る舞いだけを書く。\n\n- **見られる人**：管理者と「プランと支払い」を付けた人（入口の言葉 admin・tenants の billing の能力・D-156.29）。DB の関数の頭でも同じ能力を確かめる（2 層目・G-02）\n- **状態の決め**（D-156.29・D-156.32）：入金の合計が請求の額と**同じ**ときだけ「払われた」（paid）。足りない・多いは「お支払い待ち」（unpaid）のまま。期限（due_on）が日本の今日より前で払われていなければ「期限を過ぎた」（overdue）。打ち消し（D-156.32 の取り消し）は負の額の入金の行（書くのは K-982）\n- **支払い条件と振込先は設定の値**（D-125.24：直書きしない）：`BILLING_TERMS`・`BILLING_PAYEE` を `@kaname/config` が読む\n- **運営の会社にプラン 3 つを置く**：無料・チーム・ビジネス（D-125.125・値段は仮）。プランの値段と人数は K-961（選べるプラン）・K-981（請求書を出す）・K-954（プランで選ぶお知らせ）が同じ行を読む\n- 書き出しは作らない（D-156.13）。PDF を読むのは書き出しではない",
+    "完了の条件": "- [ ] 下の表の 18 行（K958-API-001〜016・K958-DB-001〜002）が緑：`apps/api/test/features/F12/billing-read.test.ts`（土台 `billing.harness.ts`・この葉が運ぶ）\n- [ ] 契約の口 2 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-958.json`）\n- [ ] 共有の試験 `k144-contract.test.ts` の回で、葉の行 K144-API-958（道の id）が通る（`k144.d/K-958.ts`・carry）\n- [ ] migration の lint（Squawk・G58）・設定の名前の検査（ci:env-audit・G13）が緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: LIST, PERM, FILE\n\n- **代表の答え 2026-11-23（D-156.29）**：見られるのは管理者と「プランと支払い」を付けた人。状態は お支払い待ち／払われた／期限を過ぎた の 3 つ（差がある入金は お支払い待ち のまま）\n- **代表の答え 2026-11-23（D-156.32）**：足りない・多いは「お支払い待ち」のまま差を残す。打ち間違いは打ち消しの行を足す（消さない）\n- **代表の答え 2026-11-23（D-156.31）**：金額は契約のプランの値段（人数で掛けない）＋消費税 10%。無料は請求書を出さない（この葉は出された請求書を読むだけ）\n- **生成の試験は作る段の最初に作る**：この葉の契約の断片（`05_flow/screen_api.d/K-958.py`・`scripts/ci/contract_shape.d/K-958.py`）を足して作り手で生成の試験を作り直し、**実装より先に 1 つのコミットにする**。生成の試験の名前が変われば `ears-elsewhere.d/K-958.json` の covers を出た名前に合わせる。**先の葉の契約を前提にした前からの試験は carry に入れない**（carry は土台と自分の k144 の葉のファイルだけ）\n- 入力の形（422）：getBilling は入力なし。downloadInvoicePdf は道の id（uuid・入口・K144-API-958）\n- **見えない請求書**（別の会社・無い・消した・出していない＝issued_at が空の下書き）は 404 E-PAGE-001（欄・details なし・在るかを漏らさない）\n- **PDF がまだできていない**（pdf_ref が空）は 409 E-BILL-001（欄なし）。PDF を作るのは請求書を出す葉 K-981\n- 断る番号（控え帳）：能力の無い人・先方の権限の人 403（入口）・ログインなし 401・上限 429（120/分/人）・DB の失敗 503 E-PAGE-003（中身を返さない）\n- 答えは `Cache-Control: private, no-store`\n- **関門の宣言** choke_points は契約と同じ [C2, C4]（KC4）。C2 は関数を通るだけ（書かない）、C4 は PDF の署名 URL を置き場の関門 `objects.signUrl` で出す（証跡は置き場の関門が書く）\n- **hooks の make は材料の config を読まない**（要求の時に `d.config.billing`・`d.config.baseUrl` を読む）。k144 の葉の土台 `leafHooks` は appPool しか渡さないため\n\n### 設定の値（`packages/config/src/index.ts`・`.env.example`）\n\n- `Config.billing: { terms: string; payeeLines: string[] }` を足す\n- `BILLING_TERMS`（無ければ「請求書払い ・ 月末締め 翌月 1 日に出す ・ 月末払い」）・`BILLING_PAYEE`（振込先の行を「|」で区切る。無ければ空の並び＝画面は「まだ決まっていません」・K-960）。`.env.example` に 2 行（値は仮の字・口座の番号を書かない）\n\n### 表と関数（migration `20261128005800_billing_read.sql`・K-958 → 58 分）\n\n- 列 `tenants.billing_contact jsonb`（`{ company, attn, email }`・空なら null）。請求先は契約（subscriptions）ではなく会社に 1 つ（プランを変えても請求先は残る）。書くのは K-959。前の列 `subscriptions.billing_contact` は読まない・書かない（凍結）\n- プランの行：運営の会社（`app.ops_tenant_id()`）の `plans` に `free`（無料・0・`{\"members\":3}`）・`team`（チーム・15000・`{\"members\":10}`）・`business`（ビジネス・40000・`{\"members\":30}`）。`price_monthly` は税別の円。`on conflict (tenant_id, key) do nothing`（運営が直した値を上書きしない）\n- `app.billing_get() returns jsonb`（security definer・`search_path = public, app`・public から外す・`kaname_app` に execute）：ⓐ `app.member_ok()` と `has_permission(app.user_id(), 'tenants', null, 'billing')` でなければ `{\"error\":\"forbidden\"}` ⓑ 今日＝`(now() at time zone 'Asia/Tokyo')::date` ⓒ 請求書＝その会社の `deleted_at is null and issued_at is not null` の行。`paid_total` は消していない入金の額の合計（負の行も足す）。state は `paid_total = amount` なら paid／`due_on < 今日` なら overdue／ほか unpaid。paid のときだけ `paid_on`（最後の入金の日）。month は `to_char(period_start, 'YYYY-MM')`・issued_on は `issued_at` の日本の日付・額は整数 ⓓ 並びは period_start の新しい順 ⓔ overdue は overdue の数と額の合計（0 件なら null）ⓕ contact は `tenants.billing_contact`、空なら `{ company: tenants.name, attn: \"\", email: \"\" }` ⓖ free は今のプランの鍵が free（今のプランの決めは K-954 の `app.tenant_plan_id`。契約が無ければ free）ⓗ can_edit_contact は true（更新の口も同じ能力・入口で確かめた後） ⓘ `{\"data\": {contact, invoices, overdue, free, can_edit_contact}}`（terms・payee は口が設定から足す）\n- `app.billing_invoice_pdf(p_id uuid) returns jsonb`（同じ形の security definer）：ⓐ 同じ ⓑ その会社の消していない・出した請求書でなければ `{\"error\":\"not_found\"}` ⓒ pdf_ref が空なら `{\"error\":\"pdf_missing\"}` ⓓ `{\"pdf_ref\": …}`",
+    "依存の理由": "- K-1005: 要る — getBilling・downloadInvoicePdf の答えの形（7 欄・請求書の行の欄・state の 3 つ）を K-1005 の断片が契約に書く。無いと生成の試験と型が組めない\n- K-954: 要る — 今のプランの決め `app.tenant_plan_id`（契約の行が無ければ無料）を K-954 の migration が作る。free の決めをこの葉で別に書かない（同じ決めを 2 つ作らない）。K-961 が同じ関数を先の契約（予定の下げ）に合わせて直す",
+    "目録で探した結果": "- 使う：`invoices`・`payments`・`plans`・`subscriptions`（0015）・`tenants`・`has_permission`（0080）・`app.member_ok`（0074）・`app.ops_tenant_id`（0003）・`app.tenant_plan_id`（K-954）・`ObjectStore.signUrl`（`@kaname/storage`・関門 C4）・成果物の署名 URL の組み方（`apps/api/src/auth/artifacts.ts` の `${baseUrl}/api/auth-ext${url}`）・`withTenant`・K-949 の「関数の断りの言葉 → 番号」の書き方（`errors.ts`）・K-351 の hooks の書き方（`defineHooks`・`fuzz: \"same\"`）\n- 作る：列 `tenants.billing_contact`・プラン 3 行・関数 2 つ・設定 `Config.billing`・hooks `billing-read.ts`・`features/F12/billing/read.ts`・`errors.ts`。探したが顧客が請求書を読む道は無かった（`invoices` は会社の人なら素の読みで全部見え、能力の区別も状態の決めも無い）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128005800_billing_read.sql`（上の「表と関数」）。一覧は `python3 scripts/ci/gen_migrations.py`（生成物） |\n| 設定 | `packages/config/src/index.ts` の `Config.billing`・`loadConfig`／`.env.example` に 2 行 |\n| 口 | `features/F12/billing/read.ts`：getBilling＝関数を withTenant の 1 取引で → `terms`・`payee: { lines }` を設定から足す → 200。downloadInvoicePdf＝関数 → `objects.signUrl(ctx, pdf_ref, 600)` → `{ url: ${baseUrl}/api/auth-ext${url}, expires_at }`。署名が断られたら 503 E-PAGE-003。断りの言葉 → 番号は `errors.ts`（forbidden 403・not_found 404 E-PAGE-001・pdf_missing 409 E-BILL-001）。想定外の例外は 503 E-PAGE-003（ログは `[billing] 請求書を読めなかった（<例外の種類>）` だけ・請求先の字を出さない） |\n| 口の登録（K-326） | `apps/api/src/hooks/billing-read.ts`（getBilling・downloadInvoicePdf の before・`register`・fuzz `\"same\"`） |\n| 契約の断片 | `05_flow/screen_api.d/K-958.py`：`ERRORS_4XX` に downloadInvoicePdf の 404 E-PAGE-001・409 E-BILL-001。`scripts/ci/contract_shape.d/K-958.py`（空の表） |\n| 誤りの正本 | `07_qa/test-specs/errors.d/K-958.json`：E-BILL-001（class conflict・where billing・「この請求書の PDF はまだできていません」・action「しばらくしてから開き直す」・layers API・source D-156.31）。字は K-960 の画面の字と合わせる |\n| 登録先 | `07_qa/test-plan/ears-elsewhere.d/K-958.json`（下）・`scripts/ci/ci_scope.d/K-958.json`（data_links：`apps/api/src/hooks/billing-read.ts`・`features/F12/billing/**` → この葉の試験と k144-contract.test.ts。土台 billing.harness.ts → この葉と K-959・K-961 の試験）・`08_api/db-columns.json`・`03_architecture/ER図.md`（tenants.billing_contact）。作り手で一覧を作り直す |\n| 共有の試験の葉 | `apps/api/test/features/contract/k144.d/K-958.ts`（carry・切る段が書いた・K144-API-958） |\n\n### 生成の試験（ears-elsewhere.d/K-958.json）\n\n```json\n{\"ops\": {\n \"getBilling\": {\"file\": \"apps/api/test/features/F12/billing-read.test.ts\",\n  \"reason\": \"能力・契約・請求書と入金の行で答えが変わる。種では請求書と入金と能力の行を作れない（K-958）\",\n  \"covers\": {\"test_get_workspace_billing_ok\": \"K958-API-001\", \"test_get_workspace_billing_rejected_401\": \"K958-API-010\",\n             \"test_get_workspace_billing_rejected_403\": \"K958-API-010\", \"test_get_workspace_billing_rejected_422\": \"K958-API-001\",\n             \"test_get_workspace_billing_rate_limited\": \"K958-API-012\",\n             \"test_get_workspace_billing_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_workspace_billing_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {}},\n \"downloadInvoicePdf\": {\"file\": \"apps/api/test/features/F12/billing-read.test.ts\",\n  \"reason\": \"出した請求書と PDF の置き場の参照で答えが変わる。種では作れない（K-958）\",\n  \"covers\": {\"test_get_invoices_id_pdf_ok\": \"K958-API-013\", \"test_get_invoices_id_pdf_rejected_401\": \"K958-API-016\",\n             \"test_get_invoices_id_pdf_rejected_403\": \"K958-API-016\", \"test_get_invoices_id_pdf_not_found\": \"K958-API-014\",\n             \"test_get_invoices_id_pdf_rejected_422\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-958\"},\n             \"test_get_invoices_id_pdf_rate_limited\": \"K958-API-012\",\n             \"test_get_invoices_id_pdf_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_invoices_id_pdf_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {}}}}\n```\n\n（`test_get_workspace_billing_rejected_422` は入力の無い口で、問い合わせの値を付けても答えが同じ 200 になる行。作り手が出さなければ covers から消す。K958-API-012 は getBilling の上限を見る。PDF の上限は同じ入口の数え方で、作り手が 2 つ目を求めれば行を足して切る段に戻す）",
+    "外に影響する手順": "1. DB を読む（請求書・入金・会社・プラン）：`app.billing_get`・`app.billing_invoice_pdf` の 1 取引［残らない］— 失敗の行：K958-API-011（落ちたら 503・中身を返さない）\n2. 置き場の関門 C4 で PDF の期限つきの署名 URL を出す（置き場の関門が証跡を 1 行書く）［残る：証跡］— 失敗の行：K958-API-015（PDF が無ければ署名しない＝証跡も残さない）。署名が断られる（参照が会社の外）は 503（後片付けは要らない：署名は何も作らない）\n3. お知らせ・メール：送らない — 失敗の行：なし（呼ばない）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/billing-read.test.ts`（本物の DB・偽の画面のログイン・請求書と入金の行は DB に直に置く）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 請求書なし・無料 | 設定 › 請求書 | 管理者 | free true・表は空 | このチケット | K958-API-006 |\n| お支払い待ち・払われた・期限を過ぎた | 同じ | 管理者・プランと支払いの人 | 状態 3 つ・注意の数 | このチケット | K958-API-002〜004 |\n| 入金の差・打ち消し | 同じ | 同じ | お支払い待ちのまま | このチケット | K958-API-003 |\n| 下書き・消した | 同じ | 同じ | 出ない | このチケット | K958-API-005 |\n| 出した請求書の PDF | 「PDF」 | 同じ | 署名 URL | このチケット | K958-API-013 |\n| 別の会社・無い・下書き・消した | 直に口・古いリンク | 同じ | 404 | このチケット | K958-API-014 |\n| PDF がまだ無い | 「PDF」 | 同じ | 409 E-BILL-001 | このチケット | K958-API-015 |\n| どれでも | 直に口 | 能力の無い人・先方の権限の人・ログインなし | 403・401 | このチケット | K958-API-010・016 |\n| どれでも | 同じ | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n| 止められた会社 | 同じ | 会社の人 | ログインできない | K-970 | 各葉 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K958-API-001 | 対象の状態 | 答えの形 | 200・鍵ちょうど 7・請求書の行は払われていなければ 6 欄・払われたら paid_on を足して 7 欄・month と amount_total と due_on が置いた値 |\n| K958-API-002 | 時間の流れ | 状態 3 つ | 期限の前で入金なしは unpaid・期限が昨日は overdue・入金の合計が額と同じは paid で paid_on は最後の入金の日 |\n| K958-API-003 | 対象の状態 | 入金の差 | 足りない・多い・打ち消しで合計が減った物はどれも unpaid で paid_on が無い |\n| K958-API-004 | 対象の状態 | 期限の注意 | 1 つも無ければ overdue は null・2 つなら { count 2, amount_total 60500 } |\n| K958-API-005 | 対象の状態 | 並び・下書き・消した | 月の新しい順に 3 件・下書きと消した請求書の id が無い |\n| K958-API-006 | 対象の状態 | 無料 | 契約なしは free true・invoices []・overdue null。チームの会社は free false |\n| K958-API-007 | 入力 | 請求先 | 決めていなければ { company: ワークスペースの名前, attn: \"\", email: \"\" }・決めてあればその 3 つ |\n| K958-API-008 | 守り | 設定の値・貯めない | terms と payee.lines が設定の値・can_edit_contact true・Cache-Control に private と no-store |\n| K958-API-009 | 守り | 別の会社 | 別の会社の請求書の id が出ない |\n| K958-API-010 | 利用者の状態 | 見られる人 | 管理者・プランと支払いの人は 200・能力の無い人・先方の人は 403・ログインなしは 401 |\n| K958-API-011 | 失敗 | DB が落ちる | 503 E-PAGE-003・data が無い |\n| K958-API-012 | 守り | 上限 | 2 回目が 429・retry_after_sec は 1〜60 の整数 |\n| K958-API-013 | 対象の状態 | PDF | 200・鍵ちょうど url と expires_at・url は口の住所の頭＋/api/auth-ext/files/ で始まり sig= を持つ・期限は 10 分の内 |\n| K958-API-014 | 守り | 見えない請求書の PDF | 別の会社・消した・下書き・無い id はどれも 404 E-PAGE-001・field と details が無い |\n| K958-API-015 | 対象の状態 | PDF がまだ無い | 409 E-BILL-001・field と details が無い |\n| K958-API-016 | 利用者の状態 | PDF の見られる人 | 能力の無い人・先方の人は 403・ログインなしは 401 |\n| K958-DB-001 | 対象の状態 | プランの行 | 運営の会社に free・team・business が 無料・チーム・ビジネス／0・15000・40000／人数 3・10・30 で在る |\n| K958-DB-002 | 守り | 2 層目 | 能力の無いメンバーの文脈で app.billing_get() を直に呼ぶと { error: forbidden } |\n\n### テストの型の受け（分類 LIST・PERM・FILE）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-LIST-01 0 件・1 件・境目 | K958-API-006（0 件）・005（3 件）。境目は要らない：1 社の請求書は月に 1 つで、一覧に上限を置かない（月の数だけ・12 か月で 12 行） |\n| TP-LIST-02 同じ値の並び | K958-API-005（月の新しい順。同じ月の請求書は 1 社に 1 つ＝K-981 が出すときに守る） |\n| TP-LIST-03 絞り込みの URL | 要らない：絞り込みを持たない口 |\n| TP-LIST-04 探す語 | 要らない：探す語を受けない口 |\n| TP-PERM-01 役が合わない人 | K958-API-010・016 |\n| TP-PERM-02 権限を外した直後 | 要らない：能力は呼ぶたびに入口と関数で引く（覚えない）。外した直後の振る舞いは K958-API-010 の能力の無い人と同じ |\n| TP-PERM-03 他の会社の ID を指す | K958-API-014 |\n| TP-PERM-04 一覧・数に混ざらない | K958-API-009 |\n| TP-PERM-05 権限を付けた直後 | 要らない：同じく呼ぶたびに引く |\n| TP-FILE-01 大きさの上限・0 バイト | 要らない：この口はファイルを受けない（PDF は運営の葉 K-981 が作って置く） |\n| TP-FILE-02 拡張子と中身の種類が違う | 要らない：ファイルを受けない。PDF の中身は K-981 が作る |\n| TP-FILE-03 名前 | 要らない：置き場の名前は請求書の id（`tenants/<会社>/invoices/<id>.pdf`・K-981）で、利用者が名前を付けない |\n| TP-FILE-04 上げる途中で切れた・同時に上げる | 要らない：上げる口を持たない（読むだけ） |\n| TP-FILE-05 他の人のファイルの URL を直接開く | K958-API-014（別の会社の請求書の PDF は 404）・013（期限つきの署名 URL・10 分の内） |\n| G-11〜G-16 | G-11：置き場は関門 C4（署名だけで置き場に触らない）。PDF の実物が置き場に在るかは K-981。G-12：K958-API-002（期限が昨日＝過ぎた直後）。G-13：N/A（書く操作を持たない）。G-14：止められた会社・抜けた人は入口の共通（K-166・K-970）。G-15：K958-API-011（読めないのに空を返さない）。G-16：1 回の口で関数 1 回・1 取引 |",
+    "前からの試験を替えた所": "請求書・入金・プランの表と口の名前・道、設定の型を読む前からの試験を探した（この葉の新しい試験・土台・k144 の葉のファイルは外した）。\n\n```search\ngit grep -l -E \"billing_contact|getBilling|downloadInvoicePdf|/workspace/billing|/invoices/|BILLING_TERMS|BILLING_PAYEE\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'packages/db/test' 'packages/config/test' 'scripts/ci/*_test.py' 'scripts/ci/*.test.mjs' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/billing*' ':!apps/api/test/features/contract/k144.d/K-958.ts'\n12\n```\n\n- 段 13 のほかの葉が切る段で書いた自分の試験・道具 6 本（apps/api/test/features/F12/flow-billing-plan.test.ts（K-998）、apps/api/test/features/F12/ops-invoice-payments.test.ts（K-982）、apps/api/test/features/F12/ops-invoices-issue.test.ts（K-981）、apps/api/test/features/F12/ops-invoices-pdf.test.ts（K-1013）、apps/api/test/features/F12/plan-terms.test.ts（K-1017）、scripts/ci/k999_staging_spec_test.py（K-999））: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n- apps/api/test/features/F12/ops-invoice-template.test.ts（K-1107）・ops-invoices-mail.test.ts（K-1109）・plan-trial.test.ts（K-1104）: 替えない — この葉の後に作る葉（この葉に依存する）の試験で、この葉が作る形に合わせて書いてある（請求先と請求書の行を読む）\n\n- scripts/ci/k1000_flow_test.py（K-1000）: 替えない — 親 K-72 の apis に口の名前が在ることを見る\n- scripts/ci/k1005_billing_contract_test.py（K-1005）: 替えない — 契約の形を読む。この葉は ERRORS_4XX を足すだけで欄を変えない\n- scripts/ci/k948_inquiry_contract_test.py（K-948）: 替えない — 運営の書き出しの 2 口（`/ops/invoices/export`）が無いことを見る。この葉は運営の口に触らない\n- 場合表の種の作り手（packages/db/test）はプランの行を鍵 `seed-plan` で作り、この葉の 3 行（`on conflict do nothing`）とぶつからない：替えない（作る段で流して確かめる）\n- 設定の型（`packages/config/test/config.test.ts`）は `infisical` の欄だけを等しく比べ、全体を比べない：替えない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.29・31・32）\n- 切る段の決め（2026-11-23）：請求先は会社に 1 つ（`tenants.billing_contact`）。契約の行の `subscriptions.billing_contact` は使わない\n- 切る段の決め（2026-11-23）：支払い条件と振込先は設定の値（`BILLING_TERMS`・`BILLING_PAYEE`）。プランの 3 行は運営の会社に置き、値段は税別の円\n- 切る段の決め（2026-11-23）：払われた＝入金の合計（打ち消しの負の行も足す）が請求の額と同じ。PDF がまだ無いは 409 E-BILL-001",
+    "リスク": "- `invoices` は会社の人なら素の読み（行の守り invoices_tenant_read）で全部読める。この葉の口は関数を通るので能力を見るが、表の守りは変えない（素の口を閉じるかは表の守りを扱う葉の仕事）。**起票先**：まとめ役が「invoices の素の読みを能力（billing）で絞る」を 1 枚起票し、やる順の列の後ろに積む（今のチケットと関係なく前からある別の場所の問題・ai-driven-process §3 の 3）\n- 試験の土台 `billing.harness.ts` の先方の人（guest）は、所属の行（tenant_memberships の role requester）を持たない作り物（段 12 の本当のゲスト K-876・K-878 とは形が違う）。403 になることは同じ。所属の行を持たないので、人数を数える関数（K-961 の `app.tenant_seat_count`）には数えられる側の人として出る（K-961 のリスクと同じ字。土台の注に足すのはまとめ役に頼む）",
+    "申し送り": "- K-981：段 13 の前の試験で、同じ会社・同じ月に出した請求書を 2 枚置く物が無いかを、K-981 の切る段で確かめる（K-981 が足す一意の索引 `invoices_tenant_period_uq (tenant_id, period_start) where issued_at is not null and deleted_at is null`）。この葉の billing-read.test.ts は共有の会社 w の月を試験ごとに分けた（009 は -1、013 は -8、014〜016 は -5・-6・-7、別の会社 far は 009 が -1・014 が -9）\n- K-960（請求書の画面）：上の「画面が使う答えの形」（K-1005）のとおり。`payee.lines` が空なら「まだ決まっていません」・`free` なら無料の字・`overdue` があれば上の注意・PDF は 409 E-BILL-001 を「この請求書の PDF はまだできていません」で出す。見られない人は 403 を「見られない」（E-PAGE-002）で出す\n- K-959：請求先は `tenants.billing_contact`（この葉が列を作る）。試験の土台 `billing.harness.ts` を使う\n- K-961：プランの 3 行（この葉の migration）と土台を使う\n- K-981（請求書を出す）：PDF の置き場の参照は `invoices.pdf_ref`（`tenants/<会社>/invoices/<id>.pdf` の形）・額は税込の円・出したら `issued_at`。インボイスの登録番号は設定の値（`BILLING_INVOICE_NO` を K-981 が足す）\n- K-982（入金を記録）：取り消しは負の額の入金の行（消さない）。払われたかは合計が額と同じかで決まる（この葉の関数）。**状態の決めは K-982 が `app.invoice_state` に寄せる**（D-156.46・答えは同じ）\n- K-968：この葉の `app.billing_get()` の請求書の行の所（ⓒⓓ）を `app.tenant_invoices(p_tenant)` に分け、`app.billing_get()` はそれを呼ぶ形に create or replace する（答えは同じ・この葉の試験を K-968 の回で一緒に流す）",
+    "代表に聞くこと": "- #10 代表の答え 2026-11-23（D-156.29）（見られる人・状態 3 つ）\n- #12 代表の答え 2026-11-23（D-156.31）（金額と税・無料は請求書を出さない）\n- #13 代表の答え 2026-11-23（D-156.32）（入金の差と取り消し）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 18 行（上限 30）。"
+   },
+   "file": "11_tickets/K-958.md"
+  },
+  {
    "id": "K-1000",
    "title": "段 13 の流れと文書：flow.json の A80 を「操作の版を見る（読むだけ）」に・回収の行為 A138 を足す・配るもの（ops-skills）の目的と第 2 ナビ・運営の役と用事の文、親 K-72 の apis に利用者の口 14 本、文書 08_api/phase1/10 から上の数の 3 本を消す（流れの正本と文書だけ・K-940 から分けた・K-72 の葉・W0）",
    "kind": "タスク",
