@@ -3425,6 +3425,25 @@ K-940,段 13 の決定：決定ログの新しい節 §156（PM の決め D-156.
 - **答えの記録 33 個**：D-156.82・83 が結ぶ 1c2790c955b9・f950e549255c（まとめ役の控え `.ticket-flow/decider-answers.pending.jsonl` の行を、切る段の枝の答えの記録の末尾にそのまま足した）と、D-156.84 が結ぶ 4ca780e41094（本線の作業場所の答えの記録の行をそのまま足した）と、D-156.74〜81 が結ぶ acc64a5e9779（まとめ役が答えの記録の末尾に足した）と、D-156.71・72 が結ぶ 1e8672e4346c（まとめ役の控え `.ticket-flow/decider-answers.pending.jsonl` に在った行を、切る段の枝の答えの記録の末尾にそのまま足した）と、D-156.52〜70 が結ぶ 17 個（1bbff5cb3f92・68c64cea7b89・a747baf1f828・030010ba70bf・a917ed96a06b・b74d26cac99a・8849c3b0fc92・37a3db05f6a4・bbe13cf3a673・3b9949573dbf・71d990c16969・5600254f22ac・b20363ad3b89・10693ab8cfd1・18e7a5455fd2・cd396b2be1f4・e9850ce48420・まとめ役が答えの記録に足した）と、D-156.13（書き出しを作らない）と D-156.16（取引先という登録は無い）が元に挙げた代表の言葉の記録 2 つ（answer=3781e90d23e0・4961f0280e9a）と、D-156.20〜36 が結ぶ代表の答え 8 つ（87516c9d1395・dc070d77002e・808a3b8991bf・976c84852a0f・e2647a355205・7fce7cc704b5・b7b2f32fed34・4541532b8845）と D-156.51 が結ぶ 474977b1ccf8（まとめ役が足した）。本線の記録にまだ無いので、切る段の枝の `01_hearing/decider-answers.jsonl` の末尾に足した（追記だけ・前の行を消さない）","- [ ] 下の表の 4 行（K940-DC-001〜004）が緑：`scripts/ci/k940_decision_log_test.py`
 - [ ] 決定の検査（trace_gate の T1・T3・T6・T7・T8・decision_source_gate）が緑（T1・T6・T8 は `tickets.json` にこの葉の decisions が載り、T7 は要件一覧を作り直して緑になる。切る段の枝では赤）
 - [ ] 手元の CI（このチケットの範囲）が緑"
+K-944,運営のログイン：運営の人はパスキーだけで入り（パスワードは 403 E-AUTH-022）、解決が運営の人を role ops（会社なし）として解く。セッションに入り方（login_kind）を残し、運営の人を外すとその時点で切れる（K-72 の葉・W0）,タスク,K-72,未着手,実装,2026-12-03,F12・運営のログイン,"運営の場所（/ops・D-156.1）に入る土台。今の解決（`packages/auth/src/resolver.ts`）は role を member と device しか返さず、運営の人（運営の会社 `app.ops_tenant_id()` の members ＋ `ops_members`）がログインしても「運営の会社の社員」として解ける。運営の権限 9 つ・中を見る許可・運営の記録の関数は DB に在るのに、運営として呼べる人が居ない（範囲.md 0 章 3）。
+
+- **運営の人はパスキーだけで入る**（D-128.70・D-156.2）。パスワードで入ろうとすると、部品の止め（セッションの before・`packages/auth/src/index.ts`）が **403 E-AUTH-022** で断り、セッションを作らない
+- **解決が運営の人を role ""ops""・tenantId null で解く**（会社をまたぐ運営の文脈・`TenantContext` の「null = 運営」）。運営のセッションには同意し直しと付けるまで進めないの印を立てない
+- **2 層目**：セッションに入り方 `sessions.login_kind` を残し（パスキーは `'passkey'`）、解決は運営の人の `'passkey'` のセッションだけを運営として解く。止め（1 層目）が何かの道で抜けても、パスキー以外のセッションでは運営の口に届かない
+- **運営の人を外す（`ops_members.revoked_at`・`deleted_at`）と、その時点から同じ印が解けない**（時間を待たない・G-14）
+
+運営の口の入口の柵（x-tenant-id の扱い・1 社を指す口）は K-1001、最初の 1 人を作る命令とパスキーを付けるリンクは K-945、画面は K-946。","- [ ] 下の表の 14 行（K944-API-001〜014）が緑：`apps/api/test/features/F12/ops-login.test.ts`（土台 `ops.harness.ts`）
+- [ ] 前からの試験は「前からの試験を替えた所」のとおり（替えるのは K-53 の規約の口の試験 1 本。画面の 1 本は K-946 が替える）で緑。特に `k233_session_resolve.test.ts`（解決は 1 本の文のまま）
+- [ ] 手元の CI（このチケットの範囲）が緑"
+K-947,運営が会社を触る DB の道の土台：関数の中の 2 層目（app.ops_require・app.ops_target）と、口から呼ぶ TS の土台（opsTx・opsAudit・opsErrorReply）と、運営の関数が確かめと記録を必ず持つかを見る検査（ops_definer_gate）（K-72 の葉・W0）,タスク,K-72,未着手,実装,2026-12-04,F12・運営の土台,"運営が別の会社を触る道は **security definer の関数だけ**（BYPASS は使わない・D-156.3）。段 13 の運営の口の葉（K-963〜K-995）が、どれも同じ形で関数を書けるように、型と土台と検査を先に置く。
+
+- **関数の中の 2 層目**：入口（op.ts の役とできること）が抜けても、関数の頭で `app.ops_require(<できること>)` が運営の人とできることを確かめる（G-02）。指す会社は `app.ops_target(<会社>)` で、在る顧客のワークスペースだけに絞る（運営の会社・作りかけ・消した会社は「無い」）
+- **書く関数は運営の記録を必ず書く**（運営と会社の両方・D-128.108）：`app.record_ops_audit` を中で呼ぶ
+- **検査 `ops_definer_gate.py`**：migration の中の `app.ops_*` の security definer の関数が、①頭で ops_require を呼ぶ ②書くなら record_ops_audit を呼ぶ、を機械で見る（人が思い出さなくても漏れない・choke-points.md）
+- **口から呼ぶ TS の土台**（`apps/api/src/features/F12/ops/db.ts`）：運営の文脈の 1 つの取引（opsTx）・記録の呼び口（opsAudit）・DB の断りを口の答えに直す（opsErrorReply：42501 → 403・P0002 → 404・ほか → 503 E-PAGE-003）","- [ ] 下の表の 14 行（K947-API-001〜008・K947-DB-001〜006）が緑：`apps/api/test/features/F12/ops-db.test.ts`・`scripts/ci/k947_ops_definer_test.py`
+- [ ] 検査 `python3 scripts/ci/ops_definer_gate.py` が本線の migrations で 0 で終わる（G65 の段 `scripts/ci/g65.d/K-947.txt` で CI が流す）
+- [ ] 前からの試験は「前からの試験を替えた所」のとおり（替える物は無い）で緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
 K-948,契約の作り直し 1：問い合わせ（利用者の 6 口・運営の受信箱の 5 口）を画面が要る欄に作り直し、添付に関門 C4 を足し、書き出しの口 2 本（exportOpsWorkspaces・exportOpsInvoices）を外す（契約と文書だけ・振る舞いは後の葉・K-72 の葉・W0）,タスク,K-72,未着手,実装,2026-12-04,F12・契約,"問い合わせの口は、今は表の写しの形（入力が表の列をそのまま受け、答えは表の列）で、画面（下絵 uh-ask・uh-thread・oq-inbox）が要る欄が無い（範囲.md 0 章 5）。作り直しはまとまりごとに 1 本（D-156.5）で、この葉は **問い合わせのまとまり**。後の葉（K-949〜K-953・K-973〜K-976）は振る舞いだけを書く。
 
 - 利用者の 6 口（listMyInquiries・createInquiry・getMyInquiry・postInquiryMessage・resolveMyInquiry・uploadInquiryAttachment）と運営の受信箱の 5 口（listOpsInquiries・getOpsInquiry・updateOpsInquiry・replyOpsInquiry・addOpsInquiryNote）の **入力と答えの欄** を、下の「画面が使う答えの形」に作り直す

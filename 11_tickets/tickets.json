@@ -26794,6 +26794,164 @@
    "file": "11_tickets/K-940.md"
   },
   {
+   "id": "K-944",
+   "title": "運営のログイン：運営の人はパスキーだけで入り（パスワードは 403 E-AUTH-022）、解決が運営の人を role ops（会社なし）として解く。セッションに入り方（login_kind）を残し、運営の人を外すとその時点で切れる（K-72 の葉・W0）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "運営のログイン",
+   "assignee": "実装",
+   "due": "2026-12-03",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 2 の K-304（パスキーで入る・部品の hook に数行・試験 20 行前後・見込み 1）と K-308（migration 1 本と解決の 1 本の文に列を足す・試験 25 行・見込み 1・K-166 の実測から引いた）から引いた：migration 1 本（列 1 つ・関数 3 つ）15 分・部品の hook（before の止めと after の入り方）と目録の 1 行 15 分・解決の分かれ道 10 分・試験 14 行を流して直す 20 分。試験の土台（ops.harness.ts）は切る段で書いた",
+   "decisions": [
+    "D-156.2",
+    "D-156.17",
+    "D-156.18",
+    "D-156.22",
+    "D-128.70",
+    "D-125.140",
+    "D-128.141"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-login.test.ts"
+   ],
+   "carry": [
+    "apps/api/test/features/F12/ops.harness.ts",
+    "apps/api/test/features/F1/terms.test.ts"
+   ],
+   "depends_on": [
+    "K-940"
+   ],
+   "acts": [
+    "A60"
+   ],
+   "screens": [],
+   "apis": [],
+   "canvas": [],
+   "canvas_none": "ログインの部品と解決と DB だけ。運営のログインの画面は K-946",
+   "affects": [
+    "@kaname/api",
+    "@kaname/auth",
+    "@kaname/db",
+    "@kaname/errors"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128004400_ops_login.sql",
+    "packages/db/src/migrations.generated.ts",
+    "packages/auth/src/index.ts",
+    "packages/auth/src/resolver.ts",
+    "07_qa/test-specs/errors.d/K-944.json",
+    "apps/api/test/features/F12/ops-login.test.ts",
+    "apps/api/test/features/F12/ops.harness.ts",
+    "apps/api/test/features/F1/terms.test.ts"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営の場所（/ops・D-156.1）に入る土台。今の解決（`packages/auth/src/resolver.ts`）は role を member と device しか返さず、運営の人（運営の会社 `app.ops_tenant_id()` の members ＋ `ops_members`）がログインしても「運営の会社の社員」として解ける。運営の権限 9 つ・中を見る許可・運営の記録の関数は DB に在るのに、運営として呼べる人が居ない（範囲.md 0 章 3）。\n\n- **運営の人はパスキーだけで入る**（D-128.70・D-156.2）。パスワードで入ろうとすると、部品の止め（セッションの before・`packages/auth/src/index.ts`）が **403 E-AUTH-022** で断り、セッションを作らない\n- **解決が運営の人を role \"ops\"・tenantId null で解く**（会社をまたぐ運営の文脈・`TenantContext` の「null = 運営」）。運営のセッションには同意し直しと付けるまで進めないの印を立てない\n- **2 層目**：セッションに入り方 `sessions.login_kind` を残し（パスキーは `'passkey'`）、解決は運営の人の `'passkey'` のセッションだけを運営として解く。止め（1 層目）が何かの道で抜けても、パスキー以外のセッションでは運営の口に届かない\n- **運営の人を外す（`ops_members.revoked_at`・`deleted_at`）と、その時点から同じ印が解けない**（時間を待たない・G-14）\n\n運営の口の入口の柵（x-tenant-id の扱い・1 社を指す口）は K-1001、最初の 1 人を作る命令とパスキーを付けるリンクは K-945、画面は K-946。",
+    "完了の条件": "- [ ] 下の表の 14 行（K944-API-001〜014）が緑：`apps/api/test/features/F12/ops-login.test.ts`（土台 `ops.harness.ts`）\n- [ ] 前からの試験は「前からの試験を替えた所」のとおり（替えるのは K-53 の規約の口の試験 1 本。画面の 1 本は K-946 が替える）で緑。特に `k233_session_resolve.test.ts`（解決は 1 本の文のまま）\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: AUTH\n\n- **解決の文は 1 本のまま**（K-233・`k233_session_resolve.test.ts` の「解決は 2 本」）：`app.session_ops(c.session_id) as ops` を今の select の列に足す。別の問い合わせを足さない\n- 運営の人の判定は DB の関数だけで持つ（関門 C2）。TS に運営の会社の id を直書きしない（id は `app.ops_tenant_id()`）\n- 運営の人は「運営の会社の members の行」と「生きている `ops_members`（`revoked_at is null and deleted_at is null`）」の両方がある人。運営の会社の人で `ops_members` が無い人は、セッションはできても運営として解かず null（401）\n- 運営のセッションの ctx：`{ tenantId: null, userId: <members.id>, role: \"ops\", stepUpAt, loginAt }`。termsPending・mfaPending は false（同意し直しは顧客の規約の印・運営はパスキーを持つ）、memberLeft は false。運営が指す会社（x-tenant-id）は今のとおり `middleware/tenant.ts` が足す（K-1001 で整理する）\n- 本人確認の取り直し（15 分）は今の仕組みをそのまま使う（D-156.2）。`app.session_step_up_at` が運営のセッションにも効く\n- 断る番号（控え帳・D-156.12・D-156.17）：パスワードで入ろうとした運営の人は **403 E-AUTH-022**（今の状態ではなく「入り方が違う」＝止めと同じ 403 の側。LOGIN_BLOCKED と同じ形で返す）。止めの関数が落ちたら **503 E-PAGE-003**（止める側に倒す・今の止めと同じ）\n- E-AUTH-022 の文は下絵（`OpsLogin` の注記）の字：「運営の場所は、パスキーしか使えません（メールとパスワードでは入れません）」（D-156.18）。顧客のログインの画面で運営の人がパスワードを打ったときに出る\n- 番号 E-AUTH-022 は本線と c/段8・10・11・12 のどれも使っていない（2026-11-23 に `git grep` で確かめた）。PM が段 13 の番号として押さえた（2026-11-23）\n- K-945 が、パスキーを付ける前の「付けるだけのセッション」を作るために、止めの関数 `app.ops_login_check` を自分の migration で置き換え、入り方 `'ops_setup'` を足す（この葉は `'passkey'` だけを持つ）",
+    "依存の理由": "- K-940: 要る — 頭の欄の決定（D-156.2・17・18・22）が本線の決定ログ §156 に在ること（build_index の K4）\n- K-1000（切り方の見込み）: 外した — K-1000 が変えるのは流れの正本と文書（05_flow・08_api/phase1/10・K-72.md）で、この葉の変えるファイル（packages/auth・packages/db/migrations・errors.d）と重ならない。行為 A60 は前から在る",
+    "目録で探した結果": "- 使う：`app.session_check`（0083）・`app.login_gate` と `LOGIN_BLOCKED`・`LOGIN_BLOCKED_CODES`（`packages/auth/src/index.ts`）・`app.open_session`（0004）・`app.ops_tenant_id()`（0003）・`ops_members`（0014・0078）・段 2 の試験の土台 `F1/login.harness.ts`（setupLogin・本番と同じ bootApi）・K-304 の試験の仮の認証器の形\n- 作る：試験の土台 `apps/api/test/features/F12/ops.harness.ts`（切る段で書いた・運営の人を作る・仮の認証器・パスキーで入る。K-945・K-1003 も使う）。探したが運営の人を作る土台は無かった（`F1/login.harness.ts` の `OPS_EMAIL` は運営の連絡先の設定値で、運営の人ではない）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128004400_ops_login.sql`（K-944 → 44 分）：① `alter table sessions add column if not exists login_kind text` と check `login_kind in ('passkey')`（K-945 が `'ops_setup'` を足す）② `app.mark_session_login_kind(p_auth_session_id text, p_kind text) returns void`（security definer・`login_kind is null` の行だけ埋める）③ `app.ops_login_check(p_auth_user_id text, p_via_passkey boolean) returns text`（security definer・stable。その人の生きている members が運営の会社にあり、生きている `ops_members` がある＝運営の人で、`p_via_passkey` が false なら `'passkey_only'`、ほかは `'ok'`）④ `app.session_ops(p_session_id uuid) returns text`（security definer・stable。セッションの会社が運営の会社でなければ null。運営の会社なら、生きている `ops_members` があり `login_kind = 'passkey'` のとき `'ops'`、ほかは `'denied'`）⑤ `grant execute` を kaname_app に。一覧は `python3 scripts/ci/gen_migrations.py` が作る（生成物） |\n| 止め（1 層目） | `packages/auth/src/index.ts` の `databaseHooks.session.create.before`：今の `app.login_gate` が `'ok'` の後に、`const viaPasskey = (ctx as { path?: string } \\| null)?.path === PASSKEY_VERIFY_PATH` を求め（道の名前は同じファイルの頭の定数 `export const PASSKEY_VERIFY_PATH = \"/passkey/verify-authentication\"` の 1 か所だけに書き、注に「部品 @better-auth/passkey の版の道の名前。版を上げたらここだけ直す（K944-API-001 が拾う）」と書く。K-945 などが置き換えるときもこの定数を使う）、`select app.ops_login_check($1, $2) as v` を引く。`'passkey_only'` なら `throw new APIError(\"FORBIDDEN\", { code: \"E-AUTH-022\" })`。関数が落ちたら今の止めと同じく `SERVICE_UNAVAILABLE`（E-PAGE-003）。`LOGIN_BLOCKED_CODES` に E-AUTH-022 を足す（契約の口 signInWithPassword と signInWithLock がこの番号で 403 を返す） |\n| 入り方を残す | 同じファイルの `after`：`app.open_session` の後で、`ctx.path` がパスキーの道なら `select app.mark_session_login_kind($1, 'passkey')`。落ちたら今の写しの失敗と同じく認証側のセッションを消してから上げる。消すのが落ちたら `console.error` に「後片付け」と種類（例外の名前）だけを出し（印・id は出さない）、元の失敗を上げる（K944-API-013・014） |\n| 解決（2 層目） | `packages/auth/src/resolver.ts` の `createSessionResolver`：今の 1 本の文の列に `app.session_ops(c.session_id) as ops` を足す。`ops === \"denied\"` なら null。`ops === \"ops\"` なら `{ ctx: { tenantId: null, userId: row.member_id, role: \"ops\", stepUpAt, loginAt }, termsPending: false, mfaPending: false, memberLeft: false, … }`。ほか（null）は今のまま member |\n| 目録 | `07_qa/test-specs/errors.d/K-944.json`：E-AUTH-022（class auth・where login・when「運営の人がメールとパスワードで入ろうとした」・message は下絵の字・layers API・source D-128.70・D-156.2・support_code AUTH-022）。作り手 `python3 scripts/tickets/regen_all.py` で errors.json と `packages/errors/src/catalog.ts` を作り直す |\n| 試験 | `apps/api/test/features/F12/ops-login.test.ts`・土台 `ops.harness.ts`（切る段が書いた） |",
+    "外に影響する手順": "- S1: パスキーの道で入ると、部品がセッションを作って `public.sessions` に写し（今の `app.open_session`）、入り方 `login_kind` を書く [残る] — 入り方を書けなければ、認証側のセッションを消してから上げる（半分だけ入った状態を残さない・K-301 と同じ。5xx・印なし・K944-API-013）。その後片付け（認証側のセッションを消す）も落ちたら、ログに「後片付け」と種類だけを出して上げる。残った認証側のセッションは入り方が無いので、解決が運営として解かない（2 層目・K944-API-014）\n- S2: 止め：運営の人のパスワードの道は、セッションを作る前に断る（何も書かない）。止めの関数が落ちたら 503 E-PAGE-003 でセッションを作らない（止める側に倒す・K944-API-009）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/ops-login.test.ts`（本物の DB・本物のログインの部品・本番と同じ bootApi・土台 `ops.harness.ts`）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 運営の人（ops_members 生きている） | パスキーで入る | ログインしていない | 200・role ops・会社なし | このチケット | K944-API-001・003・004 |\n| 同じ | パスワードで入る | ログインしていない | 403 E-AUTH-022・セッションなし | このチケット | K944-API-005・006 |\n| 同じ | 運営の口 | 運営のセッション | 役の段を通る（501） | このチケット | K944-API-002 |\n| 同じ・入り方が passkey でない | 運営の口 | セッションあり | 401 | このチケット | K944-API-007 |\n| 運営の会社の人・ops_members なし | パスキーで入る | — | 解けない・401 | このチケット | K944-API-010 |\n| ops_members を外した・消した | 運営の口 | 前の印 | 401（すぐ） | このチケット | K944-API-011・012 |\n| 顧客の人 | パスワードで入る | — | 今のまま member | このチケット | K944-API-008 |\n| 止めが落ちた | パスワードで入る | — | 503 | このチケット | K944-API-009 |\n| 入り方を書けない（後片付けも落ちる） | パスキーで入る | ログインしていない | 5xx・印なし・残っても運営として解かない | このチケット | K944-API-013・014 |\n| 運営の会社を指す・1 社を指す | 運営の口 | 運営のセッション | 入口の柵 | K-1001 | K1001-API-… |\n| パスキーを付ける前 | メールのリンク | — | 付けるだけのセッション | K-945 | K945-API-… |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K944-API-001 | 対象の状態 | 運営の人 × パスキー | 200・印あり。解決は role ops・tenantId null・userId は運営の会社の members.id・termsPending false・mfaPending false |\n| K944-API-002 | 守り | 運営の口 | 運営の印で GET /api/v1/ops/shell は 501（役の段を通った）。顧客の印は 403・印なしは 401 |\n| K944-API-003 | 対象の状態 | 入り方 | 運営のパスキーのセッションの login_kind は passkey。顧客のパスワードのセッションは null |\n| K944-API-004 | 利用者の状態 | 取り直しの時刻 | sessions.step_up_at を入れると、運営の解決の stepUpAt が Date |\n| K944-API-005 | 入口 | 運営の人 × パスワード | 403・code E-AUTH-022・印なし・認証側と業務側のセッションの数が変わらない |\n| K944-API-006 | 守り | 文 | 目録の E-AUTH-022 の文が下絵の注記と同じ |\n| K944-API-007 | 守り | 2 層目 | 運営のセッションの login_kind を null にすると、解決は null・運営の口は 401 |\n| K944-API-008 | 利用者の状態 | 顧客 × パスワード | 201・解決は role member・自分の会社 |\n| K944-API-009 | 失敗 | 手順 S2 の失敗：止めが落ちる | kaname_app の実行の権限を外すと 503・E-PAGE-003・生きたセッション 0。finally で戻す |\n| K944-API-010 | 利用者の状態 | ops_members が無い運営の会社の人 | パスキーで 200 と印は出るが、解決は null・運営の口は 401 |\n| K944-API-011 | 時間の流れ | 外した直後 | 501 だった印が、revoked_at を入れた直後に解けず 401 |\n| K944-API-012 | 利用者の状態 | 消した | deleted_at を入れると解けず 401 |\n| K944-API-013 | 失敗 | 手順 S1 の失敗：入り方を書けない | パスキーで入ると 5xx・印なし。認証側のセッションの数は入る前と同じ（消してから上げる） |\n| K944-API-014 | 失敗 | 手順 S1 の後片付けが失敗：入り方を書けず、認証側のセッションを消すのも落ちる | 5xx・印なし・ログに「後片付け」。残った認証側のセッションの印は、解決が null・運営の口は 401（入り方が無い） |\n\n### テストの型の受け（分類 AUTH）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-AUTH-01 誤ったパスワードと無いメールで同じ返事 | 要らない：運営の人の止めはセッションを作る所（パスワードが正しかった後）で働く。違うパスワード・無いメールは今の E-AUTH-001 のまま（K-301 が持つ）。運営の人はパスワードを持たない形で作る（K-945） |\n| TP-AUTH-02 続けて失敗する | 要らない：パスワードのロックは K-301 の口のまま。パスキーの失敗の数は部品の口（K-304） |\n| TP-AUTH-03 2 段階のコード | 要らない：運営の人は 2 段階を使わない（パスキーだけ） |\n| TP-AUTH-04 セッションが切れた | K944-API-011・012（口は 401）。画面でログインへ案内するのは K-946 |\n| TP-AUTH-05 ログアウトの後に戻る | 要らない：口の側は今のログアウト（K-306）のまま。画面は K-946 |\n| TP-AUTH-06 ほかのセッションが切れる | K944-API-011・012（運営の人を外すと、その人の印は全部すぐ解けない） |\n| TP-AUTH-07 取り直しの期限 | K944-API-004（取り直しの時刻が運営の解決に入る。15 分の判定は前からの permissions.ts の stepUpFresh） |\n| TP-AUTH-08 戻す先が外の道 | 要らない：画面の葉（K-946）が持つ |\n| TP-AUTH-09 国・端末が変わった | 要らない：運営の人の解決も同じ app.session_check を通る（1 本の文に列を足すだけ・K-20 の試験が持つ） |\n| 二度押し・同時 | 要らない：入る口は前からの部品の口（K-304 が持つ） |\n| G-11 | N/A：外の資源を足さない |\n| G-12 切り替わりの瞬間 | K944-API-011（外した直後） |\n| G-13 組み合わせ | K944-API-004（取り直し × 運営） |\n| G-14 口座状態の波及 | K944-API-011・012 |\n| G-15 | N/A：外のプロセス・外の API を呼ばない |\n| G-16 有限資源 | 解決の文の数を増やさない（1 本の文に列を足す・K-233 の試験が数える） |",
+    "前からの試験を替えた所": "切る段の道具 `cut_check.py prior --files packages/auth/src/resolver.ts packages/auth/src/index.ts` は 32 本（index.ts は共通の入口なので照らさない、と出る）。\n\n```search\ngit grep -l -E \"createSessionResolver|login_gate|LOGIN_BLOCKED\" -- 'apps/api/test' 'packages/auth/test' ':!apps/api/test/features/F12/*'\n34\n```\n\n- apps/api/test/k233_session_resolve.test.ts: 替えない — 解決の文の数（解決は 2 本・kaname_auth 1 本）を数える。この葉は 1 本の文に列を足すだけ\n- apps/api/test/k237_perf_budget.test.ts: 替えない — 同じ（文の数）\n- packages/auth/test/session_watch.test.ts・auth.test.ts・flows.test.ts: 替えない — 顧客の人の解決とログイン。運営の会社の人を作らないので、新しい分かれ道に入らない\n- apps/api/test/features/F1/login-gate.test.ts: 替えない — 止めの関数 app.login_gate の答えと権限を外したときの 503 を見る。この葉は login_gate の後に別の関数を引くだけで、login_gate の答えも順も変えない\n- apps/api/test/features/F1/terms.test.ts: 替える — K53-API-036・037・038 が運営の人（運営の会社の members ＋ ops_members）をパスワード（signInWithLock）で入れていた。この葉の止めで 403 E-AUTH-022 になるので、運営の人に仮の認証器のパスキーを付け（`ops.harness.ts` の makeAuthenticator・assertion を使う）、部品の口のパスキーで入る形に替えた。見たい事（D-128.172：運営のセッションに同意し直しの印が立たず、E-AUTH-010 で止まらない）は残す。運営のセッションは role ops・会社なしになるので、会社の人の口（素の一覧・同意の口）の期待は「200／201」から「印が解けていて（401 でない）E-AUTH-010 でない」に替えた（役の段の答えは K-1001 の持ち分）。作る段で実装の担当が見つけ、書く段に戻して替えた（2026-11-23・PM の決め）\n- apps/web/tests/features/F1/terms.spec.ts: 替えない — この葉では触れない（重さの上限：db の葉は web の組を触れない）。K53-UI-023（運営の人を顧客のログインの画面からパスワードで入れる）はこの葉が入ると 403 E-AUTH-022 で赤になるので、**K-946（運営のログインの画面・web の葉・この葉に依存）が carry: で運び、行を外して自分の行で受ける**（行の表 `07_qa/test-specs/k/terms.md` の K53-UI-023 も K-946 が外す）。段の枝 i/段13 の全部の CI は両方が入ってから流れる。この葉の CI の範囲（api・auth・db・errors）に画面の試験は入らない\n- apps/api/test/features/F1/*（残り：login.harness.ts とそれを使う試験・sign-in-code-gate・my-security・password-reset・verify-email）: 替えない — 顧客の人だけを作る。止めの関数 ops_login_check は運営の人でなければ `'ok'`\n- 残り（agent_*・bridge_*・auth_ext・draft_credentials・golive・k145_fixture・k233_auth_mail_paths・k262_edge_watch・login_check・qa-d・step_up・transcript_mirror・two_factor・vault_guard・F4/me-workspace）: 替えない — 顧客の会社の人の解決。role member の分かれ道は変わらない\n\n運営の人（ops_members の行）を作ってログインさせる前からの試験は上の 2 本だけ（6 本の内訳：口の 1 本・画面の 1 本・DB だけの試験 3 本・種 1 本。後の 4 本はログインを通らない）：\n\n```search\ngit grep -l \"into ops_members\" -- apps packages ':!apps/api/test/features/F12/*'\n6\n```",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.2・22）。番号 E-AUTH-022 はこの葉で足す（目録）",
+    "リスク": "- `before` の hook の `ctx` が部品の版で変わり、`path` が取れないとパスキーの人まで断る → K944-API-001 が赤で気づく\n- 運営の人がほかの会社の members も持つ（同じメール）と `app.open_session` がどちらの行を取るか決まらない → 運営の人は運営の会社だけに居る形で作る（K-945 の命令・K-985 の足す口が守る）。この葉では扱わない",
+    "申し送り": "- K-945：`app.ops_login_check` を置き換えて、付けるだけのセッション（`'ops_setup'`）を通す。解決は `'ops_setup'` を mfaPending true で解く（契約の口に届かない）\n- K-1001：運営の口では x-tenant-id を無視して tenantId を null に。運営が中を見る（会社の人の口）ときだけ x-tenant-id を使う\n- K-946：運営のログインの画面は、部品の口（チャレンジ → 応答）で入り、E-AUTH-022 と失敗の文を出す。K-53 の画面の行 K53-UI-023（運営の人は入った後に同意し直しの画面へ移されない・D-128.172）は、この葉が入るとパスワードで入れず赤になる。K-946 が `apps/web/tests/features/F1/terms.spec.ts` と `07_qa/test-specs/k/terms.md` を carry: で運んで行を外し、自分の行で受ける（この葉は重さの上限で web を触れない）",
+    "代表に聞くこと": "- #3 代表の答え 2026-11-23（D-156.22）（運営の最初の 1 人とパスキーを無くしたとき：この葉はパスキーだけで入る形を持つ）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 14 行（上限 30）。"
+   },
+   "file": "11_tickets/K-944.md"
+  },
+  {
+   "id": "K-947",
+   "title": "運営が会社を触る DB の道の土台：関数の中の 2 層目（app.ops_require・app.ops_target）と、口から呼ぶ TS の土台（opsTx・opsAudit・opsErrorReply）と、運営の関数が確かめと記録を必ず持つかを見る検査（ops_definer_gate）（K-72 の葉・W0）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "運営の土台",
+   "assignee": "実装",
+   "due": "2026-12-04",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 4 の K-327（migration の一覧の作り手と検査・自己試験 8 行・見込み 1）と K-351 の関数の migration（関数 2 つ・15 分）から引いた：migration 1 本（関数 2 つ）15 分・TS の土台 3 つ 15 分・検査の台本 15 分・試験 14 行（DB 8・自己試験 6）を流して直す 15 分",
+   "decisions": [
+    "D-156.3",
+    "D-156.12",
+    "D-156.17",
+    "D-125.128",
+    "D-128.108"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-db.test.ts",
+    "scripts/ci/k947_ops_definer_test.py"
+   ],
+   "carry": [
+    "scripts/ci/g65.d/K-947.txt"
+   ],
+   "depends_on": [
+    "K-944"
+   ],
+   "acts": [
+    "A60",
+    "A64"
+   ],
+   "screens": [],
+   "apis": [],
+   "canvas": [],
+   "canvas_none": "DB の関数と口の土台と検査だけ。画面のコードを変えない",
+   "affects": [
+    "@kaname/api",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "ci"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128004700_ops_base.sql",
+    "packages/db/src/migrations.generated.ts",
+    "apps/api/src/features/F12/ops/db.ts",
+    "scripts/ci/ops_definer_gate.py",
+    "scripts/ci/g65.d/K-947.txt",
+    "apps/api/test/features/F12/ops-db.test.ts",
+    "scripts/ci/k947_ops_definer_test.py"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営が別の会社を触る道は **security definer の関数だけ**（BYPASS は使わない・D-156.3）。段 13 の運営の口の葉（K-963〜K-995）が、どれも同じ形で関数を書けるように、型と土台と検査を先に置く。\n\n- **関数の中の 2 層目**：入口（op.ts の役とできること）が抜けても、関数の頭で `app.ops_require(<できること>)` が運営の人とできることを確かめる（G-02）。指す会社は `app.ops_target(<会社>)` で、在る顧客のワークスペースだけに絞る（運営の会社・作りかけ・消した会社は「無い」）\n- **書く関数は運営の記録を必ず書く**（運営と会社の両方・D-128.108）：`app.record_ops_audit` を中で呼ぶ\n- **検査 `ops_definer_gate.py`**：migration の中の `app.ops_*` の security definer の関数が、①頭で ops_require を呼ぶ ②書くなら record_ops_audit を呼ぶ、を機械で見る（人が思い出さなくても漏れない・choke-points.md）\n- **口から呼ぶ TS の土台**（`apps/api/src/features/F12/ops/db.ts`）：運営の文脈の 1 つの取引（opsTx）・記録の呼び口（opsAudit）・DB の断りを口の答えに直す（opsErrorReply：42501 → 403・P0002 → 404・ほか → 503 E-PAGE-003）",
+    "完了の条件": "- [ ] 下の表の 14 行（K947-API-001〜008・K947-DB-001〜006）が緑：`apps/api/test/features/F12/ops-db.test.ts`・`scripts/ci/k947_ops_definer_test.py`\n- [ ] 検査 `python3 scripts/ci/ops_definer_gate.py` が本線の migrations で 0 で終わる（G65 の段 `scripts/ci/g65.d/K-947.txt` で CI が流す）\n- [ ] 前からの試験は「前からの試験を替えた所」のとおり（替える物は無い）で緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: TOOL, PERM\n\n- 運営の文脈は K-944・K-1001 の形：role ops・tenantId null・userId は運営の会社の members.id。関数は `app.role()`・`app.user_id()` で確かめる（引数で人を受けない）\n- `app.ops_require(p_cap text) returns uuid`（security definer・stable）：`app.role() = 'ops'` で、`ops_members` の `member_id = app.user_id()`・`revoked_at is null`・`deleted_at is null` の行があり、`p_cap = 'any'` か `p_cap = any(caps)` なら、その行の id。ほかは `raise exception … using errcode = 'insufficient_privilege'`（42501）\n- `app.ops_target(p_tenant uuid) returns uuid`（security definer・stable）：`tenants` に在り、`deleted_at is null`・`half_made_at is null`・`id <> app.ops_tenant_id()` なら同じ id。ほかは `errcode = 'no_data_found'`（P0002）。中で ops_require は呼ばない（呼ぶ側が先に呼ぶ）\n- 運営の関数の名前は `app.ops_<名前>`（検査はこの名前で見つける）。検査の台帳 `EXEMPT`（名前 → 理由）に、型でない前からの関数と、ログインの前に呼ぶ関数を置く：`app.ops_tenant_id`（定数）・`app.ops_grant_ok`（行の守りの中の判定）・`app.ops_plan_proposal_guard`（引き金）・`app.ops_require`・`app.ops_target`（この葉の型そのもの）・`app.ops_login_check`（K-944・ログインの前）・`app.ops_setup_consume`（K-945・ログインの前）\n- 検査の読み方：`packages/db/migrations/*.sql` を名前の順に読み、`create [or replace] function app.ops_…` から `$$ … $$` の本体までを 1 つと数え、同じ名前は後の版で上書き。`security definer` が無い関数は見ない。本体の最初の文（`begin` の後・`declare` は除く）が `perform app.ops_require(` か `:= app.ops_require(` でなければ誤り。本体に `insert into`・`update `・`delete from` があり `app.record_ops_audit(` が無ければ誤り。誤りは「<ファイル名>: <関数名> …」の 1 行\n- 断る番号（控え帳・D-156.12・D-156.17）：できることが無い＝403 FORBIDDEN、指した会社が無い・見えない＝404 NOT_FOUND（欄・details なし）、DB のほかの失敗＝503 E-PAGE-003。opsErrorReply のログは `[ops] <where> の DB が失敗した（<SQLSTATE>）` だけ（例外の文・値を出さない）\n- 答えの形は今の入口の err と同じ（`{ error: \"forbidden\", code: \"FORBIDDEN\" }`・`{ error: \"not_found\", code: \"NOT_FOUND\" }`・`{ error: \"unavailable\", code: \"E-PAGE-003\" }`）",
+    "依存の理由": "- K-944: 要る — 運営の文脈（role ops・tenantId null）を作る解決と、運営の会社の人の作り方。試験の偽のログインでも文脈は作れるが、ops_require が読む ops_members の行の意味（運営の人）を K-944 が決める\n- K-1001（入口）: 外した — この葉は DB と TS の土台だけで、入口のファイルに触らない",
+    "目録で探した結果": "- 使う：`withTenant`（`@kaname/db/context`）・`app.record_ops_audit`（0003）・`app.ops_tenant_id()`・`tenants.half_made_at`（0087・K-104 の作りかけの会社）・入口の err の形（`apps/api/src/contract/op.ts`）・G65 の自己試験の置き場（`scripts/ci/g65.d/`）\n- 作る：関数 2 つ・TS の土台 1 ファイル・検査の台本 1 本。探したが運営の関数の型と検査は無かった（ゼロトラストの検査 `zt_gate.py` は契約の口を見る。DB の関数は見ない）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128004700_ops_base.sql`（K-947 → 47 分）：`app.ops_require`・`app.ops_target`（前提と制約）と `grant execute … to kaname_app`。一覧は作り手 `python3 scripts/ci/gen_migrations.py`（生成物） |\n| TS の土台 | `apps/api/src/features/F12/ops/db.ts`：`opsTx<T>(pool, ctx, fn)`（ctx.role が ops でなければ投げる・`withTenant`）・`opsAudit(client, { tenantId, action, targetType, targetId, payload? })`（`select app.record_ops_audit($1, $2, $3, $4, null, $5)`）・`opsErrorReply(e, where): HookReply` |\n| 検査 | `scripts/ci/ops_definer_gate.py`：`check(dir) -> list[str]`・`EXEMPT`・`--dir`（既定 `packages/db/migrations`）。誤りがあれば 1 行ずつ出して 1 で終わる |\n| CI | `scripts/ci/g65.d/K-947.txt`（carry）：`python3 scripts/ci/k947_ops_definer_test.py` と `python3 scripts/ci/ops_definer_gate.py` の 2 行 |\n| 試験 | `apps/api/test/features/F12/ops-db.test.ts`・`scripts/ci/k947_ops_definer_test.py`（切る段が書いた） |",
+    "外に影響する手順": "- なし — 型の関数（読むだけ・断るだけ）と土台。記録を書く呼び口 opsAudit は、呼ぶ口の葉の手順で数える（この葉の試験 K947-API-007 は呼び口が 1 つの取引で両方の記録に書き、落ちたら両方戻ることを見る）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/ops-db.test.ts`（本物の DB・アプリの接続・偽のログインの人）／`scripts/ci/k947_ops_definer_test.py`（一時のフォルダに migration の形のファイルを置く）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| できることを持つ運営の人 | ops_require | 運営の文脈 | ops_members.id | このチケット | K947-API-001 |\n| できることを持たない | ops_require | 運営の文脈 | 42501 | このチケット | K947-API-002 |\n| 会社の人・偽った人 | ops_require | role member | 42501 | このチケット | K947-API-003 |\n| 外した運営の人 | ops_require | 運営の文脈 | 42501 | このチケット | K947-API-004 |\n| 顧客・運営の会社・無い・作りかけ | ops_target | 運営の文脈 | id／P0002 | このチケット | K947-API-005 |\n| 取引と記録 | opsTx・opsAudit | 運営の文脈 | 両方に 1 行・落ちたら 0 | このチケット | K947-API-006・007 |\n| DB の断り | opsErrorReply | — | 403／404／503 | このチケット | K947-API-008 |\n| 運営の関数の形 | 検査 | — | 誤り 0／1 | このチケット | K947-DB-001〜006 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K947-API-001 | 対象の状態 | できることを持つ | ops_require('money') と ('any') がどちらもその人の ops_members.id |\n| K947-API-002 | 守り | できることを持たない | 42501 |\n| K947-API-003 | 守り | role member | 会社の人も、運営の人の members.id を偽った member の文脈も 42501 |\n| K947-API-004 | 利用者の状態 | 外した運営の人 | ops_require('any') も 42501 |\n| K947-API-005 | 守り | 指す会社 | 顧客の会社は同じ id。運営の会社・無い uuid・作りかけは P0002 |\n| K947-API-006 | 対象の状態 | opsTx | 中で文脈の値 app.role は ops・app.tenant_id は null・app.user_id は運営の人（関数 app.role() などと同じ中身を読む。アプリの接続は app.role() の実行権を持たない） |\n| K947-API-007 | 失敗 | opsAudit | 運営の記録と会社の記録に 1 行ずつ。fn が後で落ちると、その action はどちらにも 0 |\n| K947-API-008 | 失敗 | opsErrorReply | 42501 → 403 FORBIDDEN／P0002 → 404 で体は { error, code } だけ／57P01 → 503 E-PAGE-003。ログに SQLSTATE が出て、例外の文は出ない |\n| K947-DB-001 | 守り | 正しい関数 | 読む関数・書く関数の誤り 0 |\n| K947-DB-002 | 守り | 確かめが無い | 誤り 1・ファイル名と関数名が入る |\n| K947-DB-003 | 守り | 記録が無い | 誤り 1・関数名と record_ops_audit の字が入る |\n| K947-DB-004 | 入力 | 後の版 | 後で直せば 0・後で壊せば 1 |\n| K947-DB-005 | 守り | 台帳 | 型と前からの関数が台帳に在り、理由が空でない。security definer でない関数は見ない |\n| K947-DB-006 | 守り | 本物と命令 | 本物の migrations で 0。命令は誤りで 1・無ければ 0 |\n\n### テストの型の受け（分類 TOOL・PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-TOOL-01 日本語の名前のファイル | 要らない：migration の名前は英数字だけ（`20261128HHMM00_<名前>.sql`・D-156.19） |\n| TP-TOOL-02 何も見ていないのに緑 | K947-DB-002・003（わざと壊した関数で赤）・K947-DB-006（命令が 1 で終わる） |\n| TP-TOOL-03 容れ物と手元の違い | 要らない：python の標準だけで、ファイルを読むだけ |\n| TP-PERM-01 役が合わない人 | K947-API-002・003 |\n| TP-PERM-02 権限を外した直後 | K947-API-004 |\n| TP-PERM-03 他の会社の ID を指す | K947-API-005（運営の会社・無い id は「無い」） |\n| TP-PERM-04 一覧・数に混ざらない | 要らない：一覧の関数は K-963 が持つ（ops_target で会社を絞る型だけをここで置く） |\n| TP-PERM-05 権限を付けた直後 | 要らない：ops_require は呼ぶたびに ops_members を引く（覚えない） |\n| G-11・G-15 | N/A：外の資源・外のプロセスを使わない |\n| G-12 | K947-API-004（外した直後） |\n| G-13 | K947-API-003（会社の人の文脈 × 運営の関数） |\n| G-14 | K947-API-004 |\n| G-16 | 関数は 1 回の問い合わせで ops_members を 1 行引くだけ |",
+    "前からの試験を替えた所": "関数を 2 つ足し（前からの関数は変えない）、新しい検査の台本を足すだけ。運営の関数の名前と record_ops_audit を読む前からの試験を探した。\n\n```search\ngit grep -l -E \"ops_require|ops_target|ops_definer\" -- 'apps/api/test' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/features/F12/*' ':!scripts/ci/k947_*'\n0\n```\n\n- 当たる物は 0 本。`packages/db/test/audit.test.ts`（record_ops_audit の両方の記録）は前からの関数をそのまま見る：替えない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.3）",
+    "リスク": "- 本体の最初の文の読み方が、コメントや declare の書き方で外れる → K947-DB-001 の書き方（declare の後の begin の次の文）を型として申し送る。外れたら検査が赤になり、書く側が型に合わせる（緩めない）",
+    "申し送り": "- K-963〜K-995（運営の口の葉）：DB の関数は `app.ops_<名前>`・頭で `perform app.ops_require('<できること>')`（値は `v := app.ops_require(…)` でも可）・会社を指すなら次に `perform app.ops_target(p_tenant)`・書くなら `perform app.record_ops_audit(…)`。口は `opsTx` の中で呼び、例外は `opsErrorReply` で答える\n- K-945：`app.ops_setup_consume` は台帳 EXEMPT に入れた（ログインの前に呼ぶ）。名前を変えるなら台帳も直す\n- 後の葉で、運営の記録に残さない書き込みを持つ関数（例：期限を過ぎたお知らせの印・照合落ちの確かめの印だけを書く関数）を足すと、検査の「書くなら record_ops_audit」で赤になる。そのときは検査を緩めず、その関数を台帳 `EXEMPT` に理由つきで足す（理由の無い足しはしない）。記録に残す操作（D-156.48）なら record_ops_audit を呼ぶ形にする",
+    "代表に聞くこと": "- なし（D-156.3 は PM の決め）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 14 行（上限 30）。"
+   },
+   "file": "11_tickets/K-947.md"
+  },
+  {
    "id": "K-948",
    "title": "契約の作り直し 1：問い合わせ（利用者の 6 口・運営の受信箱の 5 口）を画面が要る欄に作り直し、添付に関門 C4 を足し、書き出しの口 2 本（exportOpsWorkspaces・exportOpsInvoices）を外す（契約と文書だけ・振る舞いは後の葉・K-72 の葉・W0）",
    "kind": "タスク",

@@ -70,12 +70,33 @@ export function createSessionResolver(auth: Auth, appPool: pg.Pool) {
       at: Date | null;
       terms: boolean;
       mfa: boolean;
+      ops: string | null;
     }>(
-      "select c.session_id, c.member_id, c.tenant_id, app.session_step_up_at($1) as at, app.session_terms_pending(c.session_id) as terms, app.session_mfa_pending(c.session_id) as mfa from app.session_check($1, $2, $3, $4) c",
+      "select c.session_id, c.member_id, c.tenant_id, app.session_step_up_at($1) as at, app.session_terms_pending(c.session_id) as terms, app.session_mfa_pending(c.session_id) as mfa, app.session_ops(c.session_id) as ops from app.session_check($1, $2, $3, $4) c",
       [s.session.id, countryOf(headers), deviceOf(headers.get("user-agent")), ipOf(headers)],
     );
     const row = r.rows[0];
     if (!row) return null; // 失効済み・会社に属していない・人が抜けた・見張りで閉じた
+    // 運営の会社のセッション（K-944・D-156.2）：運営の人（生きている ops_members）のパスキーのセッションだけを運営として解く（2 層目）。
+    //   運営の人でない・外された・入り方がパスキーでないセッションは解かない（401）。顧客の会社のセッションは null で、今までどおり下へ
+    if (row.ops !== null && row.ops !== "ops") return null;
+    if (row.ops === "ops")
+      return {
+        // 会社をまたぐ運営の文脈（tenantId null）。指す会社は入口（middleware/tenant.ts）が x-tenant-id で足す
+        ctx: {
+          tenantId: null,
+          userId: row.member_id,
+          role: "ops",
+          stepUpAt: row.at ?? null,
+          loginAt: loginAtOf(s.session),
+        },
+        sessionId: row.session_id,
+        authUserId: s.user.id,
+        // 同意し直しは顧客の規約の印・運営はパスキーを持つので、運営のセッションはどちらも止めない
+        termsPending: false,
+        mfaPending: false,
+        memberLeft: false,
+      };
     return {
       ctx: {
         tenantId: row.tenant_id,
