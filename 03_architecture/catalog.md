@@ -257,7 +257,7 @@ API 359（作った 114・後のフェーズの行為だけ 20）・前の道す
 | `listOpsInvoices` | GET /api/v1/ops/invoices | 取得（invoices）— 運営が月ごとの請求書を見る（お支払い待ち・払われた・期限を過ぎた・入金の並びつき） | F12 | 契約だけ（501） |  |
 | `recordPayment` | POST /api/v1/ops/invoices/:id/payments | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） |  |
 | `exportOpsInvoices` | POST /api/v1/ops/invoices/export | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） |  |
-| `issueOpsInvoices` | POST /api/v1/ops/invoices/issue | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） |  |
+| `issueOpsInvoices` | POST /api/v1/ops/invoices/issue | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） | K-981 |
 | `listOpsMembers` | GET /api/v1/ops/members | 取得（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |
 | `addOpsMember` | POST /api/v1/ops/members | 作成・実行（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |
 | `updateOpsMemberCaps` | PATCH /api/v1/ops/members/:id | 更新（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |
