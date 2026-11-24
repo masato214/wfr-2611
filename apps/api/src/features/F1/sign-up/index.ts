@@ -18,12 +18,14 @@ import type { TenantContext } from "@kaname/db/context";
 import type { Repository } from "@kaname/db/repository";
 import { classifyMailError } from "@kaname/notify/resend";
 import { kanameError } from "@kaname/errors";
+import { OPS_TENANT_ID } from "@kaname/db/id";
 import type { HookArgs, HookReply } from "../../../contract/deps.js";
 import { fail, isReply, parseSignup } from "./input.js";
 import { checkPwned, registerPwned } from "./pwned.js";
 
 /** 運営のテナント（app.ops_tenant_id()・migration 0003）。登録の前は会社が無いので、照合の証跡とセキュリティの記録はここに残す */
-export const OPS_TENANT_ID = "00000000-0000-4000-8000-000000000001";
+// 運営の会社の id は 1 か所（packages/db/src/id.ts・K-1001）。ほかの機能がここから読むので出し直す
+export { OPS_TENANT_ID };
 const OPS_CTX: TenantContext = { tenantId: OPS_TENANT_ID, userId: null, role: "anonymous" };
 export const SIGNUP_TOKEN_HEADER = "x-signup-token";
 /** 照合のサービスが使えなかった出来事と、運営がそれを「確かめた」出来事（security_events.kind_id・migration 0086） */

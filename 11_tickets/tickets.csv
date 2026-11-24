@@ -3463,6 +3463,17 @@ K-1000,段 13 の流れと文書：flow.json の A80 を「操作の版を見る
 - **文書 `08_api/phase1/10_運営と困ったとき.md`**：文書だけに在る上の数の 3 行（`GET /ops/workspaces/summary`・`GET /ops/inquiries/counts`・`GET /ops/invoices/summary`）を消し、上の数は `GET /ops/shell`（getOpsShell）の答えに寄せると 1 行書く（D-156.4）","- [ ] 下の表の 10 行（K1000-FL-001〜010）が緑：`scripts/ci/k1000_flow_test.py`
 - [ ] 画面の導出の検査 `python3 scripts/ci/flow_gate.py --flow 05_flow/flow.json --choke 03_architecture/choke-points.json`（G1〜G10・G17・G22）と `python3 scripts/ci/flow_db_gate.py` が緑（K1000-FL-009）
 - [ ] 手元の CI（このチケットの範囲）が緑"
+K-1001,運営の口の入口の柵：契約の perm.scope に「全社（ops_all）／1 社を指す（ops_tenant）」を書き、運営の口は x-tenant-id を無視して会社の文脈なしで動かす。1 社の口で運営の会社を指したら 404、運営が会社の人の口で書くのは許可があっても 403（K-944 から分けた・K-72 の葉・W0）,タスク,K-72,未着手,実装,2026-12-04,F12・運営のログイン,"運営の口（契約の auth が ops・47 本）の入口の柵を、運営が別の会社を触る道の決め（D-156.3）に合わせる。
+
+- **契約に「1 社を指す口か」を書く**（D-156.2）：`perm.scope` に、運営の口は `ops_all`（全社・運営の会社の行・受信箱など）か `ops_tenant`（道の `:id` が顧客のワークスペース＝`/api/v1/ops/workspaces/:id…`）を作り手が道から決めて書く
+- **運営の口は会社の文脈で動かない**：今の入口（`middleware/tenant.ts`）は、運営の人が x-tenant-id を付けると文脈の tenantId をその会社にする。運営の口でこれが効くと、行の守りが「その会社の中」として動き、運営の道（security definer の関数だけ・D-156.3）と混ざる。運営の口は x-tenant-id を無視して tenantId を null にしてから振る舞いに渡す
+- **1 社の口で運営の会社を指したら 404**：運営の会社（`app.ops_tenant_id()`）は顧客のワークスペースでない（止める・中を見る・代わりにプランを変えるの的にしない）
+- **運営が会社の人の口を呼ぶのは読むだけ**：中を見る（D-125.128「見るだけ」）の許可があっても、書く口（GET 以外）は 403 で何も書かない。今は行の守りだけが止めている（1 層）ので、入口にもう 1 層足す（G-02）
+
+運営のログイン（解決が role ops を返す）は K-944、運営の会社を触る DB の関数の型は K-947。","- [ ] 下の表の 12 行（K1001-API-001〜012）が緑：`apps/api/test/features/F12/ops-entry.test.ts`
+- [ ] 作り手（`node scripts/ci/contract.mjs gen`）で作り直した `packages/contracts/src/registry.ts` の運営の口の perm.scope が ops_all／ops_tenant（生成物・手で書かない）
+- [ ] 前からの試験は「前からの試験を替えた所」のとおり（替える物は無い）で緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
 K-1006,契約の作り直し 4：運営の外枠の数（getOpsShell に上の数・箱の件数・請求の数を寄せる）と、全社の一覧・1 社・メンバーと本人確認の送り直し・1 社の問い合わせと記録・中を見る・止める・再開を画面が要る欄に作り直す（契約だけ・振る舞いは後の葉・K-948 から分けた・K-72 の葉・W0）,タスク,K-72,未着手,実装,2026-12-05,F12・契約,"運営の 1 社のまとまりと外枠の数の契約を、画面（下絵 op-list・op-list-empty・op-list-pwned・op-ws・op-ws-members・op-ws-inquiries・op-ws-log・op-peek・op-peek-open・op-stop・op-stopped と運営の外枠）が要る欄に作り直す（D-156.5）。後の葉（K-963・K-965〜K-972・K-946 の外枠）は振る舞いだけを書く。
 
 - **getOpsShell に上の数を寄せる**（D-156.4）：左のメニューの数（問い合わせ＝未担当・請求＝期限を過ぎた）・受信箱の箱の数・ワークスペースの上の数（使っている・気にかける・止めている・やめる手続き中・プランごと）・今月の実行・照合が使えなかった登録の数（D-156.35）・運営の人のできること
