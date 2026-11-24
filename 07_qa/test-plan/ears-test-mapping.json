@@ -46433,7 +46433,7 @@
    ],
    "ears_form": "UNWANTED",
    "http_code": "404",
-   "ears_text": "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
+   "ears_text": "UNWANTED: IF 開いた問い合わせが本人の物でないか無いなら、Kaname は 404 と E-PAGE-001 を返し、在るかを漏らさず読んだ印も入れない",
    "test_file": "apps/api/test/generated/get_inquiries_id.test.ts",
    "test_function": "test_get_inquiries_id_not_found",
    "test_level": "unit",
