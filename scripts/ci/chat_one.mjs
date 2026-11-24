@@ -19,7 +19,7 @@ import { pathToFileURL } from "node:url";
 function* walk(dir, re) {
   if (!existsSync(dir)) return;
   for (const f of readdirSync(dir)) {
-    if (["node_modules", ".next", "dist", "test-results", "playwright-report", "pw-reports", "__pycache__"].includes(f)) continue;
+    if (["node_modules", ".next", ".next-prod", "dist", "test-results", "playwright-report", "pw-reports", "__pycache__"].includes(f)) continue;
     const p = join(dir, f);
     if (statSync(p).isDirectory()) yield* walk(p, re);
     else if (re.test(f)) yield p;

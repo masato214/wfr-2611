@@ -1,5 +1,5 @@
 // 画面の L1 を実データで流す土台：API（apps/api・3011）と DB（管理者）を直接使って前提を作る。QA が作ったデータだけを触る（G-10）
-import { createHash, createHmac } from "node:crypto";
+import { createHash, createHmac, randomBytes } from "node:crypto";
 import { readFileSync } from "node:fs";
 import pg from "pg";
 import { expect, test, type Page } from "@playwright/test";
@@ -26,15 +26,24 @@ export const mailTag = (email: string): string =>
     .digest("hex")
     .slice(0, 12)}`;
 
+/** 試験の 1 人ごとの届く元（x-forwarded-for）。登録・確認の口は IP ごと 1 分 10 回（契約の rateLimit）。
+ *  別々の人を 1 つの IP から続けて作ると、画面の試験を全部流す回（G48）で上限に当たる（K-1114）。上限そのものは口の単体の試験が持つ */
+export const testIp = () =>
+  `10.${(randomBytes(1)[0]! % 250) + 1}.${(randomBytes(1)[0]! % 250) + 1}.${(randomBytes(1)[0]! % 250) + 1}`;
 export async function api<T>(
   path: string,
   body?: unknown,
   token?: string,
   method = body === undefined ? "GET" : "POST",
+  ip?: string,
 ): Promise<{ status: number; json: T }> {
   const res = await fetch(`${API}${path}`, {
     method,
-    headers: { "content-type": "application/json", ...(token ? { authorization: `Bearer ${token}` } : {}) },
+    headers: {
+      "content-type": "application/json",
+      ...(token ? { authorization: `Bearer ${token}` } : {}),
+      ...(ip ? { "x-forwarded-for": ip } : {}),
+    },
     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
   });
   return { status: res.status, json: (await res.json().catch(() => ({}))) as T };
@@ -42,12 +51,18 @@ export async function api<T>(
 /** 申し込む → 確認のリンクを踏む（契約の口 POST /api/v1/auth/sign-up/verify）→ 会社ができて token が返る（D-088：登録が終わるのは確認の時点）。
  *  リンクは API のログから拾う（KANAME_API_LOG）。本物の流れをそのまま通すので、画面の前提もこれで揃う */
 export async function signupPending(company = "QA 社", email = uniqEmail()) {
-  const r = await api<{ data: { email: string; sent: boolean; mail_error: string | null } }>("/api/v1/auth/sign-up", {
-    email,
-    name: company,
-    password: PW,
-    company_name: company,
-  });
+  const r = await api<{ data: { email: string; sent: boolean; mail_error: string | null } }>(
+    "/api/v1/auth/sign-up",
+    {
+      email,
+      name: company,
+      password: PW,
+      company_name: company,
+    },
+    undefined,
+    "POST",
+    testIp(),
+  );
   if (r.status !== 201) throw new Error(`sign-up ${r.status} ${JSON.stringify(r.json)}`);
   return { email, sent: r.json.data.sent, mailError: r.json.data.mail_error };
 }
@@ -85,9 +100,13 @@ export async function addTestEntry(userId: string): Promise<void> {
 export async function signupViaApi(company = "QA 社", email = uniqEmail()) {
   await signupPending(company, email);
   // 確認のリンクを押す＝契約の口 verifySignup（K-52）。前の道すじ /api/auth-ext/verify-signup は K-52 で消した
-  const r = await api<{ data: { token: string; email: string; signed_in: boolean } }>("/api/v1/auth/sign-up/verify", {
-    token: pendingToken(email),
-  });
+  const r = await api<{ data: { token: string; email: string; signed_in: boolean } }>(
+    "/api/v1/auth/sign-up/verify",
+    { token: pendingToken(email) },
+    undefined,
+    "POST",
+    testIp(),
+  );
   if (r.status !== 201) throw new Error(`sign-up/verify ${r.status} ${JSON.stringify(r.json)}`);
   const c = new pg.Client({ connectionString: ADMIN });
   await c.connect();
@@ -194,10 +213,13 @@ export async function viewerViaApi() {
     [boss.tenantId, email, sha256(token), boss.memberId],
   );
   // 招待は契約の口で受ける（K-337 で前の道すじから移した・切る段で替えた）。受諾は今の版に同意したことにする（K-332）
-  const r = await api<{ data: { token: string } }>(`/api/v1/auth/invitations/${token}/accept`, {
-    name: "閲覧のみ QA",
-    password: PW,
-  });
+  const r = await api<{ data: { token: string } }>(
+    `/api/v1/auth/invitations/${token}/accept`,
+    { name: "閲覧のみ QA", password: PW },
+    undefined,
+    "POST",
+    testIp(),
+  );
   if (r.status !== 201) throw new Error(`accept ${r.status} ${JSON.stringify(r.json)}`);
   const u = await admin<{ id: string }>('select id from kaname_auth."user" where email = $1', [email]);
   await addTestEntry(u[0]!.id); // 入り方を 1 つ持つ人にする（K-321 の道具・K-337）

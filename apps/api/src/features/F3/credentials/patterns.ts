@@ -55,8 +55,9 @@ const LEAP =
   `${H}[0０][2２]${H}[2２][9９]`;
 export const EXPIRES_PATTERN = `^[${WS}]*(?:[0-9０-９]{4}${H}(?:${M31}|${M30}|${FEB})|${LEAP})[${WS}]*$`;
 
-/** ログイン名：空白だけでない */
-export const LOGIN_PATTERN = "\\S";
+/** ログイン名：空白だけでない（\S と同じ。契約が Python でも同じ字の集まりになるよう、字を並べて書く・上の WS と同じ字。試験 K1117-CT-007 が字のまま読むので 1 つの文字で書く・K-1117） */
+// prettier-ignore
+export const LOGIN_PATTERN = "[^ \\t\\n\\r\\v\\f\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]";
 
 export const NAME_RE_RAW = new RegExp(NAME_PATTERN);
 export const DESTINATION_RE_RAW = new RegExp(DESTINATION_PATTERN);

@@ -7,7 +7,7 @@
 //   口は網の手前で差し替えない（届いた本物の答えを、門が開くまで画面へ渡さないだけ）。
 //   テストはチケットを作る人が書き、実装する人は変えない（D-128.125）
 import { expect, test, type Page, type Route } from "@playwright/test";
-import { API, PW, admin, api, pendingToken, signupPending, uniq, uniqEmail } from "../_lib/api";
+import { API, PW, admin, api, pendingToken, signupPending, testIp, uniq, uniqEmail } from "../_lib/api";
 import { TERMS_STEP, agreeOnTerms } from "../_lib/terms-steps";
 import { replyGate } from "../k/reply-gate";
 
@@ -21,7 +21,7 @@ const withIp = (route: Route, ip: string) => ({ ...route.request().headers(), "x
 async function personWithoutEntry(): Promise<{ email: string; userId: string }> {
   const email = uniqEmail();
   await signupPending(`K-342 の会社 ${uniq()}`, email);
-  const r = await api("/api/v1/auth/sign-up/verify", { token: pendingToken(email) });
+  const r = await api("/api/v1/auth/sign-up/verify", { token: pendingToken(email) }, undefined, "POST", testIp());
   expect(r.status, "確認の口で本人ができる").toBe(201);
   const [u] = await admin<{ id: string }>('select id from kaname_auth."user" where email = $1', [email]);
   return { email, userId: u!.id };
