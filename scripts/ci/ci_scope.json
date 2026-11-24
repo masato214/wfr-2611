@@ -2002,6 +2002,25 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/f9-knowledge-similar.ts",
+    "apps/api/src/features/F9/knowledge/similar.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F9/knowledge-similar.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F9/knowledge-similar.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/F1/terms.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_knowledge_similar.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/ticket-stages-write.ts",
     "apps/api/src/features/F9/settings/stages.ts"
    ],
