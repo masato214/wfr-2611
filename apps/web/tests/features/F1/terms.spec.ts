@@ -469,8 +469,9 @@ const legal = async (page: Page, kind: "terms" | "privacy", title: string, from:
 row(R["K53-UI-021"], (page) => legal(page, "terms", "Kaname 利用規約", "consent"));
 row(R["K53-UI-022"], (page) => legal(page, "privacy", "Kaname プライバシーポリシー", "signup"));
 
-// ---- 運営の人は同意し直しで止めない（D-128.172）：本物の口と DB（網の手前で差し替えない） ----
-//   運営の画面（/ops・F12）はまだ無いので、ログインの画面から入ってアプリの画面を開き、同意し直しの画面へ移されないことで見る。
+// ---- 運営の人は同意し直しで止めない（D-128.172）の対照：本物の口と DB（網の手前で差し替えない） ----
+//   運営の人の行（K53-UI-023）は外した：運営の人はパスキーだけで入り、顧客のログインの画面からは入れない（K-944・E-AUTH-022）。
+//   運営の人が同意し直しの画面へ移されないことは、運営のログインの画面の葉（K-946）と口の試験（terms.test.ts の K53-API-036〜038）が受ける。
 //   同意を外すのは試験が作った人の行だけ（G-10）。版は出さない（ほかの試験の人を止めないため）
 const loginByForm = async (page: Page, email: string) => {
   await page.setViewportSize({ width: 1440, height: 1000 });
@@ -488,51 +489,6 @@ const staleCompanyUser = async () => {
   await admin("delete from terms_consents where auth_user_id = $1", [u.userId]);
   return u;
 };
-/** 運営の人（運営のテナント app.ops_tenant_id() の人）を作り、今の版への同意を外す */
-const staleOpsUser = async () => {
-  const u = await staleCompanyUser();
-  const ops = (await admin<{ id: string }>("select app.ops_tenant_id() as id"))[0]!.id;
-  const scope = (
-    await admin<{ id: string }>("insert into scopes (tenant_id, name) values ($1, $2) returning id", [
-      ops,
-      `運営 QA ${uniq()}`,
-    ])
-  )[0]!.id;
-  await admin("update members set auth_user_id = null where id = $1", [u.memberId]); // 会社の人から外す（members.auth_user_id は一意）
-  const memberId = (
-    await admin<{ id: string }>(
-      "insert into members (tenant_id, scope_id, kind_id, display_name, auth_user_id) values ($1, $2, 'human', '運営 QA', $3) returning id",
-      [ops, scope, u.userId],
-    )
-  )[0]!.id;
-  await admin("insert into ops_members (tenant_id, member_id, caps) values ($1, $2, '{inquiry}')", [ops, memberId]);
-  return { ...u, memberId, tenantId: ops };
-};
-row(R["K53-UI-023"], async (page) => {
-  const o = await staleOpsUser();
-  const required: string[] = [];
-  page.on("response", async (r) => {
-    if (r.status() !== 403 || !API_RE.test(r.url())) return;
-    const code = ((await r.json().catch(() => ({}))) as { code?: unknown }).code;
-    if (code === NEW_TERMS_REQUIRED) required.push(new URL(r.url()).pathname);
-  });
-  await loginByForm(page, o.email);
-  expect(new URL(page.url()).searchParams.get("step"), "ログインの後に同意し直しの画面へ移されない").not.toBe("terms");
-  await page.goto("/ai/chat");
-  await page.waitForLoadState("networkidle");
-  await expect(page).not.toHaveURL(/step=terms/);
-  await expect(page.getByText(MSG.required)).toHaveCount(0);
-  expect(required, "運営の人の口は E-AUTH-010 で止まらない").toEqual([]);
-  const s = await admin<{ terms_pending: boolean }>(
-    "select terms_pending from sessions where member_id = $1 and revoked_at is null and kind_id <> 'bridge'",
-    [o.memberId],
-  );
-  expect(s.length, "ログインでセッションができた").toBeGreaterThan(0);
-  expect(
-    s.map((x) => x.terms_pending),
-    "運営の人のセッションには印が立たない",
-  ).not.toContain(true);
-});
 row(R["K53-UI-024"], async (page) => {
   const u = await staleCompanyUser();
   await loginByForm(page, u.email);

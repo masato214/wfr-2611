@@ -26992,6 +26992,86 @@
    "file": "11_tickets/K-944.md"
   },
   {
+   "id": "K-946",
+   "title": "運営の画面の入れ物：/ops の道と運営の外枠（左のメニュー・数の印・右上の人・狭い幅の引き出し）・入っていない人と役の違う人を運営のログインへ・運営のログインの画面（パスキーで入る）（K-72 の葉・W0）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "画面",
+   "assignee": "実装",
+   "due": "2026-12-08",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 2 の K-317（ログインの画面を口につなぐ・パスキー・試験 20 行前後・見込み 1）と段 8 の外枠の葉（外枠に数の印をつなぐ）から引いた：入れ物の layout とログインの頁 20 分・外枠に行き先と数をつなぐ 15 分・入っていない／役の違う／付けるだけの行き先 10 分・試験 17 行（幅の行を含む）を流して直す 15 分",
+   "decisions": [
+    "D-156.1",
+    "D-156.2",
+    "D-156.4",
+    "D-156.14",
+    "D-156.18",
+    "D-145.9",
+    "D-128.172"
+   ],
+   "split": "",
+   "choke_points": [],
+   "choke_none": "画面だけ。口は部品のパスキーの口と getOpsShell を読むだけで、DB・外への送り出し・秘密に触らない",
+   "tests": [
+    "apps/web/tests/k/k946-ops-shell.spec.ts"
+   ],
+   "carry": [
+    "apps/web/tests/features/F1/terms.spec.ts",
+    "07_qa/test-specs/k/terms.md"
+   ],
+   "depends_on": [
+    "K-941",
+    "K-944",
+    "K-1006"
+   ],
+   "acts": [
+    "A60"
+   ],
+   "screens": [
+    "ops-home"
+   ],
+   "apis": [],
+   "mock": [
+    "op-login"
+   ],
+   "affects": [
+    "@kaname/web"
+   ],
+   "ci_wide": [],
+   "changes": [
+    "\"apps/web/app/(ops)/ops/layout.tsx\"",
+    "\"apps/web/app/(ops)/ops/page.tsx\"",
+    "\"apps/web/app/(ops)/ops/login/page.tsx\"",
+    "apps/web/features/F12/ops/ops-frame.tsx",
+    "apps/web/features/F12/ops/use-ops-shell.ts",
+    "apps/web/features/F12/ops/ops-shell.tsx",
+    "apps/web/tests/k/k946-ops-shell.spec.ts",
+    "apps/web/tests/features/F1/terms.spec.ts",
+    "07_qa/test-specs/k/terms.md"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営の場所（D-156.1）の入れ物を作る。後の運営の画面の葉（K-965・K-971・K-976・K-980・K-984・K-986・K-991・K-994）は、ここに頁を足して本文だけを持つ。\n\n- **道は `/ops/…`**・外枠は運営の外枠（`features/F12/ops/ops-shell.tsx`・K-941 が運ぶ部品）。顧客の外枠は使わない\n- **運営のログインの画面 `/ops/login`**：下絵 op-login の字と形。「パスキーで入る」で部品の口（K-304・K-944）を通して入り、`next`（中の道だけ）か `/ops` に移る。失敗・本人がやめたは下絵の失敗の文\n- **入っていない人・役の違う人**：外枠の口 getOpsShell が 401 か 403 FORBIDDEN なら `/ops/login?next=<今の道>`（顧客の画面へは送らない）。403 MFA_REQUIRED（パスキーを付けるだけのセッション・K-945）なら `/ops/setup`（画面は K-1003）\n- **外枠の中身**：左のメニュー（ワークスペース `/ops`・問い合わせ `/ops/support`・お知らせ `/ops/notices`・請求 `/ops/billing`・配るもの `/ops/skills`、下に 運営の人 `/ops/team`）。数の印は getOpsShell（問い合わせ＝未担当の数・請求＝期限を過ぎた数・D-156.4）、右上の人はログインの人の名前。できることが少ない人にもメニューは全部出す（隠さない・押せない形は各画面・D-145.9）",
+    "完了の条件": "- [ ] 下の表の 17 行（K946-UI-001〜017）が緑：`apps/web/tests/k/k946-ops-shell.spec.ts`（実 Chrome）\n- [ ] 下絵 op-login と本番の運営のログインの画面が 375・768・1440 で同じ（K946-UI-001）\n- [ ] 実装した全部の操作要素（パスキーで入る・顧客のログインへ・左のメニュー 6 つ・引き出しの開け閉め）を実ブラウザで 1 回は押した\n- [ ] 前からの試験は「前からの試験を替えた所」のとおり（替えるのは K-53 の画面の試験 terms.spec.ts の 1 本：K53-UI-023 を外す）で緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: AUTH, PERM\n\n- **部品は書き換えない**（W0 の K-941 が運ぶ）。ただし外枠の行き先が今は下絵の道（`/dev/mock/…`）に決め打ちで、呼ぶ側が差し替える口が無いので、`ops-shell.tsx` に **行き先だけを受ける props `hrefs?: Partial<Record<OpsNavItem[\"key\"], string>>`** を 1 つ足す（無ければ今の下絵の道。見た目は変えない・下絵は今のまま）。モックの `ticket:` は変えない\n- 入れ物は `apps/web/features/F12/ops/ops-frame.tsx`（\"use client\"）：getOpsShell を 1 回呼び（`use-ops-shell.ts`・TanStack Query の 1 つの鍵）、`OpsShell` に `screen`・`crumbs`（頁が渡す）・`badges`・`operator`・`hrefs` を渡す。右上の人は認証の部品のセッション（`authClient.getSession` の user.name・頭の 1 字）から（外枠の口が落ちても出せる）\n- 外枠の口の答えの形は K-1006（getOpsShell：`operator.caps`・`inbox.unassigned`・`invoices.overdue_count` ほか）。この葉は数の印に 2 つだけ使う。`invoices` が null（お金を持たない人）なら請求の印を出さない\n- 頁 `/ops`（`app/(ops)/ops/page.tsx`）はこの葉では見出し「ワークスペース」だけの入れ物（本文は K-965 が持つ）。`/ops/support` などほかの頁は各画面の葉が足す\n- ログインの画面は get-session の答えで飛ばさない（「誰か」を聞く問いで止めない・入っている人も押せば入り直す）。`next` は `/ops` で始まる中の道だけ受け、ほか（`//`・`http`・`/login` など）は `/ops`（TP-AUTH-08）\n- 画面の字は下絵の字（D-156.18）。外枠の口が落ちたときの文は足さない（下の 代表に聞くこと 追加 1・勧めで仮置き）\n- 幅で崩れない（320・375・768・1024・1440 で横にはみ出さない・数で測る）",
+    "依存の理由": "- K-941: 要る — 外枠・運営のログインの部品（`ops-shell.tsx`・`views-team.tsx` の `OpsLogin`）と下絵 op-login の置き場\n- K-944: 要る — 運営の人がパスキーで入れる（部品の口の答えに運営のセッション）。この葉の試験は口を網の手前で差し替えるが、本物の結線は K-944 の後でないと押せない（完了の条件の「実ブラウザで押した」）\n- K-1006: 要る — getOpsShell の答えの形（生成した型 `packages/contracts` を画面が読む）\n- K-963（getOpsShell の振る舞い）: 外した — 画面の試験は口を差し替える。本物の数がつながるかは中間の K-996〜K-999 と K-965 が見る。ファイルも重ならない\n- K-1000（切り方の見込み）: 外した — 流れの正本と文書だけ（運営のナビの並びは flow.json のまま・K1000-FL-004 が確かめる）",
+    "目録で探した結果": "- 使う：`OpsShell`・`OPS_NAV`・`OPS_TEAM_NAV`（`features/F12/ops/ops-shell.tsx`）・`OpsLogin`（`features/F12/ops/views-team.tsx`）・`signInWithPasskey`（`lib/auth/client.ts`・K-317）・`authClient.getSession`・下絵の道具 `tests/k/stage2-match.ts`（matchMock）・`tests/k/f12-mock-kit.ts`（FORBIDDEN・overflowX）\n- 作る：入れ物 `ops-frame.tsx`・`use-ops-shell.ts`・頁 3 つ。探したが運営の入れ物は無かった（顧客の外枠 `components/k/shell` は顧客のナビ）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| 頁と入れ物 | `app/(ops)/ops/layout.tsx`（`/ops/login` と `/ops/setup` 以外を `OpsFrame` で包む）・`app/(ops)/ops/page.tsx`（見出しだけ）・`app/(ops)/ops/login/page.tsx`（`OpsLogin` に押したときの動き・失敗の印・`next` の扱いをつなぐ） |\n| 外枠の受け口 | `features/F12/ops/ops-shell.tsx` に `hrefs` の props（前提と制約） |\n| 外枠の口 | `features/F12/ops/use-ops-shell.ts`（`GET /api/v1/ops/shell`・Bearer・401／403 FORBIDDEN → `/ops/login?next=`・403 MFA_REQUIRED → `/ops/setup`・ほかの失敗は数を出さない。403・E-AUTH-010（規約の同意し直し）が返っても「ほかの失敗」と同じに扱い、顧客の同意し直しの画面へは移さない：外枠の口（getOpsShell）の答えを `lib/terms-gate.ts` の `noticeTermsRequired` に通さない（共通の `lib/api/client.ts`・`lib/api/call.ts` で呼ばない）・D-128.172。get-session は部品の口で E-AUTH-010 を返さないので、この葉は扱わない） |\n| 画面が使う答えの形 | getOpsShell の `inbox.unassigned`（問い合わせの印）・`invoices?.overdue_count`（請求の印）。`operator.caps` は各画面の押せない形に使う（この葉は使わない） |\n| 試験 | `apps/web/tests/k/k946-ops-shell.spec.ts`（切る段が書いた）。前からの試験 `apps/web/tests/features/F1/terms.spec.ts` と行の表 `07_qa/test-specs/k/terms.md` は切る段が K53-UI-023 を外した版を carry: で運ぶ（作る段は触らない） |\n| 道の一覧 | 作り手（`python3 scripts/tickets/regen_all.py`）で `apps/web/lib/built-routes.ts` を作り直す（生成物） |",
+    "外に影響する手順": "- なし — 画面が口を読むだけ。ログインは部品の口（K-944 の手順）",
+    "テスト仕様と確認の結果": "`apps/web/tests/k/k946-ops-shell.spec.ts`（実 Chrome・口は網の手前で差し替え・パスキーは CDP の仮の認証器・localhost で開く）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 運営のログイン | /ops/login | 入っていない | 下絵と同じ | このチケット | K946-UI-001・006・015 |\n| 同じ | パスキーで入る | 運営の人 | /ops か next | このチケット | K946-UI-002・003 |\n| 同じ | パスキーで入る | 断られた・やめた | 失敗の文 | このチケット | K946-UI-004・005 |\n| 同じ | パスキーで入る → 外枠の口が 403・E-AUTH-010 を返す | 運営の人 | /ops のまま・同意し直しの画面へ移されない・数だけ出さない | このチケット（運営のセッションに印が立たないことを本物の DB で見る行は K-944 の側・申し送り） | K946-UI-017 |\n| /ops の頁 | 直に開く | 入っていない | /ops/login?next= | このチケット | K946-UI-007 |\n| 同じ | 直に開く | 顧客の会社の人 | /ops/login | このチケット | K946-UI-008 |\n| 同じ | 直に開く | 付けるだけのセッション | /ops/setup | このチケット・K-1003 | K946-UI-009 |\n| 外枠 | 入った後 | 運営の人 | メニュー・数・人 | このチケット | K946-UI-010・011・016 |\n| 外枠 | 入った後 | できることが少ない | メニューは全部 | このチケット | K946-UI-012 |\n| 外枠の口が落ちた | 入った後 | 運営の人 | 数だけ出さない | このチケット | K946-UI-013 |\n| 狭い幅 | 引き出し | 運営の人 | 開いて移る | このチケット | K946-UI-014・015 |\n| 各画面の本文 | — | — | — | K-965 ほか | 各葉 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K946-UI-001 | 入口 | 下絵 | op-login と本番が 375・768・1440 で箱・見出し・注記・ボタン・下の行の値が同じ |\n| K946-UI-002 | 対象の状態 | パスキーで入る | 問い 1 回・応答 1 回・/ops に移り外枠が出る。外枠の口の頭は Bearer tok-k946 |\n| K946-UI-003 | 守り | next | next=/ops/billing で入ると /ops/billing。next=//evil.example/x なら /ops |\n| K946-UI-004 | 失敗 | 応答が 401 | role alert に下絵の失敗の文・/ops/login のまま・ボタンは押せる |\n| K946-UI-005 | 操作の揺れ | 本人がやめた | 同じ失敗の文・応答の口は 0 回 |\n| K946-UI-006 | 入口 | 顧客のログインへ | /login に移る |\n| K946-UI-007 | 利用者の状態 | 入っていない | /ops/notices を開くと /ops/login?next=%2Fops%2Fnotices・運営のメニューは描かない |\n| K946-UI-008 | 利用者の状態 | 顧客の会社の人 | 403 FORBIDDEN で /ops/login |\n| K946-UI-009 | 利用者の状態 | 付けるだけのセッション | 403 MFA_REQUIRED で /ops/setup |\n| K946-UI-010 | 入口 | 左のメニュー | 名前が ワークスペース・問い合わせ・お知らせ・請求・配るもの・運営の人 の順・行き先は /ops の道・ワークスペースに aria-current |\n| K946-UI-011 | 対象の状態 | 数の印と人 | 問い合わせ 3・請求 2・右上の丸の名前「高本 聖斗のメニュー」で字は「高」。0 と 0 で読み直すと印は 0 個 |\n| K946-UI-012 | 守り | できることが少ない | caps が inquiry だけでもメニューは 6 つ全部 |\n| K946-UI-013 | 失敗 | 外枠の口が 503・網が切れた | メニュー 6 つと右上の人は出る・数の印は 0 個・文を足さない |\n| K946-UI-014 | 入口 | 375 の引き出し | 運営のメニューは見えない・メニューを開くで引き出しに 6 つ・お知らせを押すと /ops/notices |\n| K946-UI-015 | 入口 | 幅 | 320・375・768・1024・1440 で /ops と /ops/login が横にはみ出さない |\n| K946-UI-016 | 守り | 字 | 取引先・業務の型・書き出し・CSV・内部の ID（D-・A 番号・ops-home・R6）が無い |\n| K946-UI-017 | 利用者の状態 | パスキーで入った運営の人 × 規約の同意し直し | 入ると /ops に移り運営のメニューが出る。道は /login?step=terms にならず、見出し「規約」（h1）も同意を求める文「利用規約とプライバシーポリシーが新しくなりました。同意してから続けてください」も 0 個（D-128.172）。続けて外枠の口が 403・E-AUTH-010 を返す形にして読み直しても、道は /ops のまま・メニューは 6 つ・数の印は 0 個・見出しと文は 0 個のまま（顧客の同意し直しへ移さない・D-128.172）。入ってから終わりまで、規約の口（/api/v1/auth/terms/…）は 0 回（この葉が呼ぶ口はパスキーの口・外枠の口・get-session だけ） |\n\n### テストの型の受け（分類 AUTH・PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-AUTH-01 同じ返事 | 要らない：パスキーの失敗はどれも同じ文（K946-UI-004・005）。口の返事は K-944 |\n| TP-AUTH-02 続けて失敗 | 要らない：パスキーの回数の止めは部品の口（K-304） |\n| TP-AUTH-03 コード | 要らない：運営は 2 段階を使わない |\n| TP-AUTH-04 セッションが切れた | K946-UI-007（401 で入り直しへ・戻る先は next） |\n| TP-AUTH-05 ログアウトの後に戻る | K946-UI-007（印が無ければ中は描かずログインへ）。ログアウトの操作は外枠の右上のメニュー（押せない形の部品）で、運営のログアウトをつなぐのは K-986 の申し送り |\n| TP-AUTH-06 ほかのセッション | 要らない：口が持つ（K944-API-011） |\n| TP-AUTH-07 取り直しの期限 | 要らない：取り直しは各画面の操作の小窓 |\n| TP-AUTH-08 戻す先が外の道 | K946-UI-003 |\n| TP-AUTH-09 国・端末 | 要らない：口の見張り（K-20） |\n| TP-PERM-01 役が合わない人 | K946-UI-008（顧客の人はログインへ） |\n| TP-PERM-02 権限を外した直後 | K946-UI-007（外した直後は口が 401 → ログインへ） |\n| TP-PERM-03 他の会社の ID | 要らない：外枠は会社を指さない |\n| TP-PERM-04 数に混ざらない | 要らない：数は口が持つ（K-963） |\n| TP-PERM-05 権限を付けた直後 | K946-UI-012（メニューは caps に依らない） |\n| G-11・G-15・G-16 | N/A：画面だけ |\n| G-12 | K946-UI-013（外枠の口が落ちた直後に読み直す） |\n| G-13 | K946-UI-009（付けるだけのセッション × 運営の頁） |\n| G-14 | K946-UI-007・008・017（規約の同意し直しの答えが返っても、運営の画面は顧客の同意し直しへ移さない） |",
+    "前からの試験を替えた所": "`ops-shell.tsx` に props を 1 つ足し（無ければ今のまま）、`/ops` の頁を足す。外枠の部品と /ops の道を読む前からの試験を探した。\n\n```search\ngit grep -l -E \"ops-shell|OpsShell|\\\"/ops\\\"|/ops/login\" -- 'apps/web/tests' 'apps/web/test' ':!apps/web/tests/k/k946-*'\n6\n```\n\n- apps/web/tests/k/k942-f12-ops2-parts.spec.ts: 替えない — 下絵の置き場 /dev/mock/f12-ops2 で外枠の部品を開く（hrefs を渡さない＝今の下絵の行き先のまま）\n- K-941 の `k941-f12-ops-parts.spec.ts` も同じ（下絵の道で開く）。道の照合（`apps/web/tests/reachability.spec.ts`）は作った頁の一覧を読む：/ops・/ops/login は作り手で built-routes に入る\n- apps/web/tests/k/k965-ws-list.spec.ts・ops-mock.ts・apps/web/test/k965-ws-list-shape.test.ts（K-965）・apps/web/tests/k/k976-inbox.spec.ts（K-976）・k1019-pwned.spec.ts（K-1019）: 替えない — この葉の後に作る葉（この葉に依存する）の試験で、この葉が作る形に合わせて書いてある（運営の外枠の中の頁を開く）\n- apps/web/tests/features/F1/terms.spec.ts: 替える — K53-UI-023（運営の人が古い規約のまま、顧客のログインの画面からメールとパスワードで入る・本物の口と DB）の行と、その準備 `staleOpsUser` を外す。K-944（この葉の依存）が入ると、運営の人はパスワードで入れず 403・E-AUTH-022 で赤になるため。K-944 は db の葉で web の組を触れない（重さの上限）ので、web の葉のこの葉が carry: で運ぶ（K-944.md の「前からの試験を替えた所」も「替えない — K-946 が運ぶ」）。この行が見ていた 2 つの受け先：(1) 運営の人は入った後に同意し直しの画面へ移されない（画面・D-128.172）→ K946-UI-017 (2) 運営のセッションに同意し直しの印が立たず E-AUTH-010 で止まらない（本物の DB）→ 口の試験 apps/api/test/features/F1/terms.test.ts の K53-API-036〜038（K-944 がパスキーで入る形に替えた）。対照の K53-UI-024（会社の利用者は同意し直しへ移る）と道具 `loginByForm`・`staleCompanyUser` は残す\n- 07_qa/test-specs/k/terms.md: 替える — 行の表から K53-UI-023 の 1 行を外す（terms.spec.ts は行の表から行を読むので、両方で外す）。ほかの行は変えない\n\n外した行 ID が試験と行の表に残っていない（terms.spec.ts に残る 1 件は「外した」と書いた注）：\n\n```search\ngit grep -c \"K53-UI-023\" -- apps/web/tests/features/F1/terms.spec.ts 07_qa/test-specs/k/terms.md\n1\n```",
+    "決定ログ（足す行）": "- なし（D-156.1・2・4 は K-940 が運ぶ）",
+    "リスク": "- 外枠の部品の `.k-nav` が狭い幅で隠れる形が変わる → K946-UI-014・015 が数で見る",
+    "申し送り": "- まとめ役：(1) モック op-login の `ticket:` は K-946 のまま (2) 代表に聞くこと 追加 1（外枠の口が落ちたときの形）を聞く (3) 運営のログアウトの操作の置き場（右上のメニューは押せない形の部品）は K-986 に足すか決める\n- まとめ役・PM：K53-UI-023（terms.spec.ts）の画面の分を K946-UI-017 に移した（PM の決め・2026-11-23）。terms.spec.ts と行の表はこの葉が carry: で運んで行を外す。口の側（terms.test.ts の K53-API-036〜038）は K-944 がパスキーで入る形に替える。K-53.md の表（120 行目の K53-UI-023）と K-256.md の 92 行目の「K53-UI-023・024 などが使う」は、取り込んだ後のチケットの記録なので替えない。K-944 が入ってからこの葉が入るまでの間、段の枝 i/段13 の上では K53-UI-023 が赤になる（K-944 の CI の範囲に画面の試験は入らない・段の全部の CI は両方が入ってから流れる）\n- K-965・K-971 ほか：頁は `app/(ops)/ops/<道>/page.tsx` に足し、本文だけを持つ（入れ物は layout が包む）。crumbs は頁が渡す\n- K-1003：`/ops/setup` は layout の外（入れ物で包まない）。K946-UI-009 は /ops/setup に移るかだけを見る（移った先の頁が在るかは見ない）ので、頁が在って開けることは K-1003 の試験が持つ\n- K-941 と重なる所：この葉は部品 `ops-shell.tsx` に `hrefs` の props を 1 つ足す（部品を書き換えない決まりの例外・前提と制約）。K-941 を直す差し戻し（f12-ops の状態が増えた など）が同じファイルを触ると取り込みでぶつかる → まとめ役：`.ticket-flow/local.yaml` の `overlap_ok` に `apps/web/features/F12/ops/ops-shell.tsx`（K-941・K-946）を足す。K-941 の試験（MK-001〜006・UI-007）は hrefs を渡さない形で見るので、足しても壊れない",
+    "代表に聞くこと": "- 追加 1：運営の外枠の数（問い合わせ・請求の印）を読む口が落ちたとき、外枠はどう見せますか。勧め：**左のメニューと右上の人は出し、数の印だけ出さない。外枠は文を足さない**（本文の側の各画面が、それぞれ読めなかったことを出す）。実例：顧客の側の困ったとき・お知らせは、読めないとき本文に帯を出す（下絵 uh-help-error）。勧めで仮置き・代表に確認中",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 17 行（上限 30・幅の行は 1 行に数える）。"
+   },
+   "file": "11_tickets/K-946.md"
+  },
+  {
    "id": "K-948",
    "title": "契約の作り直し 1：問い合わせ（利用者の 6 口・運営の受信箱の 5 口）を画面が要る欄に作り直し、添付に関門 C4 を足し、書き出しの口 2 本（exportOpsWorkspaces・exportOpsInvoices）を外す（契約と文書だけ・振る舞いは後の葉・K-72 の葉・W0）",
    "kind": "タスク",
