@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:e9dbe0f1e283122d
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:d8d9d54b152feaef
 import { z } from "zod";
 
 export const Tenants = z.strictObject({
@@ -1210,10 +1210,12 @@ export const Messages = z.strictObject({
   tenant_id: z.uuid().optional(),
   created_at: z.iso.datetime({ offset: true }).optional(),
   updated_at: z.iso.datetime({ offset: true }).optional(),
+  author_name: z.string().nullable().optional(),
   created_by: z.uuid().nullable().optional(),
   deleted_at: z.iso.datetime({ offset: true }).nullable().optional(),
   job_id: z.uuid().nullable().optional(),
   updated_by: z.uuid().nullable().optional(),
+  visibility: z.string().optional(),
 });
 export const MessagesInput = z.strictObject({
   conversation_id: z.uuid().nullable().optional(),
@@ -1759,11 +1761,16 @@ export const SecurityEventsInput = z.strictObject({
 });
 export const Inquiries = z.strictObject({
   opened_by_member_id: z.uuid().nullable().optional(),
-  kind_id: z.string().nullable().optional(),
-  status_id: z.string().nullable().optional(),
+  title: z.string().nullable().optional(),
+  topic_key: z.string().nullable().optional(),
+  state: z.string().optional(),
+  asker_read_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  last_message_at: z.iso.datetime({ offset: true }).nullable().optional(),
   conversation_id: z.uuid().nullable().optional(),
   assignee_ops_member_id: z.uuid().nullable().optional(),
   ai_first_answered_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  kind_id: z.string().nullable().optional(),
+  status_id: z.string().nullable().optional(),
   id: z.uuid(),
   tenant_id: z.uuid().optional(),
   created_at: z.iso.datetime({ offset: true }).optional(),
@@ -1776,11 +1783,16 @@ export const Inquiries = z.strictObject({
 });
 export const InquiriesInput = z.strictObject({
   opened_by_member_id: z.uuid().nullable().optional(),
-  kind_id: z.string().nullable().optional(),
-  status_id: z.string().nullable().optional(),
+  title: z.string().nullable().optional(),
+  topic_key: z.string().nullable().optional(),
+  state: z.string().optional(),
+  asker_read_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  last_message_at: z.iso.datetime({ offset: true }).nullable().optional(),
   conversation_id: z.uuid().nullable().optional(),
   assignee_ops_member_id: z.uuid().nullable().optional(),
   ai_first_answered_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  kind_id: z.string().nullable().optional(),
+  status_id: z.string().nullable().optional(),
 });
 export const Notices = z.strictObject({
   kind_id: z.string().nullable().optional(),

@@ -2143,6 +2143,25 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/inquiry-create.ts",
+    "apps/api/src/features/F12/inquiries/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/inquiry-create.test.ts",
+    "apps/api/test/generated/post_inquiries.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/inquiry-create.test.ts",
+    "apps/api/test/features/F12/inquiry.harness.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_inquiries.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/inquiry-read.ts",
     "apps/api/src/features/F12/inquiries/read.ts",
     "packages/db/migrations/20261128005100_inquiry_read.sql"
@@ -2349,6 +2368,7 @@
   "apps/api/test/features/contract/k144.d/K-717.ts": "葉の hooks のファイル（ticket-fields-edit）を F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-717",
   "apps/bridge/test/knowledge-tool.test.ts": "道具のサーバー（MCP_SERVER_SOURCE を一時のフォルダに書いた物）を spawn で子として起こし、JSON-RPC で knowledge_open を呼ぶ。読むのは試験が自分で書いた一時のファイルだけで、リポジトリの別のファイルは読まない（K-718）",
   "apps/web/test/k725-memory-ui-retire.test.ts": "apps/web の頁・部品・ext.ts・index.ts・conversation.tsx・markdown.tsx・built-routes.ts を readFileSync で読み、git grep で消した名前を探し、scripts/ci/raw_length_ledger.json・chat_one.mjs・07_qa/test-specs/screens/*.md の行を読む（K725-API-001〜010）",
+  "apps/api/test/features/F12/inquiry.harness.ts": "入っている葉の hooks のファイル（inquiry-create ほか）と上げる先の受け口（F12/inquiries/upload-route.ts・K-950）を動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-949",
   "apps/web/tests/k/k1100-stage-locked.spec.ts": "鍵の札の CSS apps/web/features/F6/progress/progress.css を読み、余白と間が正本のトークンだけを読むかを見る（K1100-UI-004）。正本と生成物の変更でも流れるよう data_links で結ぶ（K-1100）"
  },
  "web_select": {

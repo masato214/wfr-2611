@@ -1,0 +1,32 @@
+{
+ "errors": [
+  {
+   "id": "E-INQ-001",
+   "class": "conflict",
+   "where": {
+    "screen": "inquiry"
+   },
+   "when": "問い合わせを送るとき、付けた添付の検査がまだ済んでいない（上げ終わる前）か、もう別の問い合わせに付けた",
+   "false_when": "検査の済んだ・まだ使っていない自分の添付・添付を付けない問い合わせ",
+   "message": "このファイルはまだ付けられません",
+   "action": "付け直す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "会社の人で 困ったとき・お知らせ › 問い合わせる を開く",
+    "steps": [
+     "ファイルを付け、上げ終わる前に送る"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-156.26"
+   ]
+  }
+ ]
+}
