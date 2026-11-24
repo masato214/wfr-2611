@@ -5,9 +5,12 @@
 //   順：① トークンの形 → 招待の様子（無い 404・取り消し／期限切れ／使われた 410）② ワークスペースが止められている 403
 //       ③ 名前 ④ パスワード（長さ・漏れ）⑤ 宛てに利用者がいれば 409 ⑥ 利用者を作る（外に影響する手順 1・［残る］）→ 受諾（手順 2）
 //       → 失敗したら作った利用者を id で消す（後片付け）⑦ セッションを作る（手順 3・失敗しても参加は取り消さない）⑧ 201。
-//   宛てのメールが空の招待（K-421・招待のリンク）はこの道に入らない：ログインしていなければ 401（K-422 が確認のメールの道に替える）。
-//   上限（10 回／分／IP）は契約の入口（op.ts）が先に確かめる。体の email は読まない（宛ては招待のもの）。
+//   上限（10 回／分／IP）は契約の入口（op.ts）が先に確かめる。体の email は読まない（宛ては招待のもの）。ただし送られた email の形は招待の種類によらず契約の決まり（空・形違いは 422・E-INV-013）。
 //   ログに宛てのメール・パスワード・トークンを出さない（宛先は mailTag の印・例外は種類だけ）
+// K-422 リンクの招待（宛てのメールが空）で、ログインしていない人が新しく入る：利用者も所属も作らない（D-148.51）。
+//   順：① ② ③ ④ は同じ → メール（空・形違い 422・E-INV-013／送られていない 409・E-INV-016）→ そのメールにもうアカウント 409・E-INV-006
+//       → 保留の行を置く（S1）→ 確認のメールを送る（S2・関門 C6）→ 送った印（S3）→ 202 { state: "sent" | "failed", email: 伏せたメール }。
+//       確認のリンクを押したときの続きは confirm.ts（confirmInvitationJoin）。宛てのメールの在る招待は今のまま（体の email は読まない）
 // K-333 今のアカウントで参加する（ログイン中の人・D-125.150）：入口がセッションを解けたら（ctx.role が member）この分に入り、体は読まない。
 //   順：① ② は同じ → 別のメール宛て 403・E-INV-005（answer=becc3d3aa526 ②）→ もう入っている 409・E-INV-007（answer=7fe1f09fdab4 ⑦）
 //       → app.join_invitation（所属を足す・前に抜けた所属は戻す・出来事・そのログインの印だけ招かれた所へ付け替え を 1 つの取引）→ 201 { 今の印, workspace_id, next "/" }。
@@ -19,18 +22,22 @@ import {
   acceptInvitationAgreeing,
   acceptRefusal,
   createInvitedUser,
+  hashToken,
   invitationForAccept,
   joinInvitation,
   joinRefusal,
+  markLinkJoinSent,
   openSessionFor,
+  putLinkJoin,
   type InvitationForAccept,
 } from "@kaname/auth/invitations";
-import { deleteAuthUser } from "@kaname/auth/pending";
-import { mailTag } from "@kaname/auth/signup";
-import type { TenantContext } from "@kaname/db/context";
+import { authUserIdByEmail, deleteAuthUser } from "@kaname/auth/pending";
+import { EMAIL_RE, mailTag, normalizeEmail } from "@kaname/auth/signup";
+import { withTenant, type TenantContext } from "@kaname/db/context";
 import { kanameError } from "@kaname/errors";
 import type { HookArgs, HookReply } from "../../../contract/deps.js";
 import type { InvitationDeps } from "./deps.js";
+import { linkJoinMail, maskEmail, CONFIRM_PATH } from "./confirm-mail.js";
 import { TOKEN_MAX } from "./preview.js";
 
 /** 名前の上限（D-128.142・登録と同じ） */
@@ -63,10 +70,14 @@ const GONE: Record<Exclude<InvitationForAccept["state"], "ok">, string> = {
 };
 
 export function invitationAcceptFeature(d: InvitationDeps) {
-  /** 前処理：体の email は読まない（宛ては招待のもの・K332-API-009）。ほかの欄は契約の strict な形が確かめる */
-  const input = (raw: unknown): { input: Record<string, unknown> } => {
+  /** 前処理：体の email は残す（読むのはリンクの招待で新しく入るときだけ・メールで招いた招待は体の email を読まない＝K332-API-009）。
+   *  ほかの欄は契約の strict な形が確かめる */
+  const input = (raw: unknown): { input: Record<string, unknown> } | { reply: HookReply } => {
     const b = raw && typeof raw === "object" && !Array.isArray(raw) ? { ...(raw as Record<string, unknown>) } : {};
-    delete b["email"];
+    // 送られたメールの形（空・空白だけ・形違い）は契約の VALUE_RANGES の pattern と同じ決まり：422・E-INV-013・欄 email。
+    //   メールが送られていないときは招待の行（宛てが無いか）で決まるので、ここでは見ない（linkJoin が 409）
+    const e = b["email"];
+    if (typeof e === "string" && !EMAIL_RE.test(normalizeEmail(e))) return { reply: reply(422, "E-INV-013", "email") };
     return { input: b };
   };
 
@@ -128,6 +139,95 @@ export function invitationAcceptFeature(d: InvitationDeps) {
     }
   };
 
+  /** 確認のメールの文に載せる招待の事実（ワークスペースの名前・招いた人の名前）。読めなくても送れる（名前なしの文になる） */
+  const mailFacts = async (
+    a: HookArgs,
+    token: string,
+  ): Promise<{ workspace: string | null; inviter: string | null }> => {
+    try {
+      return await withTenant(d.appPool, a.ctx, async (cl) => {
+        const r = await cl.query<{ workspace_name: string | null; inviter_name: string | null }>(
+          "select workspace_name, inviter_name from app.invitation_preview2($1, null)",
+          [hashToken(token)],
+        );
+        return { workspace: r.rows[0]?.workspace_name ?? null, inviter: r.rows[0]?.inviter_name ?? null };
+      });
+    } catch (e) {
+      console.error(`[invite-link] 確認のメールの名前を読めなかった（${kindOf(e)}）`);
+      return { workspace: null, inviter: null };
+    }
+  };
+
+  /** 保留の行に送った印を書く。落ちたら 1 回だけやり直し、それでも落ちたらログに 1 行（答えは変えない・S3） */
+  const markSent = async (id: string, error: string | null): Promise<void> => {
+    for (let i = 0; i < 2; i++) {
+      try {
+        await markLinkJoinSent(d.authPool, id, error);
+        return;
+      } catch (e) {
+        if (i === 1) console.error(`[invite-link] 送った印を書けなかった → ${kindOf(e)}`);
+      }
+    }
+  };
+
+  /** リンクの招待で、ログインしていない人が新しく入る（K-422）。名前・パスワードは確かめ済み */
+  const linkJoin = async (
+    a: HookArgs,
+    token: string,
+    inv: InvitationForAccept,
+    ok: { name: string; password: string },
+  ): Promise<HookReply> => {
+    const rawEmail = a.input["email"];
+    const email = typeof rawEmail === "string" ? normalizeEmail(rawEmail) : "";
+    // 送られていない（宛てのメールが無い招待は体のメールが要る）：招待の行で決まる断りなので 409（欄・details は付けない）
+    if (!email) return reply(409, "E-INV-016");
+    try {
+      if (await authUserIdByEmail(d.authPool, email)) return reply(409, "E-INV-006");
+    } catch (e) {
+      console.error(`[invite-link] 利用者を引けなかった → ${mailTag(email)}: ${kindOf(e)}`);
+      return unavailable();
+    }
+    // S1：保留の行を置く（1 文）。失敗したら何も残らない
+    let put: Awaited<ReturnType<typeof putLinkJoin>>;
+    try {
+      put = await putLinkJoin(d.authPool, d.config.secretsMasterKey, {
+        invitationId: inv.invitationId,
+        invitationToken: token,
+        tenantId: inv.tenantId,
+        email,
+        name: ok.name,
+        password: ok.password,
+      });
+    } catch (e) {
+      console.error(`[invite-link] 保留の行を置けなかった → ${mailTag(email)}: ${kindOf(e)}`);
+      return unavailable();
+    }
+    // S2：確認のメールを送る（関門 C6）［残る］。送れなくても保留の行は残し、送れなかった印を書く
+    const facts = await mailFacts(a, token);
+    const mail = linkJoinMail({
+      name: ok.name,
+      workspaceName: facts.workspace,
+      inviterName: facts.inviter,
+      url: `${d.config.webBaseUrl}${CONFIRM_PATH}${put.token}`,
+    });
+    let sendError: string | null = null;
+    if (!d.mailer) sendError = "no_mailer";
+    else {
+      try {
+        await d.mailer({ to: email, subject: mail.subject, text: mail.text });
+      } catch (e) {
+        sendError = kindOf(e); // 保留の行に残すのは例外の種類だけ（文には宛てのメールや外のサービスの中身が入りうる）
+        console.error(`[invite-link] 確認のメールを送れなかった → ${mailTag(email)}: ${kindOf(e)}`);
+      }
+    }
+    // S3：送った印（S2 の後片付け）
+    await markSent(put.id, sendError);
+    return {
+      status: 202,
+      body: { data: { state: sendError ? "failed" : "sent", email: maskEmail(email) } },
+    };
+  };
+
   const accept = async (a: HookArgs): Promise<HookReply> => {
     const token = a.c.req.param("token") ?? "";
     if (token.length < 1 || token.length > TOKEN_MAX) return reply(404, "E-INV-001");
@@ -149,11 +249,10 @@ export function invitationAcceptFeature(d: InvitationDeps) {
       return unavailable();
     }
     if (me) return join(token, inv, me);
-    // 宛てのメールが空の招待（リンク）：ログインしていない新しい人の参加はメールを確かめてから（K-422）。
-    // それが入るまでの間は何も作らず、ログインしてから参加してもらう
-    if (inv.email === null) return { status: 401, body: { error: "unauthenticated", code: "UNAUTHENTICATED" } };
     const ok = await check(a);
     if ("status" in ok) return ok;
+    // リンクの招待（宛てのメールが空）：確認のメールだけを送る（K-422）
+    if (!inv.email) return linkJoin(a, token, inv, ok);
 
     // 手順 1：認証の利用者を作る［残る］
     let made: Awaited<ReturnType<typeof createInvitedUser>>;

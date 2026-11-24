@@ -1,0 +1,15 @@
+{
+ "ops": {
+  "createTicket": {
+   "covers": {
+    "test_post_tickets_conflict": {"file": "apps/api/test/features/F4/create-ticket-defaults.test.ts", "mark": "K437-API-017"},
+    "test_post_tickets_conflict_2": "K60-API-023",
+    "test_post_tickets_conflict_3": "K60-API-022",
+    "test_post_tickets_conflict_4": {"file": "apps/api/test/features/F4/create-ticket-defaults.test.ts", "mark": "K437-API-007"},
+    "test_post_tickets_conflict_5": {"file": "apps/api/test/features/F4/create-ticket-defaults.test.ts", "mark": "K437-API-007"},
+    "test_post_tickets_conflict_6": {"file": "apps/api/test/features/F4/create-ticket-defaults.test.ts", "mark": "K437-API-009"},
+    "test_post_tickets_conflict_7": {"file": "apps/api/test/features/F4/create-ticket-defaults.test.ts", "mark": "K437-API-006"}
+   }
+  }
+ }
+}

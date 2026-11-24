@@ -1,0 +1,24 @@
+{
+ "ops": {
+  "updateTicket": {
+   "covers": {
+    "test_patch_tickets_id_conflict_6": {
+     "file": "apps/api/test/features/F4/ticket-sort.test.ts",
+     "mark": "K440-API-008"
+    },
+    "test_patch_tickets_id_conflict_7": {
+     "file": "apps/api/test/features/F4/ticket-sort.test.ts",
+     "mark": "K440-API-009"
+    },
+    "test_patch_tickets_id_conflict_8": {
+     "file": "apps/api/test/features/F4/ticket-sort.test.ts",
+     "mark": "K440-API-010"
+    },
+    "test_patch_tickets_id_conflict_9": {
+     "file": "apps/api/test/features/F4/ticket-sort.test.ts",
+     "mark": "K440-API-011"
+    }
+   }
+  }
+ }
+}

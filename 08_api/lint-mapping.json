@@ -237,6 +237,18 @@
   },
   {
    "method": "POST",
+   "path": "/api/v1/auth/invitations/confirm",
+   "implementation_path": "apps/api/src/routes/invitations.ts::confirmInvitationJoin",
+   "screen_ids_referencing": [
+    "invite-accept"
+   ],
+   "acts": [
+    "A03",
+    "A96"
+   ]
+  },
+  {
+   "method": "POST",
    "path": "/api/v1/auth/password/forgot",
    "implementation_path": "apps/api/src/routes/security_events.ts::requestPasswordReset",
    "screen_ids_referencing": [
@@ -1322,6 +1334,39 @@
    ]
   },
   {
+   "method": "POST",
+   "path": "/api/v1/knowledge/folders",
+   "implementation_path": "apps/api/src/routes/knowledge_folders.ts::createKnowledgeFolder",
+   "screen_ids_referencing": [
+    "knowledge"
+   ],
+   "acts": [
+    "A114"
+   ]
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/v1/knowledge/folders/:id",
+   "implementation_path": "apps/api/src/routes/knowledge_folders.ts::updateKnowledgeFolder",
+   "screen_ids_referencing": [
+    "knowledge"
+   ],
+   "acts": [
+    "A114"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/knowledge/folders/:id",
+   "implementation_path": "apps/api/src/routes/knowledge_folders.ts::deleteKnowledgeFolder",
+   "screen_ids_referencing": [
+    "knowledge"
+   ],
+   "acts": [
+    "A114"
+   ]
+  },
+  {
    "method": "GET",
    "path": "/api/v1/knowledge/home",
    "implementation_path": "apps/api/src/routes/knowledge_pages.ts::getKnowledgeHome",
@@ -1351,7 +1396,7 @@
     "knowledge"
    ],
    "acts": [
-    "A114"
+    "A136"
    ]
   },
   {
@@ -1362,13 +1407,24 @@
     "knowledge"
    ],
    "acts": [
-    "A114"
+    "A136"
    ]
   },
   {
    "method": "POST",
    "path": "/api/v1/knowledge/proposals/:id/decline",
    "implementation_path": "apps/api/src/routes/knowledge_page_versions.ts::declineKnowledgeProposal",
+   "screen_ids_referencing": [
+    "knowledge"
+   ],
+   "acts": [
+    "A136"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/knowledge/similar",
+   "implementation_path": "apps/api/src/routes/knowledge_pages.ts::findSimilarKnowledge",
    "screen_ids_referencing": [
     "knowledge"
    ],
@@ -1476,6 +1532,17 @@
    ]
   },
   {
+   "method": "DELETE",
+   "path": "/api/v1/knowledge_pages/:id",
+   "implementation_path": "apps/api/src/routes/knowledge_pages.ts::deleteKnowledgePage",
+   "screen_ids_referencing": [
+    "knowledge"
+   ],
+   "acts": [
+    "A114"
+   ]
+  },
+  {
    "method": "POST",
    "path": "/api/v1/knowledge_pages/:id/archive",
    "implementation_path": "apps/api/src/routes/knowledge_pages.ts::archiveKnowledgePage",
@@ -1490,6 +1557,17 @@
    "method": "POST",
    "path": "/api/v1/knowledge_pages/:id/attachments",
    "implementation_path": "apps/api/src/routes/attachments.ts::uploadKnowledgeAttachment",
+   "screen_ids_referencing": [
+    "knowledge"
+   ],
+   "acts": [
+    "A114"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/knowledge_pages/:id/copy",
+   "implementation_path": "apps/api/src/routes/knowledge_pages.ts::copyKnowledgePage",
    "screen_ids_referencing": [
     "knowledge"
    ],
@@ -1575,6 +1653,17 @@
    ]
   },
   {
+   "method": "PUT",
+   "path": "/api/v1/knowledge_pages/:id/must",
+   "implementation_path": "apps/api/src/routes/knowledge_pages.ts::setKnowledgeMust",
+   "screen_ids_referencing": [
+    "knowledge"
+   ],
+   "acts": [
+    "A114"
+   ]
+  },
+  {
    "method": "POST",
    "path": "/api/v1/knowledge_pages/:id/publish",
    "implementation_path": "apps/api/src/routes/knowledge_page_versions.ts::publishKnowledgePage",
@@ -1604,7 +1693,7 @@
     "knowledge"
    ],
    "acts": [
-    "A114"
+    "A137"
    ]
   },
   {
@@ -1622,6 +1711,17 @@
    "method": "GET",
    "path": "/api/v1/knowledge_pages/:id/versions",
    "implementation_path": "apps/api/src/routes/knowledge_page_versions.ts::listKnowledgeVersions",
+   "screen_ids_referencing": [
+    "knowledge"
+   ],
+   "acts": [
+    "A114"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/knowledge_pages/:id/versions/:v",
+   "implementation_path": "apps/api/src/routes/knowledge_page_versions.ts::getKnowledgePageVersion",
    "screen_ids_referencing": [
     "knowledge"
    ],
@@ -2627,72 +2727,6 @@
    ]
   },
   {
-   "method": "POST",
-   "path": "/api/v1/ops/work_type_uploads",
-   "implementation_path": "apps/api/src/routes/skill_versions.ts::uploadWorkTypePackage",
-   "screen_ids_referencing": [
-    "ops-skills"
-   ],
-   "acts": [
-    "A80"
-   ]
-  },
-  {
-   "method": "GET",
-   "path": "/api/v1/ops/work_type_uploads/:id",
-   "implementation_path": "apps/api/src/routes/skill_versions.ts::getWorkTypeUpload",
-   "screen_ids_referencing": [
-    "ops-skills"
-   ],
-   "acts": [
-    "A80"
-   ]
-  },
-  {
-   "method": "GET",
-   "path": "/api/v1/ops/work_types",
-   "implementation_path": "apps/api/src/routes/skills.ts::listOpsWorkTypes",
-   "screen_ids_referencing": [
-    "ops-skills"
-   ],
-   "acts": [
-    "A80"
-   ]
-  },
-  {
-   "method": "GET",
-   "path": "/api/v1/ops/work_types/:id",
-   "implementation_path": "apps/api/src/routes/skills.ts::getOpsWorkType",
-   "screen_ids_referencing": [
-    "ops-skills"
-   ],
-   "acts": [
-    "A80"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/ops/work_types/:id/versions",
-   "implementation_path": "apps/api/src/routes/skill_versions.ts::releaseOpsWorkType",
-   "screen_ids_referencing": [
-    "ops-skills"
-   ],
-   "acts": [
-    "A80"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/ops/work_types/:id/versions/:v/rollback",
-   "implementation_path": "apps/api/src/routes/skill_versions.ts::rollbackOpsWorkType",
-   "screen_ids_referencing": [
-    "ops-skills"
-   ],
-   "acts": [
-    "A80"
-   ]
-  },
-  {
    "method": "GET",
    "path": "/api/v1/ops/workspaces",
    "implementation_path": "apps/api/src/routes/tenants.ts::listOpsWorkspaces",
@@ -2947,78 +2981,6 @@
   },
   {
    "method": "GET",
-   "path": "/api/v1/rules",
-   "implementation_path": "apps/api/src/routes/policies.ts::listRules",
-   "screen_ids_referencing": [
-    "clients",
-    "rules"
-   ],
-   "acts": [
-    "A121",
-    "A131"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/rules",
-   "implementation_path": "apps/api/src/routes/policies.ts::createRule",
-   "screen_ids_referencing": [
-    "clients",
-    "rules"
-   ],
-   "acts": [
-    "A121",
-    "A131"
-   ]
-  },
-  {
-   "method": "GET",
-   "path": "/api/v1/rules/:id",
-   "implementation_path": "apps/api/src/routes/policies.ts::getRule",
-   "screen_ids_referencing": [
-    "rules"
-   ],
-   "acts": [
-    "A131"
-   ]
-  },
-  {
-   "method": "PATCH",
-   "path": "/api/v1/rules/:id",
-   "implementation_path": "apps/api/src/routes/policies.ts::updateRule",
-   "screen_ids_referencing": [
-    "rules"
-   ],
-   "acts": [
-    "A131"
-   ]
-  },
-  {
-   "method": "DELETE",
-   "path": "/api/v1/rules/:id",
-   "implementation_path": "apps/api/src/routes/policies.ts::deleteRule",
-   "screen_ids_referencing": [
-    "rules"
-   ],
-   "acts": [
-    "A131"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/rules/check",
-   "implementation_path": "apps/api/src/routes/policies.ts::checkRule",
-   "screen_ids_referencing": [
-    "masters",
-    "rules"
-   ],
-   "acts": [
-    "A118",
-    "A131"
-   ]
-  },
-  {
-   "method": "GET",
    "path": "/api/v1/saved_views",
    "implementation_path": "apps/api/src/routes/saved_views.ts::listSavedViews",
    "screen_ids_referencing": [
@@ -3162,6 +3124,17 @@
   },
   {
    "method": "GET",
+   "path": "/api/v1/ticket-field-master",
+   "implementation_path": "apps/api/src/routes/custom_fields.ts::listTicketFieldMaster",
+   "screen_ids_referencing": [
+    "masters"
+   ],
+   "acts": [
+    "A118"
+   ]
+  },
+  {
+   "method": "GET",
    "path": "/api/v1/ticket-fields",
    "implementation_path": "apps/api/src/routes/custom_fields.ts::listTicketFields",
    "screen_ids_referencing": [
@@ -3169,6 +3142,50 @@
    ],
    "acts": [
     "A103"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/ticket-fields",
+   "implementation_path": "apps/api/src/routes/custom_fields.ts::createTicketField",
+   "screen_ids_referencing": [
+    "masters"
+   ],
+   "acts": [
+    "A118"
+   ]
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/v1/ticket-fields/:id",
+   "implementation_path": "apps/api/src/routes/custom_fields.ts::updateTicketField",
+   "screen_ids_referencing": [
+    "masters"
+   ],
+   "acts": [
+    "A118"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/ticket-fields/:id",
+   "implementation_path": "apps/api/src/routes/custom_fields.ts::deleteTicketField",
+   "screen_ids_referencing": [
+    "masters"
+   ],
+   "acts": [
+    "A118"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/ticket-fields/order",
+   "implementation_path": "apps/api/src/routes/custom_fields.ts::reorderTicketFields",
+   "screen_ids_referencing": [
+    "masters"
+   ],
+   "acts": [
+    "A118"
    ]
   },
   {
@@ -3324,6 +3341,50 @@
    ],
    "acts": [
     "A103"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/ticket_stages",
+   "implementation_path": "apps/api/src/routes/ticket_stages.ts::createTicketStage",
+   "screen_ids_referencing": [
+    "masters"
+   ],
+   "acts": [
+    "A118"
+   ]
+  },
+  {
+   "method": "PATCH",
+   "path": "/api/v1/ticket_stages/:id",
+   "implementation_path": "apps/api/src/routes/ticket_stages.ts::updateTicketStage",
+   "screen_ids_referencing": [
+    "masters"
+   ],
+   "acts": [
+    "A118"
+   ]
+  },
+  {
+   "method": "DELETE",
+   "path": "/api/v1/ticket_stages/:id",
+   "implementation_path": "apps/api/src/routes/ticket_stages.ts::deleteTicketStage",
+   "screen_ids_referencing": [
+    "masters"
+   ],
+   "acts": [
+    "A118"
+   ]
+  },
+  {
+   "method": "POST",
+   "path": "/api/v1/ticket_stages/order",
+   "implementation_path": "apps/api/src/routes/ticket_stages.ts::reorderTicketStages",
+   "screen_ids_referencing": [
+    "masters"
+   ],
+   "acts": [
+    "A118"
    ]
   },
   {
@@ -3555,6 +3616,31 @@
    ]
   },
   {
+   "method": "GET",
+   "path": "/api/v1/tickets/:id/handover-preview",
+   "implementation_path": "apps/api/src/routes/tickets.ts::previewTicketHandover",
+   "screen_ids_referencing": [
+    "tickets"
+   ],
+   "acts": [
+    "A111",
+    "A48",
+    "A51"
+   ]
+  },
+  {
+   "method": "GET",
+   "path": "/api/v1/tickets/:id/handovers",
+   "implementation_path": "apps/api/src/routes/ticket_handovers.ts::listTicketHandovers",
+   "screen_ids_referencing": [
+    "tickets"
+   ],
+   "acts": [
+    "A110",
+    "A51"
+   ]
+  },
+  {
    "method": "POST",
    "path": "/api/v1/tickets/:id/handovers",
    "implementation_path": "apps/api/src/routes/ticket_handovers.ts::createTicketHandover",
@@ -3735,17 +3821,6 @@
    ]
   },
   {
-   "method": "GET",
-   "path": "/api/v1/tickets/:id/work-type-candidates",
-   "implementation_path": "apps/api/src/routes/skills.ts::listWorkTypeCandidates",
-   "screen_ids_referencing": [
-    "tickets"
-   ],
-   "acts": [
-    "A130"
-   ]
-  },
-  {
    "method": "POST",
    "path": "/api/v1/tickets/bulk",
    "implementation_path": "apps/api/src/routes/tickets.ts::bulkUpdateTickets",
@@ -3755,105 +3830,6 @@
    "acts": [
     "A103",
     "A113"
-   ]
-  },
-  {
-   "method": "GET",
-   "path": "/api/v1/work_types",
-   "implementation_path": "apps/api/src/routes/skills.ts::listWorkTypes",
-   "screen_ids_referencing": [
-    "work-types"
-   ],
-   "acts": [
-    "A119"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/work_types",
-   "implementation_path": "apps/api/src/routes/skills.ts::createWorkType",
-   "screen_ids_referencing": [
-    "work-types"
-   ],
-   "acts": [
-    "A119"
-   ]
-  },
-  {
-   "method": "GET",
-   "path": "/api/v1/work_types/:id",
-   "implementation_path": "apps/api/src/routes/skills.ts::getWorkType",
-   "screen_ids_referencing": [
-    "work-types"
-   ],
-   "acts": [
-    "A119"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/work_types/:id/copy",
-   "implementation_path": "apps/api/src/routes/skills.ts::copyWorkType",
-   "screen_ids_referencing": [
-    "work-types"
-   ],
-   "acts": [
-    "A119"
-   ]
-  },
-  {
-   "method": "PATCH",
-   "path": "/api/v1/work_types/:id/draft",
-   "implementation_path": "apps/api/src/routes/skill_versions.ts::updateWorkTypeDraft",
-   "screen_ids_referencing": [
-    "work-types"
-   ],
-   "acts": [
-    "A119"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/work_types/:id/release",
-   "implementation_path": "apps/api/src/routes/skill_versions.ts::releaseWorkType",
-   "screen_ids_referencing": [
-    "work-types"
-   ],
-   "acts": [
-    "A119"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/work_types/:id/spread-requests",
-   "implementation_path": "apps/api/src/routes/approvals.ts::requestWorkTypeSpread",
-   "screen_ids_referencing": [
-    "work-types"
-   ],
-   "acts": [
-    "A119"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/work_types/:id/try",
-   "implementation_path": "apps/api/src/routes/skill_test_runs.ts::tryWorkType",
-   "screen_ids_referencing": [
-    "work-types"
-   ],
-   "acts": [
-    "A119"
-   ]
-  },
-  {
-   "method": "GET",
-   "path": "/api/v1/work_types/:id/versions",
-   "implementation_path": "apps/api/src/routes/skill_versions.ts::listWorkTypeVersions",
-   "screen_ids_referencing": [
-    "work-types"
-   ],
-   "acts": [
-    "A119"
    ]
   },
   {
@@ -3924,50 +3900,6 @@
   },
   {
    "method": "POST",
-   "path": "/api/v1/workspace/escalation-rules",
-   "implementation_path": "apps/api/src/routes/policies.ts::createEscalationRule",
-   "screen_ids_referencing": [
-    "masters"
-   ],
-   "acts": [
-    "A118"
-   ]
-  },
-  {
-   "method": "PATCH",
-   "path": "/api/v1/workspace/escalation-rules/:id",
-   "implementation_path": "apps/api/src/routes/policies.ts::updateEscalationRule",
-   "screen_ids_referencing": [
-    "masters"
-   ],
-   "acts": [
-    "A118"
-   ]
-  },
-  {
-   "method": "DELETE",
-   "path": "/api/v1/workspace/escalation-rules/:id",
-   "implementation_path": "apps/api/src/routes/policies.ts::deleteEscalationRule",
-   "screen_ids_referencing": [
-    "masters"
-   ],
-   "acts": [
-    "A118"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/workspace/escalation-rules/preview",
-   "implementation_path": "apps/api/src/routes/policies.ts::previewEscalationRule",
-   "screen_ids_referencing": [
-    "masters"
-   ],
-   "acts": [
-    "A118"
-   ]
-  },
-  {
-   "method": "POST",
    "path": "/api/v1/workspace/logo",
    "implementation_path": "apps/api/src/routes/tenants.ts::uploadWorkspaceLogo",
    "screen_ids_referencing": [
@@ -4019,50 +3951,6 @@
    ],
    "acts": [
     "A69"
-   ]
-  },
-  {
-   "method": "GET",
-   "path": "/api/v1/workspace/rules",
-   "implementation_path": "apps/api/src/routes/policies.ts::getWorkspaceRules",
-   "screen_ids_referencing": [
-    "masters"
-   ],
-   "acts": [
-    "A118"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/workspace/rules",
-   "implementation_path": "apps/api/src/routes/policies.ts::createWorkspaceRule",
-   "screen_ids_referencing": [
-    "masters"
-   ],
-   "acts": [
-    "A118"
-   ]
-  },
-  {
-   "method": "PATCH",
-   "path": "/api/v1/workspace/rules/:id",
-   "implementation_path": "apps/api/src/routes/policies.ts::updateWorkspaceRule",
-   "screen_ids_referencing": [
-    "masters"
-   ],
-   "acts": [
-    "A118"
-   ]
-  },
-  {
-   "method": "DELETE",
-   "path": "/api/v1/workspace/rules/:id",
-   "implementation_path": "apps/api/src/routes/policies.ts::deleteWorkspaceRule",
-   "screen_ids_referencing": [
-    "masters"
-   ],
-   "acts": [
-    "A118"
    ]
   },
   {

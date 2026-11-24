@@ -61,9 +61,6 @@ async function make(
   o: { title?: string; by?: Person; assignee?: Person; scope?: string; parent?: string } = {},
 ): Promise<{ id: string; number: string }> {
   const by = o.by ?? w.me;
-  const sections = Object.fromEntries(
-    w.task.sections.filter((s) => s.mode === "required").map((s) => [s.key, "書いた"]),
-  );
   const r = await f.req("POST", "/tickets", {
     body: {
       scope_id: o.scope ?? w.root,
@@ -71,7 +68,7 @@ async function make(
       title: o.title ?? "請求書を送る",
       assignee_member_id: (o.assignee ?? w.me).id,
       due_on: jst(3),
-      sections,
+      body: { doc: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "書いた" }] }] } },
       ...(o.parent ? { parent_ticket_id: o.parent } : {}),
     },
     headers: by.auth,
@@ -270,7 +267,7 @@ describe("K-92 一覧の口：状態 × 見る人", () => {
     expect(p.data.find((x) => x.id === done.id)?.overdue).toBe(false);
   });
 
-  it("K92-API-009 答えの形：1 件の鍵はちょうど決めた 12 個（区画の本文・作った人・消した印を返さない）・meta は next_cursor（と counts だけ・総数を返さない）", async () => {
+  it("K92-API-009 答えの形：1 件の鍵はちょうど決めた 13 個（12 個＋ K-560 が足した scope。区画の本文・作った人・消した印を返さない）・meta は next_cursor（と counts だけ・総数を返さない）", async () => {
     const w = await world();
     const parent = await make(w);
     await make(w, { parent: parent.id });
@@ -287,6 +284,7 @@ describe("K-92 一覧の口：状態 × 見る人", () => {
           "number",
           "overdue",
           "parent_ticket_id",
+          "scope",
           "stage",
           "title",
           "updated_at",

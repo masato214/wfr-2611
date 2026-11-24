@@ -1,0 +1,41 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/features/F2/invitations/**",
+    "apps/api/src/hooks/invitation-confirm.ts",
+    "packages/auth/src/invitations.ts",
+    "packages/auth/src/pending.ts",
+    "packages/db/migrations/20261121092200_invitation_link_joins.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F10/invite-link-confirm.test.ts",
+    "apps/api/test/features/F10/invite-link.test.ts",
+    "apps/api/test/features/F2/invitation-accept-new.test.ts",
+    "apps/api/test/features/F2/invitation-accept-signed.test.ts",
+    "apps/api/test/features/F1/sign-up.test.ts",
+    "apps/api/test/features/F1/verify-email.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F10/invite-link-confirm.test.ts",
+    "apps/api/test/features/F2/invitation-accept-new.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_auth_invitations_confirm.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F10/invite-link.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_invitations_link.test.ts"
+   ]
+  }
+ ]
+}

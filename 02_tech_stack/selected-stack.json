@@ -105,6 +105,36 @@
      "D-104.10",
      "D-104.22"
     ]
+   },
+   "rich_text": {
+    "name": "Tiptap 3.32.2（ProseMirror の包み・MIT）",
+    "why": "保存の形（ProseMirror の JSON）が文書の木（K-561・K-584）に合う。表・チェック・色・寄せ・上付き下付きが MIT の拡張で在り、有料の拡張に頼らない。React 19 と Next の取り込み（immediatelyRender: false）に対応し、編集のときだけ遅く読める。@tiptap/* は 1 つの版にそろえる（21 日の決め D-128.124 で 3.32.2）",
+    "alternatives_rejected": [
+     "Lexical：保存の形が独自の木で、文書の木への変換を全部自前で書く・まだ 1.0 に届いていない",
+     "BlockNote：MPL-2.0・「/」のメニューが前提（作らない D-150.48）・Yjs の peer・保存の形が合わない"
+    ],
+    "source": [
+     "D-150.48",
+     "D-150.35"
+    ]
+   },
+   "rich_text_ui": {
+    "name": "Tiptap UI Components（MIT）の hook を写す",
+    "from": "https://github.com/ueberdosis/tiptap-ui-components（コミット 799929bea4804c73767562b69f8acc2acdb8ac86・2025-10-07）",
+    "copied": [
+     "apps/web/src/components/tiptap-ui/mark-button/use-mark.ts → apps/web/features/F4/doc/editor/bar/use-mark-button.ts",
+     "apps/web/src/components/tiptap-ui/undo-redo-button/use-undo-redo.ts → apps/web/features/F4/doc/editor/bar/use-undo-redo.ts",
+     "apps/web/src/components/tiptap-ui/link-popover/use-link-popover.ts → apps/web/features/F4/doc/editor/bar/use-link-popover.ts"
+    ],
+    "why": "道具の今押せるか・押されているか・押したときの命令（hook）だけを写し、見た目は components/k と Base UI・正本のトークンで描く。写す hook は Tiptap の命令を呼ぶだけで依存が増えない",
+    "not_used": [
+     "@tiptap/cli：npm の許諾が Tiptap Pro の許諾文で MIT でなく、CLI を使う許しが確かめられない（MIT のリポジトリから直に写す）",
+     "公式の見た目の部品（radix・@floating-ui/react・react-hotkeys-hook・lodash.throttle・sass）：依存が 5 つ増え、生の色・長さを持ち込む",
+     "文字の色（color-text-popover ほか）・表（table-node）の公式の部品：有料の plan の部品（自前で作る・K-568）"
+    ],
+    "source": [
+     "D-150.61"
+    ]
    }
   },
   "api": {
@@ -1049,6 +1079,54 @@
   "zod": {
    "for": "記録にある名前のまま",
    "register": "(本文)"
+  },
+  "@tiptap/core": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/react": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/pm": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/starter-kit": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/extension-highlight": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/extension-table": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/extension-task-list": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/extension-task-item": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/extension-text-align": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/extension-text-style": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/extension-superscript": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
+  },
+  "@tiptap/extension-subscript": {
+   "for": "本文を見たまま編集する部品（ProseMirror の包み・K-567）",
+   "register": "stack.frontend.rich_text"
   }
  }
 }

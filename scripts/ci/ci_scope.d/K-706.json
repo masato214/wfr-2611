@@ -1,0 +1,38 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/ticket-fields-write.ts",
+    "apps/api/src/hooks/ticket-fields-read.ts",
+    "apps/api/src/features/F9/settings/fields.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F9/ticket-fields-write.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F9/ticket-fields-write.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_ticket_field_master.test.ts",
+    "apps/api/test/generated/post_ticket_fields.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/ticket-fields-write.ts",
+    "apps/api/src/hooks/ticket-fields-read.ts"
+   ],
+   "readers": [
+    "apps/api/test/features/F9/settings.harness.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/contract/k144.d/K-706.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-706"
+ }
+}

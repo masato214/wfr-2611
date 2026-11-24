@@ -1,0 +1,36 @@
+{
+ "errors": [
+  {
+   "id": "E-DUP-001",
+   "class": "not_found",
+   "where": {"screen": "tickets", "state": "duplicate"},
+   "when": "複製の元のチケットが無い・消えた・見えない（別の会社・他の人の取り込み中の下書き・見えないグループ）",
+   "false_when": "元のチケットが見える（書く権限は要らない）",
+   "message": "複製の元のチケットが見つかりませんでした。消されたか、見る権限が無いかもしれません",
+   "action": "元を選び直す",
+   "undo": false,
+   "layers": ["UI", "API", "DB"],
+   "must_not": false,
+   "reproduce": {"setup": "チケットを 1 つ作って消す", "steps": ["消したチケットを元にして複製する"], "needs": "なし"},
+   "severity": "low",
+   "source": ["D-150.6", "D-128.115"],
+   "support_code": "DUP-001"
+  },
+  {
+   "id": "E-DUP-002",
+   "class": "conflict",
+   "where": {"screen": "tickets", "state": "duplicate"},
+   "when": "子チケットを写すと、親子が 3 段を超える（複製の親が 2 段目で、元に子がいる）",
+   "false_when": "子を写さない・写しても 3 段まで",
+   "message": "子チケットを写すと、親子が 3 段を超えます。子を写さないか、別の親を選んでください",
+   "action": "子を写さずに作る",
+   "undo": false,
+   "layers": ["UI", "API", "DB"],
+   "must_not": false,
+   "reproduce": {"setup": "子を持つチケットと、2 段目のチケット", "steps": ["2 段目のチケットを親にして、子を写して複製する"], "needs": "なし"},
+   "severity": "low",
+   "source": ["D-150.6", "D-125.50"],
+   "support_code": "DUP-002"
+  }
+ ]
+}

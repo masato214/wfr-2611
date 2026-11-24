@@ -19,8 +19,6 @@ describe("POST /api/v1/auth/invitations/:token/accept", () => {
     // 本物の試験：apps/api/test/features/F2/invitation-accept-new.test.ts の「K332-API-004」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F2/invitation-accept-new.test.ts", "utf8")).toContain("K332-API-004");
   });
-  // 本物の試験はまだ無い（apps/api/test/features/F2/invitation-accept-new.test.ts）：UNWANTED: IF ログインしていない人が宛てのメールを持たない招待で参加しようとしたなら、Kaname は 401 と UNAUTHENTICATED を返し、利用者も所属も作らず招待も使わない
-  it.todo("test_post_auth_invitations_token_accept_rejected_401");
   it("test_post_auth_invitations_token_accept_rejected_403", () => {
     // UNWANTED: IF 招いたワークスペースが止められているなら、Kaname は 403 と E-AUTH-012 を返し、利用者を作らず招待も使わない
     // 本物の試験：apps/api/test/features/F2/invitation-accept-new.test.ts の「K332-API-011」（同じ CI の G3 で流れる）
@@ -50,6 +48,16 @@ describe("POST /api/v1/auth/invitations/:token/accept", () => {
     // UNWANTED: IF 招待が取り消し・期限切れ・使われたなら、Kaname は 410 とその理由の番号を返し、利用者を作らない
     // 本物の試験：apps/api/test/features/F2/invitation-accept-new.test.ts の「K332-API-006」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F2/invitation-accept-new.test.ts", "utf8")).toContain("K332-API-006");
+  });
+  it("test_post_auth_invitations_token_accept_rejected_422_2", () => {
+    // UNWANTED: IF 送られたメールが空か形が違うなら、Kaname は 422 と E-INV-013 を返し、保留の行もメールも作らない
+    // 本物の試験：apps/api/test/features/F10/invite-link-confirm.test.ts の「K422-API-003」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F10/invite-link-confirm.test.ts", "utf8")).toContain("K422-API-003");
+  });
+  it("test_post_auth_invitations_token_accept_conflict_3", () => {
+    // UNWANTED: IF 宛てのメールが無い招待でメールが送られていないなら、Kaname は 409 と E-INV-016 を返し、保留の行もメールも作らない
+    // 本物の試験：apps/api/test/features/F10/invite-link-confirm.test.ts の「K422-API-003」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F10/invite-link-confirm.test.ts", "utf8")).toContain("K422-API-003");
   });
   it("test_post_auth_invitations_token_accept_session_unresolved", () => {
     // UNWANTED: IF 利用者を作る所か受諾が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、作った利用者を消して招待を使わない

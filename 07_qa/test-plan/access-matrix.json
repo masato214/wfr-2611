@@ -1,11 +1,11 @@
 {
  "version": "v3",
- "created_at": "2026-11-23",
+ "created_at": "2026-11-24",
  "_doc": "entities.json の access_control_policies × 場合（見える範囲／見えない層／他の会社／SET LOCAL 無し／権限なし）。1 行 1 test。pnpm ci:access-matrix が全行を実 Postgres で流す",
  "counts": {
-  "entities": 145,
-  "policies": 418,
-  "cases": 1562
+  "entities": 146,
+  "policies": 421,
+  "cases": 1574
  },
  "cases": [
   {
@@ -20564,10 +20564,12 @@
    "operation": "select",
    "case": "同じ会社・見える範囲",
    "expected": "OK",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (owner_member_id = current_setting('app.user_id', true)::uuid OR (NOT is_personal AND scope_id = AN",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (",
    "source": [
     "D-128.50",
-    "D-128.51"
+    "D-128.51",
+    "D-152.1",
+    "D-152.3"
    ]
   },
   {
@@ -20579,10 +20581,12 @@
    "operation": "select",
    "case": "同じ会社・見えない層",
    "expected": "NG（0 行）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (owner_member_id = current_setting('app.user_id', true)::uuid OR (NOT is_personal AND scope_id = AN",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (",
    "source": [
     "D-128.50",
-    "D-128.51"
+    "D-128.51",
+    "D-152.1",
+    "D-152.3"
    ]
   },
   {
@@ -20594,10 +20598,12 @@
    "operation": "select",
    "case": "他の会社（SET LOCAL を別テナントに）",
    "expected": "NG（0 行）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (owner_member_id = current_setting('app.user_id', true)::uuid OR (NOT is_personal AND scope_id = AN",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (",
    "source": [
     "D-128.50",
-    "D-128.51"
+    "D-128.51",
+    "D-152.1",
+    "D-152.3"
    ]
   },
   {
@@ -20609,10 +20615,12 @@
    "operation": "select",
    "case": "SET LOCAL を飛ばす",
    "expected": "NG（0 行・エラー）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (owner_member_id = current_setting('app.user_id', true)::uuid OR (NOT is_personal AND scope_id = AN",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (",
    "source": [
     "D-128.50",
-    "D-128.51"
+    "D-128.51",
+    "D-152.1",
+    "D-152.3"
    ]
   },
   {
@@ -20624,9 +20632,10 @@
    "operation": "insert",
    "case": "権限あり・自分の範囲",
    "expected": "OK",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND owner_member_id = current_setting('app.user_id', true)::uuid AND (is_personal OR has_permission(cur",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND owner_member_id = current_setting('app.user_id', true)::uuid AND state = 'draft' AND app.kn_shelf_w",
    "source": [
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20638,9 +20647,10 @@
    "operation": "insert",
    "case": "権限なし（担当者・閲覧のみ）",
    "expected": "NG（403・副作用なし）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND owner_member_id = current_setting('app.user_id', true)::uuid AND (is_personal OR has_permission(cur",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND owner_member_id = current_setting('app.user_id', true)::uuid AND state = 'draft' AND app.kn_shelf_w",
    "source": [
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20652,9 +20662,10 @@
    "operation": "insert",
    "case": "他の会社",
    "expected": "NG（0 行・副作用なし）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND owner_member_id = current_setting('app.user_id', true)::uuid AND (is_personal OR has_permission(cur",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND owner_member_id = current_setting('app.user_id', true)::uuid AND state = 'draft' AND app.kn_shelf_w",
    "source": [
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20666,9 +20677,10 @@
    "operation": "insert",
    "case": "SET LOCAL を飛ばす",
    "expected": "NG（エラー）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND owner_member_id = current_setting('app.user_id', true)::uuid AND (is_personal OR has_permission(cur",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND owner_member_id = current_setting('app.user_id', true)::uuid AND state = 'draft' AND app.kn_shelf_w",
    "source": [
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20680,9 +20692,10 @@
    "operation": "update",
    "case": "権限あり・自分の範囲",
    "expected": "OK",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (owner_member_id = current_setting('app.user_id', true)::uuid OR (NOT is_personal AND has_permissio",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE a",
    "source": [
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20694,9 +20707,10 @@
    "operation": "update",
    "case": "権限なし（担当者・閲覧のみ）",
    "expected": "NG（403・副作用なし）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (owner_member_id = current_setting('app.user_id', true)::uuid OR (NOT is_personal AND has_permissio",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE a",
    "source": [
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20708,9 +20722,10 @@
    "operation": "update",
    "case": "他の会社",
    "expected": "NG（0 行・副作用なし）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (owner_member_id = current_setting('app.user_id', true)::uuid OR (NOT is_personal AND has_permissio",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE a",
    "source": [
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20722,9 +20737,10 @@
    "operation": "update",
    "case": "SET LOCAL を飛ばす",
    "expected": "NG（エラー）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (owner_member_id = current_setting('app.user_id', true)::uuid OR (NOT is_personal AND has_permissio",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE a",
    "source": [
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20792,10 +20808,11 @@
    "operation": "select",
    "case": "同じ会社・見える範囲",
    "expected": "OK",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'published' AND app.kpage_visible(page_id)) OR app.kpage_writable(page_id))",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'published' AND app.kpage_visible(page_id)) OR (kind = 'draft' AND author_member_id = curr",
    "source": [
     "D-128.50",
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20807,10 +20824,11 @@
    "operation": "select",
    "case": "同じ会社・見えない層",
    "expected": "NG（0 行）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'published' AND app.kpage_visible(page_id)) OR app.kpage_writable(page_id))",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'published' AND app.kpage_visible(page_id)) OR (kind = 'draft' AND author_member_id = curr",
    "source": [
     "D-128.50",
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20822,10 +20840,11 @@
    "operation": "select",
    "case": "他の会社（SET LOCAL を別テナントに）",
    "expected": "NG（0 行）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'published' AND app.kpage_visible(page_id)) OR app.kpage_writable(page_id))",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'published' AND app.kpage_visible(page_id)) OR (kind = 'draft' AND author_member_id = curr",
    "source": [
     "D-128.50",
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20837,10 +20856,11 @@
    "operation": "select",
    "case": "SET LOCAL を飛ばす",
    "expected": "NG（0 行・エラー）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'published' AND app.kpage_visible(page_id)) OR app.kpage_writable(page_id))",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'published' AND app.kpage_visible(page_id)) OR (kind = 'draft' AND author_member_id = curr",
    "source": [
     "D-128.50",
-    "D-128.51"
+    "D-128.51",
+    "D-152.3"
    ]
   },
   {
@@ -20852,9 +20872,10 @@
    "operation": "insert",
    "case": "権限あり・自分の範囲",
    "expected": "OK",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'proposal' AND app.kpage_visible(page_id)) OR app.kpage_writable(page_id))",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND kind = 'draft' AND author_member_id = current_setting('app.user_id', true)::uuid AND app.kpage_writ",
    "source": [
-    "D-128.50"
+    "D-128.50",
+    "D-152.3"
    ]
   },
   {
@@ -20866,9 +20887,10 @@
    "operation": "insert",
    "case": "権限なし（担当者・閲覧のみ）",
    "expected": "NG（403・副作用なし）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'proposal' AND app.kpage_visible(page_id)) OR app.kpage_writable(page_id))",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND kind = 'draft' AND author_member_id = current_setting('app.user_id', true)::uuid AND app.kpage_writ",
    "source": [
-    "D-128.50"
+    "D-128.50",
+    "D-152.3"
    ]
   },
   {
@@ -20880,9 +20902,10 @@
    "operation": "insert",
    "case": "他の会社",
    "expected": "NG（0 行・副作用なし）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'proposal' AND app.kpage_visible(page_id)) OR app.kpage_writable(page_id))",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND kind = 'draft' AND author_member_id = current_setting('app.user_id', true)::uuid AND app.kpage_writ",
    "source": [
-    "D-128.50"
+    "D-128.50",
+    "D-152.3"
    ]
   },
   {
@@ -20894,9 +20917,10 @@
    "operation": "insert",
    "case": "SET LOCAL を飛ばす",
    "expected": "NG（エラー）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND ((kind = 'proposal' AND app.kpage_visible(page_id)) OR app.kpage_writable(page_id))",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND kind = 'draft' AND author_member_id = current_setting('app.user_id', true)::uuid AND app.kpage_writ",
    "source": [
-    "D-128.50"
+    "D-128.50",
+    "D-152.3"
    ]
   },
   {
@@ -20908,9 +20932,10 @@
    "operation": "update",
    "case": "権限あり・自分の範囲",
    "expected": "OK",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kpage_writable(page_id)",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kpage_writable(page_id) AND (kind <> 'draft' OR author_member_id = current_setting('app.user_id",
    "source": [
-    "D-128.50"
+    "D-128.50",
+    "D-152.3"
    ]
   },
   {
@@ -20922,9 +20947,10 @@
    "operation": "update",
    "case": "権限なし（担当者・閲覧のみ）",
    "expected": "NG（403・副作用なし）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kpage_writable(page_id)",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kpage_writable(page_id) AND (kind <> 'draft' OR author_member_id = current_setting('app.user_id",
    "source": [
-    "D-128.50"
+    "D-128.50",
+    "D-152.3"
    ]
   },
   {
@@ -20936,9 +20962,10 @@
    "operation": "update",
    "case": "他の会社",
    "expected": "NG（0 行・副作用なし）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kpage_writable(page_id)",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kpage_writable(page_id) AND (kind <> 'draft' OR author_member_id = current_setting('app.user_id",
    "source": [
-    "D-128.50"
+    "D-128.50",
+    "D-152.3"
    ]
   },
   {
@@ -20950,9 +20977,10 @@
    "operation": "update",
    "case": "SET LOCAL を飛ばす",
    "expected": "NG（エラー）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kpage_writable(page_id)",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kpage_writable(page_id) AND (kind <> 'draft' OR author_member_id = current_setting('app.user_id",
    "source": [
-    "D-128.50"
+    "D-128.50",
+    "D-152.3"
    ]
   },
   {
@@ -21175,6 +21203,178 @@
    "case": "SET LOCAL を飛ばす",
    "expected": "NG（0 行・エラー）",
    "predicate": "current_setting('app.role', true) = 'ops' AND EXISTS (SELECT 1 FROM support_access_grants g WHERE g.tenant_id = knowledge_links.tenant_id AND g.expires_at > now",
+   "source": [
+    "D-128.68"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_read",
+   "role": "member",
+   "role_ja": "会社の人（R1〜R4・権限で分かれる）",
+   "operation": "select",
+   "case": "同じ会社・見える範囲",
+   "expected": "OK",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (app.kn_shelf_readable(scope_id, is_personal, owner_member_id) OR app.kn_shared_folder_visible(id))",
+   "source": [
+    "D-152.1",
+    "D-152.3"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_read",
+   "role": "member",
+   "role_ja": "会社の人（R1〜R4・権限で分かれる）",
+   "operation": "select",
+   "case": "同じ会社・見えない層",
+   "expected": "NG（0 行）",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (app.kn_shelf_readable(scope_id, is_personal, owner_member_id) OR app.kn_shared_folder_visible(id))",
+   "source": [
+    "D-152.1",
+    "D-152.3"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_read",
+   "role": "member",
+   "role_ja": "会社の人（R1〜R4・権限で分かれる）",
+   "operation": "select",
+   "case": "他の会社（SET LOCAL を別テナントに）",
+   "expected": "NG（0 行）",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (app.kn_shelf_readable(scope_id, is_personal, owner_member_id) OR app.kn_shared_folder_visible(id))",
+   "source": [
+    "D-152.1",
+    "D-152.3"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_read",
+   "role": "member",
+   "role_ja": "会社の人（R1〜R4・権限で分かれる）",
+   "operation": "select",
+   "case": "SET LOCAL を飛ばす",
+   "expected": "NG（0 行・エラー）",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (app.kn_shelf_readable(scope_id, is_personal, owner_member_id) OR app.kn_shared_folder_visible(id))",
+   "source": [
+    "D-152.1",
+    "D-152.3"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_write",
+   "role": "member",
+   "role_ja": "会社の人（R1〜R4・権限で分かれる）",
+   "operation": "insert,update",
+   "case": "権限あり・自分の範囲",
+   "expected": "OK",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kn_shelf_writable(scope_id, is_personal, owner_member_id)",
+   "source": [
+    "D-152.3"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_write",
+   "role": "member",
+   "role_ja": "会社の人（R1〜R4・権限で分かれる）",
+   "operation": "insert,update",
+   "case": "権限なし（担当者・閲覧のみ）",
+   "expected": "NG（403・副作用なし）",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kn_shelf_writable(scope_id, is_personal, owner_member_id)",
+   "source": [
+    "D-152.3"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_write",
+   "role": "member",
+   "role_ja": "会社の人（R1〜R4・権限で分かれる）",
+   "operation": "insert,update",
+   "case": "他の会社",
+   "expected": "NG（0 行・副作用なし）",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kn_shelf_writable(scope_id, is_personal, owner_member_id)",
+   "source": [
+    "D-152.3"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_write",
+   "role": "member",
+   "role_ja": "会社の人（R1〜R4・権限で分かれる）",
+   "operation": "insert,update",
+   "case": "SET LOCAL を飛ばす",
+   "expected": "NG（エラー）",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.kn_shelf_writable(scope_id, is_personal, owner_member_id)",
+   "source": [
+    "D-152.3"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_ops_read_with_grant",
+   "role": "ops",
+   "role_ja": "運営（R6）",
+   "operation": "select",
+   "case": "同じ会社・見える範囲",
+   "expected": "OK",
+   "predicate": "current_setting('app.role', true) = 'ops' AND EXISTS (SELECT 1 FROM support_access_grants g WHERE g.tenant_id = knowledge_folders.tenant_id AND g.expires_at > n",
+   "source": [
+    "D-128.68"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_ops_read_with_grant",
+   "role": "ops",
+   "role_ja": "運営（R6）",
+   "operation": "select",
+   "case": "同じ会社・見えない層",
+   "expected": "NG（0 行）",
+   "predicate": "current_setting('app.role', true) = 'ops' AND EXISTS (SELECT 1 FROM support_access_grants g WHERE g.tenant_id = knowledge_folders.tenant_id AND g.expires_at > n",
+   "source": [
+    "D-128.68"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_ops_read_with_grant",
+   "role": "ops",
+   "role_ja": "運営（R6）",
+   "operation": "select",
+   "case": "他の会社（SET LOCAL を別テナントに）",
+   "expected": "NG（顧客が許可した範囲・期限の中だけ OK）",
+   "predicate": "current_setting('app.role', true) = 'ops' AND EXISTS (SELECT 1 FROM support_access_grants g WHERE g.tenant_id = knowledge_folders.tenant_id AND g.expires_at > n",
+   "source": [
+    "D-128.68"
+   ]
+  },
+  {
+   "entity": "E-147",
+   "table": "knowledge_folders",
+   "policy": "knowledge_folders_ops_read_with_grant",
+   "role": "ops",
+   "role_ja": "運営（R6）",
+   "operation": "select",
+   "case": "SET LOCAL を飛ばす",
+   "expected": "NG（0 行・エラー）",
+   "predicate": "current_setting('app.role', true) = 'ops' AND EXISTS (SELECT 1 FROM support_access_grants g WHERE g.tenant_id = knowledge_folders.tenant_id AND g.expires_at > n",
    "source": [
     "D-128.68"
    ]

@@ -1,0 +1,91 @@
+{
+ "errors": [
+  {
+   "id": "E-FMS-002",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "項目の型を変えるとき、その項目に値が 1 つでも入っている（消していない値の行）",
+   "false_when": "値が 0 件・同じ型のまま",
+   "message": "値が入っている項目は、型を変えられません",
+   "action": "型はそのままにするか、新しい項目を足す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "項目の型を変えるとき、その項目に値が 1 つでも入っている（消していない値の行）ように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-FMS-003",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "項目を並べるとき、渡した並びが今の生きている項目の全部と合わない（足りない・余る・重なる・消した項目・別の会社の項目）",
+   "false_when": "今の全部の項目をちょうど 1 回ずつ渡す",
+   "message": "並びが今の項目と合いません",
+   "action": "画面を開き直してから並べる",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "項目を並べるとき、渡した並びが今の生きている項目の全部と合わない（足りない・余る・重なる・消した項目・別の会社の項目）ように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
+  },
+  {
+   "id": "E-FMS-005",
+   "class": "conflict",
+   "where": {
+    "screen": "masters"
+   },
+   "when": "選ぶ型でない項目に、型を変えずに選ぶ物だけを送る",
+   "false_when": "選ぶ型の項目・選ぶ型へ変えるときに一緒に送る",
+   "message": "選ぶ型でない項目には、選ぶ物を付けられません",
+   "action": "型を選ぶ型に変えてから選ぶ物を足す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でチケットの設定 › 項目を開く",
+    "steps": [
+     "選ぶ型でない項目に、型を変えずに選ぶ物だけを送るように保存する"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.37",
+    "D-152.18"
+   ]
+  }
+ ]
+}

@@ -73,7 +73,7 @@ export const fetchScopes = (qc: QueryClient, screen: string): Promise<Scopes> =>
 
 export interface TicketShellProps {
   /** いま見ている画面（flow の screen id）。左のメニューの今いる項目になる */
-  screen: "tickets" | "approvals" | "bridge-setup" | "mfa-setup" | "credentials";
+  screen: "tickets" | "approvals" | "bridge-setup" | "mfa-setup" | "credentials" | "members";
   /** 上の帯のいまの場所 */
   crumbs: Crumb[];
   /** 左のメニューの数（まとまりの鍵 → 数）。承認待ちの画面は自分で読んだ数を渡す（外枠は二重に読まない） */

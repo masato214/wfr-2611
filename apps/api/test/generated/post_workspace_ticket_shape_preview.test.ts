@@ -3,7 +3,7 @@
 import { describe, it } from "vitest";
 
 describe("POST /api/v1/workspace/ticket-shape/preview", () => {
-  // EVENT-DRIVEN: WHEN POST /api/v1/workspace/ticket-shape/preview が「タブごとに値を足す・直す」として呼ばれたとき THEN Kaname は「使われている値を消すときは置き換え先を決める」を行い 2xx を返す
+  // EVENT-DRIVEN: WHEN POST /api/v1/workspace/ticket-shape/preview が「種別・状態・項目を、タブごとに足す・直す・並べる・消す」として呼ばれたとき THEN Kaname は「使っているチケットがある種別・状態は消せない。消した項目の値は見えなくなる」を行い 2xx を返す
   it.todo("test_post_workspace_ticket_shape_preview_ok");
   // UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）
   it.todo("test_post_workspace_ticket_shape_preview_rejected_401");

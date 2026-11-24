@@ -6,18 +6,28 @@ import { normalizeEmail } from "./signup.js";
 
 export const PENDING_TTL_MIN = 30;
 // 前のリンクの手がかり（replaced_token_hashes）は、送り直すたびに伸びないよう最後の 10 件だけ残す（K-52・putPending と renewPendingLink の SQL）
-function key(masterKeyB64: string): Buffer {
+/** 包みの用途（既定は登録の保留の申し込み。招待のリンクの保留の行は "invitation-link-join"・K-422） */
+export type SealPurpose = "pending-signup" | "invitation-link-join";
+function key(masterKeyB64: string, purpose: SealPurpose): Buffer {
   // 用途ごとに鍵を分ける（同じ master key を別の用途と共有しない）
-  return Buffer.from(hkdfSync("sha256", Buffer.from(masterKeyB64, "base64"), Buffer.alloc(0), "pending-signup", 32));
+  return Buffer.from(hkdfSync("sha256", Buffer.from(masterKeyB64, "base64"), Buffer.alloc(0), purpose, 32));
 }
-export function seal(masterKeyB64: string, plain: string): { iv: string; tag: string; data: string } {
+export function seal(
+  masterKeyB64: string,
+  plain: string,
+  purpose: SealPurpose = "pending-signup",
+): { iv: string; tag: string; data: string } {
   const iv = randomBytes(12);
-  const c = createCipheriv("aes-256-gcm", key(masterKeyB64), iv);
+  const c = createCipheriv("aes-256-gcm", key(masterKeyB64, purpose), iv);
   const data = Buffer.concat([c.update(plain, "utf8"), c.final()]);
   return { iv: iv.toString("base64"), tag: c.getAuthTag().toString("base64"), data: data.toString("base64") };
 }
-export function open_(masterKeyB64: string, s: { iv: string; tag: string; data: string }): string {
-  const d = createDecipheriv("aes-256-gcm", key(masterKeyB64), Buffer.from(s.iv, "base64"));
+export function open_(
+  masterKeyB64: string,
+  s: { iv: string; tag: string; data: string },
+  purpose: SealPurpose = "pending-signup",
+): string {
+  const d = createDecipheriv("aes-256-gcm", key(masterKeyB64, purpose), Buffer.from(s.iv, "base64"));
   d.setAuthTag(Buffer.from(s.tag, "base64"));
   return Buffer.concat([d.update(Buffer.from(s.data, "base64")), d.final()]).toString("utf8");
 }

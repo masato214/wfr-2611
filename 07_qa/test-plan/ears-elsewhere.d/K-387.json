@@ -18,8 +18,8 @@
     "test_patch_tickets_id_conflict_3": "K387-API-007",
     "test_patch_tickets_id_conflict_4": "K387-API-005",
     "test_patch_tickets_id_conflict_5": "K387-API-006",
-    "test_patch_tickets_id_unavailable": "K387-API-024",
-    "test_patch_tickets_id_server_error": "K387-API-029",
+    "test_patch_tickets_id_unavailable": "K387-API-029",
+    "test_patch_tickets_id_unavailable_2": "K387-API-024",
     "test_patch_tickets_id_rate_limited": "K387-API-025",
     "test_patch_tickets_id_shape": "K387-API-001",
     "test_patch_tickets_id_terms_pending": {

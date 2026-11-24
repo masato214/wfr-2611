@@ -3017,6 +3017,60 @@
     "nullable": false
    }
   },
+  "knowledge_folders": {
+   "created_at": {
+    "type": "timestamp with time zone",
+    "nullable": false
+   },
+   "created_by": {
+    "type": "uuid",
+    "nullable": true
+   },
+   "deleted_at": {
+    "type": "timestamp with time zone",
+    "nullable": true
+   },
+   "id": {
+    "type": "uuid",
+    "nullable": false
+   },
+   "is_personal": {
+    "type": "boolean",
+    "nullable": false
+   },
+   "name": {
+    "type": "text",
+    "nullable": false
+   },
+   "owner_member_id": {
+    "type": "uuid",
+    "nullable": false
+   },
+   "parent_folder_id": {
+    "type": "uuid",
+    "nullable": true
+   },
+   "position": {
+    "type": "integer",
+    "nullable": false
+   },
+   "scope_id": {
+    "type": "uuid",
+    "nullable": false
+   },
+   "tenant_id": {
+    "type": "uuid",
+    "nullable": false
+   },
+   "updated_at": {
+    "type": "timestamp with time zone",
+    "nullable": false
+   },
+   "updated_by": {
+    "type": "uuid",
+    "nullable": true
+   }
+  },
   "knowledge_links": {
    "anchor": {
     "type": "text",
@@ -3158,6 +3212,10 @@
     "type": "uuid",
     "nullable": true
    },
+   "copied_from_page_id": {
+    "type": "uuid",
+    "nullable": true
+   },
    "created_at": {
     "type": "timestamp with time zone",
     "nullable": false
@@ -3174,12 +3232,20 @@
     "type": "timestamp with time zone",
     "nullable": true
    },
+   "folder_id": {
+    "type": "uuid",
+    "nullable": true
+   },
    "form": {
     "type": "text",
     "nullable": false
    },
    "id": {
     "type": "uuid",
+    "nullable": false
+   },
+   "is_must": {
+    "type": "boolean",
     "nullable": false
    },
    "is_personal": {
@@ -3194,11 +3260,19 @@
     "type": "uuid",
     "nullable": true
    },
+   "position": {
+    "type": "integer",
+    "nullable": false
+   },
    "scope_id": {
     "type": "uuid",
     "nullable": false
    },
    "state": {
+    "type": "text",
+    "nullable": false
+   },
+   "summary": {
     "type": "text",
     "nullable": false
    },
@@ -7246,6 +7320,10 @@
    }
   },
   "ticket_handovers": {
+   "answered_by": {
+    "type": "uuid",
+    "nullable": true
+   },
    "ask": {
     "type": "text",
     "nullable": true
@@ -7282,8 +7360,20 @@
     "type": "text",
     "nullable": false
    },
+   "notify_managers": {
+    "type": "boolean",
+    "nullable": false
+   },
+   "overdue_notified_at": {
+    "type": "timestamp with time zone",
+    "nullable": true
+   },
    "reason": {
     "type": "text",
+    "nullable": true
+   },
+   "reminded_at": {
+    "type": "timestamp with time zone",
     "nullable": true
    },
    "reply_due": {
@@ -7297,6 +7387,10 @@
    "switch": {
     "type": "jsonb",
     "nullable": false
+   },
+   "switch_applied": {
+    "type": "jsonb",
+    "nullable": true
    },
    "tenant_id": {
     "type": "uuid",
@@ -7672,6 +7766,10 @@
    }
   },
   "ticket_stages": {
+   "color_key": {
+    "type": "text",
+    "nullable": false
+   },
    "created_at": {
     "type": "timestamp with time zone",
     "nullable": false

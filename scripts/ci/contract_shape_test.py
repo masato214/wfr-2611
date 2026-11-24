@@ -23,6 +23,10 @@ import yaml
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT / "05_flow"))
+sys.path.insert(0, str(ROOT / "scripts" / "ci"))
+import doc_shape as _DS  # noqa: E402  本文 1 枚の文書の木の形（K-432・K-437）
+import email_patterns as _EP  # noqa: E402  登録・ログインのメールの形（K-1117）
+from portable_regex import walk as _portable  # noqa: E402  作り手が契約に書くときの直し（\s \S \d \w を JS と同じ字に・K-1117）。表の字はそのまま、比べる前に当てる
 
 
 def _load_screen_api():
@@ -99,15 +103,24 @@ CODE_SEP = "\\s\\-‐‑‒–—―ー−－"
 CODE_CHAR = "2-9A-HJKMNP-Za-hjkmnp-z２-９Ａ-ＨＪＫＭＮＰ-Ｚａ-ｈｊｋｍｎｐ-ｚ"
 VALUE_RANGES: dict[str, dict[str, dict]] = {
     "createTicket": {   # apps/api/src/features/F4/create-ticket/input.ts の checkCreate
-        "title": {"pattern": "\\S", "maxLength": 200},                                  # :28〜30（前後の空白を落として空は 422・200 字まで）
-        "due_on": {"pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},                           # :37〜41（日付の形。今日より前・暦に無い日は書けない）
-        "start_on": {"pattern": "^(?:[0-9]{4}-[0-9]{2}-[0-9]{2})?$"},                    # :42〜46（空は「無し」）
+        "title": {"pattern": "\\S", "maxLength": 200},                                  # TITLE_MAX（前後の空白を落として空は 422・生の字で 200 字まで・NFKC で整えない・K-437）
+        "due_on": {"pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "format": "date"},         # 日付の形・暦に在る日（K-437）。今日より前は 409 E-VAL-012（時刻で決まる）
+        "start_on": {"anyOf": [{"maxLength": 0}, {"format": "date"}]},                    # 空は「無し」・暦に在る日（K-437・0000-00-00 を口が断るので format: date）
         "priority": {"enum": ["", "mid", "high"]},                                       # :47〜48（空は中）
         "estimate_minutes": {"anyOf": [{"type": "integer", "minimum": 0, "maximum": 100000},
                                        {"type": "string", "pattern": "^(?:0*(?:[0-9]{1,5}|100000))?$"}], "nullable": True},   # :52〜61
         "sections": {"propertyNames": {"pattern": "^[a-z][a-z0-9_]{0,40}$"},
                      "additionalProperties": {"type": "string"}},     # :63〜74（区画の中身の上限 20,000 字は外した・D-130.3。守りは送る量 1MB だけ）
         "notify_member_ids": {"maxItems": 20},                                           # :75〜81
+        # K-437：payload.ts の checkFields・checkSpecs・checkBody（本文の木は doc_shape・K-432 と同じ定義）
+        "fields": {"propertyNames": {"pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"},
+                   "additionalProperties": {"anyOf": [{"type": "string"}, {"type": "number"}, {"type": "boolean"},
+                                                      {"type": "array", "items": {"type": "string"}}], "nullable": True}},
+        "specs": {"maxItems": 50},
+        "links": {"maxItems": 20, "uniqueItems": True, "items": {"type": "object", "required": ["kind", "other_ticket_id"], "additionalProperties": False,
+                                                                 "properties": {"kind": {"enum": ["related", "derived_from"]}, "other_ticket_id": {"type": "string", "format": "uuid"}}}},   # K-581：payload.ts の checkLinks
+        "copy": {"maxItems": 6, "uniqueItems": True, "items": {"enum": ["body", "assignee", "fields", "specs", "links", "children"]}},   # K-438：duplicate.ts の COPY_NAMES
+        "body": {"required": ["doc"], "propertyNames": {"pattern": "^doc$"}, "properties": {"doc": _DS.doc_schema()}},
     },
     "claimPairingCode": {   # apps/api/src/features/F3/connect-pc/code.ts:27〜36（NFKC・大文字・区切りを落として、見分けやすい英数字 6 けた。32 字まで）
         "code": {"maxLength": 32, "pattern": f"^[{CODE_SEP}]*(?:[{CODE_CHAR}][{CODE_SEP}]*){{6}}$"},
@@ -116,7 +129,7 @@ VALUE_RANGES: dict[str, dict[str, dict]] = {
     "updateMemory": {"body": {"pattern": "\\S"}},          # apps/api/src/hooks/agent.ts:62〜63
     "createMemory": {"confidence": {"pattern": "^-?(?:[0-8](?:\\.[0-9]+)?|9(?:\\.(?:[0-9]{1,2}|(?:[0-8][0-9]|9[0-8])[0-9]+|99[0-4][0-9]*))?)$"}, "kind_id": {"enum": ["rule", "preference", "example", None]}},   # memories.confidence numeric(3,2)（10 以上は DB が断る）
     "createSignup": {   # apps/api/src/features/F1/sign-up/input.ts:37〜47
-        "email": {"pattern": "^\\s*[^@\\s]+@[^@\\s]+\\.[^@\\s]+\\s*$"},
+        "email": {"pattern": _EP.LOGIN_EMAIL},   # 部品の z.email() の形を前後の空白で挟んだ物（K-1117）
         "name": {"pattern": "\\S", "maxLength": 100},
         "company_name": {"maxLength": 100},
         "password": {"minLength": 12},
@@ -132,9 +145,6 @@ VALUE_RANGES: dict[str, dict[str, dict]] = {
 }
 # 契約に書けない値の決まり（口の振る舞いのまま 422）。422 の説明と x-unexpressible-422 に書く。fuzz での扱いは K-62 の受け持ち
 UNEXPRESSIBLE_422: dict[str, list[str]] = {
-    "createTicket": ["期限が今日より前（E-VAL-012・今日は日本時間）", "暦に無い日付の期限・開始", "開始が期限より後", "優先度が高で理由が空",
-                     "種別の必須の区画が空（E-VAL-013）", "グループ・種別・担当者・知らせる人がその会社に無いか書けない（E-VAL-014）",
-                     "親のチケットが深すぎる（E-VAL-015）", "前後の空白・NFKC で長さが変わる題名"],
     "claimPairingCode": ["NFKC で英数字になる字（① など）"],
     "updateConversation": ["名前が null（空と同じ）"],
     "changePassword": ["漏れたことのあるパスワード（E-VAL-011）", "12 文字より短い・128 文字を超える新しいパスワード（E-VAL-005・E-VAL-026・文字の数で数える）", "今のパスワードが違う（欄 current_password）"],   # K-312
@@ -721,7 +731,7 @@ class ContractShapeTest(unittest.TestCase):
         for base in bases:
             for f in sorted(base.rglob("*.ts*")):
                 rel = f.relative_to(ROOT).as_posix()
-                if "node_modules" in rel or "/.next/" in rel or "/dist/" in rel or re.search(r"(\.test\.|\.spec\.|/tests?/)", rel):
+                if "node_modules" in rel or "/.next/" in rel or "/.next-prod/" in rel or "/dist/" in rel or re.search(r"(\.test\.|\.spec\.|/tests?/)", rel):
                     continue
                 for i, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
                     if loose.search(line) or no_version.search(line):
@@ -815,7 +825,7 @@ class ContractShapeTest(unittest.TestCase):
         for (op_id, pname), pat in PATH_PATTERNS.items():
             ps = {x["name"]: x for x in operation(op_id)[2].get("parameters", []) if x["in"] == "path"}
             self.assertIn(pname, ps, f"{op_id} に道の値 {pname} が無い")
-            self.assertEqual(ps[pname]["schema"].get("pattern"), pat, f"{op_id} の {pname} の値域が違う")
+            self.assertEqual(ps[pname]["schema"].get("pattern"), _portable({"pattern": pat})["pattern"], f"{op_id} の {pname} の値域が違う")
         pat = re.compile(PATH_PATTERNS[("downloadBridgeRelease", "name")])
         src = (ROOT / "apps/api/test/features/contract/k144-contract.test.ts").read_text(encoding="utf-8")
         block = re.search(r"RELEASE_NAMES = \[(.*?)\] as const;", src, re.S)
@@ -845,12 +855,25 @@ class ContractShapeTest(unittest.TestCase):
 
     # ---- 体の値の値域（類 G・回 9 の続き・PM の判断 2026-11-09）
     @staticmethod
+    def _is_date(v: str) -> bool:
+        """JSON Schema の format: date（RFC 3339 の full-date）。暦に在る日だけ"""
+        import datetime
+        if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", v):
+            return False
+        try:
+            datetime.date.fromisoformat(v)
+        except ValueError:
+            return False
+        return True
+
+    @staticmethod
     def _fits(v: object, sc: dict) -> bool:
         """契約の欄の形（このチケットで使う言葉だけ）に値が合うか。pattern は JSON Schema と同じく「どこかに合う」（re.search）"""
         if v is None:
             return bool(sc.get("nullable"))
-        if "anyOf" in sc:
-            return any(ContractShapeTest._fits(v, x) for x in sc["anyOf"])
+        if "anyOf" in sc:   # 枝は外側の言葉（type など）を引き継ぐ（K-437：start_on の枝 {maxLength: 0}・{format: date} は type を持たない）
+            base = {k: x for k, x in sc.items() if k != "anyOf"}
+            return any(ContractShapeTest._fits(v, {**base, **x}) for x in sc["anyOf"])
         if "enum" in sc and v not in sc["enum"]:
             return False
         t = sc.get("type")
@@ -860,6 +883,8 @@ class ContractShapeTest(unittest.TestCase):
             if "pattern" in sc and not re.search(sc["pattern"], v):
                 return False
             if len(v) > sc.get("maxLength", 10**9) or len(v) < sc.get("minLength", 0):
+                return False
+            if sc.get("format") == "date" and not ContractShapeTest._is_date(v):   # 暦に在る日（K-437）
                 return False
         elif t == "integer":
             if isinstance(v, bool) or not (isinstance(v, int) or (isinstance(v, float) and v.is_integer())):
@@ -918,7 +943,7 @@ class ContractShapeTest(unittest.TestCase):
             props = SCHEMAS[name]["properties"]
             for k, want in fields.items():
                 got = props.get(k, {})
-                for key, val in want.items():
+                for key, val in _portable(want).items():
                     if got.get(key) != val:
                         bad.append(f"{op_id}（{name}）.{k}.{key}: 契約 {got.get(key)!r} ／ 口 {val!r}")
             m = re.search(rf"export const {name} = z\.strictObject\(\{{(.*?)\n\}}\);", ZOD, re.S)
@@ -986,7 +1011,7 @@ class ContractShapeTest(unittest.TestCase):
                     if name not in params:
                         bad.append(f"{o}: 問い合わせに {name} が無い")
                         continue
-                    for key, val in ws.items():
+                    for key, val in _portable(ws).items():
                         if params[name].get(key) != val:
                             bad.append(f"{o}.{name}.{key}: 契約 {params[name].get(key)!r} ／ 表 {val!r}")
                 for name, sc in params.items():

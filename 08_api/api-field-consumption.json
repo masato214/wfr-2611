@@ -139,11 +139,9 @@
     "export",
     "member-detail",
     "tickets",
-    "masters",
     "layers",
     "rules",
     "knowledge",
-    "clients",
     "requests"
    ],
    "internal": false,
@@ -161,11 +159,9 @@
     "export",
     "member-detail",
     "tickets",
-    "masters",
     "layers",
     "rules",
     "knowledge",
-    "clients",
     "requests"
    ],
    "internal": false,
@@ -183,11 +179,9 @@
     "export",
     "member-detail",
     "tickets",
-    "masters",
     "layers",
     "rules",
     "knowledge",
-    "clients",
     "requests"
    ],
    "internal": false,
@@ -205,11 +199,9 @@
     "export",
     "member-detail",
     "tickets",
-    "masters",
     "layers",
     "rules",
     "knowledge",
-    "clients",
     "requests"
    ],
    "internal": false,
@@ -227,11 +219,9 @@
     "export",
     "member-detail",
     "tickets",
-    "masters",
     "layers",
     "rules",
     "knowledge",
-    "clients",
     "requests"
    ],
    "internal": false,
@@ -1989,65 +1979,51 @@
   {
    "entity": "learned_procedures",
    "field": "duty_id",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "learned_procedures",
    "field": "target_service_id",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "learned_procedures",
    "field": "status_id",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "learned_procedures",
    "field": "run_count",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "learned_procedures",
    "field": "avg_ms",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "learned_procedures",
    "field": "fail_count",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "learned_procedures",
    "field": "last_verified_at",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "procedure_steps",
@@ -2059,29 +2035,23 @@
   {
    "entity": "procedure_steps",
    "field": "procedure_id",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "procedure_steps",
    "field": "order_no",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "procedure_steps",
    "field": "intent_ja",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "procedure_steps",
@@ -2093,11 +2063,9 @@
   {
    "entity": "procedure_steps",
    "field": "is_variable",
-   "consumed_by_screens": [
-    "ops-skills"
-   ],
+   "consumed_by_screens": [],
    "internal": false,
-   "reason": null
+   "reason": "★ どの画面にも出ない"
   },
   {
    "entity": "memory_kinds",
@@ -2132,10 +2100,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2152,10 +2117,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2172,10 +2134,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2192,10 +2151,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2212,10 +2168,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2232,10 +2185,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2252,10 +2202,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2272,10 +2219,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2292,10 +2236,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2312,10 +2253,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2332,10 +2270,7 @@
     "company-model",
     "export",
     "account",
-    "member-detail",
-    "masters",
-    "rules",
-    "knowledge"
+    "member-detail"
    ],
    "internal": false,
    "reason": null
@@ -2924,7 +2859,6 @@
     "ops-catalog",
     "ops-services",
     "tickets",
-    "masters",
     "rules",
     "work-types",
     "knowledge",
@@ -2949,7 +2883,6 @@
     "ops-catalog",
     "ops-services",
     "tickets",
-    "masters",
     "rules",
     "work-types",
     "knowledge",
@@ -2974,7 +2907,6 @@
     "ops-catalog",
     "ops-services",
     "tickets",
-    "masters",
     "rules",
     "work-types",
     "knowledge",
@@ -2999,7 +2931,6 @@
     "ops-catalog",
     "ops-services",
     "tickets",
-    "masters",
     "rules",
     "work-types",
     "knowledge",
@@ -3024,7 +2955,6 @@
     "ops-catalog",
     "ops-services",
     "tickets",
-    "masters",
     "rules",
     "work-types",
     "knowledge",
@@ -3050,11 +2980,7 @@
     "ai-activity",
     "account",
     "member-detail",
-    "tickets",
-    "masters",
-    "rules",
-    "work-types",
-    "clients"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -3069,11 +2995,7 @@
     "ai-activity",
     "account",
     "member-detail",
-    "tickets",
-    "masters",
-    "rules",
-    "work-types",
-    "clients"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -3088,11 +3010,7 @@
     "ai-activity",
     "account",
     "member-detail",
-    "tickets",
-    "masters",
-    "rules",
-    "work-types",
-    "clients"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -3107,11 +3025,7 @@
     "ai-activity",
     "account",
     "member-detail",
-    "tickets",
-    "masters",
-    "rules",
-    "work-types",
-    "clients"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -3126,11 +3040,7 @@
     "ai-activity",
     "account",
     "member-detail",
-    "tickets",
-    "masters",
-    "rules",
-    "work-types",
-    "clients"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -3145,11 +3055,7 @@
     "ai-activity",
     "account",
     "member-detail",
-    "tickets",
-    "masters",
-    "rules",
-    "work-types",
-    "clients"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -3177,8 +3083,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3201,8 +3105,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3225,8 +3127,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3249,8 +3149,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3273,8 +3171,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3297,8 +3193,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3321,8 +3215,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3345,8 +3237,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3369,8 +3259,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3393,8 +3281,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3417,8 +3303,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3441,8 +3325,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3465,8 +3347,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3489,8 +3369,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3513,8 +3391,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3537,8 +3413,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -3561,8 +3435,6 @@
     "services",
     "ops-tenant",
     "tickets",
-    "masters",
-    "rules",
     "knowledge",
     "clients"
    ],
@@ -5630,6 +5502,7 @@
    "field": "member_id",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5657,6 +5530,7 @@
    "field": "kind_id",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5684,6 +5558,7 @@
    "field": "auth_session_id",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5711,6 +5586,7 @@
    "field": "device_label",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5738,6 +5614,7 @@
    "field": "ip_region",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5765,6 +5642,7 @@
    "field": "issued_at",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5792,6 +5670,7 @@
    "field": "last_seen_at",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5819,6 +5698,7 @@
    "field": "revoked_at",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5846,6 +5726,7 @@
    "field": "revoke_reason_id",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5873,6 +5754,7 @@
    "field": "device_token_hash",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5900,6 +5782,7 @@
    "field": "alive_at",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5927,6 +5810,7 @@
    "field": "bridge_version",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -5954,6 +5838,7 @@
    "field": "machine_id",
    "consumed_by_screens": [
     "verify-email",
+    "invite-accept",
     "mfa-setup",
     "login",
     "password-reset",
@@ -7356,6 +7241,7 @@
     "mfa-setup",
     "login",
     "bridge-setup",
+    "approvals",
     "clone-chat",
     "members",
     "ops-support",
@@ -7368,7 +7254,6 @@
     "ops-tenant",
     "member-detail",
     "tickets",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -7385,6 +7270,7 @@
     "mfa-setup",
     "login",
     "bridge-setup",
+    "approvals",
     "clone-chat",
     "members",
     "ops-support",
@@ -7397,7 +7283,6 @@
     "ops-tenant",
     "member-detail",
     "tickets",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -7414,6 +7299,7 @@
     "mfa-setup",
     "login",
     "bridge-setup",
+    "approvals",
     "clone-chat",
     "members",
     "ops-support",
@@ -7426,7 +7312,6 @@
     "ops-tenant",
     "member-detail",
     "tickets",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -7443,6 +7328,7 @@
     "mfa-setup",
     "login",
     "bridge-setup",
+    "approvals",
     "clone-chat",
     "members",
     "ops-support",
@@ -7455,7 +7341,6 @@
     "ops-tenant",
     "member-detail",
     "tickets",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -7479,6 +7364,7 @@
     "mfa-setup",
     "login",
     "bridge-setup",
+    "approvals",
     "clone-chat",
     "members",
     "ops-support",
@@ -7491,7 +7377,6 @@
     "ops-tenant",
     "member-detail",
     "tickets",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -7508,6 +7393,7 @@
     "mfa-setup",
     "login",
     "bridge-setup",
+    "approvals",
     "clone-chat",
     "members",
     "ops-support",
@@ -7520,7 +7406,6 @@
     "ops-tenant",
     "member-detail",
     "tickets",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -7537,6 +7422,7 @@
     "mfa-setup",
     "login",
     "bridge-setup",
+    "approvals",
     "clone-chat",
     "members",
     "ops-support",
@@ -7549,7 +7435,6 @@
     "ops-tenant",
     "member-detail",
     "tickets",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -7566,6 +7451,7 @@
     "mfa-setup",
     "login",
     "bridge-setup",
+    "approvals",
     "clone-chat",
     "members",
     "ops-support",
@@ -7578,7 +7464,6 @@
     "ops-tenant",
     "member-detail",
     "tickets",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -8980,11 +8865,8 @@
     "credentials",
     "clone-chat",
     "ai-activity",
-    "ops-skills",
     "tickets",
-    "masters",
     "work-types",
-    "knowledge",
     "requests"
    ],
    "internal": false,
@@ -8997,11 +8879,8 @@
     "credentials",
     "clone-chat",
     "ai-activity",
-    "ops-skills",
     "tickets",
-    "masters",
     "work-types",
-    "knowledge",
     "requests"
    ],
    "internal": false,
@@ -9014,11 +8893,8 @@
     "credentials",
     "clone-chat",
     "ai-activity",
-    "ops-skills",
     "tickets",
-    "masters",
     "work-types",
-    "knowledge",
     "requests"
    ],
    "internal": false,
@@ -9031,11 +8907,8 @@
     "credentials",
     "clone-chat",
     "ai-activity",
-    "ops-skills",
     "tickets",
-    "masters",
     "work-types",
-    "knowledge",
     "requests"
    ],
    "internal": false,
@@ -9048,11 +8921,8 @@
     "credentials",
     "clone-chat",
     "ai-activity",
-    "ops-skills",
     "tickets",
-    "masters",
     "work-types",
-    "knowledge",
     "requests"
    ],
    "internal": false,
@@ -9065,11 +8935,8 @@
     "credentials",
     "clone-chat",
     "ai-activity",
-    "ops-skills",
     "tickets",
-    "masters",
     "work-types",
-    "knowledge",
     "requests"
    ],
    "internal": false,
@@ -9082,11 +8949,8 @@
     "credentials",
     "clone-chat",
     "ai-activity",
-    "ops-skills",
     "tickets",
-    "masters",
     "work-types",
-    "knowledge",
     "requests"
    ],
    "internal": false,
@@ -9160,7 +9024,6 @@
    "field": "skill_version_id",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9172,7 +9035,6 @@
    "field": "ops_member_id",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9184,7 +9046,6 @@
    "field": "mode",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9196,7 +9057,6 @@
    "field": "started_at",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9208,7 +9068,6 @@
    "field": "finished_at",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9220,7 +9079,6 @@
    "field": "result",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9239,7 +9097,6 @@
    "field": "skill_id",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9251,7 +9108,6 @@
    "field": "version_in_use",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9263,7 +9119,6 @@
    "field": "target_type",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9275,7 +9130,6 @@
    "field": "target_id",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9287,7 +9141,6 @@
    "field": "enabled",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9299,7 +9152,6 @@
    "field": "disabled_by",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9311,7 +9163,6 @@
    "field": "attached_at",
    "consumed_by_screens": [
     "ai-activity",
-    "ops-skills",
     "tickets",
     "work-types"
    ],
@@ -9759,7 +9610,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9781,7 +9631,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9803,7 +9652,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9825,7 +9673,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9847,7 +9694,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9869,7 +9715,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9891,7 +9736,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9913,7 +9757,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9935,7 +9778,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9957,7 +9799,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -9979,7 +9820,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10001,7 +9841,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10023,7 +9862,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10045,7 +9883,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10067,7 +9904,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10089,7 +9925,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10111,7 +9946,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10133,7 +9967,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10155,7 +9988,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10177,7 +10009,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10199,7 +10030,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10221,7 +10051,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10250,7 +10079,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10272,7 +10100,6 @@
     "member-detail",
     "tickets",
     "masters",
-    "work-types",
     "knowledge",
     "clients",
     "requests",
@@ -10536,7 +10363,27 @@
   },
   {
    "entity": "ticket_stages",
+   "field": "key",
+   "consumed_by_screens": [
+    "tickets",
+    "masters"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "ticket_stages",
    "field": "name",
+   "consumed_by_screens": [
+    "tickets",
+    "masters"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "ticket_stages",
+   "field": "color_key",
    "consumed_by_screens": [
     "tickets",
     "masters"
@@ -10698,7 +10545,8 @@
    "entity": "custom_fields",
    "field": "name",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10707,7 +10555,8 @@
    "entity": "custom_fields",
    "field": "field_type",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10716,7 +10565,8 @@
    "entity": "custom_fields",
    "field": "required",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10725,7 +10575,8 @@
    "entity": "custom_fields",
    "field": "description",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10734,7 +10585,8 @@
    "entity": "custom_fields",
    "field": "options",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10743,7 +10595,8 @@
    "entity": "custom_fields",
    "field": "position",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10759,7 +10612,8 @@
    "entity": "custom_field_kinds",
    "field": "field_id",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10768,7 +10622,8 @@
    "entity": "custom_field_kinds",
    "field": "kind_id",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10784,7 +10639,8 @@
    "entity": "ticket_field_values",
    "field": "ticket_id",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10793,7 +10649,8 @@
    "entity": "ticket_field_values",
    "field": "field_id",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10802,7 +10659,8 @@
    "entity": "ticket_field_values",
    "field": "value",
    "consumed_by_screens": [
-    "tickets"
+    "tickets",
+    "masters"
    ],
    "internal": false,
    "reason": null
@@ -10970,8 +10828,7 @@
    "consumed_by_screens": [
     "bridge-setup",
     "approvals",
-    "tickets",
-    "work-types"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -10982,8 +10839,7 @@
    "consumed_by_screens": [
     "bridge-setup",
     "approvals",
-    "tickets",
-    "work-types"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -10994,8 +10850,7 @@
    "consumed_by_screens": [
     "bridge-setup",
     "approvals",
-    "tickets",
-    "work-types"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -11006,8 +10861,7 @@
    "consumed_by_screens": [
     "bridge-setup",
     "approvals",
-    "tickets",
-    "work-types"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -11018,8 +10872,7 @@
    "consumed_by_screens": [
     "bridge-setup",
     "approvals",
-    "tickets",
-    "work-types"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -11030,8 +10883,7 @@
    "consumed_by_screens": [
     "bridge-setup",
     "approvals",
-    "tickets",
-    "work-types"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -11042,8 +10894,7 @@
    "consumed_by_screens": [
     "bridge-setup",
     "approvals",
-    "tickets",
-    "work-types"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -11054,8 +10905,7 @@
    "consumed_by_screens": [
     "bridge-setup",
     "approvals",
-    "tickets",
-    "work-types"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -11066,8 +10916,7 @@
    "consumed_by_screens": [
     "bridge-setup",
     "approvals",
-    "tickets",
-    "work-types"
+    "tickets"
    ],
    "internal": false,
    "reason": null
@@ -11483,6 +11332,61 @@
   },
   {
    "entity": "knowledge_pages",
+   "field": "summary",
+   "consumed_by_screens": [
+    "tickets",
+    "knowledge",
+    "clients"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_pages",
+   "field": "is_must",
+   "consumed_by_screens": [
+    "tickets",
+    "knowledge",
+    "clients"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_pages",
+   "field": "copied_from_page_id",
+   "consumed_by_screens": [
+    "tickets",
+    "knowledge",
+    "clients"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_pages",
+   "field": "folder_id",
+   "consumed_by_screens": [
+    "tickets",
+    "knowledge",
+    "clients"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_pages",
+   "field": "position",
+   "consumed_by_screens": [
+    "tickets",
+    "knowledge",
+    "clients"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_pages",
    "field": "owner_member_id",
    "consumed_by_screens": [
     "tickets",
@@ -11759,6 +11663,58 @@
   {
    "entity": "knowledge_links",
    "field": "anchor",
+   "consumed_by_screens": [
+    "knowledge"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_folders",
+   "field": "<scoped>",
+   "consumed_by_screens": [],
+   "internal": true,
+   "reason": "共通列・参照 ID・秘密の実体は画面に出さない"
+  },
+  {
+   "entity": "knowledge_folders",
+   "field": "is_personal",
+   "consumed_by_screens": [
+    "knowledge"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_folders",
+   "field": "owner_member_id",
+   "consumed_by_screens": [
+    "knowledge"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_folders",
+   "field": "parent_folder_id",
+   "consumed_by_screens": [
+    "knowledge"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_folders",
+   "field": "name",
+   "consumed_by_screens": [
+    "knowledge"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "knowledge_folders",
+   "field": "position",
    "consumed_by_screens": [
     "knowledge"
    ],
@@ -12713,6 +12669,76 @@
    "reason": null
   },
   {
+   "entity": "ticket_handovers",
+   "field": "notify_managers",
+   "consumed_by_screens": [
+    "approvals",
+    "clone-chat",
+    "ai-activity",
+    "member-detail",
+    "tickets",
+    "requests"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "ticket_handovers",
+   "field": "reminded_at",
+   "consumed_by_screens": [
+    "approvals",
+    "clone-chat",
+    "ai-activity",
+    "member-detail",
+    "tickets",
+    "requests"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "ticket_handovers",
+   "field": "overdue_notified_at",
+   "consumed_by_screens": [
+    "approvals",
+    "clone-chat",
+    "ai-activity",
+    "member-detail",
+    "tickets",
+    "requests"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "ticket_handovers",
+   "field": "switch_applied",
+   "consumed_by_screens": [
+    "approvals",
+    "clone-chat",
+    "ai-activity",
+    "member-detail",
+    "tickets",
+    "requests"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "ticket_handovers",
+   "field": "answered_by",
+   "consumed_by_screens": [
+    "approvals",
+    "clone-chat",
+    "ai-activity",
+    "member-detail",
+    "tickets",
+    "requests"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
    "entity": "saved_views",
    "field": "<common>",
    "consumed_by_screens": [],
@@ -13624,5 +13650,17 @@
    "reason": "マスタ。label は各画面の札・選択肢として出る"
   }
  ],
- "unconsumed": []
+ "unconsumed": [
+  "learned_procedures.duty_id",
+  "learned_procedures.target_service_id",
+  "learned_procedures.status_id",
+  "learned_procedures.run_count",
+  "learned_procedures.avg_ms",
+  "learned_procedures.fail_count",
+  "learned_procedures.last_verified_at",
+  "procedure_steps.procedure_id",
+  "procedure_steps.order_no",
+  "procedure_steps.intent_ja",
+  "procedure_steps.is_variable"
+ ]
 }

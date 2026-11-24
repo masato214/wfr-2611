@@ -35,7 +35,7 @@ describe("PATCH /api/v1/tickets/:id", () => {
     expect(readFileSync("apps/api/test/features/F6/progress.test.ts", "utf8")).toContain("K387-API-020");
   });
   it("test_patch_tickets_id_not_found", () => {
-    // UNWANTED: IF チケットか指した段が無いか見えないなら、Kaname は 404 を返し、在るかを漏らさず何も書かない
+    // UNWANTED: IF チケットか指した段・親が無いか見えないなら、Kaname は 404 を返し、在るかを漏らさず何も書かない
     // 本物の試験：apps/api/test/features/F6/progress.test.ts の「K387-API-020」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F6/progress.test.ts", "utf8")).toContain("K387-API-020");
   });
@@ -69,17 +69,57 @@ describe("PATCH /api/v1/tickets/:id", () => {
     // 本物の試験：apps/api/test/features/F6/progress.test.ts の「K387-API-006」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F6/progress.test.ts", "utf8")).toContain("K387-API-006");
   });
+  it("test_patch_tickets_id_conflict_6", () => {
+    // UNWANTED: IF チケット自身を親にしようとしたなら、Kaname は 409 と E-TKT-001 を返し、何も書かない
+    // 本物の試験：apps/api/test/features/F4/ticket-sort.test.ts の「K440-API-008」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-sort.test.ts", "utf8")).toContain("K440-API-008");
+  });
+  it("test_patch_tickets_id_conflict_7", () => {
+    // UNWANTED: IF 自分の子孫を親にしようとしたなら、Kaname は 409 と E-TKT-002 を返し、何も書かない
+    // 本物の試験：apps/api/test/features/F4/ticket-sort.test.ts の「K440-API-009」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-sort.test.ts", "utf8")).toContain("K440-API-009");
+  });
+  it("test_patch_tickets_id_conflict_8", () => {
+    // UNWANTED: IF 親子が 3 段を超える親を決めようとしたなら、Kaname は 409 と E-TKT-003 を返し、何も書かない
+    // 本物の試験：apps/api/test/features/F4/ticket-sort.test.ts の「K440-API-010」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-sort.test.ts", "utf8")).toContain("K440-API-010");
+  });
+  it("test_patch_tickets_id_conflict_9", () => {
+    // UNWANTED: IF 期限が親より後のチケットに親を決めようとしたなら、Kaname は 409 と E-TKT-004 を返し、何も書かない
+    // 本物の試験：apps/api/test/features/F4/ticket-sort.test.ts の「K440-API-011」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-sort.test.ts", "utf8")).toContain("K440-API-011");
+  });
+  it("test_patch_tickets_id_conflict_10", () => {
+    // UNWANTED: IF そのチケットの種別に出ない項目に値を入れようとしたなら、Kaname は 409 と E-FLD-001 を返し、何も書かない
+    // 本物の試験：apps/api/test/features/F4/ticket-field-values.test.ts の「K564-API-007」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-field-values.test.ts", "utf8")).toContain("K564-API-007");
+  });
+  it("test_patch_tickets_id_conflict_11", () => {
+    // UNWANTED: IF 選択肢に無い値を項目に入れようとしたなら、Kaname は 409 と E-FLD-002 を返し、何も書かない
+    // 本物の試験：apps/api/test/features/F4/ticket-field-values.test.ts の「K564-API-008」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-field-values.test.ts", "utf8")).toContain("K564-API-008");
+  });
+  it("test_patch_tickets_id_conflict_12", () => {
+    // UNWANTED: IF 項目の型と合わない値を入れようとしたなら、Kaname は 409 と E-FLD-003 を返し、何も書かない
+    // 本物の試験：apps/api/test/features/F4/ticket-field-values.test.ts の「K564-API-009」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-field-values.test.ts", "utf8")).toContain("K564-API-009");
+  });
+  it("test_patch_tickets_id_conflict_13", () => {
+    // UNWANTED: IF 必須の項目を空にしようとしたなら、Kaname は 409 と E-FLD-004 を返し、何も書かない
+    // 本物の試験：apps/api/test/features/F4/ticket-field-values.test.ts の「K564-API-005」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-field-values.test.ts", "utf8")).toContain("K564-API-005");
+  });
   it("test_patch_tickets_id_rejected_422_2", () => {
     // UNWANTED: IF 入力の形が決まりに合わないなら、Kaname は 422 と欄ごとの理由（E-VAL-041・E-VAL-047 を含む）を返し、何も書かない
     // 本物の試験：apps/api/test/features/F6/progress.test.ts の「K387-API-028」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F6/progress.test.ts", "utf8")).toContain("K387-API-028");
   });
-  it("test_patch_tickets_id_server_error", () => {
-    // UNWANTED: IF 書く所の DB が落ちたなら、Kaname は 500 と E-PAGE-003 を返し、段・保留の列・変更の 1 行・知らせを前のまま残す
+  it("test_patch_tickets_id_unavailable", () => {
+    // UNWANTED: IF 書く所の DB が落ちたなら、Kaname は 503 を返し、段・保留の列・変更の 1 行・知らせを前のまま残す
     // 本物の試験：apps/api/test/features/F6/progress.test.ts の「K387-API-029」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F6/progress.test.ts", "utf8")).toContain("K387-API-029");
   });
-  it("test_patch_tickets_id_unavailable", () => {
+  it("test_patch_tickets_id_unavailable_2", () => {
     // UNWANTED: IF 守りの判定ができなかったなら、Kaname は 503 を返し、止める側に倒して何も書かない（守りの判定の例外）
     // 本物の試験：apps/api/test/features/F6/progress.test.ts の「K387-API-024」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F6/progress.test.ts", "utf8")).toContain("K387-API-024");

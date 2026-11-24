@@ -1,0 +1,402 @@
+{
+ "errors": [
+  {
+   "id": "E-HND-001",
+   "class": "validation",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "上へ上げる（段 9 では作らない・kind escalate）で渡す・答える。種類の葉が入る前の種類",
+   "false_when": "引き継いでもらう・申し出る・配るで渡す（種類の葉が入った後）",
+   "message": "この渡し方は、まだ使えません",
+   "action": "別の渡し方を選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "詳細の右の「担当者 ▾」を押して相手を選ぶ小窓を開く",
+    "steps": [
+     "渡し方に「上へ上げる」を送る（直に API）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.1"
+   ]
+  },
+  {
+   "id": "E-HND-002",
+   "class": "permission",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "担当者でない人の「引き継いでもらう」・管理しない人の「配る」・何もできない人（閲覧のみ・取引先・止まっている人）の下見・答える人でない人の答え",
+   "false_when": "担当者が引き継いでもらう・グループを管理する人が配る・書ける人が申し出る・答える人が答える",
+   "message": "このチケットでは、この操作はできません",
+   "action": "担当者かグループを管理する人に頼む",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "閲覧のみの人でログインし、同じグループのチケットの詳細を開く",
+    "steps": [
+     "右の「担当者 ▾」を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-148.3",
+    "D-148.12",
+    "D-148.18"
+   ]
+  },
+  {
+   "id": "E-HND-003",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "AI が動いている・承認を待っているチケットを渡す・受ける",
+   "false_when": "AI の実行も承認待ちも無いチケットを渡す・受ける",
+   "message": "AI の実行（承認）が終わってから渡してください",
+   "action": "AI の実行か承認が終わるのを待つ",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "AI に任せて動いている途中のチケットの詳細を開く",
+    "steps": [
+     "「担当者 ▾」から相手を選んで渡す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-148.6"
+   ]
+  },
+  {
+   "id": "E-HND-004",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "同じチケットに待っている渡しがある（グループ宛ては{名前}にグループの名前）",
+   "false_when": "そのチケットに待っている渡しが無い（前の渡しが決まった・取り消された）",
+   "message": "いま{名前}さんの返事を待っています。先にその渡しを取り消してください",
+   "action": "前の渡しを取り消してから渡し直す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "佐藤さんに渡して返事を待っているチケットの詳細を開く",
+    "steps": [
+     "「担当者 ▾」から鈴木さんを選んで渡す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-148.20"
+   ]
+  },
+  {
+   "id": "E-HND-005",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "決まった渡しに答える（二度押し・取り消された後）・別の人にする（replaces）の渡しがもう決まっていた・取り消す・催促する・引き取るの相手がもう決まっていた",
+   "false_when": "待っている渡しに答える・取り消す・催促する",
+   "message": "この渡しはもう決まっています（受けた・断った・取り消された）",
+   "action": "画面を開き直して今の状態を見る",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "受け箱で、もう受けた渡しの知らせを開く",
+    "steps": [
+     "「受ける」をもう一度押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-148.20",
+    "D-125.70"
+   ]
+  },
+  {
+   "id": "E-HND-006",
+   "class": "validation",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "止まっている・招待中の人を相手に選んだ",
+   "false_when": "今使える人を相手に選んだ",
+   "message": "{名前}さんは今は選べません（{訳}）。別の人を選んでください",
+   "action": "別の人を選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "相手を選ぶ小窓を開く（止まっている人がいる会社）",
+    "steps": [
+     "止まっている人を選んで渡す（直に API）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.18"
+   ]
+  },
+  {
+   "id": "E-HND-007",
+   "class": "validation",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "理由・断る理由が空（空白・改行・制御文字だけも）",
+   "false_when": "理由を 1 字以上書いた",
+   "message": "理由を書いてください",
+   "action": "理由を書く",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "相手を選ぶ小窓で相手を選ぶ",
+    "steps": [
+     "理由を空のまま「渡す」を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.2",
+    "D-130.1"
+   ]
+  },
+  {
+   "id": "E-HND-008",
+   "class": "validation",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "返事の期限が今より後でない",
+   "false_when": "返事の期限が今より後か、期限を付けない（既定は次の平日の 18:00）",
+   "message": "返事の期限は今より後にしてください",
+   "action": "返事の期限を今より後にする",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "相手を選ぶ小窓で相手と理由を入れる",
+    "steps": [
+     "返事の期限に昨日を入れて渡す（直に API）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.4"
+   ]
+  },
+  {
+   "id": "E-HND-009",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "完了したチケットを渡す（消したチケットは入口の行の確かめで 404）",
+   "false_when": "完了していないチケットを渡す",
+   "message": "完了した・消したチケットは渡せません",
+   "action": "開き直してから、別のチケットで渡す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "完了したチケットの詳細を開く",
+    "steps": [
+     "「担当者 ▾」から相手を選んで渡す（直に API）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-148.6"
+   ]
+  },
+  {
+   "id": "E-HND-010",
+   "class": "validation",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "相手に自分を選んだ",
+   "false_when": "自分でない人を相手に選んだ",
+   "message": "自分には渡せません。別の人を選んでください",
+   "action": "別の人を選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "相手を選ぶ小窓を開く",
+    "steps": [
+     "自分を相手にして渡す（直に API）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.3"
+   ]
+  },
+  {
+   "id": "E-HND-011",
+   "class": "validation",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "一緒に切り替えるものの形が違う・決まりが「しない」の物を選んだ・相手がいるグループへ移すを選んだ・軸を選んだ",
+   "false_when": "決まりに合う切り替えだけを選んだ（選ばない・いつも の物は選ばなくてよい）",
+   "message": "一緒に切り替えるものの選び方が、ワークスペースの決まりと合いません",
+   "action": "切り替えるものを選び直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ワークスペースの決まりで「子・孫」を「しない」にする",
+    "steps": [
+     "相手を選ぶ小窓で「子・孫も移す」を選んで渡す（直に API）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.71",
+    "D-148.11",
+    "D-148.39"
+   ]
+  },
+  {
+   "id": "E-HND-012",
+   "class": "validation",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "渡す先のグループが無い・別の会社・消したグループ",
+   "false_when": "同じ会社の消していないグループを選んだ",
+   "message": "渡す先のグループが見つかりません。選び直してください",
+   "action": "グループを選び直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "グループを管理する人で、相手を選ぶ小窓を開く",
+    "steps": [
+     "消したグループを選んで配る（直に API）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.12"
+   ]
+  },
+  {
+   "id": "E-HND-013",
+   "class": "validation",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "引き継いでもらう・配るで、相手もグループも選んでいない",
+   "false_when": "相手かグループを選んだ",
+   "message": "渡す相手を選んでください",
+   "action": "相手を選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "相手を選ぶ小窓を開く",
+    "steps": [
+     "相手を選ばずに「渡す」を押す（直に API）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.2"
+   ]
+  },
+  {
+   "id": "E-HND-014",
+   "class": "validation",
+   "where": {
+    "screen": "tickets"
+   },
+   "when": "相手が無い人・別の会社・消した・抜けた人",
+   "false_when": "同じ会社の今いる人を選んだ",
+   "message": "選んだ人が見つかりません。選び直してください",
+   "action": "相手を選び直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "相手を選ぶ小窓を開く",
+    "steps": [
+     "抜けた人を相手にして渡す（直に API）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.18"
+   ]
+  }
+ ]
+}

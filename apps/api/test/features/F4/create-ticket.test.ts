@@ -1,12 +1,12 @@
 // K-60「チケットを作る」の単体の試験（口・本物の DB）。名前の頭の行 ID（K60-API-…）は 11_tickets/K-60.md の表のマスに 1 対 1 で結ぶ。
 // テストはチケットを作る人が書き、実装する人は変えない（D-128.125）。
-//   必須：題名・種別・担当者・期限と、その種別の必須の区画（kind_sections.mode = required・タスクは目的・完了の条件・実施事項）
+//   必須：題名・種別・担当者・期限と、会社が必須にした項目（K-437 の作り直し：本文は 1 枚の文書 body.doc・空でも作れる・必須の区画は無い）
 //   期限は入れた時点（日本時間の今日）より前は不可・開始は過去も可（D-128.138）。知らせる人は最初から選べる（D-128.138）
 //   書きかけの下書きはサーバーに残す（listMyTicketDrafts・saveMyTicketDraft・D-128.138）
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { randomUUID } from "node:crypto";
 import { ticketHooks } from "../../../src/hooks/tickets.js";
-import { checkCreate, todayJst } from "../../../src/features/F4/create-ticket/input.js";
+import { checkCreate, TITLE_MAX, todayJst } from "../../../src/features/F4/create-ticket/input.js";
 import { makeFixture, type Fixture, type Person } from "../fixture.js";
 
 let f: Fixture;
@@ -17,18 +17,19 @@ let writer: Person;
 let mate: Person; // 同じ会社の人（担当者に選ぶ）
 let viewer: Person;
 let outsider: Person; // 別の会社の人
-let task: { id: string; sections: { key: string; mode: string }[] };
-let issue: { id: string; sections: { key: string; mode: string }[] };
+let task: { id: string };
+let issue: { id: string };
 
 const json = async (r: Response) => (await r.json()) as Record<string, unknown> & { data?: Record<string, unknown> };
 const jst = (days = 0) => new Date(Date.now() + 9 * 3600_000 + days * 86400_000).toISOString().slice(0, 10);
+const para = (t: string) => ({ type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: t }] }] });
 const body = (extra: Record<string, unknown> = {}) => ({
   scope_id: T.rootScope,
   kind_id: task.id,
   title: "請求書を送る",
   assignee_member_id: mate.id,
   due_on: jst(3),
-  sections: { purpose: "月末の請求を出す", done: "先方が受け取った", todo: "- 作る\n- 送る" },
+  body: { doc: para("月末の請求を出す") },
   ...extra,
 });
 const create = (who: Person, b: unknown = body(), headers: Record<string, string> = {}) =>
@@ -40,6 +41,18 @@ const createOk = async (who: Person, b: unknown = body()) => {
 };
 const count = async (sql: string, p: unknown[] = []) => Number((await f.admin.query<{ n: string }>(sql, p)).rows[0]!.n);
 const ticketsIn = (tenant: string) => count("select count(*) as n from tickets where tenant_id = $1", [tenant]);
+/** 選べない・見えない選び先の断り（控え帳 2026-11-21 01:15・20:50）：404 の E-PAGE-001 で、欄・details・detail を付けない（在るかを漏らさない） */
+const expectGone = (status: number, j: Record<string, unknown>, label = "") => {
+  expect(status, label).toBe(404);
+  expect(j["code"], label).toBe("E-PAGE-001");
+  for (const k of ["field", "details", "detail"]) expect(k in j, `${label} ${k}`).toBe(false);
+};
+/** 今日・DB の種別の形で決まる断り（PM の決め 2026-11-21 02:00・E-VAL-015 と同じ形）：409 で、欄・details・detail を付けない。「どの欄か」は画面が code で決める */
+const expectConflict = (status: number, j: Record<string, unknown>, code: string, label = "") => {
+  expect(status, label).toBe(409);
+  expect(j["code"], label).toBe(code);
+  for (const k of ["field", "details", "detail"]) expect(k in j, `${label} ${k}`).toBe(false);
+};
 const fields = (j: Record<string, unknown>) =>
   ((j["details"] as { field: string }[] | undefined) ?? []).map((d) => d.field);
 
@@ -62,7 +75,6 @@ beforeAll(async () => {
   const kinds = (await json(await f.req("GET", "/ticket_kinds", { headers: writer.auth }))).data as unknown as {
     id: string;
     name: string;
-    sections: { key: string; mode: string }[];
   }[];
   task = kinds.find((k) => k.name === "タスク")!;
   issue = kinds.find((k) => k.name === "課題")!;
@@ -72,7 +84,7 @@ afterAll(async () => {
 });
 
 describe("K-60 チケットを作る：状態 × 入口 × 利用者の状態（口・本物の DB）", () => {
-  it("K60-API-001 無し（新しく作る）× ログイン中・書ける：番号（グループの頭＋連番）・未着手・区画の版 1 ができる", async () => {
+  it("K60-API-001 無し（新しく作る）× ログイン中・書ける：番号（グループの頭＋連番）・未着手・本文の行（鍵 body・版 1）ができる", async () => {
     const t = await createOk(writer);
     expect(String(t["number"])).toMatch(/^EG-\d+$/);
     const stage = await f.admin.query<{ key: string }>(
@@ -84,19 +96,14 @@ describe("K-60 チケットを作る：状態 × 入口 × 利用者の状態（
       "select section_key, version from ticket_sections where ticket_id = $1 order by position",
       [t["id"]],
     );
-    expect(secs.rows.map((r) => r.section_key)).toEqual(["purpose", "done", "todo"]);
+    expect(secs.rows.map((r) => r.section_key)).toEqual(["body"]);
     expect(secs.rows.every((r) => r.version === 1)).toBe(true);
     expect(
       await count("select count(*) as n from ticket_section_versions where ticket_id = $1 and version = 1", [t["id"]]),
-    ).toBe(3);
-    // 読むだけの詳細（getTicket）で、属性と区画が読める
+    ).toBe(1);
+    // 読むだけの詳細（getTicket）で、属性が読める（本文の答えは K-560 が見る）
     const d = (await json(await f.req("GET", `/tickets/${t["id"]}`, { headers: writer.auth }))).data!;
     expect(d["ticket"]).toMatchObject({ id: t["id"], number: t["number"], title: "請求書を送る" });
-    expect((d["sections"] as { key: string; label: string }[]).map((s) => s.label)).toEqual([
-      "目的",
-      "完了の条件",
-      "実施事項",
-    ]);
     expect(d["stage"]).toMatchObject({ key: "todo", name: "未着手" });
     expect(d["kind"]).toMatchObject({ name: "タスク" });
     expect(d["assignee"]).toMatchObject({ id: mate.id });
@@ -146,7 +153,7 @@ describe("K-60 チケットを作る：状態 × 入口 × 利用者の状態（
     expect(await ticketsIn(T.tenantId)).toBe(before);
   });
 
-  it("K60-API-006 無し × 口を直に × 取引先の人・運営の人：403。何もできない", async () => {
+  it("K60-API-006 無し × 口を直に × 先方の人（ゲスト）・運営の人：403。何もできない", async () => {
     const before = await ticketsIn(T.tenantId);
     for (const role of ["client", "ops"] as const)
       expect((await create({ ...writer, auth: f.as(writer, role) })).status).toBe(403);
@@ -177,14 +184,16 @@ describe("K-60 チケットを作る：状態 × 入口 × 利用者の状態（
     expect(low["parent_ticket_id"]).toBe(mid["id"]);
   });
 
-  it("K60-API-010 親（3 段目）× 親を選んで作る：422・「チケットの親子は 3 段まで」（E-VAL-015）", async () => {
+  it("K60-API-010 親（3 段目）× 親を選んで作る：409・「チケットの親子は 3 段まで」（E-VAL-015・今の状態ではできない・K-437 で 422 から直した・欄と details は付けない）", async () => {
     const a = await createOk(writer);
     const b = await createOk(writer, body({ parent_ticket_id: a["id"] }));
     const c = await createOk(writer, body({ parent_ticket_id: b["id"] }));
     const before = await ticketsIn(T.tenantId);
     const r = await create(writer, body({ parent_ticket_id: c["id"] }));
-    expect(r.status).toBe(422);
-    expect((await json(r))["code"]).toBe("E-VAL-015");
+    expect(r.status).toBe(409);
+    const j15 = await json(r);
+    expect(j15["code"]).toBe("E-VAL-015");
+    for (const k of ["field", "details", "detail"]) expect(k in j15, k).toBe(false);
     expect(await ticketsIn(T.tenantId)).toBe(before);
   });
 
@@ -192,8 +201,7 @@ describe("K-60 チケットを作る：状態 × 入口 × 利用者の状態（
     const p = await createOk(writer);
     await f.admin.query("update tickets set deleted_at = now(), deleted_by = $2 where id = $1", [p["id"], writer.id]);
     const r = await create(writer, body({ parent_ticket_id: p["id"] }));
-    expect(r.status).toBe(404);
-    expect((await json(r))["code"]).toBe("E-PAGE-001");
+    expectGone(r.status, await json(r));
   });
 
   it("K60-API-012 親（他の人の取り込みの下書き・別の会社）× 親の id を直に：見つからない扱い。中身は返さない", async () => {
@@ -222,15 +230,14 @@ describe("K-60 チケットを作る：状態 × 入口 × 利用者の状態（
     await f.admin.query("update tickets set draft_import_id = $2 where id = $1", [d["id"], imp.id]);
     const before = await ticketsIn(T.tenantId);
     const r2 = await create(writer, body({ parent_ticket_id: d["id"] }));
-    expect(r2.status).toBe(404);
-    expect((await json(r2))["code"]).toBe("E-PAGE-001");
+    expectGone(r2.status, await json(r2));
     expect(
       JSON.stringify(await f.req("GET", `/tickets/${d["id"]}`, { headers: writer.auth }).then((x) => x.json())),
     ).not.toContain("秘密");
     expect(await ticketsIn(T.tenantId), "子は増えない").toBe(before);
   });
 
-  it("K60-API-013 種別（消した・書いている間に消された）× 「作る」：422（E-VAL-014）・種別を選び直す", async () => {
+  it("K60-API-013 種別（消した・書いている間に消された）× 「作る」：404・E-PAGE-001・欄なし（K-437 で 422 の E-VAL-014 から直した）", async () => {
     const k = (
       await f.admin.query<{ id: string }>(
         "insert into ticket_kinds (tenant_id, name) values ($1, '消す種別') returning id",
@@ -239,13 +246,12 @@ describe("K-60 チケットを作る：状態 × 入口 × 利用者の状態（
     ).rows[0]!.id;
     await f.admin.query("update ticket_kinds set deleted_at = now() where id = $1", [k]);
     const r = await create(writer, body({ kind_id: k }));
-    expect(r.status).toBe(422);
+    expect(r.status).toBe(404);
     const j = await json(r);
-    expect(j["code"]).toBe("E-VAL-014");
-    expect(j["field"]).toBe("kind_id");
+    expectGone(r.status, j);
   });
 
-  it("K60-API-014 担当者（抜けた・止められた・書いている間に）× 「作る」：422・担当者を選び直す", async () => {
+  it("K60-API-014 担当者（抜けた・止められた・書いている間に）× 「作る」：404・E-PAGE-001・欄なし（K-437 で 422 の E-VAL-014 から直した）", async () => {
     const gone = await f.person(T.tenantId, T.rootScope, { name: "抜けた人" });
     await f.admin.query("update members set deleted_at = now() where id = $1", [gone.id]);
     const stop = await f.person(T.tenantId, T.rootScope, { name: "止められた人" });
@@ -257,8 +263,9 @@ describe("K-60 チケットを作る：状態 × 入口 × 利用者の状態（
     ]);
     for (const p of [gone, stop, left]) {
       const r = await create(writer, body({ assignee_member_id: p.id }));
-      expect(r.status, p.id).toBe(422);
-      expect((await json(r))["field"]).toBe("assignee_member_id");
+      expect(r.status, p.id).toBe(404);
+      const j = await json(r);
+      expectGone(r.status, j, p.id);
     }
   });
 
@@ -299,32 +306,36 @@ describe("K-60 入力・失敗・操作の揺れ・守り", () => {
     await createOk(writer, body({ title: "あ".repeat(200) }));
   });
 
-  it("K60-API-019 入力：題名の前後の空白・全角半角：正規化してから判定（前後の空白だけの題名は空）", async () => {
+  it("K60-API-019 入力：題名は NFKC で整えず前後の空白だけ落とす（長さは生の字で数える・契約の maxLength と口が同じ TITLE_MAX・K-437・D-150.34・PM の決め 2026-11-21 06:40）", async () => {
+    // 前後の空白だけの題名は空：422・欄 title（契約の pattern \S と口）
     expect(fields(await json(await create(writer, body({ title: "　 　" }))))).toContain("title");
+    // 全角の英数は伸ばさずそのまま保存し、前後の空白（半角・全角・タブ）だけ落とす
     const t = await createOk(writer, body({ title: "  ＡＢＣ請求  " }));
-    expect(t["title"]).toBe("ABC請求");
+    expect(t["title"]).toBe("ＡＢＣ請求");
+    const t2 = await createOk(writer, body({ title: "\t　全角の空白とタブ　\t" }));
+    expect(t2["title"]).toBe("全角の空白とタブ");
+    // 「㈱」は NFKC で 3 字（(株)）に伸びるが、伸ばさないので 70 字のまま受ける（伸ばすと 210 字で 422 になってしまう題名）
+    const kabu = "㈱".repeat(70);
+    const t3 = await createOk(writer, body({ title: kabu }));
+    expect(t3["title"]).toBe(kabu);
+    expect(TITLE_MAX).toBe(200);
+    // 長さは打たれた生の字で数える：前後に空白を付けた 200 字は生の字で 201 字なので 422・欄 title（契約の maxLength と同じ数え方）
+    const r = await create(writer, body({ title: ` ${"あ".repeat(200)}` }));
+    expect(r.status).toBe(422);
+    expect(fields(await json(r))).toContain("title");
+    // 前後の空白を落とすだけなら 200 字ちょうどは受ける（落とした後の長さ）
+    expect((await createOk(writer, body({ title: "あ".repeat(200) })))["title"]).toBe("あ".repeat(200));
+    // 試験の外から渡す生の題名（入口が直す前）を使う：checkCreate の 3 つ目の引数。無ければ入口が整えた題名にする
+    const today = "2026-11-07";
+    const base = { ...body(), due_on: today };
+    const viaRaw = checkCreate({ ...base, title: "ABC" }, today, "  ＡＢＣ  ");
+    expect(viaRaw.ok ? viaRaw.value["title"] : null, "直す前の題名を使う").toBe("ＡＢＣ");
+    expect(checkCreate({ ...base, title: "ABC" }, today).ok ? "ok" : "ng", "3 つ目が無ければ入口の題名").toBe("ok");
   });
 
-  it("K60-API-020 入力：必須の区画が空（タスクの目的・完了の条件・実施事項）：422（E-VAL-013）・その区画の理由", async () => {
-    const r = await create(writer, body({ sections: { purpose: "目的だけ" } }));
-    expect(r.status).toBe(422);
-    const j = await json(r);
-    expect(j["code"]).toBe("E-VAL-013");
-    expect(fields(j)).toEqual(["sections.done", "sections.todo"]);
-    // 種別ごとの必須（課題は 起きていること・影響・完了の条件）。マスタ 1 か所から引く
-    const r2 = await create(writer, body({ kind_id: issue.id, sections: { happening: "止まる" } }));
-    expect(fields(await json(r2))).toEqual(["sections.impact", "sections.done"]);
-    // 会社が種別の必須を直せば、それに従う（D-125.53）
-    await f.admin.query("update kind_sections set mode = 'show' where kind_id = $1 and section_key = 'todo'", [
-      task.id,
-    ]);
-    try {
-      await createOk(writer, body({ sections: { purpose: "目的", done: "条件" } }));
-    } finally {
-      await f.admin.query("update kind_sections set mode = 'required' where kind_id = $1 and section_key = 'todo'", [
-        task.id,
-      ]);
-    }
+  it("K60-API-020 入力：本文の道に必須の区画は無い（K-437 の作り直し）：本文を送らなくても・空の木でも、どの種別でも 201。区画の入力 sections だけの前の道は create-ticket-legacy-sections.test.ts（K-437-API-027〜029・K-578 がファイルごと消す）が見る", async () => {
+    await createOk(writer, body({ body: undefined }));
+    await createOk(writer, body({ kind_id: issue.id, body: { doc: { type: "doc", content: [] } } }));
   });
 
   it("K60-API-021 入力：期限が空・日付でない：422（D-125.51）", async () => {
@@ -337,12 +348,12 @@ describe("K-60 入力・失敗・操作の揺れ・守り", () => {
     }
   });
 
-  it("K60-API-022 入力：開始が期限より後：422", async () => {
+  it("K60-API-022 入力：開始が期限より後：409（E-VAL-028・欄なし・欄どうしの比べ合いなので契約に書けない・PM の決め 2026-11-21・D-150.34）", async () => {
     const r = await create(writer, body({ start_on: jst(10), due_on: jst(3) }));
-    expect(fields(await json(r))).toContain("start_on");
+    expectConflict(r.status, await json(r), "E-VAL-028");
   });
 
-  it("K60-API-023 入力：期限が今日より前：422（E-VAL-012・D-128.138）。今日は作れる。開始は過去も入れられる", async () => {
+  it("K60-API-023 入力：期限が今日より前：409（E-VAL-012・欄なし・今日で決まる物なので契約に書けない・PM の決め 2026-11-21 02:00・D-128.138）。今日は作れる。開始は過去も入れられる", async () => {
     // 今日の日付は試験の外から渡す（日本時間の 0 時をまたいでも落ちない）。境目そのものは checkCreate と todayJst で見る
     const today = "2026-11-07";
     const base = { ...body(), due_on: today };
@@ -356,8 +367,7 @@ describe("K-60 入力・失敗・操作の揺れ・守り", () => {
     expect(todayJst(new Date("2026-11-06T15:00:00.000Z"))).toBe("2026-11-07");
     // 口でも止まる。0 時をまたいでも結果が変わらない幅（2 日前・2 日後）で見る
     const r = await create(writer, body({ due_on: jst(-2) }));
-    expect(r.status).toBe(422);
-    expect((await json(r))["code"]).toBe("E-VAL-012");
+    expectConflict(r.status, await json(r), "E-VAL-012");
     await createOk(writer, body({ start_on: jst(-30), due_on: jst(2) }));
   });
 
@@ -403,7 +413,9 @@ describe("K-60 入力・失敗・操作の揺れ・守り", () => {
     const sec = await count("select count(*) as n from ticket_sections where tenant_id = $1", [T.tenantId]);
     const spy = vi.spyOn(console, "error").mockImplementation(() => undefined);
     try {
-      expect((await create(writer, body({ title: "途中で落ちる" }))).status).toBe(500);
+      const r = await create(writer, body({ title: "途中で落ちる" }));
+      expect(r.status).toBe(503);
+      expect((await json(r))["code"]).toBe("E-PAGE-003");
     } finally {
       spy.mockRestore();
       await f.admin.query("drop trigger k60_fail on notifications");
@@ -455,13 +467,14 @@ describe("K-60 入力・失敗・操作の揺れ・守り", () => {
     ).rows[0]!.id;
     const before = await ticketsIn(T.tenantId);
     expect((await create(writer, body({ scope_id: O.rootScope }))).status).toBe(403);
-    expect((await json(await create(writer, body({ kind_id: otherKind }))))["field"]).toBe("kind_id");
-    expect((await json(await create(writer, body({ assignee_member_id: outsider.id }))))["field"]).toBe(
-      "assignee_member_id",
-    );
-    expect((await json(await create(writer, body({ notify_member_ids: [outsider.id] }))))["field"]).toBe(
-      "notify_member_ids",
-    );
+    for (const extra of [
+      { kind_id: otherKind },
+      { assignee_member_id: outsider.id },
+      { notify_member_ids: [outsider.id] },
+    ]) {
+      const r = await create(writer, body(extra));
+      expectGone(r.status, await json(r), JSON.stringify(Object.keys(extra)));
+    }
     expect(await ticketsIn(T.tenantId)).toBe(before);
   });
 
@@ -479,11 +492,13 @@ describe("K-60 入力・失敗・操作の揺れ・守り", () => {
     expect((sv["meta"] as { writable: string[] }).writable).toEqual([]);
   });
 
-  it("K60-API-034 選ぶ欄：種別は区画（必須か）と一緒に返す（listTicketKinds）。消した種別は出さない", async () => {
-    expect(task.sections.filter((s) => s.mode === "required").map((s) => s.key)).toEqual(["purpose", "done", "todo"]);
+  it("K60-API-034 選ぶ欄：種別の一覧を返す（listTicketKinds）。色・並び・id・名前を持ち、消した種別は出さない（区画・ひな形の在る無しは見ない）", async () => {
     const kinds = (await json(await f.req("GET", "/ticket_kinds", { headers: writer.auth }))).data as unknown as {
       name: string;
     }[];
+    for (const k of kinds)
+      for (const key of ["color", "id", "is_builtin", "name", "position"])
+        expect(Object.keys(k), `${k.name} の ${key}`).toContain(key);
     expect(kinds.map((k) => k.name)).not.toContain("消す種別");
     expect(kinds.map((k) => k.name).slice(0, 4)).toEqual(["タスク", "課題", "QA", "会議"]);
   });
@@ -493,7 +508,7 @@ describe("K-60 入力・失敗・操作の揺れ・守り", () => {
       writer,
       body({
         title: "<script>alert(1)</script>",
-        sections: { purpose: "<img src=x onerror=alert(1)>", done: "d", todo: "t" },
+        body: { doc: para("<img src=x onerror=alert(1)>") },
       }),
     );
     expect(t["title"]).toBe("<script>alert(1)</script>");
@@ -505,10 +520,7 @@ describe("K-60 入力・失敗・操作の揺れ・守り", () => {
       vi.spyOn(console, k).mockImplementation((...a: unknown[]) => void out.push(a.map(String).join(" "))),
     );
     try {
-      await createOk(
-        writer,
-        body({ title: "ログに出ない題名", sections: { purpose: "ログに出ない本文", done: "d", todo: "t" } }),
-      );
+      await createOk(writer, body({ title: "ログに出ない題名", body: { doc: para("ログに出ない本文") } }));
       await create(writer, body({ title: "ログに出ない題名", due_on: jst(-3) }));
     } finally {
       for (const s of spies) s.mockRestore();
@@ -584,7 +596,7 @@ describe("K-60 書きかけの下書き（サーバーに残す・D-128.138）",
     expect(list.map((d) => d.draft_id)).not.toContain(a);
   });
 
-  it("K60-API-041 閲覧のみの人の下書き口・取引先の人：自分の下書きは読み書きできる（作るのは 403）／取引先の人は 403", async () => {
+  it("K60-API-041 閲覧のみの人の下書き口・先方の人（ゲスト）：自分の下書きは読み書きできる（作るのは 403）／先方の人（ゲスト）は 403", async () => {
     const r = await f.req("POST", "/me/ticket-drafts", {
       body: { draft_id: randomUUID(), body: {} },
       headers: f.as(viewer, "client"),
@@ -670,7 +682,7 @@ describe("K-60 書きかけの下書き（サーバーに残す・D-128.138）",
 });
 
 describe("K-60 選ぶ欄と詳細の口の守り", () => {
-  it("K60-API-042 ログインしていない人は 401、取引先の人は 403（作る・種別・グループ・詳細）", async () => {
+  it("K60-API-042 ログインしていない人は 401、先方の人（ゲスト）は 403（作る・種別・グループ・詳細）", async () => {
     const t = await createOk(writer);
     for (const [m, path] of [
       ["POST", "/tickets"],

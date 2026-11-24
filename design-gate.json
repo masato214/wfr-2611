@@ -337,6 +337,10 @@
   },
   "component_exempt": [
     {
+      "part": "kn-pane",
+      "reason": "ナレッジの画面（features/F9/knowledge/knowledge.css の .k-f9-wrap・.k-f9-tree）。値は上の帯 shell-bar の高さを引く calc の中で使い（min-height・height）、D5 が素の値で比べられない。CSS はこのトークンだけを読む（K-670）"
+    },
+    {
       "part": "card",
       "reason": "components/k にカードの部品のクラスがまだ無い。作る時はまだ決まっていない"
     },

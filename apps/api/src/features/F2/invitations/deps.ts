@@ -3,7 +3,7 @@ import type { ActionGateway } from "@kaname/actions";
 import type { Auth } from "@kaname/auth";
 import type pg from "pg";
 
-/** メールの送出（関門 C6・server.ts の 1 か所）。送り直し（K-334）だけが使う。無ければ送れない扱い */
+/** メールの送出（関門 C6・server.ts の 1 か所）。送り直し（K-334）と、リンクで新しく入る人の確認のメール（K-422）が使う。無ければ送れない扱い */
 export type InvitationMailer = (m: { to: string; subject: string; text: string }) => Promise<void>;
 
 export interface InvitationDeps {
@@ -16,5 +16,10 @@ export interface InvitationDeps {
   /** 外への口（関門 C1）。新しく作って参加する人のパスワードの漏れの照合（登録の行為をそのまま使う・K-332） */
   actions: ActionGateway;
   mailer?: InvitationMailer;
-  config: { opsEmail: string; webBaseUrl: string };
+  config: {
+    opsEmail: string;
+    webBaseUrl: string;
+    /** 保留の行のパスワードを包む鍵のもと（登録と同じ値・K-422） */
+    secretsMasterKey: string;
+  };
 }

@@ -48,7 +48,7 @@ export function progressIssues(raw: Row): HookReply | null {
 
 type Progress = Row & { error?: unknown; fields?: unknown };
 
-/** jsonb に入らない対にならないサロゲートを U+FFFD にする（F6 の口の共通の置き換え・../well-formed.ts） */
+/** jsonb に入らない対にならないサロゲートを U+FFFD にする（F6 の口の共通の置き換え・../well-formed.ts。NUL は前処理が 422 にするのでここへ来ない） */
 const clean = cleanString;
 const cleaned = (input: Row): Row =>
   Object.fromEntries(

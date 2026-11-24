@@ -180,7 +180,7 @@ beforeAll(async () => {
       title: "数えるためのチケット",
       assignee_member_id: m.id,
       due_on: due,
-      sections: { purpose: "数える", done: "数えた", todo: "- 数える" },
+      body: { doc: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "数える" }] }] } },
     }),
   });
   expect(made2.status, await made2.clone().text()).toBe(201);

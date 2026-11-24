@@ -1,0 +1,120 @@
+{
+ "errors": [
+  {
+   "id": "E-INV-013",
+   "class": "validation",
+   "where": {
+    "screen": "invite-accept",
+    "state": "a"
+   },
+   "when": "招待のリンクで新しく参加する人が、メールを空・空白だけ・メールの形でないまま送った",
+   "false_when": "メールで招いた招待（宛てのメールを使う）・ログイン中の人",
+   "message": "メールアドレスを入れてください",
+   "action": "メールアドレスを入れ直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "invite-accept の画面",
+    "steps": [
+     "招待のリンクを開き、名前とパスワードを入れ、メールを空かメールの形でない字にして参加を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.51"
+   ]
+  },
+  {
+   "id": "E-INV-016",
+   "class": "conflict",
+   "where": {
+    "screen": "invite-accept",
+    "state": "a"
+   },
+   "when": "宛てのメールが無い招待（リンクの招待）で、新しく参加する人がメールを送っていない",
+   "false_when": "メールで招いた招待（宛てのメールを使う）・ログイン中の人・メールを送った",
+   "message": "メールアドレスを入れてください",
+   "action": "メールアドレスを入れて、もう一度参加する",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "invite-accept の画面（リンクの招待）",
+    "steps": [
+     "招待のリンクを開き、名前とパスワードだけでメールの欄を送らずに参加を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-148.51"
+   ]
+  },
+  {
+   "id": "E-INV-014",
+   "class": "not_found",
+   "where": {
+    "screen": "invite-accept",
+    "state": "a"
+   },
+   "when": "確認のメールのリンクを、期限（24 時間）が過ぎてから押した",
+   "false_when": "期限の内に押した",
+   "message": "確認のリンクの期限（24 時間）が過ぎました。招待のリンクから、もう一度参加してください",
+   "action": "招待のリンクから、もう一度参加する",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "invite-accept の画面",
+    "steps": [
+     "参加を押して確認のメールを受け取り、24 時間後にそのリンクを押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-148.51"
+   ]
+  },
+  {
+   "id": "E-INV-015",
+   "class": "not_found",
+   "where": {
+    "screen": "invite-accept",
+    "state": "a"
+   },
+   "when": "確認のメールのリンクを、一度押した後にもう一度押した",
+   "false_when": "まだ押していない確認のリンク",
+   "message": "この確認のリンクはもう使われています。ログインして入ってください",
+   "action": "ログインして入る",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "invite-accept の画面",
+    "steps": [
+     "確認のメールのリンクを押して参加した後、同じリンクをもう一度押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "medium",
+   "source": [
+    "D-148.51"
+   ]
+  }
+ ]
+}

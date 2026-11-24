@@ -761,6 +761,7 @@ const RETIRED = new Map<string, string>(
 const CHANGED: Record<string, string> = {
   "POST /api/v1/credentials": "D-128.93（預ける：暗号化・本人確認の取り直し）",
   "DELETE /api/v1/members/:id": "D-128.96（外す：引き継ぎ・個人の記憶と預けた情報を消す）",
+  "GET /api/v1/inquiries": "D-156.5（問い合わせの答えの形を作り直した。表の素の読みでは動かさない・振る舞いは K-951）",
 };
 const retiredOf = (key: string) => RETIRED.get(key) ?? CHANGED[key] ?? null;
 /** タスクの口が全部、決定で外した口なら、その決定の ID（タスクごとの G-xx は新しい作業の分解で作り直す） */
@@ -1511,7 +1512,9 @@ describe("G-14 口座状態の波及（本物の認証のセッション）", ()
           title: `G-14 ${task} ${++probeSeq}`,
           assignee_member_id: m,
           due_on: new Date(Date.now() + 9 * 3600_000 + 3 * 86400_000).toISOString().slice(0, 10),
-          sections: { purpose: "権限の確かめ", done: "作れる", todo: "- 作る" },
+          body: {
+            doc: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "権限の確かめ" }] }] },
+          },
         });
         const hit = async (e: EndpointDef, token: string) => {
           if (e.operationId === "createTicket")

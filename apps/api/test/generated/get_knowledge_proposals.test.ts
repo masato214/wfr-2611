@@ -3,7 +3,7 @@
 import { describe, it } from "vitest";
 
 describe("GET /api/v1/knowledge/proposals", () => {
-  // EVENT-DRIVEN: WHEN GET /api/v1/knowledge/proposals が「層ごとのページを書く・直す」として呼ばれたとき THEN Kaname は「版を残す」を行い 2xx を返す
+  // EVENT-DRIVEN: WHEN GET /api/v1/knowledge/proposals が「上げる・共有を頼む。承認する・断る（理由）。上の棚のページを自分の棚に写して直す」として呼ばれたとき THEN Kaname は「承認されたらページが上の棚に移る。頼み・承認・断りをお知らせに出す」を行い 2xx を返す（自動側：書くとき・上げるときに似たページを出す）
   it.todo("test_get_knowledge_proposals_ok");
   // UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）
   it.todo("test_get_knowledge_proposals_rejected_401");
@@ -19,6 +19,6 @@ describe("GET /api/v1/knowledge/proposals", () => {
   it.todo("test_get_knowledge_proposals_mfa_pending");
   // UNWANTED: IF 入口でセッションを解く所が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、止める側に倒して副作用を起こさない
   it.todo("test_get_knowledge_proposals_session_unresolved");
-  // UBIQUITOUS: GET /api/v1/knowledge/proposals の副作用は関門 C2 を経由し、認可 → ポリシー → 承認 → 副作用 → 記録 の順で行う
+  // UBIQUITOUS: GET /api/v1/knowledge/proposals の副作用は関門 C2・C6 を経由し、認可 → ポリシー → 承認 → 副作用 → 記録 の順で行う
   it.todo("test_get_knowledge_proposals_shape");
 });

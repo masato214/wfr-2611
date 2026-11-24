@@ -1,0 +1,6 @@
+{
+ "reads_ok": {
+  "apps/api/test/features/F4/create-ticket-defaults.test.ts": "08_api/endpoints.json・08_api/openapi.yaml・07_qa/test-specs/errors.json を readFileSync で読む（K437-API-020）",
+  "apps/api/test/features/F4/create-ticket-legacy-sections.test.ts": "08_api/endpoints.json・08_api/openapi.yaml・07_qa/test-specs/errors.json を readFileSync で読む（K437-API-029）"
+ }
+}

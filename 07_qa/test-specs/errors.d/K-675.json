@@ -1,0 +1,497 @@
+{
+ "errors": [
+  {
+   "id": "E-KNW-010",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "ページがまだ一度も書き終わっていない（下書きだけ）のに、必ず守る・写す・上げる・共有をする",
+   "false_when": "一度書き終えたページ",
+   "message": "このページはまだ書き終えていません。書き終えてから使ってください",
+   "action": "書き終える",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "ページがまだ一度も書き終わっていない（下書きだけ）のに、必ず守る・写す・上げる・共有をする（口 setKnowledgeMust・copyKnowledgePage（後で requestKnowledgeRaise・setKnowledgeShares））"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-011",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "上げる・共有する頼みが承認待ちのページを動かす・消す・必ず守るを変える",
+   "false_when": "承認待ちの頼みが無いページ",
+   "message": "このページを上の棚へ上げる（共有する）頼みが承認待ちです。決まるまでは変えられません",
+   "action": "頼みを取り下げる／決まるのを待つ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "上げる・共有する頼みが承認待ちのページを動かす・消す・必ず守るを変える（口 updateKnowledgePage・deleteKnowledgePage・setKnowledgeMust（後で requestKnowledgeRaise ほか））"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-012",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "ほかの人がこのページの下書きを書いている間に下書きを保存する",
+   "false_when": "下書きが無い・自分の下書き",
+   "message": "ほかの人がこのページを書いています。書き終えるまで待ってください",
+   "action": "少し待つ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "ほかの人がこのページの下書きを書いている間に下書きを保存する（口 saveKnowledgeDraft）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-020",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "同じ場所に同じ名前のフォルダを作る・名前を変える",
+   "false_when": "名前が違う・場所が違う",
+   "message": "同じ場所に同じ名前のフォルダがあります",
+   "action": "名前を変える",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "同じ場所に同じ名前のフォルダを作る・名前を変える（口 createKnowledgeFolder・updateKnowledgeFolder）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-021",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "フォルダの入れ子が 6 を超える所に作る・動かす",
+   "false_when": "6 つ入れ子まで",
+   "message": "フォルダは 6 つ入れ子までです",
+   "action": "浅い所に置く",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "フォルダの入れ子が 6 を超える所に作る・動かす（口 createKnowledgeFolder・updateKnowledgeFolder）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-022",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "フォルダを自分か自分の中のフォルダの下へ動かす",
+   "false_when": "ほかの場所へ動かす",
+   "message": "フォルダを自分の中には動かせません",
+   "action": "別の場所を選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "フォルダを自分か自分の中のフォルダの下へ動かす（口 updateKnowledgeFolder）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-023",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "フォルダを別の棚のフォルダの下へ動かす",
+   "false_when": "同じ棚の中で動かす",
+   "message": "フォルダは別の棚には動かせません",
+   "action": "同じ棚の中で動かす",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "フォルダを別の棚のフォルダの下へ動かす（口 updateKnowledgeFolder）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-024",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "中にページかフォルダがあるフォルダを消す",
+   "false_when": "空のフォルダ",
+   "message": "中にページかフォルダがあるので消せません",
+   "action": "先に動かすか消す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "中にページかフォルダがあるフォルダを消す（口 deleteKnowledgeFolder）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-030",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "下書きが無いのに下書きを捨てる",
+   "false_when": "自分の下書きがある",
+   "message": "捨てる下書きがありません",
+   "action": "画面を開き直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "下書きが無いのに下書きを捨てる（口 discardKnowledgeDraft）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-040",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "下書きが無いのに書き終える",
+   "false_when": "自分の下書きがある",
+   "message": "書き終える下書きがありません",
+   "action": "画面を開き直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "下書きが無いのに書き終える（口 publishKnowledgePage）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-041",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "必ず守るのページを本文 2,000 字を超えて書き終える",
+   "false_when": "2,000 字まで・必ず守るでないページ",
+   "message": "「必ず守る」のページは本文を 2,000 字までにしてください",
+   "action": "本文を短くする",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "必ず守るのページを本文 2,000 字を超えて書き終える（口 publishKnowledgePage）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-050",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "必ず守るが付いたページを消す",
+   "false_when": "必ず守るが付いていないページ",
+   "message": "「必ず守る」が付いているので消せません",
+   "action": "先に外す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "必ず守るが付いたページを消す（口 deleteKnowledgePage）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-051",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "ほかのグループに共有しているページ・フォルダを消す",
+   "false_when": "共有していない物",
+   "message": "ほかのグループに共有しているので消せません",
+   "action": "先に共有をやめる",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "ほかのグループに共有しているページ・フォルダを消す（口 deleteKnowledgePage・deleteKnowledgeFolder）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-052",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "ページを別の棚のフォルダへ動かす",
+   "false_when": "同じ棚の中で動かす",
+   "message": "ページは別の棚には動かせません。上の棚へは「上げる」を使ってください",
+   "action": "「上げる」を使う",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "ページを別の棚のフォルダへ動かす（口 updateKnowledgePage）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-060",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "棚の必ず守るの数が上限に届いているのに付ける",
+   "false_when": "上限より少ない・外す",
+   "message": "「必ず守る」の上限に届きました",
+   "action": "今付いているページから外す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "棚の必ず守るの数が上限に届いているのに付ける（口 setKnowledgeMust）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-061",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "本文が 2,000 字を超えるページに必ず守るを付ける",
+   "false_when": "2,000 字まで・外す",
+   "message": "本文が 2,000 字を超えているので、「必ず守る」は付けられません",
+   "action": "本文を短くする",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "本文が 2,000 字を超えるページに必ず守るを付ける（口 setKnowledgeMust）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  },
+  {
+   "id": "E-KNW-080",
+   "class": "conflict",
+   "where": {
+    "screen": "knowledge"
+   },
+   "when": "自分の棚のページを写す",
+   "false_when": "会社・グループの棚のページ",
+   "message": "自分の棚のページは写せません",
+   "action": "上の棚のページを選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "ナレッジの画面でページかフォルダを開く",
+    "steps": [
+     "自分の棚のページを写す（口 copyKnowledgePage）"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-152.14",
+    "D-152.15"
+   ]
+  }
+ ]
+}

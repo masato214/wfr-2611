@@ -38,12 +38,6 @@ export function register(app: Hono<Vars>, deps: ContractDeps): void {
   app.get("/api/v1/ops/templates", op(deps, "listOpsTemplates"));
   app.get("/api/v1/ops/templates/:id", op(deps, "getOpsTemplate"));
   app.post("/api/v1/ops/templates/:id/versions", op(deps, "releaseOpsTemplate"));
-  app.post("/api/v1/ops/work_type_uploads", op(deps, "uploadWorkTypePackage"));
-  app.get("/api/v1/ops/work_type_uploads/:id", op(deps, "getWorkTypeUpload"));
-  app.get("/api/v1/ops/work_types", op(deps, "listOpsWorkTypes"));
-  app.get("/api/v1/ops/work_types/:id", op(deps, "getOpsWorkType"));
-  app.post("/api/v1/ops/work_types/:id/versions", op(deps, "releaseOpsWorkType"));
-  app.post("/api/v1/ops/work_types/:id/versions/:v/rollback", op(deps, "rollbackOpsWorkType"));
   app.get("/api/v1/ops/workspaces", op(deps, "listOpsWorkspaces"));
   app.post("/api/v1/ops/workspaces/export", op(deps, "exportOpsWorkspaces"));
   app.get("/api/v1/ops/workspaces/:id", op(deps, "getOpsWorkspace"));

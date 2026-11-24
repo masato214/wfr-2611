@@ -1,0 +1,29 @@
+{
+  "data_links": [
+    {
+      "paths": [
+        "08_api/openapi.yaml",
+        "08_api/endpoints.json",
+        "08_api/types.ts",
+        "08_api/retired-endpoints.json",
+        "08_api/phase1/01_チケット.md",
+        "03_architecture/catalog.json",
+        "03_architecture/catalog.md",
+        "03_architecture/ER図.md",
+        "05_flow/screen_api.py",
+        "11_tickets/K-59.md",
+        "packages/contracts/src/registry.ts",
+        "packages/contracts/src/ops.ts",
+        "apps/api/src/routes/tickets.ts",
+        "packages/db/src/migrations.generated.ts",
+        "apps/api/test/generated/get_tickets_id_work_type_candidates.test.ts"
+      ],
+      "tests": [
+        "apps/api/test/features/F4/work-type-retire.test.ts"
+      ]
+    }
+  ],
+  "reads_ok": {
+    "apps/api/test/features/F4/work-type-retire.test.ts": "08_api/openapi.yaml・endpoints.json・types.ts・retired-endpoints.json・packages/contracts/src/registry.ts・ops.ts・apps/api/src/routes/tickets.ts・05_flow/screen_api.py・03_architecture/catalog.json・catalog.md・ER図.md・08_api/phase1/01_チケット.md・11_tickets/K-59.md・packages/db/src/migrations.generated.ts を readFileSync で読み、apps/api/src・apps/web・apps/bridge・packages/db/src を歩いて字を探す（K582-API-007〜009）。口 updateTicket の hooks ファイルを動的 import で読む（K582-API-003・005）・K-582"
+  }
+}

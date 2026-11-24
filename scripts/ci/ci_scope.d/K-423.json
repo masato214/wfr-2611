@@ -1,0 +1,13 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/web/features/F2/invite/**",
+    "apps/web/app/(outside)/invite/**"
+   ],
+   "tests": [
+    "apps/web/tests/k/k423-invite-link-join.spec.ts"
+   ]
+  }
+ ]
+}

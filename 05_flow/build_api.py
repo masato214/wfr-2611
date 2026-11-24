@@ -37,14 +37,14 @@ for s in S:
 def desc(e):
     if e.get("operation_id") in getattr(_sa, "LIST_DETAILS", {}): return _sa.LIST_DETAILS[e["operation_id"]]["desc"]
     verbs = "／".join(acts[a]["act"][:28] for a in sorted(e["acts"])[:2]); t = e["path"].split("/")[3] if len(e["path"].split("/")) > 3 else ""
-    return f"{ {'GET':'取得','POST':'作成・実行','PATCH':'更新','DELETE':'削除'}[e['method']] }（{t}）— {verbs}"
+    return f"{ {'GET':'取得','POST':'作成・実行','PUT':'置き換え','PATCH':'更新','DELETE':'削除'}[e['method']] }（{t}）— {verbs}"
 def four(e):
     auth = e["auth"]["role"] != "public"; out = []
     if auth: out.append({"status": 401, "code": "UNAUTHENTICATED", "body": {"error": "unauthenticated"}, "trigger": "セッションが無い・失効している（退会・停止・権限変更・パスワード変更で即失効）", "ears_form": "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）"})
     if auth: out.append({"status": 403, "code": "FORBIDDEN", "body": {"error": "forbidden"}, "trigger": "権限（誰に×何に×どの層で×できること）が無い、または運営が許可の無い会社を読もうとした", "ears_form": "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）"})
     if ":id" in e["path"]: out.append({"status": 404, "code": "NOT_FOUND", "body": {"error": "not_found"}, "trigger": "無い・消えた・取り消された（期限切れ・削除済み・他社の行）", "ears_form": "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）"})
     if e["method"] == "POST" and e.get("operation_id") not in getattr(_sa, "NO_GENERIC_409", set()): out.append({"status": 409, "code": "CONFLICT", "body": {"error": "conflict"}, "trigger": "二重送信・同時編集・既に登録済み（冪等キーで防ぐ）", "ears_form": "UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない"})
-    if e["method"] in ("POST", "PATCH") or ":id" in e["path"] or e["method"] == "GET": out.append({"status": 422, "code": "VALIDATION_ERROR", "body": {"error": "validation_failed", "details": []}, "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形", "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"})
+    if e["method"] in ("POST", "PATCH", "PUT") or ":id" in e["path"] or e["method"] == "GET": out.append({"status": 422, "code": "VALIDATION_ERROR", "body": {"error": "validation_failed", "details": []}, "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形", "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"})
     # 口ごとの 4xx（K-52・K-53）。表の行は、同じ状態の番号の汎用の行をその場所で置き換え、ほかの番号の行は後ろに足す
     custom = getattr(_sa, "ERRORS_4XX", {}).get(e.get("operation_id"))
     if custom is not None:
@@ -78,7 +78,7 @@ def ears(e):
     if e["choke_points"]: out.append(f"UBIQUITOUS: {e['method']} {e['path']} の副作用は関門 {'・'.join(sorted(e['choke_points']))} を経由し、認可 → ポリシー → 承認 → 副作用 → 記録 の順で行う")
     return out
 endpoints = []
-for (m, p), e in sorted(eps.items(), key=lambda kv: (kv[0][1], ["GET", "POST", "PATCH", "DELETE"].index(kv[0][0]))):
+for (m, p), e in sorted(eps.items(), key=lambda kv: (kv[0][1], ["GET", "POST", "PUT", "PATCH", "DELETE"].index(kv[0][0]))):
     e["acts"], e["screens"], e["related_entities"], e["choke_points"], e["source"], e["features"] = sorted(e["acts"]), sorted(e["screens"]), sorted(e["related_entities"]), set(e["choke_points"]), sorted(e["source"]), sorted(e["features"])
     role = "public" if set(e["screens"]) <= PUBLIC else ("ops" if set(e["screens"]) <= OPS_SCREENS else "member")
     if e.get("operation_id") in getattr(_sa, "PERMS", {}):   # ログインの要否は画面ではなく API ごとの権限で決める（ZT1・ZT2）
@@ -100,8 +100,9 @@ for (m, p), e in sorted(eps.items(), key=lambda kv: (kv[0][1], ["GET", "POST", "
     if e.get("operation_id") in getattr(_sa, "PERMS", {}):   # 誰が呼べるか（ZT1）
         _pm = _sa.PERMS[e["operation_id"]]; e["permission"] = {"who": _pm[0], "scope": _pm[1], "step_up": _pm[2]}
     e["path_params"] = params; e["returns_list"] = (m == "GET" and (e["operation_id"].startswith(("list", "search")) or e["operation_id"] in getattr(_sa, "LIST_OPS", set()))) if e.get("operation_id") else (m == "GET" and ":id" not in p)
-    e["inputs"] = {"path": params, "body": f"{tname} の入力（types.ts の {''.join(w.capitalize() for w in tname.split('_'))}Input）" if m in ("POST", "PATCH") else None, "query": ["scope_id", "cursor", "limit", "sort"] if m == "GET" and ":id" not in p else []}
-    e["outputs_2xx"] = {"status": getattr(_sa, "SUCCESS_STATUS", {}).get(e.get("operation_id"), 201 if m == "POST" else 200), "body": f"{{ data: {''.join(w.capitalize() for w in tname.split('_'))}{'[]' if e['returns_list'] else ''}, meta?: {{ cursor, limit, total }} }}"}
+    e["inputs"] = {"path": params, "body": f"{tname} の入力（types.ts の {''.join(w.capitalize() for w in tname.split('_'))}Input）" if m in ("POST", "PATCH", "PUT") else None, "query": ["scope_id", "cursor", "limit", "sort"] if m == "GET" and ":id" not in p else []}
+    _many = e["returns_list"] or e.get("operation_id") in getattr(_sa, "LIST_RESULT_OPS", {})   # 一覧でないのに答えが並びの口（K-705）
+    e["outputs_2xx"] = {"status": getattr(_sa, "SUCCESS_STATUS", {}).get(e.get("operation_id"), 201 if m == "POST" else 200), "body": f"{{ data: {''.join(w.capitalize() for w in tname.split('_'))}{'[]' if _many else ''}, meta?: {{ cursor, limit, total }} }}"}
     _ld = getattr(_sa, "LIST_DETAILS", {}).get(e.get("operation_id"))   # 一覧の口の細目（K-92）：問い合わせと答えの meta をその口の形に
     if _ld:
         e["inputs"]["query"] = list(_sa.QUERIES.get(e["operation_id"], ["scope_id"])) + ["cursor", "limit"] + (["sort"] if _ld.get("sort", True) else [])
@@ -127,6 +128,23 @@ INTERNAL_TABLES = {"search_embeddings": "検索用の内部の索引（段階 1 
                    "task_handovers": "第1フェーズは「渡す」（ticket_handovers）に置き換えた（D-128.79）",
                    "billing_events": "カード払い（段階 2・D-082.3）の webhook の写し。第1フェーズは請求書払い"}
 INTERNAL = {"id", "tenant_id", "created_at", "updated_at", "created_by", "updated_by", "deleted_at", "scope_id", "version", "token_hash", "package_ref", "storage_ref", "vault_ref", "content_hash", "locator", "embedding", "dedupe_key"}
+# 葉ごとの断片（05_flow/build_api.d/K-<番号>.py）の分を、本体の表 INTERNAL_TABLES・INTERNAL・KEY_CURSOR_OPS に足す（K-1121・部品は screen_api.d と同じ registry_d）。
+#   新しい鍵は本体に書かず断片に書く（G74 が本体への直の足しを赤にする）。同じ鍵を 2 つの断片か本体と断片が持てば止まる。
+#   KEY_CURSOR_OPS は下（qtype の後）で断片の分を和にする。断片が足した値は、契約の一覧の口・ER の表・ER の列に在るかを照らす（書き間違いを黙って捨てない）
+import sys as _sys, os as _os
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "scripts", "ci"))
+from registry_d import RegistryConflict as _RegistryConflict, merge_py as _merge_py  # noqa: E402
+_D = {"INTERNAL_TABLES": INTERNAL_TABLES, "INTERNAL": INTERNAL, "KEY_CURSOR_OPS": set()}
+_D0 = {k: copy.copy(v) for k, v in _D.items()}
+try:
+    _merge_py(_D, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "build_api.d"))
+except _RegistryConflict as _exc:
+    raise SystemExit(f"05_flow/build_api.d：{_exc}") from None
+_LIST_OPS = {e["operation_id"] for e in endpoints if e.get("operation_id") and e["returns_list"]}
+_FIELDS = {f_["name"] for e in E for f_ in e["fields"]}
+for _t, _ok, _what in (("KEY_CURSOR_OPS", _LIST_OPS, "契約の一覧の口"), ("INTERNAL_TABLES", set(tbl2ent), "ER の表"), ("INTERNAL", _FIELDS, "ER の列")):
+    _bad = sorted(set(_D[_t]) - set(_D0[_t]) - _ok)
+    if _bad: raise SystemExit(f"05_flow/build_api.d の {_t} に{_what}に無い値 {_bad}（書き間違いを黙って捨てない）")
 consumption = []
 for e in E:
     scr = [s["id"] for s in S if e["id"] in s["related_entities"]]
@@ -206,6 +224,7 @@ def qtype(q, table, op=None):
     if q == "cursor" and op in KEY_CURSOR_OPS: return {"type": "string", "pattern": "^[A-Za-z0-9_-]{1,200}$"}   # 鍵の文字列（base64url）
     if q == "cursor": return {"type": "string", "pattern": "^[0-9]{1,9}$"}
     return {"type": "string"}
+KEY_CURSOR_OPS = KEY_CURSOR_OPS | _D['KEY_CURSOR_OPS']   # 葉ごとの断片の分（build_api.d・K-1121）。qtype は呼ぶときにこの名前を読む
 # 問い合わせの値域（QUERY_RANGES・K-468）：qtype の形に、その口・その名前の JSON Schema の言葉を重ねる。書き間違いを黙って捨てない
 _QR = getattr(_sa, "QUERY_RANGES", {}); _QR_WORDS = {"enum", "pattern", "minLength", "maxLength", "format", "anyOf"}
 def _qrange(op, q):
@@ -234,12 +253,14 @@ def _rule_fields(node):
 def _in_name(e):
     tname = e.get("table") or e["path"].split("/")[3]
     return getattr(_sa, "INPUTS", {}).get(e.get("operation_id"), ("".join(w.capitalize() for w in tname.split("_")) + "Input",))[0]
-_body_ops = [(e["implementation_path"].split("::")[1], _in_name(e)) for e in endpoints if e["method"] in ("POST", "PATCH")]
+_body_ops = [(e["implementation_path"].split("::")[1], _in_name(e)) for e in endpoints if e["method"] in ("POST", "PATCH", "PUT")]   # PUT は体ごと置き換える口（K-675 の必ず守る）
 _in_of = dict(_body_ops)
 for _op in list(_REQ) + list(_RANGES) + list(_RULES):
     if _op not in _in_of: raise SystemExit(f"05_flow/screen_api.py の REQUIRED_INPUTS・VALUE_RANGES・INPUT_RULES の口 {_op} が、体を受ける口に無い")
 _sig = lambda o: json.dumps([_REQ.get(o, []), _RANGES.get(o, {}), _RULES.get(o, {})], ensure_ascii=False, sort_keys=True)
 _EMPTY = _sig("")
+# 値域を書き込む前の形（K-1116）：自分の形はここから写す。書き込んだ後の形を写すと、最初の口の値域がほかの口に漏れる（createMemory → updateMemory）
+_pristine = {n: copy.deepcopy(schemas[n]) for n in dict.fromkeys(n for _, n in _body_ops) if n in schemas}
 for _name in dict.fromkeys(n for _, n in _body_ops):
     _sharers = [o for o, n in _body_ops if n == _name]
     _keep = _EMPTY if any(_sig(o) == _EMPTY for o in _sharers) else _sig(_sharers[0])
@@ -248,7 +269,7 @@ for _name in dict.fromkeys(n for _, n in _body_ops):
         _own = _name if _sig(_op) == _keep else _op[0].upper() + _op[1:] + "Input"
         if _own != _name:
             if _own in schemas: raise SystemExit(f"自分の入力の形 {_own} が既にある")
-            schemas[_own] = copy.deepcopy(schemas[_name]); schemas[_own]["x-operation"] = _op; _in_of[_op] = _own
+            schemas[_own] = copy.deepcopy(_pristine[_name]); schemas[_own]["x-operation"] = _op; _in_of[_op] = _own
         sc = schemas[_own] = copy.deepcopy(schemas[_own])
         for _k in _REQ.get(_op, []) + list(_RANGES.get(_op, {})):
             if _k not in sc["properties"]: raise SystemExit(f"{_op} の欄 {_k} が入力の形 {_own} に無い")
@@ -278,12 +299,14 @@ for e in endpoints:
     if not op["parameters"]: del op["parameters"]
     tbl = "".join(w.capitalize() for w in tname.split("_"))
     _in = _in_of.get(op["operationId"]) or getattr(_sa, "INPUTS", {}).get(e.get("operation_id"), (f"{tbl}Input",))[0]
-    if e["method"] in ("POST", "PATCH"): op["requestBody"] = {"required": True, "content": {"application/json": {"schema": {"$ref": f"#/components/schemas/{_in}"}}}}
-    ok = {"description": "成功", "content": {"application/json": {"schema": {"type": "object", "properties": {"data": {"type": "array", "items": {"$ref": f"#/components/schemas/{name}"}} if e["returns_list"] else {"$ref": f"#/components/schemas/{name}"}, "meta": {"type": "object", **({"properties": {k: ({"type": v} if isinstance(v, str) else dict(v)) for k, v in getattr(_sa, "META", {}).get(e.get("operation_id"), {}).items()}} if e.get("operation_id") in getattr(_sa, "META", {}) else {})}}}}}}
+    if e["method"] in ("POST", "PATCH", "PUT"): op["requestBody"] = {"required": True, "content": {"application/json": {"schema": {"$ref": f"#/components/schemas/{_in}"}}}}
+    ok = {"description": "成功", "content": {"application/json": {"schema": {"type": "object", "properties": {"data": {"type": "array", "items": {"$ref": f"#/components/schemas/{name}"}} if (e["returns_list"] or op["operationId"] in getattr(_sa, "LIST_RESULT_OPS", {})) else {"$ref": f"#/components/schemas/{name}"}, "meta": {"type": "object", **({"properties": {k: ({"type": v} if isinstance(v, str) else dict(v)) for k, v in getattr(_sa, "META", {}).get(e.get("operation_id"), {}).items()}} if e.get("operation_id") in getattr(_sa, "META", {}) else {})}}}}}}
     if e.get("operation_id") in getattr(_sa, "RAW_200", {}): ok["content"]["application/octet-stream"] = {"schema": dict(_sa.RAW_200[e["operation_id"]])}   # ファイルそのものを返す口（K-144）
     _codes = {}
     for x in e["outputs_4xx"]: _codes.setdefault(str(x["status"]), []).append(x["code"])   # 同じ番号の行（403 の FORBIDDEN と E-AUTH-010・K-53）は説明を 1 つにまとめる
     op["responses"] = {str(e["outputs_2xx"]["status"]): ok, **{k: {"description": "／".join(dict.fromkeys(v)), "content": {"application/json": {"schema": {"$ref": "#/components/schemas/Error"}}}} for k, v in _codes.items()}}
+    for _st in getattr(_sa, "ALSO_2XX", {}).get(op["operationId"], []):   # 同じ口がもう 1 つ返す成功の番号（K-422：リンクの参加は 202）。形は同じ答えの型
+        op["responses"].setdefault(str(_st), {**ok, "description": "受け付けた（まだ決まっていない）"})
     _unx = getattr(_sa, "UNEXPRESSIBLE_422", {}).get(op["operationId"])   # 契約に書けない値の決まり（K-144 ㉑）：口の振る舞いのまま 422
     if _unx:
         if "422" not in op["responses"]: raise SystemExit(f"{op['operationId']} に 422 が無いのに UNEXPRESSIBLE_422 がある")
@@ -302,6 +325,8 @@ ts.append(""); ts.append("export const ENDPOINTS = " + json.dumps([{"id": e["id"
 os.makedirs(OUT, exist_ok=True)
 meta = {"version": "v3.1", "created_at": TODAY, "frozen_at": TODAY, "base_url": BASE, "_doc": "05_flow/build_api.py が機械生成。手で直さない。凍結後の変更は決定（ADR）＋影響解析", "source": ["D-043.2", "D-051.1", "D-051.2", "D-053.1"]}
 json.dump({"meta": meta, "endpoints": endpoints, "acts_without_endpoint": acts_without, "deferred_screens": deferred_screens}, open(f"{OUT}/endpoints.json", "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+import portable_regex as _pr  # noqa: E402
+openapi = _pr.walk(openapi)   # pattern の \s \S \d \w を JS（口）と同じ字を並べた形にして書く（schemathesis は Python で読む・K-1117）
 yaml.safe_dump(openapi, open(f"{OUT}/openapi.yaml", "w", encoding="utf-8"), allow_unicode=True, sort_keys=False, width=200)
 open(f"{OUT}/types.ts", "w", encoding="utf-8").write("\n".join(ts) + "\n")
 json.dump({"meta": {"project": "Kaname", "created_at": TODAY, "skill_version": "v3.1", "total_endpoints": len(endpoints)}, "context": {"api_style": "REST（独立 API 層・Hono・OpenAPI が契約）", "auth_method": "セッション（Better Auth・トークンベース・sessions 表で失効）", "versioning": "url（/api/v1）", "contract_test_framework": "OpenAPI-driven（schemathesis 系）＋ 型生成同期 check（未確定：段階 1 凍結時に確認）"},

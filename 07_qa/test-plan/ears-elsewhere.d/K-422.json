@@ -1,0 +1,33 @@
+{
+ "ops": {
+  "confirmInvitationJoin": {
+   "file": "apps/api/test/features/F10/invite-link-confirm.test.ts",
+   "reason": "確認の口は、保留の行（待っている・使われた・期限切れ）と招待の様子（使える・使われた・取り消し）と、その間に登録された同じメールのアカウントの組み合わせで答えが決まる。生成の試験の種では保留の行と確認のトークンを作れない（K-422）",
+   "covers": {
+    "test_post_auth_invitations_confirm_ok": "K422-API-007",
+    "test_post_auth_invitations_confirm_ok_2": {
+     "file": "apps/api/test/features/F2/invitation-accept-new.test.ts",
+     "mark": "K332-API-003"
+    },
+    "test_post_auth_invitations_confirm_shape": "K422-API-007",
+    "test_post_auth_invitations_confirm_rejected_422": "K422-API-018",
+    "test_post_auth_invitations_confirm_rejected_403": "K422-API-017",
+    "test_post_auth_invitations_confirm_not_found": "K422-API-018",
+    "test_post_auth_invitations_confirm_conflict": "K422-API-016",
+    "test_post_auth_invitations_confirm_gone": "K422-API-008",
+    "test_post_auth_invitations_confirm_session_unresolved": "K422-API-024",
+    "test_post_auth_invitations_confirm_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_auth_invitations_confirm_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_auth_invitations_confirm_rate_limited": "回数は入口の共通の数えで、同じ表の口の型の確かめは acceptInvitation の K332-API-013 が持つ"
+   }
+  }
+ }
+}

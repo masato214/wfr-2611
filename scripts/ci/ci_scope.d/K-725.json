@@ -1,0 +1,30 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/web/components/ai/**",
+    "apps/web/lib/auth/ext.ts",
+    "apps/web/app/(dev)/dev/ai-settings/**"
+   ],
+   "tests": [
+    "apps/web/tests/screens/clone-chat.spec.ts",
+    "apps/web/tests/k/k725-memory-ui-retire.spec.ts",
+    "apps/web/test/k725-memory-ui-retire.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "07_qa/test-specs/screens/clone-chat.md",
+    "07_qa/test-specs/screens/clone-memory.md",
+    "07_qa/test-specs/screens/today.md",
+    "scripts/ci/raw_length_ledger.json"
+   ],
+   "tests": [
+    "apps/web/test/k725-memory-ui-retire.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/web/test/k725-memory-ui-retire.test.ts": "apps/web の頁・部品・ext.ts・index.ts・conversation.tsx・markdown.tsx・built-routes.ts を readFileSync で読み、git grep で消した名前を探し、scripts/ci/raw_length_ledger.json・chat_one.mjs・07_qa/test-specs/screens/*.md の行を読む（K725-API-001〜010）"
+ }
+}

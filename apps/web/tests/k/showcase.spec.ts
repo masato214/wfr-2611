@@ -81,7 +81,7 @@ row(R["KSC-01-012"], async (page) => {
   const href = await nav(page)
     .getByRole("link", { name: /ワークスペースの管理/ })
     .getAttribute("href");
-  expect(href, "R1 が入れる画面（members は R1 に無い）").toBe("/workspace/members/groups");
+  expect(href, "R1 が入れる画面（会社を作った人もメンバーの画面へ・D-148.49・K-420）").toBe("/members");
 });
 // まだ使えない小さな印（会社の切り替え ▾・グループの ★）：押しても何も起きない（K-138）
 const inert = (id: string, name: string) =>

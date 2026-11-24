@@ -1,0 +1,14 @@
+{
+  "data_links": [
+    {
+      "paths": ["apps/api/src/features/F4/create-ticket/hooks.ts", "apps/api/src/features/F4/ticket-list/hooks.ts"],
+      "tests": [
+        "apps/api/test/features/F4/ticket-read-adds.test.ts",
+        "apps/api/test/features/F4/ticket-read-adds-legacy-sections.test.ts",
+        "apps/api/test/features/F4/ticket-list.test.ts",
+        "apps/api/test/features/F7/list-filters.test.ts",
+        "apps/api/test/features/F7/list-ranges.test.ts"
+      ]
+    }
+  ]
+}

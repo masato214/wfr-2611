@@ -229,6 +229,10 @@
    "class": "skeleton",
    "why": "第1フェーズの口が使う（08_api/endpoints.json）"
   },
+  "knowledge_folders": {
+   "class": "skeleton",
+   "why": "ナレッジの口が使う（K-674）"
+  },
   "knowledge_page_versions": {
    "class": "skeleton",
    "why": "第1フェーズの口が使う（08_api/endpoints.json）"

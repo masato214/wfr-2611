@@ -21,7 +21,6 @@ SCREEN_API = {
         ("POST", "/tickets", "A99|A98|A129", T, "createTicket", ["ticket_sections", "test_specs", "conversations"]),
         ("PATCH", "/tickets/:id", "A103|A17|A115|A113", T, "updateTicket", ["ticket_class_values", "ticket_messages"]),
         ("GET", "/tickets/:id/kind-change-preview", "A103", T, "previewTicketKindChange", ["kind_sections", "ticket_sections"]),
-        ("GET", "/tickets/:id/work-type-candidates", "A130", "skills", "listWorkTypeCandidates", ["skill_versions"]),
         ("GET", "/tickets/:id/delete-preview", "A116", T, "previewTicketDelete", ["attachments", "artifacts"]),
         ("DELETE", "/tickets/:id", "A116", T, "deleteTicket", ["audit_events"]),
         ("POST", "/tickets/:id/restore", "A116", T, "restoreTicket", ["audit_events"]),
@@ -66,8 +65,8 @@ SCREEN_API = {
         ("GET", "/tickets/:id/decisions", "A108", "ticket_decisions", "listTicketDecisions", []),
         ("POST", "/tickets/:id/decisions", "A108", "ticket_decisions", "createTicketDecision", []),
         ("PATCH", "/ticket_decisions/:id", "A108", "ticket_decisions", "updateTicketDecision", ["policies"]),
-        ("POST", "/tickets/:id/handovers", "A51|A48|A111|A112", "ticket_handovers", "createTicketHandover", ["notifications"]),
-        ("PATCH", "/ticket_handovers/:id", "A110", "ticket_handovers", "answerTicketHandover", [T]),
+        ("POST", "/tickets/:id/handovers", "A51|A48|A111|A112", "ticket_handovers", "createTicketHandover", [T, "notifications", "audit_events"]),
+        ("PATCH", "/ticket_handovers/:id", "A110", "ticket_handovers", "answerTicketHandover", [T, "notifications", "audit_events"]),
         # つながり・成果物・検収
         ("GET", "/tickets/:id/links", "A103", "ticket_links", "listTicketLinks", []),
         ("POST", "/tickets/:id/links", "A103", "ticket_links", "createTicketLink", []),
@@ -105,7 +104,7 @@ SCREEN_API = {
         ("POST", "/approvals/bulk/preview", "A15", "approvals", "previewBulkApproval", ["checks"]),
         ("POST", "/approvals/bulk", "A15", "approvals", "bulkApprove", ["action_runs", "audit_events"]),
         ("GET", "/approvals/history", "A15", "approvals", "listApprovalHistory", ["tickets"]),
-        ("PATCH", "/ticket_handovers/:id", "A110", "ticket_handovers", "answerTicketHandover", ["tickets"]),
+        ("PATCH", "/ticket_handovers/:id", "A110", "ticket_handovers", "answerTicketHandover", [T, "notifications", "audit_events"]),
     ],
     # ---------------------------------------------------------------- 分身の部屋（08_api/phase1/03_分身の部屋.md）
     "clone-chat": [
@@ -136,25 +135,6 @@ SCREEN_API = {
         ("POST", "/learning_candidates/:id/dismiss", "A30|A93", "learning_candidates", "dismissLearningCandidate", []),
         ("POST", "/learning_candidates/:id/later", "A30", "learning_candidates", "postponeLearningCandidate", []),
         ("POST", "/learning_candidates/:id/exception-request", "A131", "approvals", "requestRuleException", ["learning_candidates", "policies", "notifications"]),
-    ],
-    "rules": [
-        ("GET", "/rules", "A131", "policies", "listRules", ["clients", "scopes"]),
-        ("GET", "/rules/:id", "A131", "policies", "getRule", ["action_runs"]),
-        ("POST", "/rules/check", "A131", "policies", "checkRule", ["memories"]),
-        ("POST", "/rules", "A131", "policies", "createRule", ["approvals"]),
-        ("PATCH", "/rules/:id", "A131", "policies", "updateRule", []),
-        ("DELETE", "/rules/:id", "A131", "policies", "deleteRule", []),
-    ],
-    "work-types": [
-        ("GET", "/work_types", "A119", "skills", "listWorkTypes", ["skill_versions"]),
-        ("GET", "/work_types/:id", "A119", "skills", "getWorkType", ["skill_versions", "policies"]),
-        ("POST", "/work_types", "A119", "skills", "createWorkType", ["skill_versions"]),
-        ("POST", "/work_types/:id/copy", "A119", "skills", "copyWorkType", ["skill_versions"]),
-        ("PATCH", "/work_types/:id/draft", "A119", "skill_versions", "updateWorkTypeDraft", []),
-        ("GET", "/work_types/:id/versions", "A119", "skill_versions", "listWorkTypeVersions", []),
-        ("POST", "/work_types/:id/try", "A119", "skill_test_runs", "tryWorkType", ["tickets", "checks"]),
-        ("POST", "/work_types/:id/release", "A119", "skill_versions", "releaseWorkType", ["skills"]),
-        ("POST", "/work_types/:id/spread-requests", "A119", "approvals", "requestWorkTypeSpread", ["notifications"]),
     ],
     "ai-activity": [
         ("GET", "/clones/me/now", "A53", "action_runs", "getCloneNow", ["tickets", "approvals"]),
@@ -261,12 +241,6 @@ SCREEN_API = {
     # ---------------------------------------------------------------- 運営：配るもの（08_api/phase1/06_運営の配るもの.md）
     "ops-skills": [
         # 業務の型と操作（全社向け・節目①）
-        ("GET", "/ops/work_types", "A80", "skills", "listOpsWorkTypes", ["skill_versions", "tenant_distributions"]),
-        ("GET", "/ops/work_types/:id", "A80", "skills", "getOpsWorkType", ["skill_versions", "skill_test_runs", "tenant_distributions"]),
-        ("POST", "/ops/work_type_uploads", "A80", "skill_versions", "uploadWorkTypePackage", ["skill_test_runs"]),
-        ("GET", "/ops/work_type_uploads/:id", "A80", "skill_versions", "getWorkTypeUpload", ["skill_test_runs"]),
-        ("POST", "/ops/work_types/:id/versions", "A80", "skill_versions", "releaseOpsWorkType", ["tenant_distributions", "notifications", "ops_audit_events"]),
-        ("POST", "/ops/work_types/:id/versions/:v/rollback", "A80", "skill_versions", "rollbackOpsWorkType", ["tenant_distributions", "ops_audit_events"]),
         ("GET", "/ops/operations", "A80", "operations", "listOperations", []),
         # ひな形（D-125.72）
         ("GET", "/ops/templates", "A128", "distributions", "listOpsTemplates", ["tenant_distributions"]),
@@ -311,16 +285,6 @@ SCREEN_API = {
         ("PATCH", "/layers/:id", "A117", "layers", "updateLayer", ["audit_events"]),
     ],
     "masters": [
-        # 守ること・承認を上に回すとき・やり方（ワークスペース全体と層）
-        ("GET", "/workspace/rules", "A118", "policies", "getWorkspaceRules", ["scopes", "skills", "action_runs"]),
-        ("POST", "/rules/check", "A118", "policies", "checkRule", ["memories"]),
-        ("POST", "/workspace/rules", "A118", "policies", "createWorkspaceRule", ["audit_events"]),
-        ("PATCH", "/workspace/rules/:id", "A118", "policies", "updateWorkspaceRule", ["audit_events"]),
-        ("DELETE", "/workspace/rules/:id", "A118", "policies", "deleteWorkspaceRule", ["audit_events"]),
-        ("POST", "/workspace/escalation-rules/preview", "A118", "policies", "previewEscalationRule", ["approvals", "tickets"]),
-        ("POST", "/workspace/escalation-rules", "A118", "policies", "createEscalationRule", ["audit_events"]),
-        ("PATCH", "/workspace/escalation-rules/:id", "A118", "policies", "updateEscalationRule", ["audit_events"]),
-        ("DELETE", "/workspace/escalation-rules/:id", "A118", "policies", "deleteEscalationRule", ["audit_events"]),
         # チケットの形（種別と区画・作業の段・分類の軸・担当を渡すとき・D-128.95）
         ("GET", "/workspace/ticket-shape", "A118", "ticket_kinds", "getTicketShape", ["kind_sections", "ticket_stages", "class_axes", "class_values", "handover_rules"]),
         ("POST", "/workspace/ticket-shape/preview", "A118", "ticket_kinds", "previewTicketShapeChange", ["tickets", "ticket_class_values"]),
@@ -365,8 +329,6 @@ SCREEN_API = {
         ("DELETE", "/client_contacts/:id", "A121", "client_contacts", "removeClientContact", ["tenant_memberships", "sessions", "invitations", "audit_events"]),
         ("POST", "/client_contacts/:id/invitation", "A121", "invitations", "inviteClientContact", ["notifications", "audit_events"]),
         ("POST", "/acceptances/:id/remind", "A123", "acceptances", "remindAcceptance", ["notifications"]),
-        ("GET", "/rules", "A121", "policies", "listRules", ["clients", "scopes"]),
-        ("POST", "/rules", "A121", "policies", "createRule", ["approvals"]),
     ],
     "requests": [
         ("GET", "/client_requests", "A122", "client_requests", "listClientRequests", ["clients", "client_contacts"]),
@@ -392,23 +354,23 @@ SCREEN_API = {
     "knowledge": [
         # ホーム・置き場・探す
         ("GET", "/knowledge/home", "A114", "knowledge_pages", "getKnowledgeHome", ["knowledge_page_versions", "reference_logs"]),
-        ("GET", "/knowledge/tree", "A114", "knowledge_pages", "getKnowledgeTree", ["scopes"]),
+        ("GET", "/knowledge/tree", "A114", "knowledge_pages", "getKnowledgeTree", ["knowledge_folders", "scopes"]),
         ("GET", "/knowledge_pages", "A114", "knowledge_pages", "listKnowledgePages", ["reference_logs", "members"]),
         ("POST", "/knowledge/ask", "A114", "knowledge_pages", "askKnowledge", ["bridge_jobs", "policies", "clients"]),
         ("POST", "/knowledge/ask/feedback", "A114", "knowledge_page_versions", "sendKnowledgeAnswerFeedback", []),
         # 1 ページ・書く・下書き・公開
-        ("GET", "/knowledge_pages/:id", "A114", "knowledge_pages", "getKnowledgePage", ["knowledge_page_versions", "knowledge_links", "policies", "skills"]),
-        ("POST", "/knowledge_pages", "A114", "knowledge_pages", "createKnowledgePage", ["knowledge_page_versions", "bridge_jobs"]),
+        ("GET", "/knowledge_pages/:id", "A114", "knowledge_pages", "getKnowledgePage", ["knowledge_page_versions", "knowledge_folders", "reference_logs"]),
+        ("POST", "/knowledge_pages", "A114", "knowledge_pages", "createKnowledgePage", ["knowledge_page_versions", "knowledge_folders"]),
         ("PATCH", "/knowledge_pages/:id", "A114", "knowledge_pages", "updateKnowledgePage", []),
-        ("PATCH", "/knowledge_pages/:id/draft", "A114", "knowledge_page_versions", "saveKnowledgeDraft", ["knowledge_links"]),
-        ("DELETE", "/knowledge_pages/:id/draft", "A114", "knowledge_page_versions", "discardKnowledgeDraft", []),
-        ("POST", "/knowledge_pages/:id/publish", "A114", "knowledge_page_versions", "publishKnowledgePage", ["knowledge_pages", "knowledge_links", "notifications"]),
+        ("PATCH", "/knowledge_pages/:id/draft", "A114", "knowledge_page_versions", "saveKnowledgeDraft", ["knowledge_page_versions"]),
+        ("DELETE", "/knowledge_pages/:id/draft", "A114", "knowledge_page_versions", "discardKnowledgeDraft", ["knowledge_page_versions"]),
+        ("POST", "/knowledge_pages/:id/publish", "A114", "knowledge_page_versions", "publishKnowledgePage", ["knowledge_pages", "knowledge_page_versions"]),
         ("POST", "/knowledge_pages/:id/attachments", "A114", "attachments", "uploadKnowledgeAttachment", []),
         ("GET", "/knowledge_pages/:id/versions", "A114", "knowledge_page_versions", "listKnowledgeVersions", []),
         ("POST", "/knowledge_pages/:id/versions/:v/restore", "A114", "knowledge_page_versions", "restoreKnowledgeVersion", ["knowledge_pages"]),
         ("GET", "/knowledge_pages/:id/markdown", "A114", "knowledge_pages", "exportKnowledgeMarkdown", []),
         # 使われ方・つながり・やり取り
-        ("GET", "/knowledge_pages/:id/usage", "A114", "reference_logs", "getKnowledgeUsage", ["tickets", "action_runs"]),
+        ("GET", "/knowledge_pages/:id/usage", "A137", "reference_logs", "getKnowledgeUsage", ["tickets", "action_runs"]),
         ("GET", "/knowledge_pages/:id/links", "A114", "knowledge_links", "getKnowledgeLinks", ["policies", "clients", "tickets"]),
         ("POST", "/knowledge_pages/:id/links", "A114", "knowledge_links", "linkKnowledgeMention", ["knowledge_page_versions"]),
         ("GET", "/knowledge/link-targets", "A114", "knowledge_pages", "searchKnowledgeLinkTargets", ["clients", "policies"]),
@@ -420,9 +382,10 @@ SCREEN_API = {
         ("POST", "/knowledge_pages/:id/archive", "A114", "knowledge_pages", "archiveKnowledgePage", ["knowledge_links"]),
         ("POST", "/knowledge_pages/:id/unarchive", "A114", "knowledge_pages", "unarchiveKnowledgePage", []),
         # 直す案（チケットの完了から）
-        ("GET", "/knowledge/proposals", "A114", "knowledge_page_versions", "listKnowledgeProposals", ["tickets"]),
-        ("POST", "/knowledge/proposals/:id/accept", "A114", "knowledge_page_versions", "acceptKnowledgeProposal", ["knowledge_pages", "notifications"]),
-        ("POST", "/knowledge/proposals/:id/decline", "A114", "knowledge_page_versions", "declineKnowledgeProposal", []),
+        # K-727：A136（上げる・承認する・断る）と A137（AI が読んだ記録）の口は、新しい持ち主の葉（K-687〜K-689・K-685／K-698）が入るまで前からの口に結ぶ。外すのは K-711
+        ("GET", "/knowledge/proposals", "A136", "knowledge_page_versions", "listKnowledgeProposals", ["tickets"]),
+        ("POST", "/knowledge/proposals/:id/accept", "A136", "knowledge_page_versions", "acceptKnowledgeProposal", ["knowledge_pages", "notifications"]),
+        ("POST", "/knowledge/proposals/:id/decline", "A136", "knowledge_page_versions", "declineKnowledgeProposal", []),
         # 取り込む
         ("POST", "/knowledge_imports", "A114", "imports", "createKnowledgeImport", ["attachments"]),
         ("GET", "/knowledge_imports/:id", "A114", "imports", "getKnowledgeImport", []),
@@ -535,7 +498,9 @@ INPUTS = {
     "createTicket": ("TicketCreateInput", {"scope_id": "uuid", "kind_id": "uuid", "title": "string", "assignee_member_id": "uuid",
                                            "due_on": "string", "start_on": "string", "priority": "string", "priority_reason": "string",
                                            "parent_ticket_id": "uuid", "estimate_minutes": "any", "sections": "object",
-                                           "notify_member_ids": "uuid[]", "draft_id": "uuid", "source_draft_id": "uuid"}),   # source_draft_id：続きとして出した元の下書き（作ったら消す・K-60)
+                                           "notify_member_ids": "uuid[]", "draft_id": "uuid", "source_draft_id": "uuid",
+                                           "body": "object", "fields": "object", "specs": "string[]", "links": "array",
+                                           "duplicate_of": "uuid", "copy": "string[]"}),   # duplicate_of・copy：複製の元と写す物（K-438）。source_draft_id：続きとして出した元の下書き（作ったら消す・K-60)。body・fields・specs：本文 1 枚・会社の項目・確認項目（K-437。sections は K-578 が外す）。links：作るときにつなぐ相手（K-581）
     "saveMyTicketDraft": ("TicketDraftInput", {"draft_id": "uuid", "body": "object", "discard": "boolean"}),
     # K-250：key が無ければ箱を閉じる。在れば任意の項目（credentials）を「あとで」で飛ばす（ほかの値は 422・欄 key）
     "dismissSetupTasks": ("DismissSetupTasksInput", {"key": "string"}),
@@ -551,7 +516,7 @@ INPUTS = {
     "approveApproval": ("ApprovalApproveInput", {}),
     "returnApproval": ("ApprovalReturnInput", {"note": "string"}),
     # K-332：招待で参加する。ログインしていない人は名前とパスワード（ログイン中の人は空・K-333）。宛てのメールは招待のもの（体の email は口の前処理が落とす）
-    "acceptInvitation": ("InvitationAcceptInput", {"name": "string?", "password": "string?"}),
+    "acceptInvitation": ("InvitationAcceptInput", {"name": "string?", "password": "string?", "email": "string?"}),   # K-422：email はリンクの招待で新しく入るときだけ読む（メールで招いた招待は体の email を読まない）
     # K-165：完了にする。todo_checked は済ませた実施事項の番号（0 から）の並び・todo_version は画面が読んだ todo の区画の版（無ければ 0）・conditions_confirmed は完了の条件を確かめた印
     "completeTicket": ("TicketCompleteInput", {"todo_checked": "array?", "todo_version": "integer?", "conditions_confirmed": "boolean"}),
 }
@@ -741,9 +706,6 @@ ERRORS_4XX = {
     ],
     # 招待で参加する（K-332 ログインしていない人・K-333 ログイン中は今のアカウントで参加し、その画面だけ招かれた所へ切り替える・別のメール宛ては 403・もう入っていれば 409・answer=becc3d3aa526）。冪等キーは使わない（答えにログインの印が入る・汎用の 409 は NO_GENERIC_409 で外す）
     "acceptInvitation": [
-        {"status": 401, "code": "UNAUTHENTICATED", "body": {"error": "unauthenticated", "code": "UNAUTHENTICATED"},
-         "trigger": "ログインしていない人が、宛てのメールを持たない招待（リンクの招待・K-421）で参加しようとした（確認のメールの道 K-422 が入るまでの間・ログインしてから参加）",
-         "ears_form": "UNWANTED: IF ログインしていない人が宛てのメールを持たない招待で参加しようとしたなら、Kaname は 401 と UNAUTHENTICATED を返し、利用者も所属も作らず招待も使わない"},
         {"status": 403, "code": "E-AUTH-012", "body": {"error": "auth", "code": "E-AUTH-012"}, "errors": ["E-AUTH-012"],
          "trigger": "招いたワークスペースが止められている（subscriptions.suspended_at）",
          "ears_form": "UNWANTED: IF 招いたワークスペースが止められているなら、Kaname は 403 と E-AUTH-012 を返し、利用者を作らず招待も使わない"},
@@ -765,6 +727,12 @@ ERRORS_4XX = {
         {"status": 422, "code": "VALIDATION_ERROR", "body": {"error": "validation", "code": "E-VAL-007"}, "errors": ["E-VAL-007", "E-VAL-005", "E-VAL-026", "E-VAL-011"],
          "trigger": "名前が空・100 文字を超える（E-VAL-007）・パスワードが 12 文字より短い（E-VAL-005）・128 文字を超える（E-VAL-026）・漏れたもの（E-VAL-011）・本文に知らない欄",
          "ears_form": "UNWANTED: IF 名前かパスワードが受け付けられないなら、Kaname は 422 と欄ごとの理由を返し、利用者を作らず招待も使わない"},
+        {"status": 422, "code": "E-INV-013", "body": {"error": "validation", "code": "E-INV-013"}, "errors": ["E-INV-013"],
+         "trigger": "リンクの招待で新しく参加する人が送ったメールが空・空白だけ・メールの形でない（契約の VALUE_RANGES の pattern・K-422）",
+         "ears_form": "UNWANTED: IF 送られたメールが空か形が違うなら、Kaname は 422 と E-INV-013 を返し、保留の行もメールも作らない"},
+        {"status": 409, "code": "E-INV-016", "body": {"error": "conflict", "code": "E-INV-016"}, "errors": ["E-INV-016"],
+         "trigger": "リンクの招待（宛てのメールが無い招待）で新しく参加するのに、メールが送られていない（招待の行で決まる・欄 details は付けない・K-422）",
+         "ears_form": "UNWANTED: IF 宛てのメールが無い招待でメールが送られていないなら、Kaname は 409 と E-INV-016 を返し、保留の行もメールも作らない"},
         {"status": 503, "code": "E-PAGE-003", "body": {"error": "unavailable", "code": "E-PAGE-003"}, "errors": ["E-PAGE-003"],
          "trigger": "招待を読む DB・利用者を作る所・受諾の関数・セッションを作る所が落ちた",
          "ears_form": "UNWANTED: IF 利用者を作る所か受諾が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、作った利用者を消して招待を使わない"},
@@ -856,11 +824,45 @@ ERRORS_4XX = {
          "trigger": "配布物の置き場に届かない",
          "ears_form": "UNWANTED: IF 配布物の置き場に届かないなら、Kaname は 503 と E-PAGE-007 を返し、「配っていない」と答えない"},
     ],
-    # チケットを作る（K-60・K-144）。親が無い・見えない
+    # チケットを作る（K-60・K-144・K-437）。404・409 の体は error と code（と正本の文）だけで field・details・detail を付けない（在るかを漏らさない・控え帳 2026-11-20 16:51・2026-11-21 01:15）
     "createTicket": [
+        {"status": 403, "code": "FORBIDDEN", "body": {"error": "forbidden", "code": "FORBIDDEN"},
+         "trigger": "そのグループにチケットを書く権限が無い（見るだけの人・別の会社のグループ）",
+         "ears_form": "UNWANTED: IF そのグループにチケットを書けないなら、Kaname は 403 と FORBIDDEN を返し、チケットを作らない"},
         {"status": 404, "code": "E-PAGE-001", "body": {"error": "not_found", "code": "E-PAGE-001"}, "errors": ["E-PAGE-001"],
-         "trigger": "親のチケットが無い・消えた・見えない",
-         "ears_form": "UNWANTED: IF 親のチケットが無いか見えないなら、Kaname は 404 と E-PAGE-001 を返し、チケットを作らない"},
+         "trigger": "選んだ種別・担当者・知らせる人・親のチケット・会社の項目が無い・消えた・抜けた・別の会社（書いている間に選べなくなったも同じ）",
+         "ears_form": "UNWANTED: IF 選んだ種別・担当者・知らせる人・親・会社の項目が無いか選べないなら、Kaname は 404 と E-PAGE-001 を返し、チケットを作らない"},
+        {"status": 409, "code": "E-VAL-015", "body": {"error": "conflict", "code": "E-VAL-015"}, "errors": ["E-VAL-015"],
+         "trigger": "親に選んだチケットの下に入れると親子が 3 段を超える",
+         "ears_form": "UNWANTED: IF 親子が 3 段を超えるなら、Kaname は 409 と E-VAL-015 を返し、チケットを作らない"},
+        {"status": 409, "code": "E-VAL-012", "body": {"error": "conflict", "code": "E-VAL-012"}, "errors": ["E-VAL-012"],
+         "trigger": "期限が今日（日本時間）より前",
+         "ears_form": "UNWANTED: IF 期限が今日より前なら、Kaname は 409 と E-VAL-012 を返し、チケットを作らない"},
+        {"status": 409, "code": "E-VAL-028", "body": {"error": "conflict", "code": "E-VAL-028"}, "errors": ["E-VAL-028"],
+         "trigger": "開始日が期限より後",
+         "ears_form": "UNWANTED: IF 開始日が期限より後なら、Kaname は 409 と E-VAL-028 を返し、チケットを作らない"},
+        {"status": 409, "code": "E-FLD-001", "body": {"error": "conflict", "code": "E-FLD-001"}, "errors": ["E-FLD-001"],
+         "trigger": "その種別に出ない会社の項目に値を付けた",
+         "ears_form": "UNWANTED: IF その種別に出ない会社の項目に値を付けたなら、Kaname は 409 と E-FLD-001 を返し、チケットを作らない"},
+        {"status": 409, "code": "E-FLD-002", "body": {"error": "conflict", "code": "E-FLD-002"}, "errors": ["E-FLD-002"],
+         "trigger": "会社の項目の選択肢に無い値を付けた",
+         "ears_form": "UNWANTED: IF 会社の項目の選択肢に無い値を付けたなら、Kaname は 409 と E-FLD-002 を返し、チケットを作らない"},
+        {"status": 409, "code": "E-FLD-003", "body": {"error": "conflict", "code": "E-FLD-003"}, "errors": ["E-FLD-003"],
+         "trigger": "会社の項目の型と合わない値を付けた（型はマスタで決まる）",
+         "ears_form": "UNWANTED: IF 会社の項目の型と合わない値を付けたなら、Kaname は 409 と E-FLD-003 を返し、チケットを作らない"},
+        {"status": 409, "code": "E-FLD-004", "body": {"error": "conflict", "code": "E-FLD-004"}, "errors": ["E-FLD-004"],
+         "trigger": "会社が必須にした項目が空（渡さない・空の文字・空の並び・null・必須のチェックが付いていない）",
+         "ears_form": "UNWANTED: IF 会社が必須にした項目が空なら、Kaname は 409 と E-FLD-004 を返し、チケットを作らない"},
+        # K-438：複製（duplicate_of・copy）
+        {"status": 404, "code": "E-DUP-001", "body": {"error": "not_found", "code": "E-DUP-001"}, "errors": ["E-DUP-001"],
+         "trigger": "複製の元のチケットが無い・消えた・見えない（別の会社・他の人の取り込み中の下書き・見えないグループ）",
+         "ears_form": "UNWANTED: IF 複製の元のチケットが無いか見えないなら、Kaname は 404 と E-DUP-001 を返し、チケットを作らない"},
+        {"status": 409, "code": "E-DUP-002", "body": {"error": "conflict", "code": "E-DUP-002"}, "errors": ["E-DUP-002"],
+         "trigger": "子チケットを写すと親子が 3 段を超える",
+         "ears_form": "UNWANTED: IF 子チケットを写すと親子が 3 段を超えるなら、Kaname は 409 と E-DUP-002 を返し、チケットを作らない"},
+        {"status": 422, "code": "E-VAL-013", "body": {"error": "validation_failed", "code": "E-VAL-013", "details": []}, "errors": ["E-VAL-013"],
+         "trigger": "本文 body を送らず区画 sections だけで作り、種別の必須の区画が空（前の道・K-578 が外すまで）",
+         "ears_form": "UNWANTED: IF 区画 sections だけで作り必須の区画が空なら、Kaname は 422 と E-VAL-013 を返し、チケットを作らない"},
     ],
 }
 # 2xx の EARS を口ごとに上書きする（operationId → 文）。無い口は行為の裏側の文（flow.json の blueprint）になる。
@@ -868,8 +870,14 @@ ERRORS_4XX = {
 EARS_OK = {
     "requestPasswordReset": "登録の有無に関わらず同じ答え（accepted）を返し、登録されていれば答えの後に再設定のリンクを 1 通送る",   # K-313・D-042
 }
+# 成功の番号が 2 つある口（operationId → 201（POST の決め打ち）のほかに返す番号）。K-422：リンクの招待で新しく入る人の参加は 202（確認のメールを送っただけ）
+ALSO_2XX = {"acceptInvitation": [202]}
+# 成功の状態の番号の差し替え（operationId → 番号・K-705）。無い口は POST が 201・ほかは 200。新しい物を作らない POST（並べ直す）は 200
+SUCCESS_STATUS: dict = {}
+# 一覧の口（GET の list・search）でないのに答えの data が並びの口（operationId の集まり・K-705）。並べ直した全部の並びを返す POST など
+LIST_RESULT_OPS: dict = {}   # operationId → 訳
 # 汎用の 409（冪等キー）を外す口。冪等キーを使わない口（答えに冪等の器へ残すものが無い）
-NO_GENERIC_409 = {"requestPasswordReset", "resetPassword", "acceptInvitation", "createInvitationLink"}   # K-313：答えはいつも同じ。登録の有無を器に残さない／K-314：リンクは 1 回だけ（器に残すと 2 回目に 201 を返す）／K-332：答えにログインの印が入る（器に残さない・2 回目は 410）／K-421：答えにリンクのトークンが入る（器に残さない・二度押しで 2 本のリンクができ、どちらも使える）
+NO_GENERIC_409 = {"requestPasswordReset", "resetPassword", "acceptInvitation", "createInvitationLink", "confirmInvitationJoin"}   # K-313：答えはいつも同じ。登録の有無を器に残さない／K-314：リンクは 1 回だけ（器に残すと 2 回目に 201 を返す）／K-332：答えにログインの印が入る（器に残さない・2 回目は 410）／K-421：答えにリンクのトークンが入る（器に残さない・二度押しで 2 本のリンクができ、どちらも使える）／K-422：confirmInvitationJoin も答えにログインの印が入る（器に残さない）
 # JSON でなくファイルそのものを返す口（operationId → 200 の application/octet-stream の中身の形・K-144）。JSON の答えと並べて契約に書く
 RAW_200 = {
     "downloadBridgeRelease": {"type": "string", "format": "binary"},   # 手元のフォルダの配布物はファイルそのもの。外の置き場なら JSON の期限つき URL
@@ -919,19 +927,43 @@ PATH_PATTERNS = {
 }
 # 類 G（K-144 ⑳・㉟）：契約の形に合う値を口が 422 で断る体の値のうち、書ける値域（operationId → 欄 → 値域の言葉）。
 #   type・format・nullable は変えない（入口の zod は値域の言葉を読まない＝今のエラー ID と文言のまま）。値域は口が受ける値の集合より狭く書かない
+import sys as _sys  # noqa: E402
+from pathlib import Path as _Path  # noqa: E402
+
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent / "scripts" / "ci"))
+import email_patterns as _EP  # noqa: E402  登録・ログインのメールの形（K-1117・口は packages/auth/src/signup.ts の isLoginEmail）
 _CODE_SEP = "\\s\\-‐‑‒–—―ー−－"
 _CODE_CHAR = "2-9A-HJKMNP-Za-hjkmnp-z２-９Ａ-ＨＪＫＭＮＰ-Ｚａ-ｈｊｋｍｎｐ-ｚ"
+# K-437：作る口の本文 body の木の形（doc_shape）を下の値域の字に書くため、scripts/ci を import の道に入れる（下の断片を足す前の行と同じ文）
+import sys as _sys  # noqa: E402
+from pathlib import Path as _Path  # noqa: E402
+
+_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent / "scripts" / "ci"))
+import doc_shape as _DS  # noqa: E402  本文 1 枚の文書の木の形（K-432 と同じ定義・K-437）
+
 VALUE_RANGES = {
     "createTicket": {   # apps/api/src/features/F4/create-ticket/input.ts の checkCreate
-        "title": {"pattern": "\\S", "maxLength": 200},
-        "due_on": {"pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
-        "start_on": {"pattern": "^(?:[0-9]{4}-[0-9]{2}-[0-9]{2})?$"},
+        "title": {"pattern": "\\S", "maxLength": 200},   # 口の TITLE_MAX（生の字で数える・NFKC で整えない・D-150.34）
+        "due_on": {"pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$", "format": "date"},   # 暦に在る日（K-437）。今日より前は 409 E-VAL-012（時刻で決まるので契約に書かない）
+        "start_on": {"anyOf": [{"maxLength": 0}, {"format": "date"}]},   # 空か暦に在る日（K-437・K-1116 の調べ：0000-00-00 を口が 422 で断るので format: date で書く）
         "priority": {"enum": ["", "mid", "high"]},
         "estimate_minutes": {"anyOf": [{"type": "integer", "minimum": 0, "maximum": 100000},
                                        {"type": "string", "pattern": "^(?:0*(?:[0-9]{1,5}|100000))?$"}], "nullable": True},
         "sections": {"propertyNames": {"pattern": "^[a-z][a-z0-9_]{0,40}$"},
                      "additionalProperties": {"type": "string"}},   # 区画の中身の上限は置かない（D-130.3）。守りは送る量 1MB だけ
         "notify_member_ids": {"maxItems": 20},
+        # K-437：会社の項目（鍵は項目の id・値は文字・数・真偽・文字の並び・null）と確認項目（文字の並び・50 件まで）
+        "fields": {"propertyNames": {"pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"},
+                   "additionalProperties": {"anyOf": [{"type": "string"}, {"type": "number"}, {"type": "boolean"},
+                                                      {"type": "array", "items": {"type": "string"}}], "nullable": True}},
+        "specs": {"maxItems": 50},
+        # K-437：本文 body は { doc } だけ（text・知らない鍵は 422）。木の形は updateTicketBody の doc と同じ定義（K-561・K-584 の validateDoc）
+        "body": {"required": ["doc"], "propertyNames": {"pattern": "^doc$"}, "properties": {"doc": _DS.doc_schema()}},
+        # K-581：作るときにつなぐ相手（payload.ts の checkLinks・0〜20 件・同じ組なし・要素は kind と other_ticket_id の 2 つだけ）。相手が選べるかは DB（K-441 の app.ticket_link_add）
+        "links": {"maxItems": 20, "uniqueItems": True, "items": {"type": "object", "required": ["kind", "other_ticket_id"], "additionalProperties": False,
+                                                                 "properties": {"kind": {"enum": ["related", "derived_from"]}, "other_ticket_id": {"type": "string", "format": "uuid"}}}},
+        # K-438：複製で写す物（duplicate.ts の COPY_NAMES・6 つ・重複なし。添付と参照は 422）
+        "copy": {"maxItems": 6, "uniqueItems": True, "items": {"enum": ["body", "assignee", "fields", "specs", "links", "children"]}},
     },
     "claimPairingCode": {   # apps/api/src/features/F3/connect-pc/code.ts:27〜36（NFKC・大文字・区切りを落として、見分けやすい英数字 6 けた。32 字まで）
         "code": {"maxLength": 32, "pattern": f"^[{_CODE_SEP}]*(?:[{_CODE_CHAR}][{_CODE_SEP}]*){{6}}$"},
@@ -941,7 +973,7 @@ VALUE_RANGES = {
     "updateMemory": {"body": {"pattern": "\\S"}},          # apps/api/src/hooks/agent.ts
     "createMemory": {"confidence": {"pattern": "^-?(?:[0-8](?:\\.[0-9]+)?|9(?:\\.(?:[0-9]{1,2}|(?:[0-8][0-9]|9[0-8])[0-9]+|99[0-4][0-9]*))?)$"}, "kind_id": {"enum": ["rule", "preference", "example", None]}},   # memories.confidence numeric(3,2)（10 以上は DB が断る）
     "createSignup": {   # apps/api/src/features/F1/sign-up/input.ts:37〜47
-        "email": {"pattern": "^\\s*[^@\\s]+@[^@\\s]+\\.[^@\\s]+\\s*$"},
+        "email": {"pattern": _EP.LOGIN_EMAIL},   # 部品 better-auth の z.email() の形を前後の空白で挟んだ物（口も z.email() で見る・K-1117）
         "name": {"pattern": "\\S", "maxLength": 100},
         "company_name": {"maxLength": 100},
         "password": {"minLength": 12},
@@ -953,8 +985,8 @@ VALUE_RANGES = {
     "confirmTwoFactor": {"code": {"pattern": "\\S", "maxLength": 64}},   # apps/api/src/features/F1/two-factor/index.ts（空・6 けたでないは 422 欄 code・K-311）
     "consentToTerms": {"agree": {"enum": [True]}},      # apps/api/src/features/F1/consent-terms/index.ts:72
     "completeTicket": {   # apps/api/src/features/F5/approve-complete/complete.ts と app.ticket_complete（0100）。形の誤り（負の番号・整数でない版）は 422・false は 422 E-VAL-023
-        "todo_checked": {"items": {"type": "integer", "minimum": 0}},
-        "todo_version": {"minimum": 0},
+        "todo_checked": {"items": {"type": "integer", "minimum": 0, "maximum": 2147483647}},   # int4 の範囲の外は入口が契約の形で 422（K-401・口は中身を見ない・K-566）
+        "todo_version": {"minimum": 0, "maximum": 2147483647},
         "conditions_confirmed": {"enum": [True]},
     },
     "finishBridgeJob": {"result": {"maxLength": 200000}},   # apps/api/src/features/F5/delegate/bridge.ts（REPLY_MAX・200000 字を超える結果は 422・K62-API-032）。その欄だけの上限（D-130.1 の外）
@@ -968,9 +1000,6 @@ INPUT_RULES: dict[str, dict] = {}
 QUERY_RANGES: dict[str, dict[str, dict]] = {}
 # 契約に書けない値の決まり（口の振る舞いのまま 422）。その口の 422 の説明と x-unexpressible-422 に書く。fuzz での扱いは K-62 の受け持ち
 UNEXPRESSIBLE_422 = {
-    "createTicket": ["期限が今日より前（E-VAL-012・今日は日本時間）", "暦に無い日付の期限・開始", "開始が期限より後", "優先度が高で理由が空",
-                     "種別の必須の区画が空（E-VAL-013）", "グループ・種別・担当者・知らせる人がその会社に無いか書けない（E-VAL-014）",
-                     "親のチケットが深すぎる（E-VAL-015）", "前後の空白・NFKC で長さが変わる題名"],
     "claimPairingCode": ["NFKC で英数字になる字（① など）"],
     "updateConversation": ["名前が null（空と同じ）"],
     "changePassword": ["漏れたことのあるパスワード（E-VAL-011）", "12 文字より短い・128 文字を超える新しいパスワード（E-VAL-005・E-VAL-026・文字の数で数える）", "今のパスワードが違う（欄 current_password）"],
@@ -999,7 +1028,7 @@ RESPONSES = {
     "lintTestSpecs": ("TestSpecLint", {"missing": "array", "warnings": "array"}),
     "completeTicket": ("TicketCompletion", {"ticket": "object", "knowledge_candidates": "array", "skipped_reason": "string", "unchecked": "object"}),
     "bulkUpdateTickets": ("BulkResult", {"updated": "array", "skipped": "array"}),
-    "listApprovalQueue": ("ApprovalQueueItem", {"kind": "string", "id": "string", "ticket_id": "string?", "ticket_number": "string", "title": "string", "from_member_id": "string", "from_name": "string", "check_summary": "string", "due_on": "string?", "decide_inline": "boolean", "irreversible": "boolean", "primary_action": "string", "secondary_action": "string", "note": "string?", "created_at": "string"}),   # K-161：期限なし・聞き直しでない行は due_on・note が null
+    "listApprovalQueue": ("ApprovalQueueItem", {"kind": "string", "id": "string", "ticket_id": "string?", "ticket_number": "string", "title": "string", "from_member_id": "string", "from_name": "string", "check_summary": "string", "due_on": "string?", "decide_inline": "boolean", "irreversible": "boolean", "primary_action": "string", "secondary_action": "string", "note": "string?", "created_at": "string", "handover_kind": "string?", "reply_due": "string?", "carry_children": "integer?", "to_scope_name": "string?", "ticket_scope_name": "string?"}),   # K-161：期限なし・聞き直しでない行は due_on・note が null。K-405：渡しの行は kind handover・AI の成果物の行は handover_kind・reply_due・carry_children・to_scope_name・ticket_scope_name が null
     "getApproval": ("ApprovalDetail", {"approval": "object", "ticket": "object", "operation": "object", "message_text": "string", "artifact_version": "object", "checks": "array", "check_summary": "string", "cautions": "array", "irreversible": "boolean", "can_decide": "boolean", "chain": "array"}),
     "previewBulkApproval": ("BulkApprovalPreview", {"eligible": "array", "excluded": "array"}),
     "bulkApprove": ("BulkResult", {"updated": "array", "skipped": "array"}),
@@ -1059,8 +1088,8 @@ RESPONSES = {
     "sendHeartbeat": ("BridgeHeartbeat", {"ok": "boolean", "browser": "string?", "outdated": "boolean", "device_id": "string"}),
     "listMyDevices": ("BridgeDevice", {"id": "string", "device_label": "string?", "state": "string", "last_seen_at": "string?", "connected_at": "string", "version": "string?", "health": "array", "health_at": "string?", "browser": "string", "revoke_reason": "string?"}),
     # can：見ている人ができること（K-62 が delegate を足す・D-128.138）
-    "getTicket": ("TicketDetail", {"ticket": "object", "sections": "array", "kind": "object?", "stage": "object?", "assignee": "object?", "can": "object", "approval": "object?", "completed": "object?", "time": "object", "hold": "object?"}),   # approval：決まっていない承認待ち 1 つ（K-162・D-128.178）。can.complete と completed（完了の時刻と押した人の名前。完了の前は null）は K-165。can.progress・can.actual・time（予定・人の分・AI の分）・hold（保留の理由・再開の条件・時刻・人。保留でなければ null）は K-387
-    "listTicketKinds": ("TicketKindChoice", {"id": "string", "name": "string", "color": "string?", "position": "integer", "is_builtin": "boolean", "sections": "array"}),
+    "getTicket": ("TicketDetail", {"ticket": "object", "sections": "array", "kind": "object?", "stage": "object?", "assignee": "object?", "can": "object", "approval": "object?", "completed": "object?", "time": "object", "hold": "object?", "handover": "object?", "handover_kinds": "string[]", "body": "object", "fields": "array", "spec_count": "integer", "spec_unchecked": "integer", "no_spec_reason": "string?", "parent": "object?", "child_count": "integer", "link_count": "integer", "results": "object"}),   # approval：決まっていない承認待ち 1 つ（K-162・D-128.178）。can.complete と completed（完了の時刻と押した人の名前。完了の前は null）は K-165。can.progress・can.actual・time（予定・人の分・AI の分）・hold（保留の理由・再開の条件・時刻・人。保留でなければ null）は K-387。handover（今の渡し 1 件か null・待っている物か一番新しい物・中身は TicketHandover の 17 の鍵）と handover_kinds（見ている人が渡せる種類 pass・distribute・offer）は K-405。body（本文 { doc, text, version }・行が無ければ空の本文で版 0）・fields（その種別で出す会社の項目と値）・spec_count と spec_unchecked（確認項目の数と未チェックの数）・no_spec_reason・parent（見える親は鍵 6・見えない親は番号だけ・無ければ null）・child_count（見える直接の子）・link_count・results（成果物・決定ログ・申し送りが在るときだけ鍵が出る）は K-560
+    "listTicketKinds": ("TicketKindChoice", {"id": "string", "name": "string", "color": "string?", "position": "integer", "is_builtin": "boolean", "sections": "array", "body_template": "object?", "fields": "array"}),   # body_template（種別のひな形）と fields（その種別で出す会社の項目のマスタ・値なし・TicketField の鍵 7）は K-560
     "listMyTicketDrafts": ("TicketDraft", {"draft_id": "string", "body": "object?", "saved_at": "string?"}),
     "saveMyTicketDraft": ("TicketDraft", {"draft_id": "string", "body": "object?", "saved_at": "string?"}),   # 捨てた・使い終わった下書きは body・saved_at が null
     # K-62：仕事は行の中身をそのまま job に（無ければ null）。古い Bridge には渡さず outdated（E-CONN-012）
@@ -1083,15 +1112,11 @@ RESPONSES = {
     # K-354：PC の鍵でしか開けない封（平文を返さない）。封の外は情報の id・種類・名前・使える場所・2 段階の種類・期限だけ
     "resolveCredential": ("ResolvedCredential", {"credential_id": "uuid", "kind": "string", "name": "string", "destinations": "array", "two_factor": "string",
                                                  "expires_at": "string?", "server_key": "string", "iv": "string", "tag": "string", "ciphertext_for_executor": "string"}),
-    "getWorkTypeUpload": ("WorkTypeUploadCheck", {"package": "object", "checks": "array", "passed": "boolean", "test_scenarios": "integer", "changelog": "string?"}),
     "getPlanProposalImpact": ("PlanProposalImpact", {"tenants": "integer", "monthly_revenue_diff": "integer", "existing_from": "string", "new_from": "string?", "by_workspace": "array"}),
-    "checkRule": ("RuleCheck", {"conflicts": "array", "similar": "array", "needs_approval_from": "string", "warnings": "array"}),
     "getWorkspaceMembers": ("WorkspaceMembers", {"groups": "array", "invitations": "array", "alerts": "array", "count": "integer"}),
     "createInvitationLink": ("InvitationLink", {"url": "string", "expires_at": "string"}),
     "getMember": ("MemberDetail", {"member": "object", "groups": "array", "role_bundle": "object", "granted": "array", "revoked": "array", "assigned": "object", "clone": "object", "login": "object", "recent_events": "array"}),
     "previewMemberRemoval": ("MemberRemovalPreview", {"tickets": "array", "handovers_cancelled": "array", "approvals_reassigned": "array", "sole_approver": "array", "deleted": "array", "kept": "array", "restorable_until": "string"}),
-    "getWorkspaceRules": ("WorkspaceRules", {"rules": "array", "rules_by_layer": "array", "escalations": "array", "work_types": "array"}),
-    "previewEscalationRule": ("EscalationPreview", {"matched_last_month": "integer", "examples": "array"}),
     "getExport": ("ExportStatus", {"status": "string", "url": "string", "expires_at": "string?"}),
     "getWorkspaceSettings": ("WorkspaceSettings", {"workspace": "object", "plan": "object", "subscription": "object", "price_change": "object", "permissions": "array", "fixed_rules": "array", "deletion": "object"}),
     "listWorkspacePlans": ("PlanChoice", {"plan_id": "string", "name": "string?", "price_monthly": "integer?", "limits": "object?", "current": "boolean", "can_choose": "boolean", "reason": "string", "effective_from": "string"}),
@@ -1109,9 +1134,9 @@ RESPONSES = {
     "getPortalTicket": ("PortalTicket", {"title": "string", "stage": "string", "due_on": "string?", "artifacts": "array", "messages": "array", "sections": "array"}),
     "getPortalAcceptance": ("PortalAcceptance", {"acceptance": "object", "artifact": "object", "preview_url": "string", "message": "string?", "due_on": "string?"}),
     "getKnowledgeHome": ("KnowledgeHome", {"to_verify": "array", "proposals": "array", "recent": "array", "popular": "array", "count": "integer"}),
-    "getKnowledgeTree": ("KnowledgeTree", {"places": "array", "topics": "array", "archived": "integer"}),
+    "getKnowledgeTree": ("KnowledgeTree", {"company_name": "string", "company_nodes": "array", "groups": "array", "my_nodes": "array", "can_write": "object", "admin_counts": "object?", "truncated": "boolean"}),   # K-675（土台 3.1）
     "askKnowledge": ("KnowledgeAnswer", {"mode": "string", "answer": "string", "citations": "array", "hits": "array"}),
-    "getKnowledgePage": ("KnowledgePageDetail", {"page": "object", "body": "object", "toc": "array", "children": "array", "backlinks": "array", "related_rules": "array", "proposal_marks": "array", "draft": "object"}),
+    "getKnowledgePage": ("KnowledgePageDetail", {"id": "uuid", "title": "string", "desc": "string", "state": "string", "must": "boolean", "must_blocked": "string?", "place": "object", "acts": "string[]", "body": "object?", "draft": "object?", "request": "object?", "copied_from": "object?", "shared_from": "object?", "raise_to": "object?", "foot": "object"}),   # K-675（土台 3.1）
     "getKnowledgeUsage": ("KnowledgeUsage", {"reads_3m": "integer", "returns": "integer", "recent_tickets": "array", "hot_sections": "array"}),
     "getKnowledgeLinks": ("KnowledgeLinks", {"nodes": "array", "edges": "array", "unlinked_mentions": "array"}),
     "searchKnowledgeLinkTargets": ("KnowledgeLinkTarget", {"kind": "string", "id": "string", "title": "string", "place": "string"}),
@@ -1135,7 +1160,7 @@ RESPONSES = {
                                             "role": "string", "message": "string?", "email": "string?", "expires_at": "string",
                                             "account_exists": "boolean", "signed_in": "object?"}),
     # 招待で参加した（K-332）：ログインの印（部品のセッションの token）・入ったワークスペース・次に移る画面（入った直後は /mfa-setup）
-    "acceptInvitation": ("InvitationAccepted", {"token": "string", "workspace_id": "string", "next": "string"}),
+    "acceptInvitation": ("InvitationAccepted", {"token": "string", "workspace_id": "string", "next": "string", "state": "string?", "email": "string?"}),   # K-422：リンクの招待で新しく入る人の 202 は { state, email } だけ（確認のメールを送った・まだ参加していない）
     "getServiceStatusForMember": ("ServiceStatus", {"components": "array", "banner": "object", "maintenance": "object"}),
 }
 # 一覧の答えの meta に足す数（数だけの API を作らず、一覧の 1 回目で返す・D-128.111）。値は型の名前か、型の決まりの辞書（null を返す欄・K-92）
@@ -1167,8 +1192,6 @@ QUERIES = {
     "listConversations": ["q", "starred"],
     "listMemories": ["kind", "since"],
     "listLearningCandidates": ["trigger", "target"],
-    "listRules": ["scope", "client_id"],
-    "listWorkTypes": ["origin", "sort"],
     "listCloneActivity": ["kind", "from", "to"],
     "listCredentials": [],   # 絞り込みを受けない（会社はセッションから決める・cursor と limit は形だけ・K-351）
     "listPlanProposals": ["state"],
@@ -1204,7 +1227,6 @@ PERMS = {
     "createTicket": ("write", "書けるグループにだけ作れる。複製・AI の案も同じ", False),
     "updateTicket": ("write", "そのチケットを書ける人（担当者・書ける権限の人）。今は段・実績・保留の理由と再開の条件だけ（ほかの欄は段 8・E-VAL-018）。期限と担当を変えるときは理由が必須（段 8）", False),
     "previewTicketKindChange": ("write", "そのグループの人", False),
-    "listWorkTypeCandidates": ("read", "その人が使える業務の型だけ", False),
     "previewTicketDelete": ("assignee", "作った人か、そのグループで tickets の edit を持つ人（D-125.62・P14）", False),
     "deleteTicket": ("assignee", "作った人か、そのグループで tickets の edit を持つ人（D-125.62）。子・孫の扱い（children）を選ぶ", False),
     "restoreTicket": ("assignee", "消した本人と、そのグループのマネージャー・管理者（D-128.84）", False),
@@ -1241,8 +1263,8 @@ PERMS = {
     "listTicketDecisions": ("read", "そのチケットを見られる人（見るだけの人も読める）", False),
     "createTicketDecision": ("write", "そのチケットを書ける人（見るだけの人は足せない・⑧）。決めた人は同じ会社の今のメンバー（既定は本人）", False),
     "updateTicketDecision": ("write", "そのチケットを書ける人（見るだけの人は変えられない・⑧）", False),
-    "createTicketHandover": ("write", "渡すは担当者、配るはマネージャー、引き取りの申し出はメンバー、上へ上げるは担当者", False),
-    "answerTicketHandover": ("recipient", "渡された・判断を仰がれた相手だけ", False),
+    "createTicketHandover": ("write", "渡すは担当者、配るはそのグループを管理する人、申し出はそのグループで書ける人。閲覧のみ・ゲスト・止まっている人はできない（D-148.3・D-148.18）", False),
+    "answerTicketHandover": ("recipient", "答える人だけ：渡された人・申し出を受けた担当者・グループに配られたらそのグループを管理する人（app.handover_answerer）", False),
     "listTicketLinks": ("read", "両方のチケットを見られる人（片方が見えないときは番号だけ）", False),
     "createTicketLink": ("write", "両方のチケットに書ける人", False),
     "deleteTicketLink": ("write", "そのグループの人", False),
@@ -1306,23 +1328,6 @@ PERMS = {
     "dismissLearningCandidate": ("self", "同上", False),
     "postponeLearningCandidate": ("self", "本人", False),
     "requestRuleException": ("self", "本人が申請する。OK するのは管理者かその層のマネージャー（承認待ち・D-128.89）", False),
-    # 守ること
-    "listRules": ("read", "自分のもの・自分が使える取引先・自分の層・ワークスペースの決まり", False),
-    "getRule": ("read", "同上。効いた記録は見られるチケットのものだけ", False),
-    "checkRule": ("self", "書いている本人（点検だけで何も変えない）", False),
-    "createRule": ("self", "自分の守ることは本人。取引先の守ることはその取引先の担当とマネージャー。層・ワークスペースの決まりはワークスペースの管理から（ここでは作れない）", False),
-    "updateRule": ("self", "作った本人と、その範囲を直せる人。上の層の決まりは直せない（写して自分用にする）", False),
-    "deleteRule": ("self", "同上", False),
-    # やり方（業務の型）
-    "listWorkTypes": ("read", "自分のもの・層から・ワークスペースから・運営の全社向け のうち使えるものだけ", False),
-    "getWorkType": ("read", "同上。裏のスキルの作りは見せず、欄と説明だけ（D-126.21）", False),
-    "createWorkType": ("self", "自分のやり方として作る", False),
-    "copyWorkType": ("self", "使えるやり方を写して自分用にする", False),
-    "updateWorkTypeDraft": ("self", "自分のやり方は本人。層のやり方はその層のマネージャー、ワークスペースのものは管理者", False),
-    "listWorkTypeVersions": ("read", "そのやり方を使える人", False),
-    "tryWorkType": ("self", "直せる人。外には何も出ない（試すだけ）", False),
-    "releaseWorkType": ("self", "直せる人。機械の検査が通らない版は使い始められない", False),
-    "requestWorkTypeSpread": ("self", "本人が申請する。OK するのはそのグループのマネージャー（承認待ち・D-128.89）", False),
     # やったこと
     "getCloneNow": ("self", "自分の分身だけ", False),
     "getCloneGrowth": ("self", "自分の分身だけ", False),
@@ -1405,12 +1410,6 @@ PERMS = {
     "reportCredentialCheck": ("device", "その人の PC", False),
     "getFileForBridge": ("device", "その仕事に付いたファイルだけ（期限つきの署名 URL）", False),
     # 運営：配るもの（運営の人で、そのできることを持つ人だけ・D-128.70）
-    "listOpsWorkTypes": ("ops:distribute", "配るものを持つ運営の人", False),
-    "getOpsWorkType": ("ops:distribute", "同上。どのワークスペースがどの版を使っているかは数だけ（中身は見ない）", False),
-    "uploadWorkTypePackage": ("ops:distribute", "同上。上げた一式は機械の検査（必須の節・資格情報や固有名が入っていない・テスト場面 5 以上・版と変更点）を通す（D-080）", False),
-    "getWorkTypeUpload": ("ops:distribute", "同上", False),
-    "releaseOpsWorkType": ("ops:distribute", "同上。検査が通らない一式は出せない。全部のワークスペースに効くので本人確認を取り直す", True),
-    "rollbackOpsWorkType": ("ops:distribute", "同上（前の版に戻す）", True),
     "listOperations": ("ops:distribute", "同上（第1フェーズは汎用のブラウザ操作 1 つ・D-126.19）", False),
     "listOpsTemplates": ("ops:distribute", "同上", False),
     "getOpsTemplate": ("ops:distribute", "同上", False),
@@ -1444,14 +1443,6 @@ PERMS = {
     "updateScope": ("admin", "同上", False),
     "createLayer": ("admin", "同上", False),
     "updateLayer": ("admin", "同上", False),
-    "getWorkspaceRules": ("read", "ワークスペースのメンバーなら読める。直せるのは決まりを直せる人", False),
-    "createWorkspaceRule": ("admin", "決まりを直せる人（既定は管理者・D-125.66）。層の決まりはその層のマネージャーも（D-127.11）", False),
-    "updateWorkspaceRule": ("admin", "同上", False),
-    "deleteWorkspaceRule": ("admin", "同上", False),
-    "previewEscalationRule": ("admin", "同上（当てはまる件数を数えるだけ）", False),
-    "createEscalationRule": ("admin", "同上（D-128.87）", False),
-    "updateEscalationRule": ("admin", "同上", False),
-    "deleteEscalationRule": ("admin", "同上", False),
     "getTicketShape": ("read", "ワークスペースのメンバー（種別と区画・作業の段・分類の軸・渡すときの決まりと上限）", False),
     "previewTicketShapeChange": ("admin", "決まりを直せる人（消すもの・移し先が要るもの・当たるチケットの数を見るだけ）", False),
     "saveTicketShape": ("admin", "決まりを直せる人（既定は管理者・D-125.66）。「この形にする」で種別・区画・段・軸・渡すときをまとめて保存。消すものは移し先が必須（D-125.69）。上限 種別 10・段 8・足す軸 5・区画 20。仕組みの段は変えられない。これから作るチケットから効く（D-128.111）", False),
@@ -1504,18 +1495,18 @@ PERMS = {
     "answerAcceptance": ("client", "確かめてもらう相手だけ。OK がチケットの完了の条件になる（D-125.124）", False),
     # ナレッジ（D-128.50〜.52・D-128.105・.106）
     "getKnowledgeHome": ("read", "見られるページだけ（置き場の権限・自分のページは本人）", False),
-    "getKnowledgeTree": ("read", "同上", False),
+    "getKnowledgeTree": ("self", "社内の人（自分の見える棚の木だけ。棚ごとの見える人は行の守りと口が決める・K-675）", False),
     "listKnowledgePages": ("read", "同上。しまったページは書ける人だけ", False),
     "askKnowledge": ("read", "見られる公開のページだけから答える。PC がつながっていれば本人の分身が出典つきで答え、なければ当てはまるページと行を出す（D-128.105）", False),
     "sendKnowledgeAnswerFeedback": ("read", "答えを見た本人。「いいえ」は持ち主への直す案になる", False),
-    "getKnowledgePage": ("read", "見られるページだけ。下書きは書いている本人と書ける人", False),
-    "createKnowledgePage": ("write", "書ける人：ワークスペース全体のページはメンバー以上・グループのページはそのグループのメンバー以上・自分のページは本人（D-128.106）", False),
-    "updateKnowledgePage": ("write", "同上（置き場・親・持ち主・確かめの間隔・話題）", False),
-    "saveKnowledgeDraft": ("write", "同上。下書きは公開するまで知らせない・分身も読まない", False),
-    "discardKnowledgeDraft": ("write", "下書きを書いた本人", False),
-    "publishKnowledgePage": ("write", "書ける人：ワークスペース全体のページはメンバー以上・グループのページはそのグループのメンバー以上・自分のページは本人（D-128.106）。公開すると版が増え、持ち主に知らせる", False),
+    "getKnowledgePage": ("read", "見えるページだけ（行の守り）。下書きは書いている本人だけ・K-675", False),
+    "createKnowledgePage": ("write", "社内の人。棚ごとの書ける人（会社・グループ・自分）は行の守りと口が決める（見えない棚は 404・書けない棚は 403・K-675）", False),
+    "updateKnowledgePage": ("write", "そのページに書ける人（app.kpage_writable）。同じ棚の中で動かす・K-675", False),
+    "saveKnowledgeDraft": ("write", "そのページに書ける人（app.kpage_writable）。下書きは書き終えるまでほかの人に見せない・K-675", False),
+    "discardKnowledgeDraft": ("write", "そのページに書ける人（下書きを書いた本人の分だけ捨てる）・K-675", False),
+    "publishKnowledgePage": ("write", "そのページに書ける人（app.kpage_writable）。書き終えると版が 1 つ増える（お知らせは出さない）・K-675", False),
     "uploadKnowledgeAttachment": ("write", "同上。ファイルは検査してから置く（関門 C4）", False),
-    "listKnowledgeVersions": ("read", "見られるページだけ", False),
+    "listKnowledgeVersions": ("read", "見えるページだけ（行の守り）。公開した版を新しい順に・K-675", False),
     "restoreKnowledgeVersion": ("write", "書ける人：ワークスペース全体のページはメンバー以上・グループのページはそのグループのメンバー以上・自分のページは本人（D-128.106）（新しい版として戻す）", False),
     "exportKnowledgeMarkdown": ("read", "見られるページだけ（期限つきの署名 URL）", False),
     "getKnowledgeUsage": ("read", "見られるページだけ。読んだチケットは見られるものだけ出す", False),
@@ -1587,10 +1578,6 @@ PERMS = {
 SUCCESS_STATUS: dict[str, int] = {}
 
 # チケットごとのファイル（screen_api.d/K-xxx.py）の分を足す（K-325）。同じ鍵・同じ operationId が 2 つあれば止まる
-import sys as _sys  # noqa: E402
-from pathlib import Path as _Path  # noqa: E402
-
-_sys.path.insert(0, str(_Path(__file__).resolve().parent.parent / "scripts" / "ci"))
 from registry_d import merge_py as _merge_py  # noqa: E402
 import credential_patterns as _CP  # noqa: E402  預けたログイン情報の口が打ったとおりを照らす pattern（K-383・口は apps/api/src/features/F3/credentials/patterns.ts）
 

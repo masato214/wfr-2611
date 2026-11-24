@@ -5591,7 +5591,7 @@
   },
   {
    "id": "E-VAL-012",
-   "class": "validation",
+   "class": "conflict",
    "where": {
     "screen": "tickets",
     "state": "create"
@@ -5689,7 +5689,7 @@
   },
   {
    "id": "E-VAL-015",
-   "class": "validation",
+   "class": "conflict",
    "where": {
     "screen": "tickets",
     "state": "create"

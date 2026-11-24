@@ -3,18 +3,22 @@
 import { describe, it } from "vitest";
 
 describe("POST /api/v1/knowledge_pages/:id/publish", () => {
-  // EVENT-DRIVEN: WHEN POST /api/v1/knowledge_pages/:id/publish が「層ごとのページを書く・直す」として呼ばれたとき THEN Kaname は「版を残す」を行い 2xx を返す
+  // EVENT-DRIVEN: WHEN POST /api/v1/knowledge_pages/:id/publish が「木からページを選び、書く・書き終える・やめる・動かす・消す。必ず守るを付ける・外す」として呼ばれたとき THEN Kaname は「下書きは自動で保存・書き終えると版を残す・必ず守るは上限まで」を行い 2xx を返す
   it.todo("test_post_knowledge_pages_id_publish_ok");
   // UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）
   it.todo("test_post_knowledge_pages_id_publish_rejected_401");
-  // UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）
+  // UNWANTED: IF ページに書けない人なら、Kaname は 403 を返し、何も変えない
   it.todo("test_post_knowledge_pages_id_publish_rejected_403");
-  // UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）
+  // UNWANTED: IF ページが無いか見えないなら、Kaname は 404 を返し、在るかを漏らさず何も変えない
   it.todo("test_post_knowledge_pages_id_publish_not_found");
-  // UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない
-  it.todo("test_post_knowledge_pages_id_publish_rejected_422");
+  // UNWANTED: IF 書き終える下書きが無いなら、Kaname は 409 と E-KNW-040 を返し、ページもフォルダも変えない
+  it.todo("test_post_knowledge_pages_id_publish_conflict");
   // UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）
-  it.todo("test_post_knowledge_pages_id_publish_rejected_422_2");
+  it.todo("test_post_knowledge_pages_id_publish_rejected_422");
+  // UNWANTED: IF 必ず守るのページで本文が 2,000 字を超えるなら、Kaname は 409 と E-KNW-041 を返し、ページもフォルダも変えない
+  it.todo("test_post_knowledge_pages_id_publish_conflict_2");
+  // UNWANTED: IF DB が使えないなら、Kaname は 503 と E-PAGE-003 を返し、ページもフォルダも変えない
+  it.todo("test_post_knowledge_pages_id_publish_session_unresolved");
   // UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない
   it.todo("test_post_knowledge_pages_id_publish_too_large");
   // UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す
@@ -24,7 +28,7 @@ describe("POST /api/v1/knowledge_pages/:id/publish", () => {
   // 当てはまらない（止めは全部の口で同じ 1 か所の入口（op.ts）。本物のログインで印を立てて止まることは apps/api/test/features/F1/mfa-gate.test.ts の K321-API-001〜011、口ごとの止めは作った口の生成の試験 mfa_pending が見る）：UNWANTED: IF 付けるまで進めないの印が立ったセッションなら、Kaname は 403 と MFA_REQUIRED を返し、副作用を起こさない
   it.todo("test_post_knowledge_pages_id_publish_mfa_pending");
   // UNWANTED: IF 入口でセッションを解く所が落ちたなら、Kaname は 503 と E-PAGE-003 を返し、止める側に倒して副作用を起こさない
-  it.todo("test_post_knowledge_pages_id_publish_session_unresolved");
+  it.todo("test_post_knowledge_pages_id_publish_session_unresolved_2");
   // UBIQUITOUS: POST /api/v1/knowledge_pages/:id/publish の副作用は関門 C2 を経由し、認可 → ポリシー → 承認 → 副作用 → 記録 の順で行う
   it.todo("test_post_knowledge_pages_id_publish_shape");
 });

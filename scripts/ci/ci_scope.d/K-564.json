@@ -1,0 +1,18 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/features/F4/ticket-fields/**",
+    "apps/api/src/features/ticket-update/**",
+    "apps/api/src/hooks/ticket-update.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F4/ticket-field-values.test.ts",
+    "apps/api/test/features/F4/ticket-sort.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F4/ticket-field-values.test.ts": "口 updateTicket の hooks のファイル apps/api/src/hooks/ticket-update.ts（K-387 のファイル）を、最初の要求の前に動的 import で読む（まだ無い実装の前の準備を落とさないため）。読む物と使う試験は data_links で結ぶ・K-564"
+ }
+}

@@ -1,0 +1,160 @@
+/* 【仮】ナレッジのページの本文。段 5 の doc.css（.k-f4d-bar・.k-f4d-editor・.k-f4d-doc）と同じ値。
+   段 5 が本線に入ったら消して、そちらに差し替える。色・字・余白は正本のトークン（--k-*）だけ */
+
+.k-f9d-editor {
+  border: var(--k-c-f4d-rule-strong-border);
+  border-radius: var(--k-r-md);
+  background: var(--k-card);
+  overflow: hidden;
+  min-width: 0;
+}
+.k-f9d-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-xs);
+  padding: var(--k-s-xs) var(--k-s-sm);
+  background: var(--k-table-head);
+  border-bottom: var(--k-c-f4d-rule-border);
+}
+.k-f9d-bar button {
+  min-width: var(--k-c-dialog-button-height);
+  height: var(--k-c-dialog-button-height);
+  padding: 0 var(--k-s-sm);
+  border: 0;
+  border-radius: var(--k-r-sm);
+  background: transparent;
+  color: var(--k-on-surface);
+  font: inherit;
+  font-size: var(--k-text-body-sm);
+  cursor: pointer;
+}
+.k-f9d-bar button:hover {
+  background: var(--k-select);
+}
+.k-f9d-bar button:focus-visible {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-in-width);
+}
+.k-f9d-bar b {
+  font-weight: 700;
+}
+.k-f9d-bar i {
+  font-style: italic;
+}
+.k-f9d-swatch {
+  display: inline-block;
+  width: var(--k-s-md);
+  height: var(--k-s-xs);
+  margin-left: var(--k-s-xs);
+  vertical-align: middle;
+  background: var(--k-st-danger);
+  border-radius: var(--k-r-sm);
+}
+.k-f9d-bar-sep {
+  width: 0;
+  align-self: stretch;
+  margin: var(--k-s-xs) calc(var(--k-s-xs) / 2);
+  border-left: var(--k-c-f4d-rule-border);
+}
+.k-f9d-bar-note {
+  margin-left: auto;
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f9d-doc {
+  font-size: var(--k-text-body-md);
+  line-height: var(--k-lh-body-md);
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.k-f9d-editor .k-f9d-doc {
+  padding: var(--k-s-md) var(--k-s-lg);
+}
+.k-f9d-doc > * + * {
+  margin-top: var(--k-s-sm);
+}
+.k-f9d-doc h2,
+.k-f9d-doc h3 {
+  margin: var(--k-s-md) 0 var(--k-s-sm);
+  padding: 0 0 var(--k-s-xs);
+  border-bottom: var(--k-c-f4d-rule-border);
+  font-size: var(--k-text-section-title);
+  line-height: var(--k-lh-section-title);
+  font-weight: 700;
+}
+.k-f9d-doc h3 {
+  font-size: var(--k-text-h3);
+  border-bottom: 0;
+}
+.k-f9d-doc > :first-child {
+  margin-top: 0;
+}
+.k-f9d-doc p {
+  margin: 0;
+}
+.k-f9d-doc [data-c="red"] {
+  color: var(--k-st-danger);
+}
+.k-f9d-doc mark {
+  background: var(--k-mark);
+  color: inherit;
+}
+.k-f9d-doc ul,
+.k-f9d-doc ol {
+  margin: 0;
+  padding-left: var(--k-s-lg);
+}
+.k-f9d-doc ul {
+  list-style: disc;
+}
+.k-f9d-doc ol {
+  list-style: decimal;
+}
+.k-f9d-doc li + li {
+  margin-top: var(--k-s-xs);
+}
+.k-f9d-tablewrap {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.k-f9d-doc table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: var(--k-text-body);
+}
+.k-f9d-doc th,
+.k-f9d-doc td {
+  border: var(--k-c-f4d-rule-border);
+  padding: var(--k-s-xs) var(--k-s-sm);
+  text-align: left;
+  vertical-align: top;
+}
+.k-f9d-doc th {
+  background: var(--k-table-head);
+  font-weight: 500;
+}
+.k-f9d-doc blockquote {
+  margin: var(--k-s-sm) 0 0;
+  padding-left: var(--k-s-md);
+  border-left: var(--k-c-f4d-quote-border);
+  color: var(--k-on-surface-variant);
+}
+.k-f9d-doc code {
+  padding: 0 var(--k-s-xs);
+  border-radius: var(--k-r-sm);
+  background: var(--k-select);
+  font-family: var(--k-font-code);
+  font-size: var(--k-text-body);
+}
+.k-f9d-ghost {
+  color: var(--k-neutral-strong);
+}
+.k-f9d-caret {
+  display: inline-block;
+  width: var(--k-c-f4d-caret-width);
+  height: var(--k-c-f4d-caret-height);
+  margin: var(--k-c-f4d-caret-margin);
+  vertical-align: text-bottom;
+  background: var(--k-primary);
+}

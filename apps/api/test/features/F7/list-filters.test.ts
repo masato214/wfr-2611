@@ -205,7 +205,7 @@ describe("K-472 一覧の絞り込み：人・段・種別・完了", () => {
     expect(paged).toEqual(ids(await L(w, `view=all&assignee_id=${w.mate.id}&limit=100`)));
   });
 
-  it("K472-API-014 答えの形は変わらない：絞り込みを付けても 1 件の鍵は K-92 の 12 個のまま（総数を返さない）", async () => {
+  it("K472-API-014 答えの形は変わらない：絞り込みを付けても 1 件の鍵は K-92 の 13 個（12 個＋ K-560 の scope）のまま（総数を返さない）", async () => {
     const w = await world();
     await make(w);
     const p = await L(w, `view=all&assignee_id=${w.me.id}&done=false`);
@@ -221,6 +221,7 @@ describe("K-472 一覧の絞り込み：人・段・種別・完了", () => {
         "number",
         "overdue",
         "parent_ticket_id",
+        "scope",
         "stage",
         "title",
         "updated_at",

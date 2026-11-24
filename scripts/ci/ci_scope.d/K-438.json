@@ -1,0 +1,5 @@
+{
+ "reads_ok": {
+  "apps/api/test/features/F4/ticket-duplicate.test.ts": "08_api/endpoints.json を readFileSync で読む（契約の createTicket の 4xx に 404 E-DUP-001・409 E-DUP-002 があること・K438-API-020）"
+ }
+}

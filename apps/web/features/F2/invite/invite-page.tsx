@@ -39,12 +39,14 @@ const AFTER_SIGNED_JOIN = "/" as Route;
 /** 口が秒を返さなかった送りすぎの待ち（口の上限の窓と同じ 1 分） */
 const WAIT_SEC = 60;
 
-type Errors = { name?: string; password?: string };
+type Errors = { name?: string; password?: string; email?: string };
 /** 画面の様子：読んでいる間は null */
 interface View {
   state: InviteState;
   preview?: InvitePreview;
   waitSec?: number;
+  /** 確認のメールを送りました（sent）の伏せたメール（K-422・K-423） */
+  sentEmail?: string;
 }
 type Raw = Record<string, unknown>;
 
@@ -130,13 +132,18 @@ function noticeOf(r: CallErr): string {
   return INVITE_NOTICE.down;
 }
 
-/** 422 の文を欄に分ける（口はいまは誤りを 1 つずつ返す。2 つ返ってきたら 2 つとも出す）。欄が分からなければ null */
+/** 欄の誤りの答えか：422 と、招待のリンクでメールの鍵が無いときの 409 E-INV-016（K-422） */
+const isFieldErr = (r: CallErr): boolean => r.status === 422 || (r.status === 409 && r.code === "E-INV-016");
+
+/** 欄の誤りの文を欄に分ける（口はいまは誤りを 1 つずつ返す。2 つ返ってきたら 2 つとも出す）。欄が分からなければ null */
 function errorsOf(r: CallErr): Errors | null {
   const text = r.message ?? catalogText(r.code);
   const name = r.fields["name"] ?? (r.code === "E-VAL-007" ? text : undefined);
+  // 招待のリンク（K-422）：メールの鍵が無い参加は 409 E-INV-016（欄なし）・空白だけ／形違いを送ったら 422 E-INV-013（欄 email）
+  const email = r.fields["email"] ?? (r.code === "E-INV-013" || r.code === "E-INV-016" ? text : undefined);
   const password = r.fields["password"] ?? (/^E-VAL-(005|011|026)$/.test(r.code) ? text : undefined);
-  if (!name && !password) return null;
-  return { ...(name ? { name } : {}), ...(password ? { password } : {}) };
+  if (!name && !password && !email) return null;
+  return { ...(name ? { name } : {}), ...(password ? { password } : {}), ...(email ? { email } : {}) };
 }
 
 export function InvitePage() {
@@ -195,11 +202,17 @@ export function InvitePage() {
    *  別のメール宛て（下見の後に別のアカウントへ入り直した）だけは、出すログイン中のメールが下見の時の物と違うので、形を替える前に下見を読み直す：
    *  ログイン中のメールが読めたら「別のメール宛ての形＋読み直した中身」を 1 回で置く（形は口の断りのとおり）。
    *  読めなければ（口が答えない・ログインが切れていた・招待が使えなくなっていた）、読み直した下見の結果の画面を出す（下見の時のメールでうその文を出さない） */
-  const toChanged = async (r: CallErr): Promise<boolean> => {
+  const toChanged = async (r: CallErr, typedEmail?: string): Promise<boolean> => {
     const state = changedOf(r);
     if (!state) return false;
     if (state !== "other") {
-      setView((x) => (x ? { ...x, state } : x));
+      // 招待のリンク（下見の宛てが空）で入れたメールにもうアカウントがある：文の宛ては入れたメール（K-423）
+      setView((x) => {
+        if (!x) return x;
+        const pv = x.preview;
+        const filled = state === "account" && pv && pv.email === "" && typedEmail ? { ...pv, email: typedEmail } : pv;
+        return { ...x, state, ...(filled ? { preview: filled } : {}) };
+      });
       return true;
     }
     const now = await readPreview(token);
@@ -214,12 +227,22 @@ export function InvitePage() {
     void run(async () => {
       const r = await call("acceptInvitation", {
         params: { token },
-        body: v ? { name: v.name, password: v.password } : {},
+        body: v ? { name: v.name, password: v.password, ...(v.email ? { email: v.email } : {}) } : {},
         keepOn401: true,
         screenId: SCREEN,
       });
       if (r.ok) {
         const joined = (r.data ?? {}) as Raw;
+        // 招待のリンクで新しく入る人：参加はすぐ決まらない。確認のメールのリンクを押すまで印は置かず移らない（D-148.51・K-422）
+        if (joined["state"] === "sent") {
+          const sentEmail = str(joined["email"]);
+          setView((x) => (x ? { ...x, state: "sent", ...(sentEmail ? { sentEmail } : {}) } : x));
+          return "stay";
+        }
+        if (joined["state"] === "failed") {
+          setNotice(INVITE_NOTICE.confirmFailed);
+          return "stay";
+        }
         const session = str(joined["token"]);
         if (session) {
           setToken(session);
@@ -229,14 +252,14 @@ export function InvitePage() {
         router.push(session ? sameOriginPath(str(joined["next"]), fallback) : ("/login" as Route));
         return "leave";
       }
-      if (toDead(r) || (await toChanged(r))) return "stay";
-      if (r.status === 422 && !v) {
+      if (toDead(r) || (await toChanged(r, v?.email))) return "stay";
+      if (isFieldErr(r) && !v) {
         // 体なしの参加に欄の誤りが返った＝押す前にログインが切れて、口がログインしていない人として受けた。
         // この形には欄が無いので、下見を読み直して今の形（ログインして参加 など）を出す
         await load(token);
         return "stay";
       }
-      const byField = r.status === 422 ? errorsOf(r) : null;
+      const byField = isFieldErr(r) ? errorsOf(r) : null;
       if (byField) setErrors(byField);
       else setNotice(noticeOf(r));
       return "stay";
@@ -285,6 +308,7 @@ export function InvitePage() {
       state={view.state}
       {...(view.preview ? { preview: view.preview } : {})}
       {...(view.waitSec !== undefined ? { waitSec: view.waitSec } : {})}
+      {...(view.sentEmail ? { sentEmail: view.sentEmail } : {})}
       errors={errors}
       notice={notice}
       busy={busy}

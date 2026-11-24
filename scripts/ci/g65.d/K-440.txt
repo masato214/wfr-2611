@@ -1,0 +1,1 @@
+python3 scripts/ci/k440_ears_merge_test.py

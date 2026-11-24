@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/gen_routes.mjs ← 05_flow/flow.json）。手で直さない。flow:5be5104bde7d4d13
+// 生成物（scripts/ci/gen_routes.mjs ← 05_flow/flow.json）。手で直さない。flow:fc23c8195cda6561
 export interface RouteDef {
   id: string;
   route: string;
@@ -40,7 +40,7 @@ export const ROUTES: readonly RouteDef[] = [
     "id": "rules",
     "route": "/ai/rules",
     "needsLogin": true,
-    "release": "v1"
+    "release": "v2"
   },
   {
     "id": "clone-thread",
@@ -52,7 +52,7 @@ export const ROUTES: readonly RouteDef[] = [
     "id": "work-types",
     "route": "/ai/work-types",
     "needsLogin": true,
-    "release": "v1"
+    "release": "v2"
   },
   {
     "id": "approvals",
@@ -446,7 +446,7 @@ export const ROUTES: readonly RouteDef[] = [
   },
   {
     "id": "masters",
-    "route": "/workspace/rules",
+    "route": "/workspace/ticket-settings",
     "needsLogin": true,
     "release": "v1"
   }

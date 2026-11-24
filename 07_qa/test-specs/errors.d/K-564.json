@@ -1,0 +1,128 @@
+{
+ "errors": [
+  {
+   "id": "E-FLD-001",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "detail"
+   },
+   "when": "チケットの種別に出ない会社の項目に値を入れようとした（K-564。項目に種別の行があって、このチケットの種別が入っていない。消した種別の行しか無い項目も同じ）",
+   "false_when": "全部の種別に出る項目、またはこのチケットの種別に出る項目に値を入れた",
+   "message": "この項目は、このチケットの種別では使えません",
+   "action": "項目の一覧を読み直す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "種別が違う項目とチケット",
+    "steps": [
+     "その種別に出ない項目の id を fields で送る"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.51",
+    "D-150.37"
+   ],
+   "support_code": "FLD-001"
+  },
+  {
+   "id": "E-FLD-002",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "detail"
+   },
+   "when": "選択肢に無い値を入れようとした（1 つ選ぶ・複数選ぶ。別の項目の選択肢の id・マスタから外した選択肢も同じ・K-564）",
+   "false_when": "その項目の選択肢の id を送った",
+   "message": "選べない値が含まれています。選択肢から選び直してください",
+   "action": "選択肢から選び直す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "選択肢のある項目とチケット",
+    "steps": [
+     "その項目に、知らない選択肢の id を fields で送る"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.51",
+    "D-150.37"
+   ],
+   "support_code": "FLD-002"
+  },
+  {
+   "id": "E-FLD-003",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "detail"
+   },
+   "when": "項目の型と合わない値を入れようとした（数に文字・日付に暦に無い日や別の書き方・チェックに文字・選ぶ型に数・K-564）",
+   "false_when": "項目の型どおりの値を送った",
+   "message": "この項目に入れられない形の値です",
+   "action": "値を入れ直す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "数の項目とチケット",
+    "steps": [
+     "その項目に、数でない値を fields で送る"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.51",
+    "D-150.37"
+   ],
+   "support_code": "FLD-003"
+  },
+  {
+   "id": "E-FLD-004",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "detail"
+   },
+   "when": "必須の項目を空にしようとした（null・空の文字・空白だけ・空の並び。必須のチェックは false も同じ・K-564）",
+   "false_when": "必須でない項目を空にした、または必須の項目に値を入れた",
+   "message": "必須の項目は空にできません。値を入れてください",
+   "action": "値を入れる",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "必須の項目に値が入ったチケット",
+    "steps": [
+     "その項目に null を fields で送る"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.51",
+    "D-150.37"
+   ],
+   "support_code": "FLD-004"
+  }
+ ]
+}

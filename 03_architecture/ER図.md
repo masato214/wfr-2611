@@ -411,6 +411,8 @@ erDiagram
   scopes ||--o{ knowledge_pages : "置き場"
   knowledge_pages ||--o{ knowledge_page_versions : "版"
   knowledge_pages ||--o{ knowledge_links : "つながり"
+  scopes ||--o{ knowledge_folders : "棚"
+  knowledge_folders ||--o{ knowledge_pages : "フォルダ"
   class_axes ||--o{ class_values : "値"
   scopes ||--o{ scope_memberships : "入っている人（兼ねる）"
   tickets ||--o{ ticket_class_values : "分類"
@@ -421,12 +423,12 @@ erDiagram
 
 | テーブル | 主な列 | 備考 |
 |---|---|---|
-| **`tickets`** | `<scoped>`（scope＝グループ）/ `number`（グループの頭文字＋連番・例 EG-128）/ `kind_id` / `stage_id` / `title` / `assignee_member_id`（担当者 ← D-128.25）/ `completed_at` / `completed_by`（完了の時刻と、完了にした人。直せる人なら誰でも完了にできるので押した人を残す ← D-128.138）/ `delegated_to_clone`（分身に任せている。実行者の列は持たない ← D-128.26）/ `client_id` / `parent_ticket_id`（3 段まで ← D-125.51）/ `derived_from_ticket_id` / `start_on` / `due_on` / `priority`（中・高。高は理由が必須 ← D-125.33）/ `estimate_minutes` / `actual_minutes` / `work_type_id` / `work_type_version` / `hold_reason` / `resume_condition` / `priority_reason`（高のときの理由）/ `deleted_by`（消した人。戻せるのは消した本人とマネージャー・管理者 ← D-128.84）/ `created_by` を「作成」で出す（D-128.27） / `draft_import_id`（CSV の取り込みの下書き。確定まで取り込んだ人だけ・D-128.119） / `no_spec_reason`（「AI に任せる」で確認項目が 0 件のとき要る使わない理由。空白だけは断る ← K-434・K-565 が使う） | **★新設（D-125.27・D-127.1）。**`tasks` を置き換える。本文は区画（`ticket_sections`）に分けて持つ |
+| **`tickets`** | `<scoped>`（scope＝グループ）/ `number`（グループの頭文字＋連番・例 EG-128）/ `kind_id` / `stage_id` / `title` / `assignee_member_id`（担当者 ← D-128.25）/ `completed_at` / `completed_by`（完了の時刻と、完了にした人。直せる人なら誰でも完了にできるので押した人を残す ← D-128.138）/ `delegated_to_clone`（分身に任せている。実行者の列は持たない ← D-128.26）/ `client_id` / `parent_ticket_id`（3 段まで ← D-125.51）/ `derived_from_ticket_id` / `start_on` / `due_on` / `priority`（中・高。高は理由が必須 ← D-125.33）/ `estimate_minutes` / `actual_minutes` / `work_type_id` / `work_type_version`（どちらも凍結・K-582・D-150.60：業務の型は物として無くした。口もコードも読まない・書かない。列と値は残す）/ `hold_reason` / `resume_condition` / `priority_reason`（高のときの理由）/ `deleted_by`（消した人。戻せるのは消した本人とマネージャー・管理者 ← D-128.84）/ `created_by` を「作成」で出す（D-128.27） / `draft_import_id`（CSV の取り込みの下書き。確定まで取り込んだ人だけ・D-128.119） / `no_spec_reason`（「AI に任せる」で確認項目が 0 件のとき要る使わない理由。空白だけは断る ← K-434・K-565 が使う） | **★新設（D-125.27・D-127.1）。**`tasks` を置き換える。本文は区画（`ticket_sections`）に分けて持つ |
 | **`ticket_sections`** | `<common>` / `ticket_id` / `section_key`（目的・完了の条件・決定ログ・自由欄 など）/ `position` / `body jsonb`（1 枚の文書の一部。見たまま編集の部品 ← D-128.28〜.30）/ `version` | **★新設（D-125.27・D-125.53）。**区画ごとに版を持つ |
 | **`ticket_section_versions`** | `<common>` / `ticket_id` / `section_id` / `version` / `body jsonb` / `edited_by` / `edited_at` / `edited_by_clone` | 版と差分（TdVersions）・戻す。追記だけ（直さない・消さない）。読めるのは元のチケットを読める人（D-128.115） |
 | **`ticket_kinds`** | `<common>` / `name` / `color` / `position` / `is_builtin` | **★新設（D-125.30）。**タスク・QA・課題・会議。会社が足す（上限 10） |
 | **`kind_sections`** | `<common>` / `kind_id` / `section_key` / `label` / `mode`（必須・出す・外す）/ `position` / `default_test_specs jsonb` | **★新設（D-125.52・D-128.48）。**ワークスペースの管理 › 決まり › チケットの形 |
-| **`ticket_stages`** | `<common>` / `name` / `position` / `is_fixed`（確認中・承認待ち・実行中は製品が固定） | **★新設（D-125.38）。**会社が直せる段は上限 8 |
+| **`ticket_stages`** | `<common>` / `key`（todo＝始め・done＝終わり・仕組みの段）/ `name`（同じ会社の消していない段で重ならない）/ `color_key`（見分けの色 8 つの鍵・key から初めの色）/ `position` / `is_fixed`（確認中・承認待ち・実行中は製品が固定） | **★新設（D-125.38）。**会社が直せる段は上限 8。足す・直す・並べる・消すは K-705（始め・終わり・仕組みの段は消せない） |
 | **`class_axes`** | `<common>` / `key` / `name` / `is_builtin` / `position` | **★新設（D-125.67）。**会社が足す軸は上限 5。**凍結（K-563・会社の項目へ移した）** |
 | **`class_values`** | `<common>` / `axis_id` / `label` / `color` / `position` | 値の並び・色。**凍結（K-563・会社の項目へ移した）** |
 | **`ticket_class_values`** | `<common>` / `ticket_id` / `value_id` | チケットに付けた分類。読めるのは元のチケットを読める人（D-128.115）。**凍結（K-563・会社の項目へ移した）** |
@@ -440,9 +442,10 @@ erDiagram
 | **`ticket_messages`** | `<common>` / `ticket_id` / `author_member_id` / `kind`（書き込み・変更・仕組み）/ `body` / `mentions uuid[]` / `changes jsonb`（期限 11/01 → 11/02 など）/ `quote_of_id` / `reactions jsonb` / `notify_member_ids uuid[]`（知らせる人に選ばれた人）/ `quote_text`（引用した元の頭の 2 行の写し）/ `edited_at`（本文を直した時刻・☆ では変えない）/ `deleted_by`（消した人） | **★新設（D-125.29・D-125.131・D-128.45）。**チケットのスレッド。足した 4 列は K-383 |
 | **`app.ticket_thread_seen`** | `tenant_id` / `ticket_id` / `member_id` / `seen_at`（最後にやり取りを開いた時刻）/ `created_at` / `updated_at`（主キーは tenant_id・ticket_id・member_id） | **★新設（K-383）。**アプリの役が触れない表（app.ticket_drafts と同じ。読み書きは security definer の関数だけ）。「新しい」の印と数に使う |
 | **`reference_logs`** | `<common>` / `ticket_id` / `action_run_id` / `ref_type`（ページ・記憶・添付・外の URL）/ `ref_id` / `url` / `title` / `seen_at` | **★新設（D-125.28・D-125.35）。**外は URL・題名・時刻だけ |
-| **`knowledge_pages`** | `<scoped>`（scope＝置き場：ワークスペース全体・層・グループ・自分）/ `is_personal`（自分の置き場：持ち主だけ）/ `parent_page_id` / `title` / `owner_member_id` / `state`（下書き・公開・しまった）/ `verify_interval_days` / `verified_at` / `verify_due_on` / `topics text[]` / `current_version` / `form`（手順・決まり・まとめ・白紙）/ `archived_at` / `archived_to_page_id`（しまって新しいページへつなぐ） | **★新設（D-125.108・D-128.50〜.52）** |
+| **`knowledge_pages`** | `<scoped>`（scope＝棚：会社＝いちばん上のグループ・グループ・自分＝持ち主の主の所属）/ `is_personal`（自分の棚：持ち主だけ）/ `parent_page_id`（使わない）/ `title` / `summary`（1 行の説明・200 字まで）/ `is_must`（必ず守る・公開済みだけ）/ `copied_from_page_id`（写しの元）/ `folder_id`（フォルダ・空＝棚の直下）/ `position`（並び）/ `owner_member_id` / `state`（下書き・公開・しまった）/ `verify_interval_days` / `verified_at` / `verify_due_on` / `topics text[]`（使わない）/ `current_version` / `form`（使わない）/ `archived_at` / `archived_to_page_id`（使わない） | **★新設（D-125.108・D-128.50〜.52）。K-674 で棚の決めに作り直した（D-152.1・D-152.3）：書ける人＝会社は管理者・グループはそのグループのマネージャー・自分は本人／読める人＝会社は全員・グループはそのグループの人と共有先・自分は本人。権限の束は使わない** |
 | **`knowledge_page_versions`** | `<common>` / `page_id` / `version` / `kind`（下書き・直す案・公開）/ `body jsonb` / `note` / `author_member_id` / `proposed_from_ticket_id` / `proposed_by_clone`（チケットの完了で分身が出した直す案）/ `decision`（入れた・直して入れた・入れない）/ `decline_reason` / `decided_by` / `decided_at` / `published_by` / `published_at` | 公開するたびに増える |
 | **`knowledge_links`** | `<common>` / `from_page_id` / `to_type`（ページ・チケット・決まり・取引先）/ `to_id` / `anchor` | つながり・被リンク（D-128.52） |
+| **`knowledge_folders`** | `<scoped>`（scope＝棚）/ `is_personal`（自分の棚）/ `owner_member_id` / `parent_folder_id`（空＝棚の直下・深さ 6 まで）/ `name`（1〜100 字・同じ棚の同じ親で重ならない）/ `position` | **★新設（K-674・D-152.1）。**ナレッジのフォルダ。読める・書けるは棚の決めと同じ |
 | **`clients`** | `<common>` / `name` / `owner_member_id`（取引先の担当）/ `visibility`（全員・担当グループだけ）/ `default_share jsonb`（種別ごとの既定の見せ方）/ `routing`（分身が振り分ける）/ `email_domain`（招待はドメインが合う人だけ） | **★新設（D-125.121・D-128.53・D-128.54）** |
 | **`client_groups`** | `<common>` / `client_id` / `scope_id` | 担当グループ（いくつでも ← D-128.54） |
 | **`client_contacts`** | `<common>` / `client_id` / `name` / `email` / `role`（依頼できる・見るだけ）/ `member_id`（クライアントの場所に入るとき）/ `cc_role`（請求の宛先・CC・使わない） | 先方の人 |
@@ -454,7 +457,7 @@ erDiagram
 | **`passkeys`** | `auth_user_id` / `credential_id` / `public_key` / `name`（この PC・iPhone など）/ `transports` / `last_used_at` / `revoked_at` | **★新設（D-125.137・D-128.59〜.61）。**Better Auth の passkey の表を使う。置き場はログインの部品の側（kaname_auth）で、業務の表からは読めない（D-128.119） |
 | **`operations`** | `<common>`（tenant_id＝運営）/ `key`（browser）/ `name` / `kind`（ブラウザ・MCP・API）/ `current_version` | **★新設（D-126.2・D-126.19）。**第1フェーズは汎用のブラウザ操作 1 つ |
 | **`ticket_links`** | `<common>` / `from_ticket_id` / `to_ticket_id` / `kind`（関連・派生元） | **★新設（D-125.50・D-128.80）。**前後（依存）と重複は持たない |
-| **`ticket_handovers`** | `<common>` / `ticket_id` / `kind`（渡す・引き取りの申し出・配る・上へ上げる）/ `from_member_id` / `to_member_id` / `to_scope_id` / `reason` / `ask` / `reply_due` / `switch jsonb`（一緒に切り替えるもの）/ `state`（返事待ち・受けた・断った・取り下げた）/ `decline_reason` / `decided_at` | **★新設（D-125.70）。**`task_handovers` を置き換える |
+| **`ticket_handovers`** | `<common>` / `ticket_id` / `kind`（渡す・引き取りの申し出・配る・上へ上げる）/ `from_member_id` / `to_member_id` / `to_scope_id` / `reason` / `ask` / `reply_due` / `switch jsonb`（一緒に切り替えるもの）/ `state`（返事待ち・受けた・断った・取り下げた）/ `decline_reason` / `decided_at` / `notify_managers`（上の層にも知らせる）/ `reminded_at`（催促した時刻）/ `overdue_notified_at`（期限切れを知らせた時刻）/ `switch_applied jsonb`（実際に移した物）/ `answered_by`（答えた人） | **★新設（D-125.70）。**`task_handovers` を置き換える。後ろの 5 列は K-401 が足す。待っている渡しは 1 つのチケットに 1 つ（D-148.20）：一意の索引は置かず、渡しの行を作る DB の関数がチケットの行を for update で取ってから数える（app.handover_gate） |
 | **`saved_views`** | `<common>` / `member_id` / `name` / `share`（自分だけ・グループの全員）/ `scope_id` / `filters jsonb` / `columns jsonb` / `density` | **★新設（D-128.83）。**検索条件と列の表示設定。同じ名前は 1 人 1 つ（消していない物の中・大文字小文字を区別しない・一意の索引 `saved_views_name_uq`）・1 人 50 件まで（口で守る・K-475） |
 | **`ticket_imports`** | `<common>` / `uploaded_by` / `scope_id`（入れるグループ）/ `source`（Backlog の CSV・汎用）/ `mapping jsonb` / `rows int` / `errors jsonb` / `state`（確かめ中・確定・やめた）/ `committed_at` | **★新設（D-128.83・D-128.85）。**取り込んだものは下書き（`tickets.draft_import_id`）で入り、確定するまで取り込んだ人だけが見て直せる（D-128.119） |
 | **`learning_candidates`** | `<common>` / `owner_member_id`（その人の分身）/ `trigger`（覚えて・直したところ・差し戻し・話の中で・同じ流れ・完了）/ `proposed_as`（守ること・やり方・覚えていること）/ `text` / `evidence jsonb`（どのチケット・どの話から）/ `check_result jsonb`（分身の点検：ぶつかる決まり・似ているもの・要る OK。check は SQL の言葉と重なるので名前を変えた）/ `decided_by`/ `state`（待っている・覚えた・覚えない・あとで・例外の OK 待ち）/ `decided_at` / `result_type` / `result_id` | **★新設（D-128.41・D-128.43・D-128.90）。**「覚えたいこと」。決めるまで使わない。例外の OK が要るものは承認待ちへ（D-128.89） |
@@ -602,8 +605,10 @@ erDiagram
 | 分類の軸と値 | `class_axes` `class_values` | |
 | 種別 | `ticket_kinds` `kind_sections` | |
 | 作業の段 | `ticket_stages` | |
+| 会社が足す項目 | `custom_fields` `ticket_field_values` | 項目の定義と、チケットごとの値（K-563・段 10 の K-706・K-717） |
 | 切り替えの決まり | `handover_rules` | |
 | ナレッジのページ | `knowledge_pages` `knowledge_page_versions` `knowledge_links` | |
+| ナレッジのフォルダ | `knowledge_folders` | フォルダはページの置き場（棚の中の入れ子・K-674） |
 | 取引先 | `clients` `client_groups` `client_contacts` | |
 | 依頼 | `client_requests` `conversations` | |
 | 検収 | `acceptances` | |
