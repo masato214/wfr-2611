@@ -434,7 +434,7 @@ API 386（作った 118・後のフェーズの行為だけ 20）・前の道す
 | `listKnowledgeProposals` | GET /api/v1/knowledge/proposals | 取得（knowledge）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
 | `acceptKnowledgeProposal` | POST /api/v1/knowledge/proposals/:id/accept | 作成・実行（knowledge）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
 | `declineKnowledgeProposal` | POST /api/v1/knowledge/proposals/:id/decline | 作成・実行（knowledge）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
-| `findSimilarKnowledge` | POST /api/v1/knowledge/similar | 作成・実行（knowledge）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
+| `findSimilarKnowledge` | POST /api/v1/knowledge/similar | 作成・実行（knowledge）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69,K-686 |
 | `getKnowledgeTree` | GET /api/v1/knowledge/tree | 取得（knowledge）— ナレッジのページを書く・直す | F9 | 作った | K-69,K-676 |
 | `listKnowledgeVerifications` | GET /api/v1/knowledge/verifications | 取得（knowledge）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
 | `createKnowledgeImport` | POST /api/v1/knowledge_imports | 作成・実行（knowledge_imports）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
