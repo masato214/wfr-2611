@@ -466,6 +466,8 @@ test("K683-UI-020 やめるの失敗：捨てる下書きが無い（409・E-KNW
   const dlg = page.getByRole("dialog", { name: "書いた内容を捨てますか", exact: true });
   await dlg.getByRole("button", { name: "捨てる", exact: true }).click();
   await expect(dlg.getByRole("alert")).toContainText(msg("E-PAGE-003"));
+  // 409・E-KNW-030 は「捨てる下書きがもう無い」（ほかで捨てた・書き終えた）場面。差し替えの口の下書きも合わせて消す（読み直しの答えに下書きが残らない）
+  mk.pages.get(P_EXPENSE)!.draft = null;
   await dlg.getByRole("button", { name: "捨てる", exact: true }).click();
   await expect(page.locator(READ)).toBeVisible();
   expect(mk.count("discard")).toBe(2);
@@ -614,6 +616,8 @@ test("K683-UI-028 送っていない直しがあるまま木で別のページ�
   await expect.poll(() => saves(mk).length).toBe(1);
   expect(saves(mk)[0]!.id).toBe(P_EXPENSE);
   expect(JSON.stringify(saves(mk)[0]!.body["doc"])).toContain("移る前に打った一文。");
+  // 送りきったのは止めた時計のまま（800 ms の時計ではない）と確かめた。移った先の読み込みの答えを画面に届けるため時計を戻す
+  await page.clock.resume();
   await expect(page.locator(READ)).toBeVisible();
   await expect(page.locator(EDIT)).toHaveCount(0);
 });
