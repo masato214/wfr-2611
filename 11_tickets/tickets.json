@@ -26962,6 +26962,89 @@
    "file": "11_tickets/K-1000.md"
   },
   {
+   "id": "K-1006",
+   "title": "契約の作り直し 4：運営の外枠の数（getOpsShell に上の数・箱の件数・請求の数を寄せる）と、全社の一覧・1 社・メンバーと本人確認の送り直し・1 社の問い合わせと記録・中を見る・止める・再開を画面が要る欄に作り直す（契約だけ・振る舞いは後の葉・K-948 から分けた・K-72 の葉・W0）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "契約",
+   "assignee": "実装",
+   "due": "2026-12-05",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-948（同じまとまりの作り直し・11 口・試験 16 行・見込み 1）から引いた：この葉は 11 口・断片と本体の表の直し 25 分・作り手 10 分・試験 9 行を流して直す 15 分・文書 10 分",
+   "decisions": [
+    "D-156.63",
+    "D-156.47",
+    "D-156.4",
+    "D-156.5",
+    "D-156.3",
+    "D-156.12",
+    "D-156.23",
+    "D-156.24",
+    "D-156.72",
+    "D-156.35",
+    "D-125.128",
+    "D-125.129",
+    "D-128.68",
+    "D-128.108"
+   ],
+   "split": "",
+   "choke_points": [],
+   "choke_none": "契約と文書を直すだけ。データを書かず、外へも出さず、DB・秘密・お知らせに触らない",
+   "tests": [
+    "scripts/ci/k1006_ops_workspace_contract_test.py"
+   ],
+   "carry": [
+    "scripts/ci/g65.d/K-1006.txt"
+   ],
+   "depends_on": [
+    "K-948"
+   ],
+   "acts": [
+    "A60",
+    "A64",
+    "A127"
+   ],
+   "screens": [],
+   "apis": [],
+   "canvas": [],
+   "canvas_none": "契約と文書だけで見た目を変えない（changes に apps/web/ の道が無い）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts"
+   ],
+   "ci_wide": [
+    "shared",
+    "ci"
+   ],
+   "changes": [
+    "05_flow/screen_api.py",
+    "05_flow/screen_api.d/K-1006.py",
+    "08_api/phase1/10_運営と困ったとき.md",
+    "scripts/ci/k1006_ops_workspace_contract_test.py",
+    "scripts/ci/g65.d/K-1006.txt"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営の 1 社のまとまりと外枠の数の契約を、画面（下絵 op-list・op-list-empty・op-list-pwned・op-ws・op-ws-members・op-ws-inquiries・op-ws-log・op-peek・op-peek-open・op-stop・op-stopped と運営の外枠）が要る欄に作り直す（D-156.5）。後の葉（K-963・K-965〜K-972・K-946 の外枠）は振る舞いだけを書く。\n\n- **getOpsShell に上の数を寄せる**（D-156.4）：左のメニューの数（問い合わせ＝未担当・請求＝期限を過ぎた）・受信箱の箱の数・ワークスペースの上の数（使っている・気にかける・止めている・やめる手続き中・プランごと）・今月の実行・照合が使えなかった登録の数（D-156.35）・運営の人のできること\n- **listOpsWorkspaces**：1 行は数と種類だけ（中身を返さない・D-156.3）。気にかけること（D-156.24 の 4 つ）・絞り込み（view・plan）・並び（気にかけるを上に）。meta の summary は外す\n- **getOpsWorkspace**：いまの状態のタブ（PC・実行・止まった実行・ファイル・最近のこと）と止める印（止めた日・止める予定の日・理由・D-156.23）と自分が開いている中を見る許可\n- メンバー（本人確認の送り直し）・1 社の問い合わせ・記録・中を見る（理由・1〜60 分・D-128.68）・止める（理由 4 つ・先に知らせる／すぐ）・再開",
+    "完了の条件": "- [ ] 下の表の 9 行（K1006-DC-001〜009）が緑：`scripts/ci/k1006_ops_workspace_contract_test.py`（G65 の段 `g65.d/K-1006.txt`）\n- [ ] 契約の検査（`python3 scripts/ci/contract_shape_test.py`・`node scripts/ci/contract.mjs check`）が緑\n- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: TOOL\n\n- **生成の試験は作る段の最初に作る**（K-948 と同じ）。口は増えない・道も変えない（501 のまま）\n- 本体 `05_flow/screen_api.py`（前からある行の直し・操作 ID の名前で探す）：RESPONSES の `listOpsWorkspaces`（OpsWorkspaceRow）・`getOpsWorkspace`（OpsWorkspace）・`listOpsWorkspaceMembers`（OpsWorkspaceMember）・`getOpsShell`（OpsShell）を下の形に。QUERIES の `\"listOpsWorkspaces\": [\"q\", \"attention\", \"state\", \"plan\", \"sort\"]` を `[\"q\", \"view\", \"plan\", \"sort\"]` に（`listOpsWorkspaceAudit` は from・to のまま）。META の `\"listOpsWorkspaces\": {\"summary\": \"object\"}` を消す\n- 断片 `05_flow/screen_api.d/K-1006.py`（新しい鍵だけ）：INPUTS・REQUIRED_INPUTS・VALUE_RANGES・RESPONSES（上の 4 口以外）・QUERY_RANGES（view・plan・sort の enum・q は 100 字まで）・LIST_DETAILS（listOpsWorkspaces は sort を QUERIES の enum で受ける＝既定の sort を使わない）\n- 1 社の口の :id は会社（K-1001 の ops_tenant）。答えに会社の中身（チケット・会話・預けたログイン情報の値）を入れない\n- 欄の名前（控え帳）：`_id` は uuid（member_id・workspace_id・inquiry_id）。理由の種類は `reason_key`\n\n### 画面が使う答えの形（振る舞いの葉の正本）\n\n| 口 | 入力 | 答え（data） |\n|---|---|---|\n| getOpsShell | — | `{ operator: { member_id, caps }, inbox: { unassigned, mine, waiting, later }, invoices: { overdue_count, overdue_amount } か null（お金を持たない人）, workspaces: { total, active, stopped, closing, attention, by_plan: { free, team, business } }, runs_month: { count, prev_ratio }, pwned: { unchecked } }` |\n| listOpsWorkspaces | 問い合わせ `q`（名前・管理者のメール・100 字まで）・`view`（all・attention・stopped・closing）・`plan`（free・team・business）・`sort`（attention・members・runs：気にかけるを上に・人数の多い順・今月の実行の多い順＝下絵 op-list の並び・D-156.47）・cursor・limit | `OpsWorkspaceRow[]`：`id`・`name`・`admin_name`・`plan_name`・`members`（`{ count, limit }`）・`pc`（`{ connected, total }` か null）・`runs_month`（integer?）・`attention`（`{ kind（overdue・stuck・pc の 3 つ・上限に近い会社は出さない＝D-156.72）, label_value }[]`）・`billing_state`（unpaid・paid・overdue か null）・`state`（active・stopped・closing）・`state_since` |\n| getOpsWorkspace | — | `{ id, name, plan_name, state, stop: { reason_key, stop_on, stopped_at, noticed_at } か null, admin: { name }, pc, runs_month: { count }, stuck_runs: { count_7d, prev_week }, files: { bytes }, recent: { at, label, detail? }[]（detail＝下絵の 2 行目の字・無ければ null・D-156.47）, peek: { id, expires_at } か null }`（今月の実行は数だけ・ファイルは量だけ。上限の割合と上限の値は持たない＝D-156.63・D-156.72・精査 1 回目で外した） |\n| listOpsWorkspaceMembers | — | `{ member_id, name, email, role_label, last_seen_at, pc, login_methods, verified }[]`（role_label は 管理者・マネージャー・メンバー・閲覧のみ・ゲスト） |\n| resendOpsVerification | `{}` | `{ sent_at }` |\n| listOpsWorkspaceInquiries | — | `{ id, title, topic, asker_name, owner_name, state, created_at }[]` |\n| listOpsWorkspaceAudit | 問い合わせ from・to・cursor・limit | `{ id, at, actor_name, action, action_label, target_label, reason }[]` |\n| openPeek | `reason`（1〜200・必須）・`minutes`（1〜60・必須）・`inquiry_id`（uuid・任意） | `OpsPeek`：`{ id, workspace_id, reason, expires_at, closed_at }` |\n| closePeek | — | `OpsPeek` |\n| stopWorkspace | `reason_key`（unpaid・violation・danger・request・必須）・`mode`（scheduled・now・必須）・`stop_on`（date・scheduled のとき）・`note`（1〜500・任意）・`admin_notice`（1〜2000・任意＝管理者へのお知らせの本文） | getOpsWorkspace と同じ 12 欄 |\n| resumeWorkspace | `note`（1〜500・任意） | getOpsWorkspace と同じ 12 欄 |",
+    "依存の理由": "- K-948: 要る — 同じ `05_flow/screen_api.py` の本体の表（RESPONSES・QUERIES・META の近い行）を K-948 が先に直す。契約の読み方 `scripts/ci/f12_contract_kit.py` を K-948 が運ぶ\n- K-1001（perm.scope）: 外した — perm.scope は作り手が道から決める。この葉は道を変えないので重ならない",
+    "目録で探した結果": "- 使う：K-948 の断片の形と読み方・表 tenants・support_access_grants・ops_audit_events・security_events（振る舞いの葉が使う）\n- 作る：断片 1 つ・試験 1 本。探したが運営の 1 社の契約の作り直しは無かった",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| 本体の表 | `05_flow/screen_api.py`（前提と制約） |\n| 断片 | `05_flow/screen_api.d/K-1006.py`（上の表の形） |\n| 作り手 | K-948 と同じ順（生成物は手で書かない） |\n| 文書 | `08_api/phase1/10_運営と困ったとき.md` の 1 社・外枠の行の説明を上の形に（上の数の 3 行は K-1000 が消した後） |\n| 試験 | `scripts/ci/k1006_ops_workspace_contract_test.py`・G65 の段 `g65.d/K-1006.txt` |",
+    "外に影響する手順": "- なし — 契約と文書を直すだけ。口は今どれも 501",
+    "テスト仕様と確認の結果": "`scripts/ci/k1006_ops_workspace_contract_test.py`（python の unittest・作り手が出した契約を読む）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 外枠の数 | 契約を読む | — | 6 欄 | このチケット | K1006-DC-001 |\n| 全社の一覧 | 契約を読む | — | 11 欄・絞り込み | このチケット | K1006-DC-002・003 |\n| 1 社・メンバー・問い合わせ・記録 | 契約を読む | — | 画面の欄 | このチケット | K1006-DC-004〜006 |\n| 中を見る・止める・再開 | 契約を読む | — | 入力の形 | このチケット | K1006-DC-007・008 |\n| 欄の名前・権限 | 契約を読む | — | uuid・今のまま | このチケット | K1006-DC-009 |\n| 振る舞い（数・気にかける・止める日・中を見る 1 時間・記録） | 口 | 運営の人 | — | K-963・K-966〜K-970 | 各葉 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K1006-DC-001 | 対象の状態 | 外枠の数 | getOpsShell の答えは 6 欄・一覧でない |\n| K1006-DC-002 | 対象の状態 | 全社の一覧 | 1 行 11 欄・問い合わせ q・view・plan・sort・cursor・limit・meta に summary が無い |\n| K1006-DC-003 | 入力 | 絞り込みの値 | view 4・plan 3・sort 3（attention・members・runs）・q は 100 字まで |\n| K1006-DC-004 | 対象の状態 | 1 社 | 答え 12 欄 |\n| K1006-DC-005 | 対象の状態 | メンバー・送り直し | メンバー 8 欄・送り直しは空の体で sent_at |\n| K1006-DC-006 | 対象の状態 | 問い合わせ・記録 | 問い合わせ 7 欄・記録 7 欄・記録の問い合わせ from・to・cursor・limit |\n| K1006-DC-007 | 入力 | 中を見る | 入力 3 欄・必須 reason と minutes・minutes 1〜60・reason 1〜200・開く／閉じるの答え 5 欄 |\n| K1006-DC-008 | 入力 | 止める・再開 | 止めるの入力 5 欄・必須 2・理由 4 つ・mode 2 つ・stop_on は date・再開は note・答えは 12 欄 |\n| K1006-DC-009 | 守り | 欄の名前・権限 | `_id` は uuid・言葉は ops:any／ops:inquiry／ops:peek／ops:stop のとおり |\n\n### テストの型の受け（分類 TOOL）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-TOOL-01 日本語の名前のファイル | 要らない：読むのは英数字の名前の生成物だけ |\n| TP-TOOL-02 何も見ていないのに緑 | K1006-DC-001〜008（欄を集合で等しく比べる） |\n| TP-TOOL-03 容れ物と手元の違い | 要らない：生成物を読むだけ |\n| G-11〜G-16 | N/A：契約だけ |",
+    "前からの試験を替えた所": "作り直す 11 口の名前・道を読む前からの試験を探した。\n\n```search\ngit grep -l -E \"getOpsShell|listOpsWorkspaces|getOpsWorkspace\\b|listOpsWorkspaceMembers|resendOpsVerification|listOpsWorkspaceInquiries|listOpsWorkspaceAudit|openPeek|closePeek|stopWorkspace|resumeWorkspace|/ops/shell|/ops/workspaces\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'apps/web/tests' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!scripts/ci/k1006_*' ':!apps/api/test/features/F12/*' ':!apps/web/tests/k/k94*'\n12\n```\n\n- scripts/ci/k1102_staging_spec_test.py（K-1102・段 13 の後の葉が切る段で書いた試験）: 替えない — staging の試験の名前の一覧に口の名前が在るかを見るだけ（2026-11-23 に数え直した）\n- scripts/ci/k948_inquiry_contract_test.py: 替えない — 問い合わせの口の契約だけを読む（この葉は問い合わせの口に触らない。受信箱の数が getOpsShell に寄ったことは K948-DC-008 が meta に counts が無いことで見る）\n- 段 13 のほかの葉が切る段で書いた自分の試験・道具 9 本（apps/web/tests/k/k1008-stop-peek.spec.ts（K-1008）、apps/web/tests/k/k1015-notice-write.spec.ts（K-1015）、apps/web/tests/k/k1019-pwned.spec.ts（K-1019）、apps/web/tests/k/k965-ws-list.spec.ts（K-965）、apps/web/tests/k/k971-ws-tenant.spec.ts（K-971）、apps/web/tests/k/k972-ws-dialogs.spec.ts（K-972）、apps/web/tests/k/k976-inbox.spec.ts（K-976）、apps/web/tests/k/ops-mock.ts（K-965）、apps/web/tests/k/ops-ws-answers.ts（K-971））: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n\n- scripts/ci/k1000_flow_test.py（K-1000）: 替えない — 文書に getOpsShell の字が在り、上の数の 3 行が無いことを見る。この葉は getOpsShell の名前も道も変えない",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.4・23・24・35）",
+    "リスク": "- K-946（外枠）と K-1001・K-944 の試験は getOpsShell の道と形を読む（段 13 の葉どうし・命令で外した）。形を変えたら K-946 の試験の答えの見本（shellBody）も同じ形に直す（切る段で同じ形に書いた）",
+    "申し送り": "- K-963・K-965〜K-972・K-946：上の「画面が使う答えの形」が正本\n- K-995：照合が使えなかった登録の数は getOpsShell の `pwned.unchecked`",
+    "代表に聞くこと": "- #4 代表の答え 2026-11-23（D-156.23）（止めるの中身・止めた日・止める予定の日・理由の印）\n- #5 代表の答え 2026-11-23（D-156.24）（気にかけるの目安 4 つと並び）\n- #16 代表の答え 2026-11-23（D-156.35）（回収の置き場・一覧の上の帯の数）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 9 行（上限 30）。"
+   },
+   "file": "11_tickets/K-1006.md"
+  },
+  {
    "id": "K-1100",
    "title": "承認待ちの鍵の札が幅 375 で折り返さない（鍵の札を鍵の無い札と同じ幅にする）・キャンバスの突き合わせの「今」を止める（K-395 の直し）",
    "kind": "タスク",
