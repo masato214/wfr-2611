@@ -9945,6 +9945,33 @@
     "D-150.37",
     "D-152.18"
    ]
+  },
+  {
+   "id": "E-BILL-001",
+   "class": "conflict",
+   "where": {
+    "screen": "billing"
+   },
+   "when": "出した請求書の PDF を開くとき、その PDF がまだできていない（請求書の行の PDF の置き場の参照が空）",
+   "false_when": "PDF ができている請求書・出していない（下書き）・見えない請求書（404）",
+   "message": "この請求書の PDF はまだできていません",
+   "action": "しばらくしてから開き直す",
+   "undo": false,
+   "layers": [
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "管理者でワークスペースの管理 › 設定 › 請求書を開く",
+    "steps": [
+     "PDF がまだできていない請求書の「PDF」を押す"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-156.31"
+   ]
   }
  ],
  "meta": {
