@@ -119,6 +119,7 @@ export function signupFeature(d: SignupDeps) {
     const { token, expiresAt, signupToken } = await putPending(pool, d.config.secretsMasterKey, {
       ...parsed,
       consent: { ...terms, consentedAt: new Date() },
+      pwnedUnchecked: pwned.kind === "unavailable",
     });
     const mail = await sendLink(parsed.email, token);
     return ok(201, {

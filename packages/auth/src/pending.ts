@@ -45,7 +45,15 @@ export interface PendingConsent {
 export async function putPending(
   pool: pg.Pool,
   masterKeyB64: string,
-  input: { email: string; name: string; companyName: string; password: string; consent?: PendingConsent },
+  input: {
+    email: string;
+    name: string;
+    companyName: string;
+    password: string;
+    consent?: PendingConsent;
+    /** 照合先が落ちてパスワードを照合できなかった（K-1018・D-156.35）。省けば照合できた扱い（印は空） */
+    pwnedUnchecked?: boolean;
+  },
 ): Promise<{ token: string; expiresAt: Date; signupToken: string }> {
   const email = normalizeEmail(input.email);
   const token = randomBytes(24).toString("base64url");
@@ -56,8 +64,8 @@ export async function putPending(
   await pool.query(
     `insert into kaname_auth.pending_signup
        (email, name, company_name, pw_iv, pw_tag, pw_data, token_hash, expires_at, updated_at, sent_at, send_error,
-        signup_token_hash, terms_version_id, privacy_version_id, consented_at)
-     values ($1,$2,$3,$4,$5,$6,$7,$8, now(), null, null, $9, $10, $11, $12)
+        signup_token_hash, terms_version_id, privacy_version_id, consented_at, pwned_unchecked_at)
+     values ($1,$2,$3,$4,$5,$6,$7,$8, now(), null, null, $9, $10, $11, $12, case when $13::boolean then now() end)
      on conflict (email) do update set
        name = excluded.name, company_name = excluded.company_name,
        pw_iv = excluded.pw_iv, pw_tag = excluded.pw_tag, pw_data = excluded.pw_data,
@@ -66,7 +74,8 @@ export async function putPending(
        updated_at = now(), sent_at = null, send_error = null, consumed_at = null,
        signup_token_hash = excluded.signup_token_hash,
        terms_version_id = excluded.terms_version_id, privacy_version_id = excluded.privacy_version_id,
-       consented_at = excluded.consented_at`,
+       consented_at = excluded.consented_at,
+       pwned_unchecked_at = excluded.pwned_unchecked_at`,
     [
       email,
       input.name,
@@ -80,6 +89,7 @@ export async function putPending(
       c?.termsVersionId ?? null,
       c?.privacyVersionId ?? null,
       c?.consentedAt ?? null,
+      input.pwnedUnchecked === true,
     ],
   );
   return { token, expiresAt, signupToken };
@@ -164,6 +174,8 @@ export interface ClaimedPending {
   termsVersionId: string | null;
   privacyVersionId: string | null;
   consentedAt: Date | null;
+  /** 照合が使えなかった登録か（申し込みの印 pwned_unchecked_at・K-1018）。確定したらその会社に出来事を 1 行書く */
+  pwnedUnchecked: boolean;
 }
 /** リンクの手がかりで引いた結果（K-52）。
  *  claimed … いま使うの印を付けた（この 1 回だけが確定に進む）／ done … もう確定に使った（同じリンク・前のリンクのどちらも）
@@ -189,10 +201,12 @@ export async function claimPendingByToken(pool: pg.Pool, token: string): Promise
     terms_version_id: string | null;
     privacy_version_id: string | null;
     consented_at: Date | null;
+    pwned_unchecked: boolean;
   }>(
     `update kaname_auth.pending_signup set consumed_at = now(), updated_at = now()
       where token_hash = $1 and consumed_at is null and expires_at > now() and pw_data is not null
-      returning email, name, company_name, pw_iv, pw_tag, pw_data, terms_version_id, privacy_version_id, consented_at`,
+      returning email, name, company_name, pw_iv, pw_tag, pw_data, terms_version_id, privacy_version_id, consented_at,
+                pwned_unchecked_at is not null as pwned_unchecked`,
     [h],
   );
   const x = r.rows[0];
@@ -208,6 +222,7 @@ export async function claimPendingByToken(pool: pg.Pool, token: string): Promise
         termsVersionId: x.terms_version_id,
         privacyVersionId: x.privacy_version_id,
         consentedAt: x.consented_at,
+        pwnedUnchecked: x.pwned_unchecked,
       },
     };
   // 印を付けられなかった：なぜかを見分ける。今の手がかりを先に、無ければ前の手がかり（GIN の索引が使える @> の形）で引く。

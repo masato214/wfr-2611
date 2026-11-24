@@ -37,7 +37,7 @@ import type { Repository } from "@kaname/db/repository";
 import { kanameError } from "@kaname/errors";
 import type { HookArgs, HookReply } from "../../../contract/deps.js";
 import { cleanText } from "../sign-up/input.js";
-import { OPS_TENANT_ID } from "../sign-up/index.js";
+import { OPS_TENANT_ID, PWNED_UNAVAILABLE } from "../sign-up/index.js";
 import { sendDoneMail, type DoneMailer } from "./mail.js";
 
 /** 包んだパスワードが開けなかった出来事（security_events.kind_id）。登録の前なので運営のテナントに置く */
@@ -166,6 +166,9 @@ export function verifyEmailFeature(d: VerifyEmailDeps) {
       if (!m) throw new Error("確定した本人の会社の人が見つからない");
       const ctx: TenantContext = { tenantId: m.tenantId, userId: m.memberId, role: "member" };
       await moveConsents(ctx, r.userId, p);
+      // 照合が使えなかった登録は、確定したこの会社の出来事として残す（K-1018・D-156.35）。本人は確定した管理者・detail は空。
+      // 書けなければ確定の失敗と同じ（作りかけを片付けて印を戻す・もう一度押せば確定できる・D-128.167）
+      if (p.pwnedUnchecked) await d.repo.securityEvent(m.tenantId, PWNED_UNAVAILABLE, m.memberId, null, {});
       // 同意を移した後に、この本人のセッションの同意し直しの印を決め直す（K-53）。signUp でセッションができた時点では同意がまだ無く印が立つ。
       // 登録のときの版が今の版なら下り、登録と確定の間に新しい版が出ていれば立ったまま（次の画面で同意し直す）
       await d.appPool.query("select app.refresh_terms_pending($1)", [r.userId]);

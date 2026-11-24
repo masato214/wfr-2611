@@ -1,0 +1,5 @@
+{
+ "data_links": [
+  {"paths": ["packages/auth/src/pending.ts", "apps/api/src/features/F1/sign-up/**", "apps/api/src/features/F1/verify-email/**"], "tests": ["apps/api/test/features/F1/signup-pwned-record.test.ts", "apps/api/test/features/F1/sign-up.test.ts", "apps/api/test/features/F1/verify-email.test.ts"]}
+ ]
+}
