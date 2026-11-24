@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 359（作った 112・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 320・部品 68・設定 41
+API 359（作った 114・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 322・部品 68・設定 41
 
 ## 共通の処理
 
@@ -299,8 +299,8 @@ API 359（作った 112・後のフェーズの行為だけ 20）・前の道す
 | `getServiceStatusForMember` | GET /api/v1/service-status | 取得（service-status）— お知らせを見る | F12 | 契約だけ（501） | K-72 |
 | `getBilling` | GET /api/v1/workspace/billing | 取得（workspace）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72,K-958 |
 | `updateBillingContact` | PATCH /api/v1/workspace/billing-contact | 更新（workspace）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72 |
-| `changePlan` | POST /api/v1/workspace/plan | 作成・実行（workspace）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72,K-961 |
-| `listWorkspacePlans` | GET /api/v1/workspace/plans | 取得（workspace）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72,K-961 |
+| `changePlan` | POST /api/v1/workspace/plan | 作成・実行（workspace）— プラン・利用量・請求書を見る | F12 | 作った | K-72,K-961 |
+| `listWorkspacePlans` | GET /api/v1/workspace/plans | 取得（workspace）— プラン・利用量・請求書を見る | F12 | 作った | K-72,K-961 |
 | `getInvitation` | GET /api/v1/auth/invitations/:token | 取得（auth）— 招待を受けて参加する（今のアカウントで別のテナントにも） | F2 | 作った | K-331 |
 | `requestInvitationResend` | POST /api/v1/auth/invitations/:token/resend-request | 作成・実行（auth）— 招待を受けて参加する（今のアカウントで別のテナントにも） | F2 | 作った | K-334 |
 | `setBridgeBrowser` | POST /api/v1/bridge/browser | 作成・実行（bridge）— 自分の PC をつなぐ | F3 | 作った | K-366 |

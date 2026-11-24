@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。320 件
+// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。322 件
 export interface CatalogEntry {
   id: string;
   cls: string;
@@ -5747,6 +5747,42 @@ export const CATALOG: Record<string, CatalogEntry> = {
     ],
     "where": {
       "screen": "masters"
+    }
+  },
+  "E-PLAN-001": {
+    "id": "E-PLAN-001",
+    "cls": "conflict",
+    "message": "いまのプランです",
+    "action": "ほかのプランを選ぶ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-PLAN-001",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "company-settings"
+    }
+  },
+  "E-PLAN-002": {
+    "id": "E-PLAN-002",
+    "cls": "conflict",
+    "message": "いまのメンバーは {members} 人で、上限（{member_limit} 人）を超えています",
+    "action": "人を減らしてから選び直す",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-PLAN-002",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "company-settings"
     }
   }
 };

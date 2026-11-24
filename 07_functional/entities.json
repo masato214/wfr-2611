@@ -8119,6 +8119,14 @@
     {
      "name": "decided_at",
      "note": null
+    },
+    {
+     "name": "effective_from",
+     "note": "効く日・上げる＝今日・下げる＝来月 1 日・K-961"
+    },
+    {
+     "name": "prorated_amount",
+     "note": "上げた月の日割り・税込の円・下げは 0・K-981 が次の請求書に足す"
     }
    ],
    "relations": [],
@@ -8194,7 +8202,7 @@
     }
    ],
    "legacy_drift_notes": null,
-   "note": "下げるときは `account_events(kind=plan_change)` を作って依存を片づけてから",
+   "note": "status_id は applied（上げた）・scheduled（下げる予定）・cancelled（取り消した）。下げるときは `account_events(kind=plan_change)` を作って依存を片づけてから",
    "status": "decided",
    "decided_at": "2026-11-24",
    "source": [

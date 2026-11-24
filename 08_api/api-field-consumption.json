@@ -7879,6 +7879,40 @@
    "reason": null
   },
   {
+   "entity": "plan_change_requests",
+   "field": "effective_from",
+   "consumed_by_screens": [
+    "billing-setup",
+    "ai-staff",
+    "ops-home",
+    "ops-catalog",
+    "company-settings",
+    "ops-skills",
+    "billing",
+    "ops-billing",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "plan_change_requests",
+   "field": "prorated_amount",
+   "consumed_by_screens": [
+    "billing-setup",
+    "ai-staff",
+    "ops-home",
+    "ops-catalog",
+    "company-settings",
+    "ops-skills",
+    "billing",
+    "ops-billing",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
    "entity": "usage_meters",
    "field": "<common>",
    "consumed_by_screens": [],

@@ -6,10 +6,10 @@
  "generator": "packages/api/test/generate_from_ears.ts（EARS の文 → vitest/jest の骨組み。EVENT-DRIVEN=正常・UNWANTED=異常・UBIQUITOUS=契約の形）",
  "counts": {
   "endpoints": 359,
-  "tests": 4003,
+  "tests": 4004,
   "by_form": {
    "EVENT-DRIVEN": 387,
-   "UNWANTED": 3277,
+   "UNWANTED": 3278,
    "UBIQUITOUS": 339
   }
  },
@@ -160952,11 +160952,11 @@
     "company-settings"
    ],
    "ears_form": "UNWANTED",
-   "http_code": "",
-   "ears_text": "UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない",
+   "http_code": "409",
+   "ears_text": "UNWANTED: IF 今のプランか人数が上限を超えるプランを選んだなら、Kaname は 409 と E-PLAN-001／E-PLAN-002 を返し、契約も頼みの行も変えない",
    "test_file": "apps/api/test/generated/post_workspace_plan.test.ts",
-   "test_function": "test_post_workspace_plan_rejected_422",
-   "test_level": "unit（検証・表記ゆらぎ）",
+   "test_function": "test_post_workspace_plan_conflict",
+   "test_level": "unit（冪等）",
    "gate": "backend-coverage",
    "ladder": "L1",
    "tasks": []
@@ -160975,7 +160975,7 @@
    "http_code": "422",
    "ears_text": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
    "test_file": "apps/api/test/generated/post_workspace_plan.test.ts",
-   "test_function": "test_post_workspace_plan_rejected_422_2",
+   "test_function": "test_post_workspace_plan_rejected_422",
    "test_level": "unit（検証・表記ゆらぎ）",
    "gate": "backend-coverage",
    "ladder": "L1",
@@ -160983,6 +160983,26 @@
   },
   {
    "test_id": "TC-3960",
+   "endpoint": "POST /api/v1/workspace/plan",
+   "feature_id": "F-015",
+   "acts": [
+    "A69"
+   ],
+   "screens": [
+    "company-settings"
+   ],
+   "ears_form": "UNWANTED",
+   "http_code": "404",
+   "ears_text": "UNWANTED: IF 無いプランの鍵を選んだなら、Kaname は 404 と E-PAGE-001 を返し、契約も頼みの行も変えない",
+   "test_file": "apps/api/test/generated/post_workspace_plan.test.ts",
+   "test_function": "test_post_workspace_plan_not_found",
+   "test_level": "unit",
+   "gate": "backend-coverage",
+   "ladder": "L1",
+   "tasks": []
+  },
+  {
+   "test_id": "TC-3961",
    "endpoint": "POST /api/v1/workspace/plan",
    "feature_id": "F-015",
    "acts": [
@@ -161002,7 +161022,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3961",
+   "test_id": "TC-3962",
    "endpoint": "POST /api/v1/workspace/plan",
    "feature_id": "F-015",
    "acts": [
@@ -161022,7 +161042,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3962",
+   "test_id": "TC-3963",
    "endpoint": "POST /api/v1/workspace/plan",
    "feature_id": "F-015",
    "acts": [
@@ -161042,7 +161062,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3963",
+   "test_id": "TC-3964",
    "endpoint": "POST /api/v1/workspace/plan",
    "feature_id": "F-015",
    "acts": [
@@ -161062,7 +161082,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3964",
+   "test_id": "TC-3965",
    "endpoint": "POST /api/v1/workspace/plan",
    "feature_id": "F-015",
    "acts": [
@@ -161082,7 +161102,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3965",
+   "test_id": "TC-3966",
    "endpoint": "POST /api/v1/workspace/plan",
    "feature_id": "F-015",
    "acts": [
@@ -161102,7 +161122,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3966",
+   "test_id": "TC-3967",
    "endpoint": "GET /api/v1/workspace/plans",
    "feature_id": "F-015",
    "acts": [
@@ -161122,7 +161142,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3967",
+   "test_id": "TC-3968",
    "endpoint": "GET /api/v1/workspace/plans",
    "feature_id": "F-015",
    "acts": [
@@ -161336,7 +161356,7 @@
    ]
   },
   {
-   "test_id": "TC-3968",
+   "test_id": "TC-3969",
    "endpoint": "GET /api/v1/workspace/plans",
    "feature_id": "F-015",
    "acts": [
@@ -161407,7 +161427,7 @@
    ]
   },
   {
-   "test_id": "TC-3969",
+   "test_id": "TC-3970",
    "endpoint": "GET /api/v1/workspace/plans",
    "feature_id": "F-015",
    "acts": [
@@ -161427,7 +161447,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3970",
+   "test_id": "TC-3971",
    "endpoint": "GET /api/v1/workspace/plans",
    "feature_id": "F-015",
    "acts": [
@@ -161447,7 +161467,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3971",
+   "test_id": "TC-3972",
    "endpoint": "GET /api/v1/workspace/plans",
    "feature_id": "F-015",
    "acts": [
@@ -161467,7 +161487,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3972",
+   "test_id": "TC-3973",
    "endpoint": "GET /api/v1/workspace/plans",
    "feature_id": "F-015",
    "acts": [
@@ -161487,7 +161507,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3973",
+   "test_id": "TC-3974",
    "endpoint": "GET /api/v1/workspace/plans",
    "feature_id": "F-015",
    "acts": [
@@ -161507,7 +161527,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3974",
+   "test_id": "TC-3975",
    "endpoint": "GET /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161527,7 +161547,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3975",
+   "test_id": "TC-3976",
    "endpoint": "GET /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161741,7 +161761,7 @@
    ]
   },
   {
-   "test_id": "TC-3976",
+   "test_id": "TC-3977",
    "endpoint": "GET /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161812,7 +161832,7 @@
    ]
   },
   {
-   "test_id": "TC-3977",
+   "test_id": "TC-3978",
    "endpoint": "GET /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161832,7 +161852,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3978",
+   "test_id": "TC-3979",
    "endpoint": "GET /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161852,7 +161872,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3979",
+   "test_id": "TC-3980",
    "endpoint": "GET /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161872,7 +161892,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3980",
+   "test_id": "TC-3981",
    "endpoint": "GET /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161892,7 +161912,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3981",
+   "test_id": "TC-3982",
    "endpoint": "GET /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161912,7 +161932,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3982",
+   "test_id": "TC-3983",
    "endpoint": "GET /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161932,7 +161952,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3983",
+   "test_id": "TC-3984",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -161952,7 +161972,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3984",
+   "test_id": "TC-3985",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -162166,7 +162186,7 @@
    ]
   },
   {
-   "test_id": "TC-3985",
+   "test_id": "TC-3986",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -162237,7 +162257,7 @@
    ]
   },
   {
-   "test_id": "TC-3986",
+   "test_id": "TC-3987",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -162257,7 +162277,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3987",
+   "test_id": "TC-3988",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -162277,7 +162297,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3988",
+   "test_id": "TC-3989",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -162297,7 +162317,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3989",
+   "test_id": "TC-3990",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -162317,7 +162337,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3990",
+   "test_id": "TC-3991",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -162337,7 +162357,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3991",
+   "test_id": "TC-3992",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -162357,7 +162377,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3992",
+   "test_id": "TC-3993",
    "endpoint": "PATCH /api/v1/workspace/ticket-shape",
    "feature_id": "F-011",
    "acts": [
@@ -162377,7 +162397,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3993",
+   "test_id": "TC-3994",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162397,7 +162417,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3994",
+   "test_id": "TC-3995",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162611,7 +162631,7 @@
    ]
   },
   {
-   "test_id": "TC-3995",
+   "test_id": "TC-3996",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162682,7 +162702,7 @@
    ]
   },
   {
-   "test_id": "TC-3996",
+   "test_id": "TC-3997",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162702,7 +162722,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3997",
+   "test_id": "TC-3998",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162722,7 +162742,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3998",
+   "test_id": "TC-3999",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162742,7 +162762,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-3999",
+   "test_id": "TC-4000",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162762,7 +162782,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-4000",
+   "test_id": "TC-4001",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162782,7 +162802,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-4001",
+   "test_id": "TC-4002",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162802,7 +162822,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-4002",
+   "test_id": "TC-4003",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [
@@ -162822,7 +162842,7 @@
    "tasks": []
   },
   {
-   "test_id": "TC-4003",
+   "test_id": "TC-4004",
    "endpoint": "POST /api/v1/workspace/ticket-shape/preview",
    "feature_id": "F-011",
    "acts": [

@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:ba92eb1f66f87178
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:8dd6b50fb70c6d79
 import { z } from "zod";
 
 export const Tenants = z.strictObject({
@@ -1978,6 +1978,8 @@ export const PlanChangeRequests = z.strictObject({
   dependencies_event_id: z.uuid().nullable().optional(),
   decided_by_ops_member_id: z.uuid().nullable().optional(),
   decided_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  effective_from: z.iso.date().nullable().optional(),
+  prorated_amount: z.number().int().nullable().optional(),
   id: z.uuid(),
   tenant_id: z.uuid().optional(),
   created_at: z.iso.datetime({ offset: true }).optional(),
@@ -1994,6 +1996,8 @@ export const PlanChangeRequestsInput = z.strictObject({
   dependencies_event_id: z.uuid().nullable().optional(),
   decided_by_ops_member_id: z.uuid().nullable().optional(),
   decided_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  effective_from: z.iso.date().nullable().optional(),
+  prorated_amount: z.number().int().nullable().optional(),
 });
 export const UsageMeters = z.strictObject({
   meter_key: z.string().nullable().optional(),

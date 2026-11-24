@@ -2863,6 +2863,55 @@
    "na": {
     "test_post_notices_id_read_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）で、口ごとに変わらない。体は空の {} だけ"
    }
+  },
+  "listWorkspacePlans": {
+   "file": "apps/api/test/features/F12/plans.test.ts",
+   "reason": "契約の行・人数・能力で答えが変わる。種では作れない（K-961）",
+   "covers": {
+    "test_get_workspace_plans_ok": "K961-API-001",
+    "test_get_workspace_plans_rejected_401": "K961-API-016",
+    "test_get_workspace_plans_rejected_403": "K961-API-016",
+    "test_get_workspace_plans_rejected_422": "K961-API-001",
+    "test_get_workspace_plans_rate_limited": "K961-API-018",
+    "test_get_workspace_plans_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_workspace_plans_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  },
+  "changePlan": {
+   "file": "apps/api/test/features/F12/plans.test.ts",
+   "reason": "今の契約・人数・本人確認の取り直しで答えが変わる。種では作れない（K-961）",
+   "covers": {
+    "test_post_workspace_plan_ok": "K961-API-007",
+    "test_post_workspace_plan_shape": "K961-API-007",
+    "test_post_workspace_plan_rejected_401": "K961-API-016",
+    "test_post_workspace_plan_rejected_403": "K961-API-006",
+    "test_post_workspace_plan_rejected_422": "K961-API-012",
+    "test_post_workspace_plan_rejected_422_2": "K961-API-012",
+    "test_post_workspace_plan_not_found": "K961-API-011",
+    "test_post_workspace_plan_conflict": "K961-API-010",
+    "test_post_workspace_plan_rate_limited": {
+     "file": "apps/api/test/features/F12/plans.test.ts",
+     "mark": "K961-API-018"
+    },
+    "test_post_workspace_plan_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_workspace_plan_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_workspace_plan_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）"
+   }
   }
  }
 }

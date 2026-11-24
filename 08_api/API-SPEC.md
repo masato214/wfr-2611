@@ -367,7 +367,7 @@
 | EP-352 | POST | `/api/v1/workspace/logo` | 作成・実行（workspace）— 会社の設定を決める | A75 | 1 | member | C2 | 401 403 409 422 413 429 403 403 503 |
 | EP-353 | GET | `/api/v1/workspace/members` | 取得（workspace）— 人を招く（層・権限の束） | A36 | 1 | member |  | 401 403 422 429 403 403 503 |
 | EP-354 | PATCH | `/api/v1/workspace/permissions` | 更新（workspace）— 会社の設定を決める | A75 | 1 | member | C2 | 401 403 422 413 429 403 403 503 |
-| EP-355 | POST | `/api/v1/workspace/plan` | 作成・実行（workspace）— プラン・利用量・請求書を見る | A69 | 1 | member | C2 | 401 403 409 422 413 429 403 403 503 |
+| EP-355 | POST | `/api/v1/workspace/plan` | 作成・実行（workspace）— プラン・利用量・請求書を見る | A69 | 1 | member | C2 | 401 403 409 422 404 413 429 403 403 503 |
 | EP-356 | GET | `/api/v1/workspace/plans` | 取得（workspace）— プラン・利用量・請求書を見る | A69 | 1 | member |  | 401 403 422 429 403 403 503 |
 | EP-357 | GET | `/api/v1/workspace/ticket-shape` | 取得（workspace）— チケットの設定を整える（種別・状態・項目） | A118 | 1 | member |  | 401 403 422 429 403 403 503 |
 | EP-358 | PATCH | `/api/v1/workspace/ticket-shape` | 更新（workspace）— チケットの設定を整える（種別・状態・項目） | A118 | 1 | member | C2 | 401 403 422 413 429 403 403 503 |
@@ -380,7 +380,7 @@
 
 ## 4. 逆カバレッジ（フィールド → 画面）
 
-- 検査したフィールド 1083 ／ 内部専用 278 ／ どの画面にも出ない 11
+- 検査したフィールド 1085 ／ 内部専用 278 ／ どの画面にも出ない 11
   - ★ learned_procedures.duty_id
   - ★ learned_procedures.target_service_id
   - ★ learned_procedures.status_id

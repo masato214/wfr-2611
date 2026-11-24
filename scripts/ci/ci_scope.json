@@ -2143,6 +2143,24 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/plans.ts",
+    "apps/api/src/features/F12/billing/plans.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/plans.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "packages/db/migrations/20261128010100_plan_change.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/plans.test.ts",
+    "apps/api/test/features/F12/notices-read.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/web/features/F6/progress/progress.css",
     "04_design/DESIGN-kaname.md",
     "apps/web/styles/k-tokens.css"
