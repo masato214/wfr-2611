@@ -2893,7 +2893,6 @@
     "test_post_workspace_plan_rejected_401": "K961-API-016",
     "test_post_workspace_plan_rejected_403": "K961-API-006",
     "test_post_workspace_plan_rejected_422": "K961-API-012",
-    "test_post_workspace_plan_rejected_422_2": "K961-API-012",
     "test_post_workspace_plan_not_found": "K961-API-011",
     "test_post_workspace_plan_conflict": "K961-API-010",
     "test_post_workspace_plan_rate_limited": {
