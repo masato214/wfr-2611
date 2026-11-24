@@ -6918,6 +6918,10 @@
    }
   },
   "tenants": {
+   "billing_contact": {
+    "type": "jsonb",
+    "nullable": true
+   },
    "client_visibility_default": {
     "type": "text",
     "nullable": false
