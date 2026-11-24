@@ -2431,17 +2431,6 @@
   },
   {
    "method": "POST",
-   "path": "/api/v1/ops/invoices/export",
-   "implementation_path": "apps/api/src/routes/export_jobs.ts::exportOpsInvoices",
-   "screen_ids_referencing": [
-    "ops-billing"
-   ],
-   "acts": [
-    "A72"
-   ]
-  },
-  {
-   "method": "POST",
    "path": "/api/v1/ops/invoices/issue",
    "implementation_path": "apps/api/src/routes/invoices.ts::issueOpsInvoices",
    "screen_ids_referencing": [
@@ -2856,17 +2845,6 @@
    ],
    "acts": [
     "A127"
-   ]
-  },
-  {
-   "method": "POST",
-   "path": "/api/v1/ops/workspaces/export",
-   "implementation_path": "apps/api/src/routes/export_jobs.ts::exportOpsWorkspaces",
-   "screen_ids_referencing": [
-    "ops-home"
-   ],
-   "acts": [
-    "A60"
    ]
   },
   {

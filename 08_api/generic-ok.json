@@ -10,10 +10,6 @@
    "reason": "自分の会話の一覧。読むだけで、本人だけ（RLS）"
   },
   {
-   "op": "GET /api/v1/inquiries",
-   "reason": "自分の問い合わせの一覧。読むだけで、本人だけ（RLS）"
-  },
-  {
    "op": "GET /api/v1/members",
    "reason": "メンバーの一覧（担当を選ぶ）。読むだけで、ワークスペースの中だけ（RLS）"
   },

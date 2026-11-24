@@ -4,7 +4,7 @@
  "frozen_at": "2026-11-24",
  "summary": {
   "total_screens": 35,
-  "total_apis": 359,
+  "total_apis": 357,
   "coverage_rate": 1.0,
   "uncovered_screens": [],
   "static_screens": [
@@ -1218,11 +1218,6 @@
      "role": "data_fetch",
      "endpoint": "GET /api/v1/ops/workspaces",
      "act": "A60"
-    },
-    {
-     "role": "action",
-     "endpoint": "POST /api/v1/ops/workspaces/export",
-     "act": "A60"
     }
    ],
    "transitions": [
@@ -1945,11 +1940,6 @@
     {
      "role": "action",
      "endpoint": "POST /api/v1/ops/invoices/:id/payments",
-     "act": "A72"
-    },
-    {
-     "role": "action",
-     "endpoint": "POST /api/v1/ops/invoices/export",
      "act": "A72"
     }
    ],

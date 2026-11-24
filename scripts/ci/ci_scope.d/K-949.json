@@ -1,0 +1,26 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/inquiry-create.ts",
+    "apps/api/src/features/F12/inquiries/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/inquiry-create.test.ts",
+    "apps/api/test/generated/post_inquiries.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/inquiry-create.test.ts",
+    "apps/api/test/features/F12/inquiry.harness.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_inquiries.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F12/inquiry.harness.ts": "入っている葉の hooks のファイル（inquiry-create ほか）と上げる先の受け口（F12/inquiries/upload-route.ts・K-950）を動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-949"
+ }
+}

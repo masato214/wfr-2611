@@ -174,5 +174,6 @@ export const MIGRATIONS = [
   "20261125015700_ticket_field_edit.sql",
   "20261128004400_ops_login.sql",
   "20261128004700_ops_base.sql",
+  "20261128004900_inquiries.sql",
   "20261128010300_ops_workspaces.sql",
 ] as const;

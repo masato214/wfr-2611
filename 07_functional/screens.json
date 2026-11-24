@@ -21139,31 +21139,6 @@
      ]
     },
     {
-     "act": "A60",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/ops/workspaces/export",
-     "table": "export_jobs",
-     "operation_id": "exportOpsWorkspaces",
-     "auth": "session（会社・層・権限）",
-     "related_entities": [
-      "E-093",
-      "E-072"
-     ],
-     "choke_points": [
-      "C2"
-     ],
-     "source": [
-      "D-125.129",
-      "D-125.167",
-      "D-037",
-      "D-030",
-      "D-073.7",
-      "D-125.152",
-      "D-126.18"
-     ]
-    },
-    {
      "role": "transition",
      "method": "navigate",
      "path_draft": "/account",
@@ -21621,31 +21596,6 @@
      ]
     },
     {
-     "act": "A60",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/ops/workspaces/export",
-     "table": "export_jobs",
-     "operation_id": "exportOpsWorkspaces",
-     "auth": "session（会社・層・権限）",
-     "related_entities": [
-      "E-093",
-      "E-072"
-     ],
-     "choke_points": [
-      "C2"
-     ],
-     "source": [
-      "D-125.129",
-      "D-125.167",
-      "D-037",
-      "D-030",
-      "D-073.7",
-      "D-125.152",
-      "D-126.18"
-     ]
-    },
-    {
      "role": "transition",
      "method": "navigate",
      "path_draft": "/account",
@@ -22063,9 +22013,7 @@
     "E-074",
     "E-001",
     "E-061",
-    "E-039",
-    "E-093",
-    "E-072"
+    "E-039"
    ],
    "mock_path": "06_mockup/v1/v1-ops-home.html",
    "route": "/ops",
@@ -27655,6 +27603,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -27680,6 +27629,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -27703,6 +27653,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -27727,6 +27678,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -27749,6 +27701,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -27771,6 +27724,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -28200,6 +28154,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -28225,6 +28180,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -28248,6 +28204,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -28272,6 +28229,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -28294,6 +28252,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -28316,6 +28275,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -32377,32 +32337,6 @@
      ]
     },
     {
-     "act": "A72",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/ops/invoices/export",
-     "table": "export_jobs",
-     "operation_id": "exportOpsInvoices",
-     "auth": "session（会社・層・権限）",
-     "related_entities": [
-      "E-093",
-      "E-072"
-     ],
-     "choke_points": [
-      "C2"
-     ],
-     "source": [
-      "D-125.125",
-      "D-127.5",
-      "D-125.167",
-      "D-075.4",
-      "D-075.5",
-      "D-002",
-      "D-077.3",
-      "D-002.2"
-     ]
-    },
-    {
      "role": "transition",
      "method": "navigate",
      "path_draft": "/account",
@@ -32896,32 +32830,6 @@
      ]
     },
     {
-     "act": "A72",
-     "role": "action",
-     "method": "POST",
-     "path_draft": "/api/ops/invoices/export",
-     "table": "export_jobs",
-     "operation_id": "exportOpsInvoices",
-     "auth": "session（会社・層・権限）",
-     "related_entities": [
-      "E-093",
-      "E-072"
-     ],
-     "choke_points": [
-      "C2"
-     ],
-     "source": [
-      "D-125.125",
-      "D-127.5",
-      "D-125.167",
-      "D-075.4",
-      "D-075.5",
-      "D-002",
-      "D-077.3",
-      "D-002.2"
-     ]
-    },
-    {
      "role": "transition",
      "method": "navigate",
      "path_draft": "/account",
@@ -33339,8 +33247,7 @@
     "E-001",
     "E-080",
     "E-072",
-    "E-052",
-    "E-093"
+    "E-052"
    ],
    "mock_path": "06_mockup/v1/v1-ops-billing.html",
    "route": "/ops/billing",

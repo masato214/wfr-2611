@@ -3456,6 +3456,18 @@ K-948,契約の作り直し 1：問い合わせ（利用者の 6 口・運営の
 - [ ] 契約の検査（`python3 scripts/ci/contract_shape_test.py`・`node scripts/ci/contract.mjs check`）・画面の導出の検査（`python3 scripts/ci/flow_gate.py --flow 05_flow/flow.json --choke 03_architecture/choke-points.json`）が緑
 - [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑
 - [ ] 手元の CI（このチケットの範囲）が緑"
+K-949,問い合わせる口（createInquiry）：何について・題・内容・画面の情報・検査の済んだ添付で問い合わせを作り、運営の受信箱の「担当なし」に入れる。本人だけが読める行の守り・社内メモの印（messages.visibility）を足す（K-72 の葉・W1）,タスク,K-72,未着手,実装,2026-12-06,F12・問い合わせ,"顧客（R1〜R3）が「困ったとき・お知らせ › 問い合わせる」から運営に聞く口 `createInquiry`（POST /api/v1/inquiries）を作る（今は 501）。答えの形は K-948 の「画面が使う答えの形」（`MyInquiry` の 7 欄）。
+
+- 何について（4 つ）・題・内容・検査の済んだ添付（K-950 が上げた物）・いま見ている画面の情報（D-128.71）で問い合わせを 1 件作り、最初の書き込みを会話に置く
+- 作った問い合わせは運営の受信箱の「担当なし」の箱に入る（状態 open・担当なし。受信箱の口は K-973）。運営へのメール・鈴は出さない（D-125.130：知らせは画面の中だけ。運営は受信箱の数で知る）
+- **見えるのは書いた本人だけ**（D-156.25）：今の行の守り（同じ会社の全員が読める・inquiries の edit を持つ人は他人の問い合わせも書ける）を、本人だけに作り直す
+- 運営の社内メモの印 `messages.visibility`（`all`／`ops_only`）を足し、本人は自分の会話でも ops_only を読めない形にする（ER 図 508 行の決め。書くのは K-975）
+
+読む口は K-951、返事を書く・済みにするは K-952、添付を上げるのは K-950、画面は K-953。","- [ ] 下の表の 20 行（K949-API-001〜018・K949-DB-001・002）が緑：`apps/api/test/features/F12/inquiry-create.test.ts`（土台 `inquiry.harness.ts`）
+- [ ] 契約の口 `createInquiry` が 501 でない。生成の試験 `apps/api/test/generated/post_inquiries.test.ts` の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-949.json` の covers）
+- [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑
+- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
 K-954,お知らせを読む（listNotices）と読んだ印（markNoticeRead）：届け先の決め（全部・プラン・ワークスペース・出したか）を DB の関数 1 か所に置き、本人の既読を notice_deliveries に 1 行で持つ。続報の置き場 notice_updates・列 target_tenant_ids・impact を足す（K-72 の葉・W2）,タスク,K-72,未着手,実装,2026-12-07,F12・お知らせ,"顧客（ワークスペースの人）が「右上の顔 › 困ったとき・お知らせ」で、運営からのお知らせ（リリース・障害・メンテ）を読み、開いたら読んだ印が付く口を作る（行為 A68・今は 501）。答えの形は K-1004 の「画面が使う答えの形」（`Notice` の 9 欄・`{ id, read_at }`）で、この葉は振る舞いだけを書く。
 
 - **届け先の決めを 1 か所に置く**：どのお知らせが、どの会社の人に見えるか（出したか・誰に）を、security definer の関数 `app.notice_for_tenant(p_notice, p_tenant)` に置く。一覧（この葉）・帯と様子（K-955）・運営が「出すと届く数」を数える葉（K-978）が同じ関数を使う（同じ決めを 2 つ作らない）
