@@ -399,6 +399,10 @@ POLICIES: dict[str, list[dict]] = {
     # 登録の保留（ログインの前）。表は kaname_auth の側にあり、登録の口（auth-ext）だけが読み書きする。アプリの役からは誰も読めない
     "pending_signup": [{"name": "pending_signup_no_app_access", "operation": "select", "role": "member", "predicate": "false",
                         "rationale": "ログインの前の保留。アプリの役からは読めない（登録の口だけが kaname_auth の側で扱う・D-088.2）", "source": ["D-088.2", "D-128.115"]}],
+    # お知らせの続報（K-954・D-156.33）：運営の会社の行。書くのは運営だけ。会社の人は表を読めない（読むのは DB の関数 app.member_notices だけ）
+    "notice_updates": [{"name": "notice_updates_ops_all", "operation": "all", "role": "ops",
+                        "predicate": "tenant_id = app.ops_tenant_id() AND current_setting('app.role', true) = 'ops'",
+                        "rationale": "障害の続報は運営が書く（status_incidents と同じ）。会社の人には一覧の関数が届け先を決めて返す", "source": ["D-156.33", "D-156.10"]}],
 }
 
 # 誰でも（ログイン済みなら）読める・書けるのは本当のマスタだけ。それ以外でまだ直していない表と、直すチケット（zt_gate.py の ZT3 が見る）

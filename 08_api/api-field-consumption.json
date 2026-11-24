@@ -7089,6 +7089,34 @@
    "reason": null
   },
   {
+   "entity": "notice_updates",
+   "field": "<common>",
+   "consumed_by_screens": [],
+   "internal": true,
+   "reason": "共通列・参照 ID・秘密の実体は画面に出さない"
+  },
+  {
+   "entity": "notice_updates",
+   "field": "notice_id",
+   "consumed_by_screens": [],
+   "internal": false,
+   "reason": "★ どの画面にも出ない"
+  },
+  {
+   "entity": "notice_updates",
+   "field": "state",
+   "consumed_by_screens": [],
+   "internal": false,
+   "reason": "★ どの画面にも出ない"
+  },
+  {
+   "entity": "notice_updates",
+   "field": "body",
+   "consumed_by_screens": [],
+   "internal": false,
+   "reason": "★ どの画面にも出ない"
+  },
+  {
    "entity": "status_incidents",
    "field": "<common>",
    "consumed_by_screens": [],
@@ -13661,6 +13689,9 @@
   "procedure_steps.procedure_id",
   "procedure_steps.order_no",
   "procedure_steps.intent_ja",
-  "procedure_steps.is_variable"
+  "procedure_steps.is_variable",
+  "notice_updates.notice_id",
+  "notice_updates.state",
+  "notice_updates.body"
  ]
 }

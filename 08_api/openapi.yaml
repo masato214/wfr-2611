@@ -4970,6 +4970,8 @@ components:
         updated_at:
           type: string
           format: date-time
+        admins_only:
+          type: boolean
         affects: {}
         created_by:
           type: string
@@ -4982,6 +4984,9 @@ components:
         emailed_admins_at:
           type: string
           format: date-time
+          nullable: true
+        impact:
+          type: string
           nullable: true
         maintenance_from:
           type: string
@@ -4997,6 +5002,12 @@ components:
             type: string
         state:
           type: string
+        target_tenant_ids:
+          type: array
+          items:
+            type: string
+            format: uuid
+          nullable: true
         updated_by:
           type: string
           format: uuid
@@ -5079,28 +5090,77 @@ components:
         delivered_at: *id436
         read_at: *id437
       additionalProperties: false
-    StatusIncidents:
+    NoticeUpdates:
       type: object
       properties:
-        component_id: &id438
+        notice_id: &id438
           type: string
-          nullable: true
-        service_id: &id439
+          format: uuid
+        state: &id439
+          type: string
+        body: &id440
+          type: string
+        id:
+          type: string
+          format: uuid
+        tenant_id:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        created_by:
           type: string
           format: uuid
           nullable: true
-        state_id: &id440
-          type: string
-          nullable: true
-        started_at: &id441
+        deleted_at:
           type: string
           format: date-time
           nullable: true
-        resolved_at: &id442
+        updated_by:
+          type: string
+          format: uuid
+          nullable: true
+      required:
+      - id
+      x-table: notice_updates
+      x-source:
+      - D-069
+      - D-075
+      - D-076
+      - D-156.33
+    NoticeUpdatesInput:
+      type: object
+      properties:
+        notice_id: *id438
+        state: *id439
+        body: *id440
+      additionalProperties: false
+    StatusIncidents:
+      type: object
+      properties:
+        component_id: &id441
+          type: string
+          nullable: true
+        service_id: &id442
+          type: string
+          format: uuid
+          nullable: true
+        state_id: &id443
+          type: string
+          nullable: true
+        started_at: &id444
           type: string
           format: date-time
           nullable: true
-        note: &id443
+        resolved_at: &id445
+          type: string
+          format: date-time
+          nullable: true
+        note: &id446
           type: string
           nullable: true
         id:
@@ -5148,27 +5208,27 @@ components:
     StatusIncidentsInput:
       type: object
       properties:
-        component_id: *id438
-        service_id: *id439
-        state_id: *id440
-        started_at: *id441
-        resolved_at: *id442
-        note: *id443
+        component_id: *id441
+        service_id: *id442
+        state_id: *id443
+        started_at: *id444
+        resolved_at: *id445
+        note: *id446
       additionalProperties: false
     NotificationPreferences:
       type: object
       properties:
-        member_id: &id444
+        member_id: &id447
           type: string
           format: uuid
           nullable: true
-        event_kind_id: &id445
+        event_kind_id: &id448
           type: string
           nullable: true
-        channel_id: &id446
+        channel_id: &id449
           type: string
           nullable: true
-        enabled: &id447
+        enabled: &id450
           type: boolean
           nullable: true
         id:
@@ -5207,42 +5267,42 @@ components:
     NotificationPreferencesInput:
       type: object
       properties:
-        member_id: *id444
-        event_kind_id: *id445
-        channel_id: *id446
-        enabled: *id447
+        member_id: *id447
+        event_kind_id: *id448
+        channel_id: *id449
+        enabled: *id450
       additionalProperties: false
     Notifications:
       type: object
       properties:
-        member_id: &id448
+        member_id: &id451
           type: string
           format: uuid
           nullable: true
-        channel_id: &id449
+        channel_id: &id452
           type: string
           nullable: true
-        event_kind_id: &id450
+        event_kind_id: &id453
           type: string
           nullable: true
-        payload: &id451
+        payload: &id454
           nullable: true
         dedupe_key:
           type: string
           nullable: true
-        sent_at: &id452
+        sent_at: &id455
           type: string
           format: date-time
           nullable: true
-        failed_at: &id453
+        failed_at: &id456
           type: string
           format: date-time
           nullable: true
-        read_at: &id454
+        read_at: &id457
           type: string
           format: date-time
           nullable: true
-        retry_count: &id455
+        retry_count: &id458
           type: integer
           nullable: true
         id:
@@ -5281,30 +5341,30 @@ components:
     NotificationsInput:
       type: object
       properties:
-        member_id: *id448
-        channel_id: *id449
-        event_kind_id: *id450
-        payload: *id451
-        sent_at: *id452
-        failed_at: *id453
-        read_at: *id454
-        retry_count: *id455
+        member_id: *id451
+        channel_id: *id452
+        event_kind_id: *id453
+        payload: *id454
+        sent_at: *id455
+        failed_at: *id456
+        read_at: *id457
+        retry_count: *id458
       additionalProperties: false
     Plans:
       type: object
       properties:
-        key: &id456
+        key: &id459
           type: string
-        name: &id457
+        name: &id460
           type: string
           nullable: true
-        price_monthly: &id458
+        price_monthly: &id461
           type: string
           pattern: ^-?[0-9]+(\.[0-9]+)?$
           nullable: true
-        limits: &id459
+        limits: &id462
           nullable: true
-        current_version: &id460
+        current_version: &id463
           type: integer
           nullable: true
         id:
@@ -5344,24 +5404,24 @@ components:
     PlansInput:
       type: object
       properties:
-        key: *id456
-        name: *id457
-        price_monthly: *id458
-        limits: *id459
-        current_version: *id460
+        key: *id459
+        name: *id460
+        price_monthly: *id461
+        limits: *id462
+        current_version: *id463
       additionalProperties: false
     PlanVersions:
       type: object
       properties:
-        plan_id: &id461
+        plan_id: &id464
           type: string
           format: uuid
           nullable: true
         version:
           type: integer
-        snapshot: &id462
+        snapshot: &id465
           nullable: true
-        released_at: &id463
+        released_at: &id466
           type: string
           format: date-time
           nullable: true
@@ -5387,40 +5447,40 @@ components:
     PlanVersionsInput:
       type: object
       properties:
-        plan_id: *id461
-        snapshot: *id462
-        released_at: *id463
+        plan_id: *id464
+        snapshot: *id465
+        released_at: *id466
       additionalProperties: false
     Subscriptions:
       type: object
       properties:
-        plan_id: &id464
+        plan_id: &id467
           type: string
           format: uuid
           nullable: true
-        status_id: &id465
+        status_id: &id468
           type: string
           nullable: true
-        started_at: &id466
-          type: string
-          format: date-time
-          nullable: true
-        suspended_at: &id467
+        started_at: &id469
           type: string
           format: date-time
           nullable: true
-        ended_at: &id468
+        suspended_at: &id470
           type: string
           format: date-time
           nullable: true
-        billing_contact: &id469
+        ended_at: &id471
+          type: string
+          format: date-time
           nullable: true
-        payment_method_id: &id470
+        billing_contact: &id472
+          nullable: true
+        payment_method_id: &id473
           type: string
           format: uuid
-        stripe_customer_ref: &id471
+        stripe_customer_ref: &id474
           type: string
-        stripe_subscription_ref: &id472
+        stripe_subscription_ref: &id475
           type: string
         id:
           type: string
@@ -5459,43 +5519,43 @@ components:
     SubscriptionsInput:
       type: object
       properties:
-        plan_id: *id464
-        status_id: *id465
-        started_at: *id466
-        suspended_at: *id467
-        ended_at: *id468
-        billing_contact: *id469
-        payment_method_id: *id470
-        stripe_customer_ref: *id471
-        stripe_subscription_ref: *id472
+        plan_id: *id467
+        status_id: *id468
+        started_at: *id469
+        suspended_at: *id470
+        ended_at: *id471
+        billing_contact: *id472
+        payment_method_id: *id473
+        stripe_customer_ref: *id474
+        stripe_subscription_ref: *id475
       additionalProperties: false
     PlanChangeRequests:
       type: object
       properties:
-        from_plan_id: &id473
+        from_plan_id: &id476
           type: string
           format: uuid
           nullable: true
-        to_plan_id: &id474
+        to_plan_id: &id477
           type: string
           format: uuid
           nullable: true
-        requested_by: &id475
+        requested_by: &id478
           type: string
           format: uuid
           nullable: true
-        status_id: &id476
+        status_id: &id479
           type: string
           nullable: true
-        dependencies_event_id: &id477
-          type: string
-          format: uuid
-          nullable: true
-        decided_by_ops_member_id: &id478
+        dependencies_event_id: &id480
           type: string
           format: uuid
           nullable: true
-        decided_at: &id479
+        decided_by_ops_member_id: &id481
+          type: string
+          format: uuid
+          nullable: true
+        decided_at: &id482
           type: string
           format: date-time
           nullable: true
@@ -5533,29 +5593,29 @@ components:
     PlanChangeRequestsInput:
       type: object
       properties:
-        from_plan_id: *id473
-        to_plan_id: *id474
-        requested_by: *id475
-        status_id: *id476
-        dependencies_event_id: *id477
-        decided_by_ops_member_id: *id478
-        decided_at: *id479
+        from_plan_id: *id476
+        to_plan_id: *id477
+        requested_by: *id478
+        status_id: *id479
+        dependencies_event_id: *id480
+        decided_by_ops_member_id: *id481
+        decided_at: *id482
       additionalProperties: false
     UsageMeters:
       type: object
       properties:
-        meter_key: &id480
+        meter_key: &id483
           type: string
           nullable: true
-        period_start: &id481
+        period_start: &id484
           type: string
           format: date
           nullable: true
-        value: &id482
+        value: &id485
           type: string
           pattern: ^-?[0-9]+(\.[0-9]+)?$
           nullable: true
-        limit_value: &id483
+        limit_value: &id486
           type: string
           pattern: ^-?[0-9]+(\.[0-9]+)?$
           nullable: true
@@ -5595,47 +5655,47 @@ components:
     UsageMetersInput:
       type: object
       properties:
-        meter_key: *id480
-        period_start: *id481
-        value: *id482
-        limit_value: *id483
+        meter_key: *id483
+        period_start: *id484
+        value: *id485
+        limit_value: *id486
       additionalProperties: false
     Invoices:
       type: object
       properties:
-        subscription_id: &id484
+        subscription_id: &id487
           type: string
           format: uuid
           nullable: true
-        period_start: &id485
+        period_start: &id488
           type: string
           format: date
           nullable: true
-        period_end: &id486
+        period_end: &id489
           type: string
           format: date
           nullable: true
-        amount: &id487
+        amount: &id490
           type: string
           pattern: ^-?[0-9]+(\.[0-9]+)?$
           nullable: true
-        issued_at: &id488
+        issued_at: &id491
           type: string
           format: date-time
           nullable: true
-        due_on: &id489
+        due_on: &id492
           type: string
           format: date
           nullable: true
-        status_id: &id490
+        status_id: &id493
           type: string
           nullable: true
-        pdf_ref: &id491
+        pdf_ref: &id494
           type: string
           nullable: true
-        stripe_invoice_ref: &id492
+        stripe_invoice_ref: &id495
           type: string
-        hosted_url: &id493
+        hosted_url: &id496
           type: string
         id:
           type: string
@@ -5673,40 +5733,40 @@ components:
     InvoicesInput:
       type: object
       properties:
-        subscription_id: *id484
-        period_start: *id485
-        period_end: *id486
-        amount: *id487
-        issued_at: *id488
-        due_on: *id489
-        status_id: *id490
-        pdf_ref: *id491
-        stripe_invoice_ref: *id492
-        hosted_url: *id493
+        subscription_id: *id487
+        period_start: *id488
+        period_end: *id489
+        amount: *id490
+        issued_at: *id491
+        due_on: *id492
+        status_id: *id493
+        pdf_ref: *id494
+        stripe_invoice_ref: *id495
+        hosted_url: *id496
       additionalProperties: false
     Payments:
       type: object
       properties:
-        invoice_id: &id494
+        invoice_id: &id497
           type: string
           format: uuid
           nullable: true
-        paid_on: &id495
+        paid_on: &id498
           type: string
           format: date
           nullable: true
-        amount: &id496
+        amount: &id499
           type: string
           pattern: ^-?[0-9]+(\.[0-9]+)?$
           nullable: true
-        method_id: &id497
+        method_id: &id500
           type: string
           nullable: true
-        recorded_by_ops_member_id: &id498
+        recorded_by_ops_member_id: &id501
           type: string
           format: uuid
           nullable: true
-        stripe_payment_ref: &id499
+        stripe_payment_ref: &id502
           type: string
         id:
           type: string
@@ -5743,30 +5803,30 @@ components:
     PaymentsInput:
       type: object
       properties:
-        invoice_id: *id494
-        paid_on: *id495
-        amount: *id496
-        method_id: *id497
-        recorded_by_ops_member_id: *id498
-        stripe_payment_ref: *id499
+        invoice_id: *id497
+        paid_on: *id498
+        amount: *id499
+        method_id: *id500
+        recorded_by_ops_member_id: *id501
+        stripe_payment_ref: *id502
       additionalProperties: false
     ErrorEvents:
       type: object
       properties:
-        error_code: &id500
+        error_code: &id503
           type: string
-        member_id: &id501
+        member_id: &id504
           type: string
           format: uuid
           nullable: true
-        screen_id: &id502
+        screen_id: &id505
           type: string
           nullable: true
-        context: &id503 {}
-        shown_at: &id504
+        context: &id506 {}
+        shown_at: &id507
           type: string
           format: date-time
-        next_action_taken_at: &id505
+        next_action_taken_at: &id508
           type: string
           format: date-time
           nullable: true
@@ -5806,32 +5866,32 @@ components:
     ErrorEventsInput:
       type: object
       properties:
-        error_code: *id500
-        member_id: *id501
-        screen_id: *id502
-        context: *id503
-        shown_at: *id504
-        next_action_taken_at: *id505
+        error_code: *id503
+        member_id: *id504
+        screen_id: *id505
+        context: *id506
+        shown_at: *id507
+        next_action_taken_at: *id508
       additionalProperties: false
     Imports:
       type: object
       properties:
-        file_ref: &id506
+        file_ref: &id509
           type: string
           nullable: true
-        detected_kind_id: &id507
+        detected_kind_id: &id510
           type: string
           nullable: true
-        proposal: &id508
+        proposal: &id511
           nullable: true
-        status_id: &id509
+        status_id: &id512
           type: string
           nullable: true
-        applied_at: &id510
+        applied_at: &id513
           type: string
           format: date-time
           nullable: true
-        applied_by: &id511
+        applied_by: &id514
           type: string
           format: uuid
           nullable: true
@@ -5875,40 +5935,40 @@ components:
     ImportsInput:
       type: object
       properties:
-        file_ref: *id506
-        detected_kind_id: *id507
-        proposal: *id508
-        status_id: *id509
-        applied_at: *id510
-        applied_by: *id511
+        file_ref: *id509
+        detected_kind_id: *id510
+        proposal: *id511
+        status_id: *id512
+        applied_at: *id513
+        applied_by: *id514
       additionalProperties: false
     Integrations:
       type: object
       properties:
-        service_id: &id512
+        service_id: &id515
           type: string
           format: uuid
           nullable: true
-        kind_id: &id513
+        kind_id: &id516
           type: string
           nullable: true
-        credential_id: &id514
+        credential_id: &id517
           type: string
           format: uuid
           nullable: true
-        scopes: &id515
+        scopes: &id518
           type: array
           items:
             type: string
           nullable: true
-        status_id: &id516
+        status_id: &id519
           type: string
           nullable: true
-        connected_at: &id517
+        connected_at: &id520
           type: string
           format: date-time
           nullable: true
-        revoked_at: &id518
+        revoked_at: &id521
           type: string
           format: date-time
           nullable: true
@@ -5952,45 +6012,45 @@ components:
     IntegrationsInput:
       type: object
       properties:
-        service_id: *id512
-        kind_id: *id513
-        credential_id: *id514
-        scopes: *id515
-        status_id: *id516
-        connected_at: *id517
-        revoked_at: *id518
+        service_id: *id515
+        kind_id: *id516
+        credential_id: *id517
+        scopes: *id518
+        status_id: *id519
+        connected_at: *id520
+        revoked_at: *id521
       additionalProperties: false
     Invitations:
       type: object
       properties:
-        email: &id519
+        email: &id522
           type: string
           nullable: true
         scope_id:
           type: string
           format: uuid
           nullable: true
-        role_id: &id520
+        role_id: &id523
           type: string
           nullable: true
-        permission_preset: &id521 {}
+        permission_preset: &id524 {}
         token_hash:
           type: string
-        expires_at: &id522
+        expires_at: &id525
           type: string
           format: date-time
-        accepted_member_id: &id523
+        accepted_member_id: &id526
           type: string
           format: uuid
           nullable: true
-        revoked_at: &id524
+        revoked_at: &id527
           type: string
           format: date-time
           nullable: true
-        message: &id525
+        message: &id528
           type: string
           nullable: true
-        resend_requested_at: &id526
+        resend_requested_at: &id529
           type: string
           format: date-time
           nullable: true
@@ -6033,37 +6093,37 @@ components:
     InvitationsInput:
       type: object
       properties:
-        email: *id519
-        role_id: *id520
-        permission_preset: *id521
-        expires_at: *id522
-        accepted_member_id: *id523
-        revoked_at: *id524
-        message: *id525
-        resend_requested_at: *id526
+        email: *id522
+        role_id: *id523
+        permission_preset: *id524
+        expires_at: *id525
+        accepted_member_id: *id526
+        revoked_at: *id527
+        message: *id528
+        resend_requested_at: *id529
       additionalProperties: false
     PendingSignup:
       type: object
       properties:
-        email: &id527
+        email: &id530
           type: string
-        name: &id528
+        name: &id531
           type: string
-        company_name: &id529
+        company_name: &id532
           type: string
-        pw_iv: &id530
+        pw_iv: &id533
           type: string
         token_hash:
           type: string
-        expires_at: &id531
+        expires_at: &id534
           type: string
           format: date-time
-        sent_at: &id532
+        sent_at: &id535
           type: string
           format: date-time
-        send_error: &id533
+        send_error: &id536
           type: string
-        consumed_at: &id534
+        consumed_at: &id537
           type: string
           format: date-time
         id:
@@ -6090,34 +6150,34 @@ components:
     PendingSignupInput:
       type: object
       properties:
-        email: *id527
-        name: *id528
-        company_name: *id529
-        pw_iv: *id530
-        expires_at: *id531
-        sent_at: *id532
-        send_error: *id533
-        consumed_at: *id534
+        email: *id530
+        name: *id531
+        company_name: *id532
+        pw_iv: *id533
+        expires_at: *id534
+        sent_at: *id535
+        send_error: *id536
+        consumed_at: *id537
       additionalProperties: false
     ExportJobs:
       type: object
       properties:
-        requested_by: &id535
+        requested_by: &id538
           type: string
           format: uuid
           nullable: true
-        kind_id: &id536
+        kind_id: &id539
           type: string
         storage_ref:
           type: string
           nullable: true
-        status_id: &id537
+        status_id: &id540
           type: string
-        expires_at: &id538
+        expires_at: &id541
           type: string
           format: date-time
           nullable: true
-        downloaded_at: &id539
+        downloaded_at: &id542
           type: string
           format: date-time
           nullable: true
@@ -6157,40 +6217,40 @@ components:
     ExportJobsInput:
       type: object
       properties:
-        requested_by: *id535
-        kind_id: *id536
-        status_id: *id537
-        expires_at: *id538
-        downloaded_at: *id539
+        requested_by: *id538
+        kind_id: *id539
+        status_id: *id540
+        expires_at: *id541
+        downloaded_at: *id542
       additionalProperties: false
     Attachments:
       type: object
       properties:
-        owner_type: &id540
+        owner_type: &id543
           type: string
           nullable: true
-        owner_id: &id541
+        owner_id: &id544
           type: string
           format: uuid
           nullable: true
         storage_ref:
           type: string
           nullable: true
-        mime: &id542
+        mime: &id545
           type: string
           nullable: true
-        size: &id543
+        size: &id546
           type: string
           pattern: ^-?[0-9]+$
           nullable: true
-        name: &id544
+        name: &id547
           type: string
           nullable: true
-        uploaded_by: &id545
+        uploaded_by: &id548
           type: string
           format: uuid
           nullable: true
-        scanned_at: &id546
+        scanned_at: &id549
           type: string
           format: date-time
           nullable: true
@@ -6234,38 +6294,38 @@ components:
     AttachmentsInput:
       type: object
       properties:
-        owner_type: *id540
-        owner_id: *id541
-        mime: *id542
-        size: *id543
-        name: *id544
-        uploaded_by: *id545
-        scanned_at: *id546
+        owner_type: *id543
+        owner_id: *id544
+        mime: *id545
+        size: *id546
+        name: *id547
+        uploaded_by: *id548
+        scanned_at: *id549
       additionalProperties: false
     Skills:
       type: object
       properties:
-        kind_id: &id547
+        kind_id: &id550
           type: string
           nullable: true
-        key: &id548
+        key: &id551
           type: string
-        name: &id549
-          type: string
-          nullable: true
-        purpose: &id550
+        name: &id552
           type: string
           nullable: true
-        current_version: &id551
+        purpose: &id553
+          type: string
+          nullable: true
+        current_version: &id554
           type: integer
           nullable: true
-        plan_ids: &id552
+        plan_ids: &id555
           type: array
           items:
             type: string
             format: uuid
           nullable: true
-        visibility_id: &id553
+        visibility_id: &id556
           type: string
           nullable: true
         id:
@@ -6309,18 +6369,18 @@ components:
     SkillsInput:
       type: object
       properties:
-        kind_id: *id547
-        key: *id548
-        name: *id549
-        purpose: *id550
-        current_version: *id551
-        plan_ids: *id552
-        visibility_id: *id553
+        kind_id: *id550
+        key: *id551
+        name: *id552
+        purpose: *id553
+        current_version: *id554
+        plan_ids: *id555
+        visibility_id: *id556
       additionalProperties: false
     SkillVersions:
       type: object
       properties:
-        skill_id: &id554
+        skill_id: &id557
           type: string
           format: uuid
           nullable: true
@@ -6329,20 +6389,20 @@ components:
         package_ref:
           type: string
           nullable: true
-        changelog: &id555
+        changelog: &id558
           type: string
           nullable: true
-        tested_at: &id556
-          type: string
-          format: date-time
-          nullable: true
-        test_result: &id557
-          nullable: true
-        released_at: &id558
+        tested_at: &id559
           type: string
           format: date-time
           nullable: true
-        released_by: &id559
+        test_result: &id560
+          nullable: true
+        released_at: &id561
+          type: string
+          format: date-time
+          nullable: true
+        released_by: &id562
           type: string
           format: uuid
           nullable: true
@@ -6372,36 +6432,36 @@ components:
     SkillVersionsInput:
       type: object
       properties:
-        skill_id: *id554
-        changelog: *id555
-        tested_at: *id556
-        test_result: *id557
-        released_at: *id558
-        released_by: *id559
+        skill_id: *id557
+        changelog: *id558
+        tested_at: *id559
+        test_result: *id560
+        released_at: *id561
+        released_by: *id562
       additionalProperties: false
     SkillTestRuns:
       type: object
       properties:
-        skill_version_id: &id560
+        skill_version_id: &id563
           type: string
           format: uuid
           nullable: true
-        ops_member_id: &id561
+        ops_member_id: &id564
           type: string
           format: uuid
           nullable: true
-        mode: &id562
+        mode: &id565
           type: string
           nullable: true
-        started_at: &id563
-          type: string
-          format: date-time
-          nullable: true
-        finished_at: &id564
+        started_at: &id566
           type: string
           format: date-time
           nullable: true
-        result: &id565
+        finished_at: &id567
+          type: string
+          format: date-time
+          nullable: true
+        result: &id568
           nullable: true
         id:
           type: string
@@ -6435,38 +6495,38 @@ components:
     SkillTestRunsInput:
       type: object
       properties:
-        skill_version_id: *id560
-        ops_member_id: *id561
-        mode: *id562
-        started_at: *id563
-        finished_at: *id564
-        result: *id565
+        skill_version_id: *id563
+        ops_member_id: *id564
+        mode: *id565
+        started_at: *id566
+        finished_at: *id567
+        result: *id568
       additionalProperties: false
     SkillAttachments:
       type: object
       properties:
-        skill_id: &id566
+        skill_id: &id569
           type: string
           format: uuid
           nullable: true
-        version_in_use: &id567
+        version_in_use: &id570
           type: integer
           nullable: true
-        target_type: &id568
+        target_type: &id571
           type: string
           nullable: true
-        target_id: &id569
+        target_id: &id572
           type: string
           format: uuid
           nullable: true
-        enabled: &id570
+        enabled: &id573
           type: boolean
           nullable: true
-        disabled_by: &id571
+        disabled_by: &id574
           type: string
           format: uuid
           nullable: true
-        attached_at: &id572
+        attached_at: &id575
           type: string
           format: date-time
           nullable: true
@@ -6507,34 +6567,34 @@ components:
     SkillAttachmentsInput:
       type: object
       properties:
-        skill_id: *id566
-        version_in_use: *id567
-        target_type: *id568
-        target_id: *id569
-        enabled: *id570
-        disabled_by: *id571
-        attached_at: *id572
+        skill_id: *id569
+        version_in_use: *id570
+        target_type: *id571
+        target_id: *id572
+        enabled: *id573
+        disabled_by: *id574
+        attached_at: *id575
       additionalProperties: false
     PaymentMethods:
       type: object
       properties:
-        kind_id: &id573
+        kind_id: &id576
           type: string
           nullable: true
-        stripe_customer_ref: &id574
+        stripe_customer_ref: &id577
           type: string
           nullable: true
-        brand: &id575
+        brand: &id578
           type: string
           nullable: true
-        last4: &id576
+        last4: &id579
           type: string
           nullable: true
-        expires_on: &id577
+        expires_on: &id580
           type: string
           format: date
           nullable: true
-        registered_at: &id578
+        registered_at: &id581
           type: string
           format: date-time
           nullable: true
@@ -6573,33 +6633,33 @@ components:
     PaymentMethodsInput:
       type: object
       properties:
-        kind_id: *id573
-        stripe_customer_ref: *id574
-        brand: *id575
-        last4: *id576
-        expires_on: *id577
-        registered_at: *id578
+        kind_id: *id576
+        stripe_customer_ref: *id577
+        brand: *id578
+        last4: *id579
+        expires_on: *id580
+        registered_at: *id581
       additionalProperties: false
     BillingEvents:
       type: object
       properties:
-        stripe_event_ref: &id579
+        stripe_event_ref: &id582
           type: string
           nullable: true
-        kind: &id580
+        kind: &id583
           type: string
           nullable: true
-        payload: &id581
+        payload: &id584
           nullable: true
-        received_at: &id582
-          type: string
-          format: date-time
-          nullable: true
-        processed_at: &id583
+        received_at: &id585
           type: string
           format: date-time
           nullable: true
-        signature_ok: &id584
+        processed_at: &id586
+          type: string
+          format: date-time
+          nullable: true
+        signature_ok: &id587
           type: string
           nullable: true
         id:
@@ -6637,34 +6697,34 @@ components:
     BillingEventsInput:
       type: object
       properties:
-        stripe_event_ref: *id579
-        kind: *id580
-        payload: *id581
-        received_at: *id582
-        processed_at: *id583
-        signature_ok: *id584
+        stripe_event_ref: *id582
+        kind: *id583
+        payload: *id584
+        received_at: *id585
+        processed_at: *id586
+        signature_ok: *id587
       additionalProperties: false
     LlmRoutes:
       type: object
       properties:
-        default_kind_id: &id585
+        default_kind_id: &id588
           type: string
           nullable: true
-        offline_kind_id: &id586
+        offline_kind_id: &id589
           type: string
           nullable: true
-        provider_id: &id587
+        provider_id: &id590
           type: string
           nullable: true
-        credential_id: &id588
-          type: string
-          format: uuid
-          nullable: true
-        managed_allowed_by_ops_member_id: &id589
+        credential_id: &id591
           type: string
           format: uuid
           nullable: true
-        managed_allowed_at: &id590
+        managed_allowed_by_ops_member_id: &id592
+          type: string
+          format: uuid
+          nullable: true
+        managed_allowed_at: &id593
           type: string
           format: date-time
           nullable: true
@@ -6705,28 +6765,28 @@ components:
     LlmRoutesInput:
       type: object
       properties:
-        default_kind_id: *id585
-        offline_kind_id: *id586
-        provider_id: *id587
-        credential_id: *id588
-        managed_allowed_by_ops_member_id: *id589
-        managed_allowed_at: *id590
+        default_kind_id: *id588
+        offline_kind_id: *id589
+        provider_id: *id590
+        credential_id: *id591
+        managed_allowed_by_ops_member_id: *id592
+        managed_allowed_at: *id593
       additionalProperties: false
     LlmCapabilities:
       type: object
       properties:
-        key: &id591
+        key: &id594
           type: string
-        label: &id592
+        label: &id595
           type: string
-        provider_id: &id593
+        provider_id: &id596
           type: string
           format: uuid
           nullable: true
-        capability_id: &id594
+        capability_id: &id597
           type: string
           nullable: true
-        supported: &id595
+        supported: &id598
           type: string
           nullable: true
         id:
@@ -6753,33 +6813,33 @@ components:
     LlmCapabilitiesInput:
       type: object
       properties:
-        key: *id591
-        label: *id592
-        provider_id: *id593
-        capability_id: *id594
-        supported: *id595
+        key: *id594
+        label: *id595
+        provider_id: *id596
+        capability_id: *id597
+        supported: *id598
       additionalProperties: false
     PushDevices:
       type: object
       properties:
-        member_id: &id596
+        member_id: &id599
           type: string
           format: uuid
           nullable: true
-        platform_id: &id597
+        platform_id: &id600
           type: string
           nullable: true
-        token_ref: &id598
+        token_ref: &id601
           type: string
           nullable: true
-        app_version: &id599
+        app_version: &id602
           type: integer
           nullable: true
-        last_seen_at: &id600
+        last_seen_at: &id603
           type: string
           format: date-time
           nullable: true
-        revoked_at: &id601
+        revoked_at: &id604
           type: string
           format: date-time
           nullable: true
@@ -6818,12 +6878,12 @@ components:
     PushDevicesInput:
       type: object
       properties:
-        member_id: *id596
-        platform_id: *id597
-        token_ref: *id598
-        app_version: *id599
-        last_seen_at: *id600
-        revoked_at: *id601
+        member_id: *id599
+        platform_id: *id600
+        token_ref: *id601
+        app_version: *id602
+        last_seen_at: *id603
+        revoked_at: *id604
       additionalProperties: false
     DisclosureVersions:
       type: object
@@ -6831,24 +6891,24 @@ components:
         version:
           type: integer
           nullable: true
-        generated_at: &id602
+        generated_at: &id605
           type: string
           format: date-time
           nullable: true
         content_hash:
           type: string
           nullable: true
-        pdf_ref: &id603
+        pdf_ref: &id606
           type: string
           nullable: true
-        dpa_ref: &id604
+        dpa_ref: &id607
           type: string
           nullable: true
-        released_by: &id605
+        released_by: &id608
           type: string
           format: uuid
           nullable: true
-        notice_id: &id606
+        notice_id: &id609
           type: string
           format: uuid
           nullable: true
@@ -6887,37 +6947,37 @@ components:
     DisclosureVersionsInput:
       type: object
       properties:
-        generated_at: *id602
-        pdf_ref: *id603
-        dpa_ref: *id604
-        released_by: *id605
-        notice_id: *id606
+        generated_at: *id605
+        pdf_ref: *id606
+        dpa_ref: *id607
+        released_by: *id608
+        notice_id: *id609
       additionalProperties: false
     Subprocessors:
       type: object
       properties:
-        name: &id607
+        name: &id610
           type: string
           nullable: true
-        purpose: &id608
+        purpose: &id611
           type: string
           nullable: true
-        region: &id609
+        region: &id612
           type: string
           nullable: true
-        data_kinds: &id610
+        data_kinds: &id613
           type: array
           items:
             type: string
           nullable: true
-        effective_from: &id611
+        effective_from: &id614
           type: string
           nullable: true
-        announced_at: &id612
+        announced_at: &id615
           type: string
           format: date-time
           nullable: true
-        retired_at: &id613
+        retired_at: &id616
           type: string
           format: date-time
           nullable: true
@@ -6956,86 +7016,86 @@ components:
     SubprocessorsInput:
       type: object
       properties:
-        name: *id607
-        purpose: *id608
-        region: *id609
-        data_kinds: *id610
-        effective_from: *id611
-        announced_at: *id612
-        retired_at: *id613
+        name: *id610
+        purpose: *id611
+        region: *id612
+        data_kinds: *id613
+        effective_from: *id614
+        announced_at: *id615
+        retired_at: *id616
       additionalProperties: false
     Tickets:
       type: object
       properties:
-        number: &id614
+        number: &id617
           type: string
-        kind_id: &id615
-          type: string
-          format: uuid
-        stage_id: &id616
+        kind_id: &id618
           type: string
           format: uuid
-        title: &id617
+        stage_id: &id619
           type: string
-        assignee_member_id: &id618
+          format: uuid
+        title: &id620
+          type: string
+        assignee_member_id: &id621
           type: string
           format: uuid
           nullable: true
-        completed_at: &id619
+        completed_at: &id622
           type: string
           format: date-time
           nullable: true
-        completed_by: &id620
+        completed_by: &id623
           type: string
           format: uuid
           nullable: true
-        delegated_to_clone: &id621
+        delegated_to_clone: &id624
           type: boolean
-        client_id: &id622
+        client_id: &id625
           type: string
           format: uuid
           nullable: true
-        parent_ticket_id: &id623
+        parent_ticket_id: &id626
           type: string
           format: uuid
           nullable: true
-        derived_from_ticket_id: &id624
+        derived_from_ticket_id: &id627
           type: string
           format: uuid
           nullable: true
-        start_on: &id625
+        start_on: &id628
           type: string
           format: date
           nullable: true
-        due_on: &id626
+        due_on: &id629
           type: string
           format: date
           nullable: true
-        priority: &id627
+        priority: &id630
           type: string
-        estimate_minutes: &id628
+        estimate_minutes: &id631
           type: integer
           nullable: true
-        actual_minutes: &id629
+        actual_minutes: &id632
           type: integer
           nullable: true
-        work_type_id: &id630
+        work_type_id: &id633
           type: string
           format: uuid
           nullable: true
-        work_type_version: &id631
+        work_type_version: &id634
           type: integer
           nullable: true
-        hold_reason: &id632
+        hold_reason: &id635
           type: string
           nullable: true
-        resume_condition: &id633
+        resume_condition: &id636
           type: string
           nullable: true
-        priority_reason: &id634
+        priority_reason: &id637
           type: string
           nullable: true
-        deleted_by: &id635
+        deleted_by: &id638
           type: string
           format: uuid
           nullable: true
@@ -7043,11 +7103,11 @@ components:
           type: string
           format: uuid
           nullable: true
-        draft_import_id: &id636
+        draft_import_id: &id639
           type: string
           format: uuid
           nullable: true
-        no_spec_reason: &id637
+        no_spec_reason: &id640
           type: string
           nullable: true
         id:
@@ -7085,42 +7145,42 @@ components:
     TicketsInput:
       type: object
       properties:
-        number: *id614
-        kind_id: *id615
-        stage_id: *id616
-        title: *id617
-        assignee_member_id: *id618
-        completed_at: *id619
-        completed_by: *id620
-        delegated_to_clone: *id621
-        client_id: *id622
-        parent_ticket_id: *id623
-        derived_from_ticket_id: *id624
-        start_on: *id625
-        due_on: *id626
-        priority: *id627
-        estimate_minutes: *id628
-        actual_minutes: *id629
-        work_type_id: *id630
-        work_type_version: *id631
-        hold_reason: *id632
-        resume_condition: *id633
-        priority_reason: *id634
-        deleted_by: *id635
-        draft_import_id: *id636
-        no_spec_reason: *id637
+        number: *id617
+        kind_id: *id618
+        stage_id: *id619
+        title: *id620
+        assignee_member_id: *id621
+        completed_at: *id622
+        completed_by: *id623
+        delegated_to_clone: *id624
+        client_id: *id625
+        parent_ticket_id: *id626
+        derived_from_ticket_id: *id627
+        start_on: *id628
+        due_on: *id629
+        priority: *id630
+        estimate_minutes: *id631
+        actual_minutes: *id632
+        work_type_id: *id633
+        work_type_version: *id634
+        hold_reason: *id635
+        resume_condition: *id636
+        priority_reason: *id637
+        deleted_by: *id638
+        draft_import_id: *id639
+        no_spec_reason: *id640
       additionalProperties: false
     TicketSections:
       type: object
       properties:
-        ticket_id: &id638
+        ticket_id: &id641
           type: string
           format: uuid
-        section_key: &id639
+        section_key: &id642
           type: string
-        position: &id640
+        position: &id643
           type: integer
-        body: &id641 {}
+        body: &id644 {}
         version:
           type: integer
         id:
@@ -7158,31 +7218,31 @@ components:
     TicketSectionsInput:
       type: object
       properties:
-        ticket_id: *id638
-        section_key: *id639
-        position: *id640
-        body: *id641
+        ticket_id: *id641
+        section_key: *id642
+        position: *id643
+        body: *id644
       additionalProperties: false
     TicketSectionVersions:
       type: object
       properties:
-        ticket_id: &id642
+        ticket_id: &id645
           type: string
           format: uuid
-        section_id: &id643
+        section_id: &id646
           type: string
           format: uuid
         version:
           type: integer
-        body: &id644 {}
-        edited_by: &id645
+        body: &id647 {}
+        edited_by: &id648
           type: string
           format: uuid
           nullable: true
-        edited_at: &id646
+        edited_at: &id649
           type: string
           format: date-time
-        edited_by_clone: &id647
+        edited_by_clone: &id650
           type: boolean
         id:
           type: string
@@ -7221,24 +7281,24 @@ components:
     TicketSectionVersionsInput:
       type: object
       properties:
-        ticket_id: *id642
-        section_id: *id643
-        body: *id644
-        edited_by: *id645
-        edited_at: *id646
-        edited_by_clone: *id647
+        ticket_id: *id645
+        section_id: *id646
+        body: *id647
+        edited_by: *id648
+        edited_at: *id649
+        edited_by_clone: *id650
       additionalProperties: false
     TicketKinds:
       type: object
       properties:
-        name: &id648
+        name: &id651
           type: string
-        color: &id649
+        color: &id652
           type: string
           nullable: true
-        position: &id650
+        position: &id653
           type: integer
-        is_builtin: &id651
+        is_builtin: &id654
           type: boolean
         id:
           type: string
@@ -7279,26 +7339,26 @@ components:
     TicketKindsInput:
       type: object
       properties:
-        name: *id648
-        color: *id649
-        position: *id650
-        is_builtin: *id651
+        name: *id651
+        color: *id652
+        position: *id653
+        is_builtin: *id654
       additionalProperties: false
     KindSections:
       type: object
       properties:
-        kind_id: &id652
+        kind_id: &id655
           type: string
           format: uuid
-        section_key: &id653
+        section_key: &id656
           type: string
-        label: &id654
+        label: &id657
           type: string
-        mode: &id655
+        mode: &id658
           type: string
-        position: &id656
+        position: &id659
           type: integer
-        default_test_specs: &id657
+        default_test_specs: &id660
           nullable: true
         id:
           type: string
@@ -7344,26 +7404,26 @@ components:
     KindSectionsInput:
       type: object
       properties:
-        kind_id: *id652
-        section_key: *id653
-        label: *id654
-        mode: *id655
-        position: *id656
-        default_test_specs: *id657
+        kind_id: *id655
+        section_key: *id656
+        label: *id657
+        mode: *id658
+        position: *id659
+        default_test_specs: *id660
       additionalProperties: false
     TicketStages:
       type: object
       properties:
-        key: &id658
+        key: &id661
           type: string
           nullable: true
-        name: &id659
+        name: &id662
           type: string
-        color_key: &id660
+        color_key: &id663
           type: string
-        position: &id661
+        position: &id664
           type: integer
-        is_fixed: &id662
+        is_fixed: &id665
           type: boolean
         id:
           type: string
@@ -7399,22 +7459,22 @@ components:
     TicketStagesInput:
       type: object
       properties:
-        key: *id658
-        name: *id659
-        color_key: *id660
-        position: *id661
-        is_fixed: *id662
+        key: *id661
+        name: *id662
+        color_key: *id663
+        position: *id664
+        is_fixed: *id665
       additionalProperties: false
     ClassAxes:
       type: object
       properties:
-        key: &id663
+        key: &id666
           type: string
-        name: &id664
+        name: &id667
           type: string
-        is_builtin: &id665
+        is_builtin: &id668
           type: boolean
-        position: &id666
+        position: &id669
           type: integer
         id:
           type: string
@@ -7450,23 +7510,23 @@ components:
     ClassAxesInput:
       type: object
       properties:
-        key: *id663
-        name: *id664
-        is_builtin: *id665
-        position: *id666
+        key: *id666
+        name: *id667
+        is_builtin: *id668
+        position: *id669
       additionalProperties: false
     ClassValues:
       type: object
       properties:
-        axis_id: &id667
+        axis_id: &id670
           type: string
           format: uuid
-        label: &id668
+        label: &id671
           type: string
-        color: &id669
+        color: &id672
           type: string
           nullable: true
-        position: &id670
+        position: &id673
           type: integer
         id:
           type: string
@@ -7501,18 +7561,18 @@ components:
     ClassValuesInput:
       type: object
       properties:
-        axis_id: *id667
-        label: *id668
-        color: *id669
-        position: *id670
+        axis_id: *id670
+        label: *id671
+        color: *id672
+        position: *id673
       additionalProperties: false
     TicketClassValues:
       type: object
       properties:
-        ticket_id: &id671
+        ticket_id: &id674
           type: string
           format: uuid
-        value_id: &id672
+        value_id: &id675
           type: string
           format: uuid
         id:
@@ -7549,23 +7609,23 @@ components:
     TicketClassValuesInput:
       type: object
       properties:
-        ticket_id: *id671
-        value_id: *id672
+        ticket_id: *id674
+        value_id: *id675
       additionalProperties: false
     CustomFields:
       type: object
       properties:
-        name: &id673
+        name: &id676
           type: string
-        field_type: &id674
+        field_type: &id677
           type: string
-        required: &id675
+        required: &id678
           type: boolean
-        description: &id676
+        description: &id679
           type: string
           nullable: true
-        options: &id677 {}
-        position: &id678
+        options: &id680 {}
+        position: &id681
           type: integer
         id:
           type: string
@@ -7602,20 +7662,20 @@ components:
     CustomFieldsInput:
       type: object
       properties:
-        name: *id673
-        field_type: *id674
-        required: *id675
-        description: *id676
-        options: *id677
-        position: *id678
+        name: *id676
+        field_type: *id677
+        required: *id678
+        description: *id679
+        options: *id680
+        position: *id681
       additionalProperties: false
     CustomFieldKinds:
       type: object
       properties:
-        field_id: &id679
+        field_id: &id682
           type: string
           format: uuid
-        kind_id: &id680
+        kind_id: &id683
           type: string
           format: uuid
         id:
@@ -7651,19 +7711,19 @@ components:
     CustomFieldKindsInput:
       type: object
       properties:
-        field_id: *id679
-        kind_id: *id680
+        field_id: *id682
+        kind_id: *id683
       additionalProperties: false
     TicketFieldValues:
       type: object
       properties:
-        ticket_id: &id681
+        ticket_id: &id684
           type: string
           format: uuid
-        field_id: &id682
+        field_id: &id685
           type: string
           format: uuid
-        value: &id683 {}
+        value: &id686 {}
         id:
           type: string
           format: uuid
@@ -7697,20 +7757,20 @@ components:
     TicketFieldValuesInput:
       type: object
       properties:
-        ticket_id: *id681
-        field_id: *id682
-        value: *id683
+        ticket_id: *id684
+        field_id: *id685
+        value: *id686
       additionalProperties: false
     HandoverRules:
       type: object
       properties:
-        target: &id684
+        target: &id687
           type: string
-        axis_id: &id685
+        axis_id: &id688
           type: string
           format: uuid
           nullable: true
-        mode: &id686
+        mode: &id689
           type: string
         id:
           type: string
@@ -7747,43 +7807,43 @@ components:
     HandoverRulesInput:
       type: object
       properties:
-        target: *id684
-        axis_id: *id685
-        mode: *id686
+        target: *id687
+        axis_id: *id688
+        mode: *id689
       additionalProperties: false
     TestSpecs:
       type: object
       properties:
-        ticket_id: &id687
+        ticket_id: &id690
           type: string
           format: uuid
-        check_kind: &id688
+        check_kind: &id691
           type: string
           nullable: true
-        title: &id689
+        title: &id692
           type: string
-        judge_type: &id690
+        judge_type: &id693
           type: string
           nullable: true
-        params: &id691 {}
+        params: &id694 {}
         version:
           type: integer
-        off_reason: &id692
+        off_reason: &id695
           type: string
           nullable: true
-        checked_at: &id693
+        checked_at: &id696
           type: string
           format: date-time
           nullable: true
-        checked_by_member_id: &id694
+        checked_by_member_id: &id697
           type: string
           format: uuid
           nullable: true
-        checked_by_ai: &id695
+        checked_by_ai: &id698
           type: boolean
-        source: &id696
+        source: &id699
           type: string
-        source_ref_id: &id697
+        source_ref_id: &id700
           type: string
           format: uuid
           nullable: true
@@ -7823,41 +7883,41 @@ components:
     TestSpecsInput:
       type: object
       properties:
-        ticket_id: *id687
-        check_kind: *id688
-        title: *id689
-        judge_type: *id690
-        params: *id691
-        off_reason: *id692
-        checked_at: *id693
-        checked_by_member_id: *id694
-        checked_by_ai: *id695
-        source: *id696
-        source_ref_id: *id697
+        ticket_id: *id690
+        check_kind: *id691
+        title: *id692
+        judge_type: *id693
+        params: *id694
+        off_reason: *id695
+        checked_at: *id696
+        checked_by_member_id: *id697
+        checked_by_ai: *id698
+        source: *id699
+        source_ref_id: *id700
       additionalProperties: false
     Checks:
       type: object
       properties:
-        ticket_id: &id698
+        ticket_id: &id701
           type: string
           format: uuid
-        test_spec_id: &id699
+        test_spec_id: &id702
           type: string
           format: uuid
-        spec_version: &id700
+        spec_version: &id703
           type: integer
-        artifact_version_id: &id701
+        artifact_version_id: &id704
           type: string
           format: uuid
           nullable: true
-        attempt: &id702
+        attempt: &id705
           type: integer
-        result: &id703
+        result: &id706
           type: string
-        evidence: &id704 {}
-        runner: &id705
+        evidence: &id707 {}
+        runner: &id708
           type: string
-        checked_by_member_id: &id706
+        checked_by_member_id: &id709
           type: string
           format: uuid
           nullable: true
@@ -7896,56 +7956,56 @@ components:
     ChecksInput:
       type: object
       properties:
-        ticket_id: *id698
-        test_spec_id: *id699
-        spec_version: *id700
-        artifact_version_id: *id701
-        attempt: *id702
-        result: *id703
-        evidence: *id704
-        runner: *id705
-        checked_by_member_id: *id706
+        ticket_id: *id701
+        test_spec_id: *id702
+        spec_version: *id703
+        artifact_version_id: *id704
+        attempt: *id705
+        result: *id706
+        evidence: *id707
+        runner: *id708
+        checked_by_member_id: *id709
       additionalProperties: false
     TicketDecisions:
       type: object
       properties:
-        ticket_id: &id707
+        ticket_id: &id710
           type: string
           format: uuid
-        text: &id708
+        text: &id711
           type: string
-        reason: &id709
+        reason: &id712
           type: string
           nullable: true
-        decided_by: &id710
+        decided_by: &id713
           type: string
           format: uuid
           nullable: true
-        decided_at: &id711
+        decided_at: &id714
           type: string
           format: date-time
-        source_message_id: &id712
+        source_message_id: &id715
           type: string
           format: uuid
           nullable: true
-        superseded_by_id: &id713
+        superseded_by_id: &id716
           type: string
           format: uuid
           nullable: true
-        promoted_to: &id714
+        promoted_to: &id717
           type: string
-        decided_note: &id715
+        decided_note: &id718
           type: string
           nullable: true
-        cancelled_at: &id716
+        cancelled_at: &id719
           type: string
           format: date-time
           nullable: true
-        cancelled_by: &id717
+        cancelled_by: &id720
           type: string
           format: uuid
           nullable: true
-        cancel_reason: &id718
+        cancel_reason: &id721
           type: string
           nullable: true
         id:
@@ -7984,59 +8044,59 @@ components:
     TicketDecisionsInput:
       type: object
       properties:
-        ticket_id: *id707
-        text: *id708
-        reason: *id709
-        decided_by: *id710
-        decided_at: *id711
-        source_message_id: *id712
-        superseded_by_id: *id713
-        promoted_to: *id714
-        decided_note: *id715
-        cancelled_at: *id716
-        cancelled_by: *id717
-        cancel_reason: *id718
+        ticket_id: *id710
+        text: *id711
+        reason: *id712
+        decided_by: *id713
+        decided_at: *id714
+        source_message_id: *id715
+        superseded_by_id: *id716
+        promoted_to: *id717
+        decided_note: *id718
+        cancelled_at: *id719
+        cancelled_by: *id720
+        cancel_reason: *id721
       additionalProperties: false
     TicketMessages:
       type: object
       properties:
-        ticket_id: &id719
+        ticket_id: &id722
           type: string
           format: uuid
-        author_member_id: &id720
+        author_member_id: &id723
           type: string
           format: uuid
           nullable: true
-        kind: &id721
+        kind: &id724
           type: string
-        body: &id722
+        body: &id725
           type: string
           nullable: true
-        mentions: &id723
+        mentions: &id726
           type: array
           items:
             type: string
             format: uuid
-        changes: &id724
+        changes: &id727
           nullable: true
-        quote_of_id: &id725
+        quote_of_id: &id728
           type: string
           format: uuid
           nullable: true
-        reactions: &id726 {}
-        notify_member_ids: &id727
+        reactions: &id729 {}
+        notify_member_ids: &id730
           type: array
           items:
             type: string
             format: uuid
-        quote_text: &id728
+        quote_text: &id731
           type: string
           nullable: true
-        edited_at: &id729
+        edited_at: &id732
           type: string
           format: date-time
           nullable: true
-        deleted_by: &id730
+        deleted_by: &id733
           type: string
           format: uuid
           nullable: true
@@ -8076,42 +8136,42 @@ components:
     TicketMessagesInput:
       type: object
       properties:
-        ticket_id: *id719
-        author_member_id: *id720
-        kind: *id721
-        body: *id722
-        mentions: *id723
-        changes: *id724
-        quote_of_id: *id725
-        reactions: *id726
-        notify_member_ids: *id727
-        quote_text: *id728
-        edited_at: *id729
-        deleted_by: *id730
+        ticket_id: *id722
+        author_member_id: *id723
+        kind: *id724
+        body: *id725
+        mentions: *id726
+        changes: *id727
+        quote_of_id: *id728
+        reactions: *id729
+        notify_member_ids: *id730
+        quote_text: *id731
+        edited_at: *id732
+        deleted_by: *id733
       additionalProperties: false
     ReferenceLogs:
       type: object
       properties:
-        ticket_id: &id731
+        ticket_id: &id734
           type: string
           format: uuid
-        action_run_id: &id732
-          type: string
-          format: uuid
-          nullable: true
-        ref_type: &id733
-          type: string
-        ref_id: &id734
+        action_run_id: &id735
           type: string
           format: uuid
           nullable: true
-        url: &id735
+        ref_type: &id736
+          type: string
+        ref_id: &id737
+          type: string
+          format: uuid
+          nullable: true
+        url: &id738
           type: string
           nullable: true
-        title: &id736
+        title: &id739
           type: string
           nullable: true
-        seen_at: &id737
+        seen_at: &id740
           type: string
           format: date-time
         id:
@@ -8149,68 +8209,68 @@ components:
     ReferenceLogsInput:
       type: object
       properties:
-        ticket_id: *id731
-        action_run_id: *id732
-        ref_type: *id733
-        ref_id: *id734
-        url: *id735
-        title: *id736
-        seen_at: *id737
+        ticket_id: *id734
+        action_run_id: *id735
+        ref_type: *id736
+        ref_id: *id737
+        url: *id738
+        title: *id739
+        seen_at: *id740
       additionalProperties: false
     KnowledgePages:
       type: object
       properties:
-        is_personal: &id738
+        is_personal: &id741
           type: boolean
-        parent_page_id: &id739
+        parent_page_id: &id742
           type: string
           format: uuid
           nullable: true
-        title: &id740
+        title: &id743
           type: string
-        summary: &id741
+        summary: &id744
           type: string
-        is_must: &id742
+        is_must: &id745
           type: boolean
-        copied_from_page_id: &id743
+        copied_from_page_id: &id746
           type: string
           format: uuid
           nullable: true
-        folder_id: &id744
+        folder_id: &id747
           type: string
           format: uuid
           nullable: true
-        position: &id745
+        position: &id748
           type: integer
-        owner_member_id: &id746
+        owner_member_id: &id749
           type: string
           format: uuid
-        state: &id747
+        state: &id750
           type: string
-        verify_interval_days: &id748
+        verify_interval_days: &id751
           type: integer
           nullable: true
-        verified_at: &id749
+        verified_at: &id752
           type: string
           format: date-time
           nullable: true
-        verify_due_on: &id750
+        verify_due_on: &id753
           type: string
           format: date
           nullable: true
-        topics: &id751
+        topics: &id754
           type: array
           items:
             type: string
-        current_version: &id752
+        current_version: &id755
           type: integer
-        form: &id753
+        form: &id756
           type: string
-        archived_at: &id754
+        archived_at: &id757
           type: string
           format: date-time
           nullable: true
-        archived_to_page_id: &id755
+        archived_to_page_id: &id758
           type: string
           format: uuid
           nullable: true
@@ -8254,68 +8314,68 @@ components:
     KnowledgePagesInput:
       type: object
       properties:
-        is_personal: *id738
-        parent_page_id: *id739
-        title: *id740
-        summary: *id741
-        is_must: *id742
-        copied_from_page_id: *id743
-        folder_id: *id744
-        position: *id745
-        owner_member_id: *id746
-        state: *id747
-        verify_interval_days: *id748
-        verified_at: *id749
-        verify_due_on: *id750
-        topics: *id751
-        current_version: *id752
-        form: *id753
-        archived_at: *id754
-        archived_to_page_id: *id755
+        is_personal: *id741
+        parent_page_id: *id742
+        title: *id743
+        summary: *id744
+        is_must: *id745
+        copied_from_page_id: *id746
+        folder_id: *id747
+        position: *id748
+        owner_member_id: *id749
+        state: *id750
+        verify_interval_days: *id751
+        verified_at: *id752
+        verify_due_on: *id753
+        topics: *id754
+        current_version: *id755
+        form: *id756
+        archived_at: *id757
+        archived_to_page_id: *id758
       additionalProperties: false
     KnowledgePageVersions:
       type: object
       properties:
-        page_id: &id756
+        page_id: &id759
           type: string
           format: uuid
         version:
           type: integer
-        kind: &id757
+        kind: &id760
           type: string
-        body: &id758 {}
-        note: &id759
+        body: &id761 {}
+        note: &id762
           type: string
           nullable: true
-        author_member_id: &id760
+        author_member_id: &id763
           type: string
           format: uuid
           nullable: true
-        proposed_from_ticket_id: &id761
+        proposed_from_ticket_id: &id764
           type: string
           format: uuid
           nullable: true
-        proposed_by_clone: &id762
+        proposed_by_clone: &id765
           type: boolean
-        decision: &id763
+        decision: &id766
           type: string
           nullable: true
-        decline_reason: &id764
+        decline_reason: &id767
           type: string
           nullable: true
-        decided_by: &id765
+        decided_by: &id768
           type: string
           format: uuid
           nullable: true
-        decided_at: &id766
+        decided_at: &id769
           type: string
           format: date-time
           nullable: true
-        published_by: &id767
+        published_by: &id770
           type: string
           format: uuid
           nullable: true
-        published_at: &id768
+        published_at: &id771
           type: string
           format: date-time
           nullable: true
@@ -8352,19 +8412,19 @@ components:
     KnowledgePageVersionsInput:
       type: object
       properties:
-        page_id: *id756
-        kind: *id757
-        body: *id758
-        note: *id759
-        author_member_id: *id760
-        proposed_from_ticket_id: *id761
-        proposed_by_clone: *id762
-        decision: *id763
-        decline_reason: *id764
-        decided_by: *id765
-        decided_at: *id766
-        published_by: *id767
-        published_at: *id768
+        page_id: *id759
+        kind: *id760
+        body: *id761
+        note: *id762
+        author_member_id: *id763
+        proposed_from_ticket_id: *id764
+        proposed_by_clone: *id765
+        decision: *id766
+        decline_reason: *id767
+        decided_by: *id768
+        decided_at: *id769
+        published_by: *id770
+        published_at: *id771
       additionalProperties: false
     KnowledgeLinks:
       type: object
@@ -8400,18 +8460,18 @@ components:
     KnowledgeFolders:
       type: object
       properties:
-        is_personal: &id769
+        is_personal: &id772
           type: boolean
-        owner_member_id: &id770
+        owner_member_id: &id773
           type: string
           format: uuid
-        parent_folder_id: &id771
+        parent_folder_id: &id774
           type: string
           format: uuid
           nullable: true
-        name: &id772
+        name: &id775
           type: string
-        position: &id773
+        position: &id776
           type: integer
         id:
           type: string
@@ -8450,28 +8510,28 @@ components:
     KnowledgeFoldersInput:
       type: object
       properties:
-        is_personal: *id769
-        owner_member_id: *id770
-        parent_folder_id: *id771
-        name: *id772
-        position: *id773
+        is_personal: *id772
+        owner_member_id: *id773
+        parent_folder_id: *id774
+        name: *id775
+        position: *id776
       additionalProperties: false
     Clients:
       type: object
       properties:
-        name: &id774
+        name: &id777
           type: string
-        owner_member_id: &id775
+        owner_member_id: &id778
           type: string
           format: uuid
           nullable: true
-        visibility: &id776
+        visibility: &id779
           type: string
-        default_share: &id777 {}
-        routing: &id778
+        default_share: &id780 {}
+        routing: &id781
           type: string
           nullable: true
-        email_domain: &id779
+        email_domain: &id782
           type: string
           nullable: true
         id:
@@ -8510,17 +8570,17 @@ components:
     ClientsInput:
       type: object
       properties:
-        name: *id774
-        owner_member_id: *id775
-        visibility: *id776
-        default_share: *id777
-        routing: *id778
-        email_domain: *id779
+        name: *id777
+        owner_member_id: *id778
+        visibility: *id779
+        default_share: *id780
+        routing: *id781
+        email_domain: *id782
       additionalProperties: false
     ClientGroups:
       type: object
       properties:
-        client_id: &id780
+        client_id: &id783
           type: string
           format: uuid
         scope_id:
@@ -8560,26 +8620,26 @@ components:
     ClientGroupsInput:
       type: object
       properties:
-        client_id: *id780
+        client_id: *id783
       additionalProperties: false
     ClientContacts:
       type: object
       properties:
-        client_id: &id781
+        client_id: &id784
           type: string
           format: uuid
-        name: &id782
+        name: &id785
           type: string
-        email: &id783
+        email: &id786
           type: string
           nullable: true
-        role: &id784
+        role: &id787
           type: string
-        member_id: &id785
+        member_id: &id788
           type: string
           format: uuid
           nullable: true
-        cc_role: &id786
+        cc_role: &id789
           type: string
         id:
           type: string
@@ -8614,44 +8674,44 @@ components:
     ClientContactsInput:
       type: object
       properties:
-        client_id: *id781
-        name: *id782
-        email: *id783
-        role: *id784
-        member_id: *id785
-        cc_role: *id786
+        client_id: *id784
+        name: *id785
+        email: *id786
+        role: *id787
+        member_id: *id788
+        cc_role: *id789
       additionalProperties: false
     ClientRequests:
       type: object
       properties:
-        client_id: &id787
+        client_id: &id790
           type: string
           format: uuid
-        contact_id: &id788
+        contact_id: &id791
           type: string
           format: uuid
           nullable: true
-        title: &id789
+        title: &id792
           type: string
-        body: &id790
+        body: &id793
           type: string
           nullable: true
-        due_on: &id791
+        due_on: &id794
           type: string
           format: date
           nullable: true
-        state: &id792
+        state: &id795
           type: string
-        ticket_id: &id793
-          type: string
-          format: uuid
-          nullable: true
-        routed_scope_id: &id794
+        ticket_id: &id796
           type: string
           format: uuid
           nullable: true
-        questions: &id795 {}
-        decline_reason: &id796
+        routed_scope_id: &id797
+          type: string
+          format: uuid
+          nullable: true
+        questions: &id798 {}
+        decline_reason: &id799
           type: string
           nullable: true
         id:
@@ -8688,48 +8748,48 @@ components:
     ClientRequestsInput:
       type: object
       properties:
-        client_id: *id787
-        contact_id: *id788
-        title: *id789
-        body: *id790
-        due_on: *id791
-        state: *id792
-        ticket_id: *id793
-        routed_scope_id: *id794
-        questions: *id795
-        decline_reason: *id796
+        client_id: *id790
+        contact_id: *id791
+        title: *id792
+        body: *id793
+        due_on: *id794
+        state: *id795
+        ticket_id: *id796
+        routed_scope_id: *id797
+        questions: *id798
+        decline_reason: *id799
       additionalProperties: false
     Acceptances:
       type: object
       properties:
-        ticket_id: &id797
+        ticket_id: &id800
           type: string
           format: uuid
-        artifact_version_id: &id798
+        artifact_version_id: &id801
           type: string
           format: uuid
           nullable: true
-        contact_id: &id799
+        contact_id: &id802
           type: string
           format: uuid
-        due_on: &id800
+        due_on: &id803
           type: string
           format: date
           nullable: true
-        message: &id801
+        message: &id804
           type: string
           nullable: true
-        result: &id802
+        result: &id805
           type: string
           nullable: true
-        comment: &id803
+        comment: &id806
           type: string
           nullable: true
-        decided_at: &id804
+        decided_at: &id807
           type: string
           format: date-time
           nullable: true
-        reminded_at: &id805
+        reminded_at: &id808
           type: string
           format: date-time
           nullable: true
@@ -8767,30 +8827,30 @@ components:
     AcceptancesInput:
       type: object
       properties:
-        ticket_id: *id797
-        artifact_version_id: *id798
-        contact_id: *id799
-        due_on: *id800
-        message: *id801
-        result: *id802
-        comment: *id803
-        decided_at: *id804
-        reminded_at: *id805
+        ticket_id: *id800
+        artifact_version_id: *id801
+        contact_id: *id802
+        due_on: *id803
+        message: *id804
+        result: *id805
+        comment: *id806
+        decided_at: *id807
+        reminded_at: *id808
       additionalProperties: false
     TenantMemberships:
       type: object
       properties:
-        auth_user_id: &id806
+        auth_user_id: &id809
           type: string
           nullable: true
-        member_id: &id807
+        member_id: &id810
           type: string
           format: uuid
-        role: &id808
+        role: &id811
           type: string
-        status: &id809
+        status: &id812
           type: string
-        joined_at: &id810
+        joined_at: &id813
           type: string
           format: date-time
           nullable: true
@@ -8829,22 +8889,22 @@ components:
     TenantMembershipsInput:
       type: object
       properties:
-        auth_user_id: *id806
-        member_id: *id807
-        role: *id808
-        status: *id809
-        joined_at: *id810
+        auth_user_id: *id809
+        member_id: *id810
+        role: *id811
+        status: *id812
+        joined_at: *id813
       additionalProperties: false
     TermsVersions:
       type: object
       properties:
-        kind: &id811
+        kind: &id814
           type: string
         version:
           type: string
-        url: &id812
+        url: &id815
           type: string
-        published_at: &id813
+        published_at: &id816
           type: string
           format: date-time
         id:
@@ -8881,26 +8941,26 @@ components:
     TermsVersionsInput:
       type: object
       properties:
-        kind: *id811
-        url: *id812
-        published_at: *id813
+        kind: *id814
+        url: *id815
+        published_at: *id816
       additionalProperties: false
     TermsConsents:
       type: object
       properties:
-        member_id: &id814
+        member_id: &id817
           type: string
           format: uuid
-        auth_user_id: &id815
+        auth_user_id: &id818
           type: string
           nullable: true
-        terms_version_id: &id816
+        terms_version_id: &id819
           type: string
           format: uuid
-        agreed_at: &id817
+        agreed_at: &id820
           type: string
           format: date-time
-        ip: &id818
+        ip: &id821
           type: string
           nullable: true
         id:
@@ -8937,31 +8997,31 @@ components:
     TermsConsentsInput:
       type: object
       properties:
-        member_id: *id814
-        auth_user_id: *id815
-        terms_version_id: *id816
-        agreed_at: *id817
-        ip: *id818
+        member_id: *id817
+        auth_user_id: *id818
+        terms_version_id: *id819
+        agreed_at: *id820
+        ip: *id821
       additionalProperties: false
     Passkeys:
       type: object
       properties:
-        auth_user_id: &id819
+        auth_user_id: &id822
           type: string
           format: uuid
-        credential_id: &id820
+        credential_id: &id823
           type: string
           format: uuid
-        public_key: &id821
+        public_key: &id824
           type: string
-        name: &id822
+        name: &id825
           type: string
-        transports: &id823
+        transports: &id826
           type: string
-        last_used_at: &id824
+        last_used_at: &id827
           type: string
           format: date-time
-        revoked_at: &id825
+        revoked_at: &id828
           type: string
           format: date-time
         id:
@@ -8988,24 +9048,24 @@ components:
     PasskeysInput:
       type: object
       properties:
-        auth_user_id: *id819
-        credential_id: *id820
-        public_key: *id821
-        name: *id822
-        transports: *id823
-        last_used_at: *id824
-        revoked_at: *id825
+        auth_user_id: *id822
+        credential_id: *id823
+        public_key: *id824
+        name: *id825
+        transports: *id826
+        last_used_at: *id827
+        revoked_at: *id828
       additionalProperties: false
     Operations:
       type: object
       properties:
-        key: &id826
+        key: &id829
           type: string
-        name: &id827
+        name: &id830
           type: string
-        kind: &id828
+        kind: &id831
           type: string
-        current_version: &id829
+        current_version: &id832
           type: integer
         id:
           type: string
@@ -9042,21 +9102,21 @@ components:
     OperationsInput:
       type: object
       properties:
-        key: *id826
-        name: *id827
-        kind: *id828
-        current_version: *id829
+        key: *id829
+        name: *id830
+        kind: *id831
+        current_version: *id832
       additionalProperties: false
     TicketLinks:
       type: object
       properties:
-        from_ticket_id: &id830
+        from_ticket_id: &id833
           type: string
           format: uuid
-        to_ticket_id: &id831
+        to_ticket_id: &id834
           type: string
           format: uuid
-        kind: &id832
+        kind: &id835
           type: string
         id:
           type: string
@@ -9093,62 +9153,62 @@ components:
     TicketLinksInput:
       type: object
       properties:
-        from_ticket_id: *id830
-        to_ticket_id: *id831
-        kind: *id832
+        from_ticket_id: *id833
+        to_ticket_id: *id834
+        kind: *id835
       additionalProperties: false
     TicketHandovers:
       type: object
       properties:
-        ticket_id: &id833
+        ticket_id: &id836
           type: string
           format: uuid
-        kind: &id834
+        kind: &id837
           type: string
-        from_member_id: &id835
-          type: string
-          format: uuid
-        to_member_id: &id836
+        from_member_id: &id838
           type: string
           format: uuid
-          nullable: true
-        to_scope_id: &id837
+        to_member_id: &id839
           type: string
           format: uuid
           nullable: true
-        reason: &id838
+        to_scope_id: &id840
+          type: string
+          format: uuid
+          nullable: true
+        reason: &id841
           type: string
           nullable: true
-        ask: &id839
+        ask: &id842
           type: string
           nullable: true
-        reply_due: &id840
+        reply_due: &id843
           type: string
           format: date-time
           nullable: true
-        switch: &id841 {}
-        state: &id842
+        switch: &id844 {}
+        state: &id845
           type: string
-        decline_reason: &id843
+        decline_reason: &id846
           type: string
           nullable: true
-        decided_at: &id844
+        decided_at: &id847
           type: string
           format: date-time
           nullable: true
-        notify_managers: &id845
+        notify_managers: &id848
           type: boolean
-        reminded_at: &id846
+        reminded_at: &id849
           type: string
           format: date-time
           nullable: true
-        overdue_notified_at: &id847
+        overdue_notified_at: &id850
           type: string
           format: date-time
           nullable: true
-        switch_applied: &id848
+        switch_applied: &id851
           nullable: true
-        answered_by: &id849
+        answered_by: &id852
           type: string
           format: uuid
           nullable: true
@@ -9187,41 +9247,41 @@ components:
     TicketHandoversInput:
       type: object
       properties:
-        ticket_id: *id833
-        kind: *id834
-        from_member_id: *id835
-        to_member_id: *id836
-        to_scope_id: *id837
-        reason: *id838
-        ask: *id839
-        reply_due: *id840
-        switch: *id841
-        state: *id842
-        decline_reason: *id843
-        decided_at: *id844
-        notify_managers: *id845
-        reminded_at: *id846
-        overdue_notified_at: *id847
-        switch_applied: *id848
-        answered_by: *id849
+        ticket_id: *id836
+        kind: *id837
+        from_member_id: *id838
+        to_member_id: *id839
+        to_scope_id: *id840
+        reason: *id841
+        ask: *id842
+        reply_due: *id843
+        switch: *id844
+        state: *id845
+        decline_reason: *id846
+        decided_at: *id847
+        notify_managers: *id848
+        reminded_at: *id849
+        overdue_notified_at: *id850
+        switch_applied: *id851
+        answered_by: *id852
       additionalProperties: false
     SavedViews:
       type: object
       properties:
-        member_id: &id850
+        member_id: &id853
           type: string
           format: uuid
-        name: &id851
+        name: &id854
           type: string
-        share: &id852
+        share: &id855
           type: string
         scope_id:
           type: string
           format: uuid
           nullable: true
-        filters: &id853 {}
-        columns: &id854 {}
-        density: &id855
+        filters: &id856 {}
+        columns: &id857 {}
+        density: &id858
           type: string
         id:
           type: string
@@ -9257,31 +9317,31 @@ components:
     SavedViewsInput:
       type: object
       properties:
-        member_id: *id850
-        name: *id851
-        share: *id852
-        filters: *id853
-        columns: *id854
-        density: *id855
+        member_id: *id853
+        name: *id854
+        share: *id855
+        filters: *id856
+        columns: *id857
+        density: *id858
       additionalProperties: false
     TicketImports:
       type: object
       properties:
-        uploaded_by: &id856
+        uploaded_by: &id859
           type: string
           format: uuid
         scope_id:
           type: string
           format: uuid
-        source: &id857
+        source: &id860
           type: string
-        mapping: &id858 {}
-        rows: &id859
+        mapping: &id861 {}
+        rows: &id862
           type: integer
-        errors: &id860 {}
-        state: &id861
+        errors: &id863 {}
+        state: &id864
           type: string
-        committed_at: &id862
+        committed_at: &id865
           type: string
           format: date-time
           nullable: true
@@ -9321,42 +9381,42 @@ components:
     TicketImportsInput:
       type: object
       properties:
-        uploaded_by: *id856
-        source: *id857
-        mapping: *id858
-        rows: *id859
-        errors: *id860
-        state: *id861
-        committed_at: *id862
+        uploaded_by: *id859
+        source: *id860
+        mapping: *id861
+        rows: *id862
+        errors: *id863
+        state: *id864
+        committed_at: *id865
       additionalProperties: false
     LearningCandidates:
       type: object
       properties:
-        owner_member_id: &id863
+        owner_member_id: &id866
           type: string
           format: uuid
-        trigger: &id864
+        trigger: &id867
           type: string
-        proposed_as: &id865
+        proposed_as: &id868
           type: string
-        text: &id866
+        text: &id869
           type: string
-        evidence: &id867 {}
-        check_result: &id868 {}
-        decided_by: &id869
+        evidence: &id870 {}
+        check_result: &id871 {}
+        decided_by: &id872
           type: string
           format: uuid
           nullable: true
-        state: &id870
+        state: &id873
           type: string
-        decided_at: &id871
+        decided_at: &id874
           type: string
           format: date-time
           nullable: true
-        result_type: &id872
+        result_type: &id875
           type: string
           nullable: true
-        result_id: &id873
+        result_id: &id876
           type: string
           format: uuid
           nullable: true
@@ -9397,34 +9457,34 @@ components:
     LearningCandidatesInput:
       type: object
       properties:
-        owner_member_id: *id863
-        trigger: *id864
-        proposed_as: *id865
-        text: *id866
-        evidence: *id867
-        check_result: *id868
-        decided_by: *id869
-        state: *id870
-        decided_at: *id871
-        result_type: *id872
-        result_id: *id873
+        owner_member_id: *id866
+        trigger: *id867
+        proposed_as: *id868
+        text: *id869
+        evidence: *id870
+        check_result: *id871
+        decided_by: *id872
+        state: *id873
+        decided_at: *id874
+        result_type: *id875
+        result_id: *id876
       additionalProperties: false
     BridgePairingCodes:
       type: object
       properties:
-        member_id: &id874
+        member_id: &id877
           type: string
           format: uuid
-        code_hash: &id875
+        code_hash: &id878
           type: string
-        expires_at: &id876
+        expires_at: &id879
           type: string
           format: date-time
-        used_at: &id877
+        used_at: &id880
           type: string
           format: date-time
           nullable: true
-        used_session_id: &id878
+        used_session_id: &id881
           type: string
           format: uuid
           nullable: true
@@ -9462,11 +9522,11 @@ components:
     BridgePairingCodesInput:
       type: object
       properties:
-        member_id: *id874
-        code_hash: *id875
-        expires_at: *id876
-        used_at: *id877
-        used_session_id: *id878
+        member_id: *id877
+        code_hash: *id878
+        expires_at: *id879
+        used_at: *id880
+        used_session_id: *id881
       additionalProperties: false
     NotificationSettings:
       type: object
@@ -9505,41 +9565,41 @@ components:
     OpsPlanProposals:
       type: object
       properties:
-        plan_id: &id879
+        plan_id: &id882
           type: string
           format: uuid
-        from_version: &id880
+        from_version: &id883
           type: integer
           nullable: true
-        to_version: &id881
+        to_version: &id884
           type: integer
           nullable: true
-        changes: &id882 {}
-        existing_policy: &id883
+        changes: &id885 {}
+        existing_policy: &id886
           type: string
-        notice_days: &id884
+        notice_days: &id887
           type: integer
           nullable: true
-        new_from: &id885
+        new_from: &id888
           type: string
           format: date
           nullable: true
-        reason: &id886
+        reason: &id889
           type: string
-        proposed_by: &id887
+        proposed_by: &id890
           type: string
           format: uuid
-        decided_by: &id888
+        decided_by: &id891
           type: string
           format: uuid
           nullable: true
-        state: &id889
+        state: &id892
           type: string
-        decided_at: &id890
+        decided_at: &id893
           type: string
           format: date-time
           nullable: true
-        return_reason: &id891
+        return_reason: &id894
           type: string
           nullable: true
         id:
@@ -9576,37 +9636,37 @@ components:
     OpsPlanProposalsInput:
       type: object
       properties:
-        plan_id: *id879
-        from_version: *id880
-        to_version: *id881
-        changes: *id882
-        existing_policy: *id883
-        notice_days: *id884
-        new_from: *id885
-        reason: *id886
-        proposed_by: *id887
-        decided_by: *id888
-        state: *id889
-        decided_at: *id890
-        return_reason: *id891
+        plan_id: *id882
+        from_version: *id883
+        to_version: *id884
+        changes: *id885
+        existing_policy: *id886
+        notice_days: *id887
+        new_from: *id888
+        reason: *id889
+        proposed_by: *id890
+        decided_by: *id891
+        state: *id892
+        decided_at: *id893
+        return_reason: *id894
       additionalProperties: false
     ScopeMemberships:
       type: object
       properties:
-        member_id: &id892
+        member_id: &id895
           type: string
           format: uuid
         scope_id:
           type: string
           format: uuid
-        is_primary: &id893
+        is_primary: &id896
           type: boolean
-        role: &id894
+        role: &id897
           type: string
-        since: &id895
+        since: &id898
           type: string
           format: date
-        changed_by: &id896
+        changed_by: &id899
           type: string
           format: uuid
           nullable: true
@@ -9645,22 +9705,22 @@ components:
     ScopeMembershipsInput:
       type: object
       properties:
-        member_id: *id892
-        is_primary: *id893
-        role: *id894
-        since: *id895
-        changed_by: *id896
+        member_id: *id895
+        is_primary: *id896
+        role: *id897
+        since: *id898
+        changed_by: *id899
       additionalProperties: false
     RoleBundleDefaults:
       type: object
       properties:
-        role: &id897
+        role: &id900
           type: string
-        target_kind_id: &id898
+        target_kind_id: &id901
           type: string
-        ability_id: &id899
+        ability_id: &id902
           type: string
-        scope_kind: &id900
+        scope_kind: &id903
           type: string
         id:
           type: string
@@ -9685,10 +9745,10 @@ components:
     RoleBundleDefaultsInput:
       type: object
       properties:
-        role: *id897
-        target_kind_id: *id898
-        ability_id: *id899
-        scope_kind: *id900
+        role: *id900
+        target_kind_id: *id901
+        ability_id: *id902
+        scope_kind: *id903
       additionalProperties: false
     StepUpInput:
       type: object
@@ -19469,7 +19529,7 @@ paths:
       responses:
         '201':
           description: 成功
-          content: &id901
+          content: &id904
             application/json:
               schema:
                 type: object
@@ -19532,7 +19592,7 @@ paths:
                 $ref: '#/components/schemas/Error'
         '202':
           description: 受け付けた（まだ決まっていない）
-          content: *id901
+          content: *id904
   /api/v1/auth/invitations/{token}/resend-request:
     post:
       operationId: requestInvitationResend
@@ -42690,6 +42750,7 @@ paths:
         schema:
           type: string
           enum:
+          - admins_only
           - affects
           - body
           - created_at
@@ -42697,6 +42758,7 @@ paths:
           - deleted_at
           - emailed_admins_at
           - id
+          - impact
           - kind_id
           - maintenance_from
           - maintenance_to
@@ -42706,6 +42768,7 @@ paths:
           - state
           - target_plan_ids
           - target_tenant_id
+          - target_tenant_ids
           - tenant_id
           - title
           - updated_at

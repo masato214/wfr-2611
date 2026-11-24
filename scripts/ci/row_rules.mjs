@@ -33,6 +33,9 @@ export const ROW_EXEMPT_FIELDS = {
   deleteKnowledgeFolder: {
     id: "ナレッジのフォルダの行の見える・書けるは、口が DB の関数 app.kfolder_visible（見えなければ 404）・app.kfolder_writable（見えて書けなければ 403）で決める。表を packages/db/src/repository.ts の TABLES に足すと、それを読む前からの試験が動くので入口では行を読まない（K-675）。道ごとではなく、:id を持つ 2 本の口の欄を名指しして外す（権限の試験 G41 の除外は欄の名指しだけを読む）",
   },
+  markNoticeRead: {
+    id: "運営のお知らせの行は運営だけが読める（行の守り notices_ops_all）ので、入口が行の守りの中で :id を読むと会社の人にはどのお知らせも無い（404・NOT_FOUND）になる。見える（届け先・出したか・管理者だけ）は口が DB の関数 app.member_notice_read（app.notice_for_member → app.notice_for_tenant の 1 か所）で決め、見えなければ 404 E-PAGE-001・何も書かない（K-954）",
+  },
   deleteTicketLink: {
     id: "つながりの行は両端のチケットが両方見える人にしか見えない（行の守り ticket_links_both_read）ので、入口の行の確かめでは決めの「相手が見えなくても外せる」（外せるのは両端のどちらか 1 つに書ける人・K-441・PM の決め）が成り立たない。この欄の守りは DB の関数 app.ticket_link_remove（見える・書けるを確かめる）と契約の uuid の確かめの 1 層になる",
   },

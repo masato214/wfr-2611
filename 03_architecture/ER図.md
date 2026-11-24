@@ -294,6 +294,7 @@ erDiagram
   tenants ||--o{ inquiries : "問い合わせ"
   inquiries ||--|| conversations : "やりとりは会話"
   notices ||--o{ notice_deliveries : "会社ごとの配達"
+  notices ||--o{ notice_updates : "続報"
   plans ||--o{ plan_versions : "版"
   tenants ||--|| subscriptions : "契約"
   subscriptions ||--o{ invoices : "月ごと"
@@ -308,6 +309,7 @@ erDiagram
 | **`inquiries`** | `<common>` / `opened_by_member_id` / `kind_id`（howto / stuck / billing / request / other）/ `status_id`（waiting / answered / resolved）/ `conversation_id` / `assignee_ops_member_id` / `ai_first_answered_at` | **★新設（D-075.1・D-077.1）。**まず自分のAIが答え、解けなければ運営へ。やりとりの本文は `conversations` / `messages`（同じ部品）。運営に届くのは構成と型だけで台帳の中身は送らない |
 | **`notices`** | `<common>`（tenant_id＝運営）/ `kind_id`（release / incident / maintenance / rule_version / individual）/ `title` / `body` / `target_plan_ids uuid[]` / `target_tenant_id` / `publish_at` / `published_by` | **★新設（D-075.2・D-077.8）。**全体のお知らせも会社ごとのお知らせも同じ表（`target_tenant_id` の有無） |
 | **`notice_deliveries`** | `<common>` / `notice_id` / `member_id` / `delivered_at` / `read_at` | 会社側「お知らせ」の既読 |
+| **`notice_updates`** | `<common>`（tenant_id＝運営）/ `notice_id` / `state`（investigating / identified / monitoring / resolved）/ `body` | 障害の続報の履歴（K-954・D-156.33）。書くのは運営、会社の人には一覧の関数 `app.member_notices` が返す |
 | **`status_incidents`** | `<common>`（tenant_id＝運営）/ `component_id`（kaname / bridge / server_route / external_service）/ `service_id` / `state_id` / `started_at` / `resolved_at` / `note` | **★新設（D-075.2・D-076.9）。**稼働状況。会社側は自分の Bridge・経路の状態を `sessions` と `action_runs` から足して表示 |
 | **`notification_preferences`** | `<common>` / `member_id` / `event_kind_id`（approval_waiting / ai_stopped / sole_approver / notice_incident / notice_release / inquiry_answered）/ `channel_id`（in_app / email / push）/ `enabled` | **★新設（D-075.3・D-043）。**通知の届け先。関門 C6 が宛先解決に読む |
 | **`notifications`** | `<common>` / `member_id` / `channel_id` / `event_kind_id` / `payload jsonb` / `dedupe_key` / `sent_at` / `failed_at` / **`read_at`**（読んだ時刻・空＝未読 ← D-151.2。鈴が読むのはこの列だけで、`sent_at`・`failed_at` は段 9 のメールの印のまま）/ `retry_count` | **★新設（D-043・C6）。**送出の outbox。重複抑止・再送・証跡は関門 C6 の責務。鈴の一覧は契約の口 `listNotifications`（自分宛て・未読は全部・読んだものは読んだ時刻から 30 日・K-461）。**守り：読むのも書くのも自分宛てだけ**（`notifications_self_read`・`notifications_self_only_write`・D-151.3。権限のある人も他人宛ての行に触れない。書き手は security definer の関数で守りの外）。索引：未読だけ（`notifications_inbox_unread_idx`）と新しい順（`notifications_inbox_idx`） |
@@ -504,6 +506,7 @@ erDiagram
 - `audit_events`：運営がしたこと（中を見た・止めた・再開した・入金を記録した・代わりにプランを変えた・本人確認のメールを送り直した）は `ops_audit_events` に加えて、相手のワークスペースの `audit_events` にも `actor_role = ops` で書く（D-128.108）
 - `ops_members`：`caps text[]`（問い合わせ・中を見る・お金・止める・お知らせ・配るもの・値段の案・値段を決める・運営の人）。`ops_role_id` は見出し（運営の管理者・サポート・お金）だけに使う
 - `notices`：`state`（下書き・予定・出した）/ `affects jsonb`（画面・分身の実行・PC とのつながり）/ `placements text[]`（一覧・上の帯・メンテ中の画面）/ `maintenance_from` / `maintenance_to` / `emailed_admins_at`（メンテだけ管理者にメール・D-128.109）
+- `notices`（K-954・D-156.33・D-156.57）：`target_tenant_ids uuid[]`（誰にの「ワークスペースを選ぶ」）/ `impact`（メンテの影響）/ `admins_only`（管理者だけ）。`notice_deliveries` は同じ会社・同じ人・同じお知らせに消していない 1 行（一意の索引）。関数 `app.tenant_plan_id`・`app.notice_for_tenant`（届け先の 1 か所）・`app.notice_for_member`（管理者だけを足す）・`app.member_notices`（一覧）・`app.member_notice_read`（読んだ印）
 - `status_incidents`：`notice_id` / `state`（調べている・原因が分かった・様子を見ている・直った）/ `body`。お知らせ 1 件に状態を足していく
 - 関数 `app.public_service_status()`（security definer・K-307）：ログインしていない人にも出してよい分だけを返す（直っていない障害のうち、全部向けに公開したお知らせに結んだもの＝state・お知らせの題・started_at／いま中のメンテナンス＝題・from・to）。`notices` と `status_incidents` の行の守り（運営だけ）は変えない。表と列は足さない
 - 関数 `app.login_gate(p_auth_user_id text) returns text`（security definer・kaname_app だけが呼べる・K-303）：ログインの部品がセッションを作る直前（packages/auth の session.create.before）だけが呼ぶ止めの 1 か所。member の行と同じ組の所属の行（tenant_memberships）を見て `ok`／`member_suspended`（`members.suspended_at` か所属の `status = suspended`）／`workspace_suspended`（`subscriptions.suspended_at`）／`member_left` を返し、断ったときは使える会社ごとの `security_events` に `login_blocked`（detail は理由だけ）を書く。表と列は足さない

@@ -380,7 +380,7 @@
 
 ## 4. 逆カバレッジ（フィールド → 画面）
 
-- 検査したフィールド 1083 ／ 内部専用 278 ／ どの画面にも出ない 11
+- 検査したフィールド 1087 ／ 内部専用 279 ／ どの画面にも出ない 14
   - ★ learned_procedures.duty_id
   - ★ learned_procedures.target_service_id
   - ★ learned_procedures.status_id
@@ -392,6 +392,9 @@
   - ★ procedure_steps.order_no
   - ★ procedure_steps.intent_ja
   - ★ procedure_steps.is_variable
+  - ★ notice_updates.notice_id
+  - ★ notice_updates.state
+  - ★ notice_updates.body
 
 ## 5. 共通仕様
 

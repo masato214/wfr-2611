@@ -4,7 +4,7 @@
  "summary": {
   "screens_count": 74,
   "features_count": 32,
-  "entities_count": 146,
+  "entities_count": 147,
   "uncovered_screens": [],
   "static_screens": [
    {
@@ -13137,6 +13137,12 @@
     "F-016",
     "F-017"
    ]
+  },
+  {
+   "entity_id": "E-148",
+   "entity_name": "notice_updates",
+   "used_by_screens": [],
+   "used_by_features": []
   },
   {
    "entity_id": "E-077",
