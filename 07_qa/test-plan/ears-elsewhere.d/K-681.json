@@ -1,0 +1,70 @@
+{
+ "ops": {
+  "updateKnowledgePage": {
+   "file": "apps/api/test/features/F9/knowledge-page-edit.test.ts",
+   "reason": "ページを動かせるかは棚（会社・グループ・自分）と役・フォルダの棚・頼みの有無で変わる。生成の試験の偽のセッションでは棚も所属も作れない（K-681）",
+   "covers": {
+    "test_patch_knowledge_pages_id_ok": "K681-API-001",
+    "test_patch_knowledge_pages_id_shape": "K681-API-001",
+    "test_patch_knowledge_pages_id_rejected_401": "K681-API-018",
+    "test_patch_knowledge_pages_id_rejected_403": "K681-API-009",
+    "test_patch_knowledge_pages_id_not_found": "K681-API-009",
+    "test_patch_knowledge_pages_id_rejected_422": "K681-API-006",
+    "test_patch_knowledge_pages_id_rate_limited": "K681-API-019",
+    "test_patch_knowledge_pages_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_patch_knowledge_pages_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_patch_knowledge_pages_id_conflict_2": "K681-API-007",
+    "test_patch_knowledge_pages_id_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_patch_knowledge_pages_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_patch_knowledge_pages_id_conflict": "承認待ちの頼み（E-KNW-011）は頼みの置き場（K-687）が入ってから。K-687 が page-guards/pending-request.ts を差し替え、自分の試験に行を足す"
+   }
+  },
+  "deleteKnowledgePage": {
+   "file": "apps/api/test/features/F9/knowledge-page-edit.test.ts",
+   "reason": "ページを消せるかは役・必ず守る・頼み・共有で変わる。生成の試験の偽のセッションでは版も所属も作れない（K-681）",
+   "covers": {
+    "test_delete_knowledge_pages_id_ok": "K681-API-011",
+    "test_delete_knowledge_pages_id_shape": "K681-API-011",
+    "test_delete_knowledge_pages_id_rejected_401": "K681-API-018",
+    "test_delete_knowledge_pages_id_rejected_403": "K681-API-010",
+    "test_delete_knowledge_pages_id_not_found": "K681-API-010",
+    "test_delete_knowledge_pages_id_rate_limited": "K681-API-019",
+    "test_delete_knowledge_pages_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_delete_knowledge_pages_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_delete_knowledge_pages_id_conflict_2": "K681-API-012",
+    "test_delete_knowledge_pages_id_rejected_422": {
+     "file": "apps/api/test/features/contract/k144.d/K-681.ts",
+     "mark": "K144-API-109"
+    },
+    "test_delete_knowledge_pages_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_delete_knowledge_pages_id_conflict": "承認待ちの頼み（E-KNW-011）は頼みの置き場（K-687）が入ってから。K-687 が page-guards/pending-request.ts を差し替え、自分の試験に行を足す",
+    "test_delete_knowledge_pages_id_conflict_3": "共有しているページ（E-KNW-051）は共有の置き場（K-689）と確かめ（K-719 が page-guards/shared.ts を差し替える）が入ってから。K-719 が自分の試験に行を足す"
+   }
+  }
+ }
+}

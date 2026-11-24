@@ -12336,13 +12336,14 @@
      "name": "knowledge_pages_read",
      "operation": "select",
      "role": "member",
-     "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (app.kn_shelf_readable(scope_id, is_personal, owner_member_id) OR app.kn_shared_visible(id)) END)",
-     "rationale": "まだ書き終えていないページは持ち主だけ。公開済みは棚が読める人（会社＝社内の全員・グループ＝そのグループの人・自分＝本人）と共有先（K-689）。管理者でも入っていないグループの棚は読めない",
+     "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND deleted_at IS NULL AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (app.kn_shelf_readable(scope_id, is_personal, owner_member_id) OR app.kn_shared_visible(id)) END)",
+     "rationale": "消したページは誰にも見せない（K-681・消すのは DB の関数 app.kn_page_soft_delete）。まだ書き終えていないページは持ち主だけ。公開済みは棚が読める人（会社＝社内の全員・グループ＝そのグループの人・自分＝本人）と共有先（K-689）。管理者でも入っていないグループの棚は読めない",
      "source": [
       "D-128.50",
       "D-128.51",
       "D-152.1",
-      "D-152.3"
+      "D-152.3",
+      "D-152.14"
      ]
     },
     {
@@ -12706,6 +12707,54 @@
     "D-125",
     "D-128",
     "D-152.1"
+   ]
+  },
+  {
+   "id": "E-148",
+   "name": "knowledge_limits",
+   "table_name": "knowledge_limits",
+   "section": "16. 第1フェーズの表",
+   "fields": [
+    {
+     "name": "shelf",
+     "note": "主キー：会社・グループ・自分"
+    },
+    {
+     "name": "must_max",
+     "note": "0 以上"
+    }
+   ],
+   "relations": [],
+   "soft_delete": false,
+   "timestamps": true,
+   "tenant_field": null,
+   "indexes": [],
+   "computed": [],
+   "tenant_isolation": {
+    "type": "none",
+    "column": null,
+    "fk_table": null
+   },
+   "access_control_policies": [
+    {
+     "name": "knowledge_limits_all_read",
+     "operation": "select",
+     "role": "authenticated",
+     "predicate": "true",
+     "rationale": "製品共通の必ず守るの上限（会社 30・グループ 20・自分 10）。どの会社の人にも同じものを見せる。書くのは運営の migration だけ",
+     "source": [
+      "D-152.16"
+     ]
+    }
+   ],
+   "legacy_drift_notes": null,
+   "note": "**★新設（K-685・D-152.16）。マスタ（製品共通の設定・会社の列を持たない）。**必ず守るの上限（会社 30・グループ 20〔グループごと〕・自分 10〔本人ごと〕）。アプリの役は読むだけで、運営が行を直して変える",
+   "status": "decided",
+   "decided_at": "2026-11-23",
+   "source": [
+    "D-125",
+    "D-128",
+    "D-152.16"
    ]
   },
   {

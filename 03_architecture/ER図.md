@@ -446,6 +446,7 @@ erDiagram
 | **`knowledge_page_versions`** | `<common>` / `page_id` / `version` / `kind`（下書き・直す案・公開）/ `body jsonb` / `note` / `author_member_id` / `proposed_from_ticket_id` / `proposed_by_clone`（チケットの完了で分身が出した直す案）/ `decision`（入れた・直して入れた・入れない）/ `decline_reason` / `decided_by` / `decided_at` / `published_by` / `published_at` | 公開するたびに増える |
 | **`knowledge_links`** | `<common>` / `from_page_id` / `to_type`（ページ・チケット・決まり・取引先）/ `to_id` / `anchor` | つながり・被リンク（D-128.52） |
 | **`knowledge_folders`** | `<scoped>`（scope＝棚）/ `is_personal`（自分の棚）/ `owner_member_id` / `parent_folder_id`（空＝棚の直下・深さ 6 まで）/ `name`（1〜100 字・同じ棚の同じ親で重ならない）/ `position` | **★新設（K-674・D-152.1）。**ナレッジのフォルダ。読める・書けるは棚の決めと同じ |
+| **`knowledge_limits`** | `shelf`（主キー：会社・グループ・自分）/ `must_max`（0 以上） | **★新設（K-685・D-152.16）。マスタ（製品共通の設定・会社の列を持たない）。**必ず守るの上限（会社 30・グループ 20〔グループごと〕・自分 10〔本人ごと〕）。アプリの役は読むだけで、運営が行を直して変える |
 | **`clients`** | `<common>` / `name` / `owner_member_id`（取引先の担当）/ `visibility`（全員・担当グループだけ）/ `default_share jsonb`（種別ごとの既定の見せ方）/ `routing`（分身が振り分ける）/ `email_domain`（招待はドメインが合う人だけ） | **★新設（D-125.121・D-128.53・D-128.54）** |
 | **`client_groups`** | `<common>` / `client_id` / `scope_id` | 担当グループ（いくつでも ← D-128.54） |
 | **`client_contacts`** | `<common>` / `client_id` / `name` / `email` / `role`（依頼できる・見るだけ）/ `member_id`（クライアントの場所に入るとき）/ `cc_role`（請求の宛先・CC・使わない） | 先方の人 |

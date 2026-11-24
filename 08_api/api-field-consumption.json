@@ -11897,6 +11897,20 @@
    "reason": null
   },
   {
+   "entity": "knowledge_limits",
+   "field": "shelf",
+   "consumed_by_screens": [],
+   "internal": true,
+   "reason": "マスタ。label は各画面の札・選択肢として出る"
+  },
+  {
+   "entity": "knowledge_limits",
+   "field": "must_max",
+   "consumed_by_screens": [],
+   "internal": true,
+   "reason": "マスタ。label は各画面の札・選択肢として出る"
+  },
+  {
    "entity": "clients",
    "field": "<common>",
    "consumed_by_screens": [],

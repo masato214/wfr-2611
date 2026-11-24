@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 386（作った 115・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 291・部品 68・設定 41
+API 386（作った 118・後のフェーズの行為だけ 20）・前の道すじ 26・表 150・画面の部品 19・共通の処理 13・エラー 291・部品 68・設定 41
 
 ## 共通の処理
 
@@ -83,6 +83,7 @@ API 386（作った 115・後のフェーズの行為だけ 20）・前の道す
 | `kaname_auth` | internal |  |  |  |
 | `kind_sections` | skeleton | F4,F9 |  | ○ |
 | `knowledge_folders` | skeleton | F9 |  |  |
+| `knowledge_limits` | skeleton |  |  |  |
 | `knowledge_links` | skeleton | F9 |  |  |
 | `knowledge_page_versions` | skeleton | F9 |  |  |
 | `knowledge_pages` | skeleton | F9 |  |  |
@@ -442,8 +443,8 @@ API 386（作った 115・後のフェーズの行為だけ 20）・前の道す
 | `listKnowledgePages` | GET /api/v1/knowledge_pages | 取得（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
 | `createKnowledgePage` | POST /api/v1/knowledge_pages | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す | F9 | 作った | K-69,K-679 |
 | `getKnowledgePage` | GET /api/v1/knowledge_pages/:id | 取得（knowledge_pages）— ナレッジのページを書く・直す | F9 | 作った | K-69,K-677 |
-| `updateKnowledgePage` | PATCH /api/v1/knowledge_pages/:id | 更新（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
-| `deleteKnowledgePage` | DELETE /api/v1/knowledge_pages/:id | 削除（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
+| `updateKnowledgePage` | PATCH /api/v1/knowledge_pages/:id | 更新（knowledge_pages）— ナレッジのページを書く・直す | F9 | 作った | K-69,K-681 |
+| `deleteKnowledgePage` | DELETE /api/v1/knowledge_pages/:id | 削除（knowledge_pages）— ナレッジのページを書く・直す | F9 | 作った | K-69,K-681 |
 | `archiveKnowledgePage` | POST /api/v1/knowledge_pages/:id/archive | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
 | `uploadKnowledgeAttachment` | POST /api/v1/knowledge_pages/:id/attachments | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
 | `copyKnowledgePage` | POST /api/v1/knowledge_pages/:id/copy | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
@@ -454,7 +455,7 @@ API 386（作った 115・後のフェーズの行為だけ 20）・前の道す
 | `exportKnowledgeMarkdown` | GET /api/v1/knowledge_pages/:id/markdown | 取得（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
 | `listKnowledgeMessages` | GET /api/v1/knowledge_pages/:id/messages | 取得（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
 | `postKnowledgeMessage` | POST /api/v1/knowledge_pages/:id/messages | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
-| `setKnowledgeMust` | PUT /api/v1/knowledge_pages/:id/must | 置き換え（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
+| `setKnowledgeMust` | PUT /api/v1/knowledge_pages/:id/must | 置き換え（knowledge_pages）— ナレッジのページを書く・直す | F9 | 作った | K-69,K-685 |
 | `publishKnowledgePage` | POST /api/v1/knowledge_pages/:id/publish | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す | F9 | 作った | K-69,K-680 |
 | `unarchiveKnowledgePage` | POST /api/v1/knowledge_pages/:id/unarchive | 作成・実行（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |
 | `getKnowledgeUsage` | GET /api/v1/knowledge_pages/:id/usage | 取得（knowledge_pages）— ナレッジのページを書く・直す | F9 | 契約だけ（501） | K-69 |

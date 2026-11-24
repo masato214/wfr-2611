@@ -1,0 +1,42 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/f9-knowledge-page-edit.ts",
+    "apps/api/src/features/F9/knowledge/page-move.ts",
+    "apps/api/src/features/F9/knowledge/page-delete.ts",
+    "apps/api/src/features/F9/knowledge/page-guards/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F9/knowledge-page-edit.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/features/F9/knowledge/draft-discard.ts",
+    "packages/db/migrations/20261125012700_knowledge_page_hide_deleted.sql",
+    "packages/db/policies/20261125012700_knowledge_page_hide_deleted.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F9/knowledge-page-edit.test.ts",
+    "apps/api/test/features/F9/knowledge-draft.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F9/knowledge-page-edit.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144.d/K-681.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/patch_knowledge_pages_id.test.ts",
+    "apps/api/test/generated/delete_knowledge_pages_id.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/contract/k144.d/K-681.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-681"
+ }
+}

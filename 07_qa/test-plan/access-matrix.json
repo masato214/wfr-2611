@@ -3,9 +3,9 @@
  "created_at": "2026-11-24",
  "_doc": "entities.json の access_control_policies × 場合（見える範囲／見えない層／他の会社／SET LOCAL 無し／権限なし）。1 行 1 test。pnpm ci:access-matrix が全行を実 Postgres で流す",
  "counts": {
-  "entities": 146,
-  "policies": 421,
-  "cases": 1574
+  "entities": 147,
+  "policies": 422,
+  "cases": 1576
  },
  "cases": [
   {
@@ -20564,12 +20564,13 @@
    "operation": "select",
    "case": "同じ会社・見える範囲",
    "expected": "OK",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND deleted_at IS NULL AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_",
    "source": [
     "D-128.50",
     "D-128.51",
     "D-152.1",
-    "D-152.3"
+    "D-152.3",
+    "D-152.14"
    ]
   },
   {
@@ -20581,12 +20582,13 @@
    "operation": "select",
    "case": "同じ会社・見えない層",
    "expected": "NG（0 行）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND deleted_at IS NULL AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_",
    "source": [
     "D-128.50",
     "D-128.51",
     "D-152.1",
-    "D-152.3"
+    "D-152.3",
+    "D-152.14"
    ]
   },
   {
@@ -20598,12 +20600,13 @@
    "operation": "select",
    "case": "他の会社（SET LOCAL を別テナントに）",
    "expected": "NG（0 行）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND deleted_at IS NULL AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_",
    "source": [
     "D-128.50",
     "D-128.51",
     "D-152.1",
-    "D-152.3"
+    "D-152.3",
+    "D-152.14"
    ]
   },
   {
@@ -20615,12 +20618,13 @@
    "operation": "select",
    "case": "SET LOCAL を飛ばす",
    "expected": "NG（0 行・エラー）",
-   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_id', true)::uuid ELSE (",
+   "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND deleted_at IS NULL AND (CASE WHEN state = 'draft' THEN owner_member_id = current_setting('app.user_",
    "source": [
     "D-128.50",
     "D-128.51",
     "D-152.1",
-    "D-152.3"
+    "D-152.3",
+    "D-152.14"
    ]
   },
   {
@@ -21377,6 +21381,34 @@
    "predicate": "current_setting('app.role', true) = 'ops' AND EXISTS (SELECT 1 FROM support_access_grants g WHERE g.tenant_id = knowledge_folders.tenant_id AND g.expires_at > n",
    "source": [
     "D-128.68"
+   ]
+  },
+  {
+   "entity": "E-148",
+   "table": "knowledge_limits",
+   "policy": "knowledge_limits_all_read",
+   "role": "authenticated",
+   "role_ja": "ログイン済み（本人のもの）",
+   "operation": "select",
+   "case": "ログイン済み（会社の人）",
+   "expected": "OK",
+   "predicate": "true",
+   "source": [
+    "D-152.16"
+   ]
+  },
+  {
+   "entity": "E-148",
+   "table": "knowledge_limits",
+   "policy": "knowledge_limits_all_read",
+   "role": "authenticated",
+   "role_ja": "ログイン済み（本人のもの）",
+   "operation": "select",
+   "case": "SET LOCAL を飛ばす",
+   "expected": "NG（0 行）",
+   "predicate": "true",
+   "source": [
+    "D-152.16"
    ]
   },
   {

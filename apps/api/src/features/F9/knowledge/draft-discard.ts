@@ -9,8 +9,8 @@ import { auditPage, draftFailure, readMyDraft, readPage } from "./draft-shape.js
 
 const DROP_VERSION_SQL =
   "update knowledge_page_versions set deleted_at = now(), updated_by = app.user_id() where id = $1";
-const DROP_PAGE_SQL = `update knowledge_pages set deleted_at = now(), updated_by = app.user_id()
- where id = $1 and tenant_id = app.tenant_id() and deleted_at is null and state = 'draft'`;
+// ページごと消すのは DB の関数（行の守りが消したページを見せないので、アプリの接続の update では断られる・K-681）
+const DROP_PAGE_SQL = "select app.kn_page_soft_delete($1, true)";
 
 export function createDiscardKnowledgeDraft(appPool: pg.Pool): (a: HookArgs) => Promise<HookReply> {
   return async (a: HookArgs): Promise<HookReply> => {

@@ -4,7 +4,7 @@
  "summary": {
   "screens_count": 74,
   "features_count": 32,
-  "entities_count": 146,
+  "entities_count": 147,
   "uncovered_screens": [],
   "static_screens": [
    {
@@ -14296,6 +14296,12 @@
     "F-011",
     "F-013"
    ]
+  },
+  {
+   "entity_id": "E-148",
+   "entity_name": "knowledge_limits",
+   "used_by_screens": [],
+   "used_by_features": []
   },
   {
    "entity_id": "E-124",

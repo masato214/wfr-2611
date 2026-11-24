@@ -233,6 +233,10 @@
    "class": "skeleton",
    "why": "ナレッジの口が使う（K-674）"
   },
+  "knowledge_limits": {
+   "class": "skeleton",
+   "why": "必ず守るの付け外しの口が上限を読む（K-685）"
+  },
   "knowledge_page_versions": {
    "class": "skeleton",
    "why": "第1フェーズの口が使う（08_api/endpoints.json）"

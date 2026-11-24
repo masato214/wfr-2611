@@ -6,10 +6,10 @@
  ],
  "counts": {
   "api": 386,
-  "api_built": 115,
+  "api_built": 118,
   "api_only_later_phase": 20,
   "legacy_routes": 26,
-  "db": 149,
+  "db": 150,
   "ui": 19,
   "packages": 13,
   "errors": 291,
@@ -2271,9 +2271,10 @@
    "tables": [
     "knowledge_pages"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-69"
+    "K-69",
+    "K-681"
    ]
   },
   {
@@ -2288,9 +2289,10 @@
    "tables": [
     "knowledge_pages"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-69"
+    "K-69",
+    "K-681"
    ]
   },
   {
@@ -2477,9 +2479,10 @@
    "tables": [
     "knowledge_pages"
    ],
-   "status": "契約だけ（501）",
+   "status": "作った",
    "owner_tickets": [
-    "K-69"
+    "K-69",
+    "K-685"
    ]
   },
   {
@@ -6906,6 +6909,14 @@
    "writes": [
     "F9"
    ],
+   "reads": [],
+   "boundary": false
+  },
+  {
+   "table": "knowledge_limits",
+   "class": "skeleton",
+   "why": "必ず守るの付け外しの口が上限を読む（K-685）",
+   "writes": [],
    "reads": [],
    "boundary": false
   },

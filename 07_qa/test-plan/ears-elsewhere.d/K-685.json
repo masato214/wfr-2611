@@ -1,0 +1,39 @@
+{
+ "ops": {
+  "setKnowledgeMust": {
+   "file": "apps/api/test/features/F9/knowledge-must.test.ts",
+   "reason": "必ず守るを付けられるかは棚（会社・グループ・自分）と役・上限・本文の字数で答えが変わる。生成の試験の偽のセッションでは棚も所属も上限も作れない（K-685）",
+   "covers": {
+    "test_put_knowledge_pages_id_must_ok": "K685-API-001",
+    "test_put_knowledge_pages_id_must_shape": "K685-API-001",
+    "test_put_knowledge_pages_id_must_rejected_401": "K685-API-011",
+    "test_put_knowledge_pages_id_must_rejected_403": "K685-API-010",
+    "test_put_knowledge_pages_id_must_not_found": "K685-API-010",
+    "test_put_knowledge_pages_id_must_rejected_422": "K685-API-009",
+    "test_put_knowledge_pages_id_must_conflict": "K685-API-008",
+    "test_put_knowledge_pages_id_must_conflict_3": "K685-API-004",
+    "test_put_knowledge_pages_id_must_conflict_4": "K685-API-007",
+    "test_put_knowledge_pages_id_must_rate_limited": "K685-API-012",
+    "test_put_knowledge_pages_id_must_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_put_knowledge_pages_id_must_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_put_knowledge_pages_id_must_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_put_knowledge_pages_id_must_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    }
+   },
+   "na": {
+    "test_put_knowledge_pages_id_must_conflict_2": "承認待ちの頼み（E-KNW-011）は頼みの置き場（K-687）が入ってから。K-687 が page-guards/pending-request.ts を差し替え、自分の試験に行を足す"
+   }
+  }
+ }
+}
