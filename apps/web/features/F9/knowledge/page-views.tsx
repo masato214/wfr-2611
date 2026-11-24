@@ -246,20 +246,10 @@ export function PageEdit({
       ? { onChange: (e: { target: { value: string } }) => on(e.target.value), maxLength: EDIT_FIELD_MAX }
       : { readOnly: true };
   return (
-    <article className="k-f9-card" aria-label="ページを書いている">
+    // DOM の並び＝Tab の順（題名 → 説明 → 本文の道具 → 本文 → やめる → 書き終える）。見た目の並びは下絵のまま（操作は頭の右・knowledge.css の order）
+    <article className="k-f9-card k-f9-editcard" aria-label="ページを書いている">
       <header className="k-f9-phead">
         <Place place={place} />
-        <div className="k-f9-acts">
-          <span className="k-f9-saved" role="status" {...(savedKind ? { "data-kind": savedKind } : {})}>
-            {saved}
-          </span>
-          <Button variant="outlined" size="sm" {...(onCancel ? { onClick: onCancel } : {})}>
-            やめる
-          </Button>
-          <Button size="sm" loading={busy} disabled={doneDisabled} {...(onFinish ? { onClick: onFinish } : {})}>
-            書き終える
-          </Button>
-        </div>
       </header>
       {notice}
       <div className="k-f9-editfields">
@@ -283,6 +273,17 @@ export function PageEdit({
         />
       </div>
       <DocEditor doc={doc} onChange={onDoc ?? noop} />
+      <div className="k-f9-acts">
+        <span className="k-f9-saved" role="status" {...(savedKind ? { "data-kind": savedKind } : {})}>
+          {saved}
+        </span>
+        <Button variant="outlined" size="sm" {...(onCancel ? { onClick: onCancel } : {})}>
+          やめる
+        </Button>
+        <Button size="sm" loading={busy} disabled={doneDisabled} {...(onFinish ? { onClick: onFinish } : {})}>
+          書き終える
+        </Button>
+      </div>
     </article>
   );
 }
