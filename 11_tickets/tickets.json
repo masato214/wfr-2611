@@ -24635,6 +24635,7 @@
    "split": "",
    "choke_points": [
     "C2",
+    "C4",
     "C6"
    ],
    "tests": [
@@ -24653,13 +24654,10 @@
    "acts": [
     "A134"
    ],
-   "screens": [
-    "ops-team"
-   ],
+   "screens": [],
    "apis": [
     "listOpsMembers",
-    "addOpsMember",
-    "startOpsSetup"
+    "addOpsMember"
    ],
    "canvas": [],
    "canvas_none": "口と DB の葉で見た目を変えない。運営の人の画面（op-team・op-team-add）は K-986",
@@ -24667,7 +24665,8 @@
     "@kaname/api",
     "@kaname/auth",
     "@kaname/contracts",
-    "@kaname/db"
+    "@kaname/db",
+    "@kaname/errors"
    ],
    "ci_wide": [
     "db",

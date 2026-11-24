@@ -2376,10 +2376,13 @@
     "test_post_ops_members_session_unresolved_2": {
      "file": "apps/api/test/features/contract/k144-contract.test.ts",
      "mark": "K144-API-032"
+    },
+    "test_post_ops_members_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
     }
    },
    "na": {
-    "test_post_ops_members_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）",
     "test_post_ops_members_terms_pending": "運営の人は顧客の規約の同意を持たない（K-944）",
     "test_post_ops_members_mfa_pending": "付けるだけのセッションは運営の口に届かない（K945-API-007）"
    }

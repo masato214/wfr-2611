@@ -12,7 +12,7 @@ import type { Repository } from "@kaname/db/repository";
 import { kanameError } from "@kaname/errors";
 import type { HookArgs, HookReply } from "../../../contract/deps.js";
 import type { HookMailer } from "../../../hooks/registry.js";
-import { opsErrorReply, opsTx } from "./db.js";
+import { opsTx } from "./db.js";
 import { sendOpsInviteMail } from "./team-mail.js";
 
 export interface OpsTeamDeps {
@@ -41,6 +41,15 @@ const invalid = (details: Issue[]): HookReply => ({
 });
 const refuse = (code: string): HookReply => ({ status: 409, body: kanameError(code).toJSON() });
 const down = (): HookReply => ({ status: 503, body: kanameError("E-PAGE-003").toJSON() });
+
+/** DB の断り → 答え。この 2 つの関数（ops_members_list・ops_member_add）は ops_target を呼ばないので P0002（404）は出ない。
+ *  ops_require の断り 42501 → 403 FORBIDDEN（欄・details なし）／ほか → 503 E-PAGE-003。ログは場所と SQLSTATE だけ */
+function dbReply(e: unknown): HookReply {
+  const state = typeof e === "object" && e !== null && "code" in e ? String((e as { code: unknown }).code) : "";
+  if (state === "42501") return { status: 403, body: { error: "forbidden", code: "FORBIDDEN" } };
+  console.error(`[ops] ops-team の DB が失敗した（${state}）`);
+  return down();
+}
 
 /** 体の形を確かめる（入口の zod は欄を任意にしているので、無い・値域の外はここで 422） */
 export function checkAddInput(input: Record<string, unknown>): { email: string; caps: string[] } | Issue[] {
@@ -75,7 +84,7 @@ export function createListOpsMembers(d: Pick<OpsTeamDeps, "appPool">): (a: HookA
       noStore(a);
       return { status: 200, body: { data: r.rows[0]?.r.data ?? [] } };
     } catch (e) {
-      return opsErrorReply(e, "ops-team");
+      return dbReply(e);
     }
   };
 }
@@ -139,7 +148,7 @@ export function createAddOpsMember(d: OpsTeamDeps): (a: HookArgs) => Promise<Hoo
       res = r.rows[0]?.r ?? {};
     } catch (e) {
       if (user.made) await dropMadeUser(d, user.id);
-      return opsErrorReply(e, "ops-team");
+      return dbReply(e);
     }
     if (res.error || !res.data) {
       if (user.made) await dropMadeUser(d, user.id);
@@ -154,7 +163,7 @@ export function createAddOpsMember(d: OpsTeamDeps): (a: HookArgs) => Promise<Hoo
       memberId: res.data.member_id,
       email,
       url: opsSetupUrl(d.webBaseUrl, token),
-      dedupeKey: `ops_member.invited:${hash.slice(0, 32)}`,
+      dedupeKey: `ops_member.invited:${hash}`,
       byMemberId: a.ctx.userId ?? res.data.member_id,
     });
     noStore(a);

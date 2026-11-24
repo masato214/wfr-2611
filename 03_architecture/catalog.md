@@ -236,7 +236,7 @@ API 370（作った 99・後のフェーズの行為だけ 20）・前の道す�
 | `createRule` | POST /api/v1/rules | 作成・実行（rules）— 取引先を作り、担当者を招待する／ルールを置く（会社・層・個人・取引先） | F11,F9 | 契約だけ（501） | K-71 |
 | `requestAcceptance` | POST /api/v1/tickets/:id/acceptances | 作成・実行（tickets）— 成果物を確認してもらう（検収を頼む） | F11 | 契約だけ（501） | K-71 |
 | `updateTicketClientShare` | PATCH /api/v1/tickets/:id/client-share | 更新（tickets）— 成果物を確認してもらう（検収を頼む） | F11 | 契約だけ（501） | K-71 |
-| `startOpsSetup` | POST /api/v1/auth/ops-setup | 作成・実行（auth）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） | K-945,K-985 |
+| `startOpsSetup` | POST /api/v1/auth/ops-setup | 作成・実行（auth）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） | K-945 |
 | `listMyInquiries` | GET /api/v1/inquiries | 取得（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） |  |
 | `createInquiry` | POST /api/v1/inquiries | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） |  |
 | `getMyInquiry` | GET /api/v1/inquiries/:id | 取得（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） |  |

@@ -30,6 +30,12 @@ RESPONSES = {
     "addOpsMember": ("OpsMemberRow", dict(_ROW)),
 }
 
+# 答えの member_id は members.id（主キー）。関数 app.ops_member_row は ops_members を members と内部結合で読むので null にならない
+NOT_NULL_ANSWERS = {
+    "listOpsMembers.member_id": "答えの member_id は members.id（主キー）。app.ops_member_row が members と内部結合で読むので null にならない（ops_members.member_id は列として null 可）",
+    "addOpsMember.member_id": "答えの member_id は members.id（主キー）。app.ops_member_row が members と内部結合で読むので null にならない（ops_members.member_id は列として null 可）",
+}
+
 # 一覧は絞り込みも並べ替えも受けない（作った順に全部）
 QUERIES = {
     "listOpsMembers": [],
