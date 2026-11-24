@@ -39,6 +39,10 @@
     {
      "name": "live_by",
      "note": "本番に切り替えた日時と人。切り替える前の確認に赤が無いときだけ app.onboard_golive_switch が書く ← D-116.5・D-028.4"
+    },
+    {
+     "name": "billing_contact",
+     "note": "請求先 { company, attn, email }・会社に 1 つ・空なら null。読むのは app.billing_get・書くのは K-959 ← K-958・D-156.29。subscriptions.billing_contact は凍結"
     }
    ],
    "relations": [

@@ -121,6 +121,28 @@
    "reason": null
   },
   {
+   "entity": "tenants",
+   "field": "billing_contact",
+   "consumed_by_screens": [
+    "verify-email",
+    "invite-accept",
+    "onboard-draft",
+    "onboard-golive",
+    "company-model",
+    "export",
+    "ops-support",
+    "ops-home",
+    "account",
+    "company-settings",
+    "ops-skills",
+    "ops-billing",
+    "ops-tenant",
+    "tickets"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
    "entity": "scopes",
    "field": "<common>",
    "consumed_by_screens": [],
