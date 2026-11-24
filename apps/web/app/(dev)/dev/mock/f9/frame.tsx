@@ -2,7 +2,8 @@
 // 段 10 の下絵の外枠（見ている人ごとの外枠・ナレッジの骨組み。ワークスペースの管理の骨組みは ws-frame.tsx＝K-672）
 import type { ReactNode } from "react";
 import { Shell, Toaster, type Crumb, type Group } from "@/components/k";
-import { KnowledgeTree, TreeBar, type KnowledgeTreeProps } from "@/features/F9/knowledge/tree";
+import { KnowledgeLayout } from "@/features/F9/knowledge/knowledge-layout";
+import type { KnowledgeTreeProps } from "@/features/F9/knowledge/tree";
 import type { Viewer } from "@/features/F9/knowledge/samples";
 import { BUILT_ROUTES } from "@/lib/built-routes";
 import type { RoleId } from "@/lib/nav";
@@ -64,13 +65,9 @@ export function KnowledgeFrame({ tree, path, children, ...frame }: KnowledgeFram
   const crumbs: Crumb[] = [{ label: "ナレッジ", href: "/knowledge" }, ...path.map((label) => ({ label }))];
   return (
     <Frame {...frame} screen="knowledge" crumbs={crumbs}>
-      <div className="k-f9-wrap">
-        <KnowledgeTree {...tree} />
-        <div className="k-root k-f9-main">
-          <TreeBar place={path.join(" › ") || "ナレッジ"} />
-          {children}
-        </div>
-      </div>
+      <KnowledgeLayout tree={tree} place={path.join(" › ") || "ナレッジ"}>
+        {children}
+      </KnowledgeLayout>
     </Frame>
   );
 }

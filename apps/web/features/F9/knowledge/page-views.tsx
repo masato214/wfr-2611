@@ -6,7 +6,7 @@ import type { ReactNode } from "react";
 import { Band, Button, Menu, MenuItem, MenuPopup, MenuTrigger, TextField } from "@/components/k";
 import type { Doc } from "@kaname/contracts";
 import { DocEditor, DocView } from "@/features/F4/doc/editor";
-import type { PagePlace } from "./types";
+import type { MoreItem, PageAct, PagePlace } from "./types";
 import "./knowledge.css";
 
 /** 見た目だけなので、本文を打っても何もしない（口を呼ばない。つなぐのは画面の葉） */
@@ -29,13 +29,30 @@ function Place({ place }: { place: PagePlace }) {
 }
 
 /** 「必ず守る」の切り替え（付いているときは押し込んだ形） */
-export function MustToggle({ on, disabled }: { on: boolean; disabled?: string | undefined }) {
+export function MustToggle({
+  on,
+  disabled,
+  onClick,
+  inert,
+}: {
+  on: boolean;
+  disabled?: string | undefined;
+  onClick?: (() => void) | undefined;
+  /** 動きがまだ無い（押せない形） */
+  inert?: boolean | undefined;
+}) {
   return (
     <button
       type="button"
       className="k-f9-must"
       aria-pressed={on}
-      {...(disabled ? { "aria-disabled": true, tabIndex: -1, title: disabled } : {})}
+      {...(disabled
+        ? { "aria-disabled": true, tabIndex: -1, title: disabled }
+        : inert
+          ? { "aria-disabled": true }
+          : onClick
+            ? { onClick }
+            : {})}
     >
       <ShieldCheck size={14} aria-hidden="true" />
       必ず守る
@@ -43,32 +60,63 @@ export function MustToggle({ on, disabled }: { on: boolean; disabled?: string | 
   );
 }
 
-export type PageAct = "must-on" | "must-off" | "raise" | "share" | "copy" | "edit";
+export type { PageAct, MoreItem } from "./types";
+
+/** 帯の操作と「…」の項目ごとの動き。渡したときだけ、動きの無い操作を押せない形（aria-disabled）にする。
+ *  acts の鍵は部品の読み（must-on＝いま付いている＝押すと外す） */
+export interface PageHandlers {
+  acts: Partial<Record<PageAct, () => void>>;
+  more: Partial<Record<MoreItem, () => void>>;
+}
+
+/** 渡した動き（無ければ押せない形）。handlers を渡さないとき（下絵）は今の見た目のまま */
+function wired(handlers: PageHandlers | undefined, fn: (() => void) | undefined) {
+  if (!handlers) return {};
+  return fn ? { onClick: fn } : { "aria-disabled": true as const };
+}
 
 /** ページの上の帯の操作。主ボタンは 1 つ（書ける人は「直す」・読むだけの人は「写して直す」） */
-export function PageActs({ acts, moreOpen = false }: { acts: readonly PageAct[]; moreOpen?: boolean }) {
+export function PageActs({
+  acts,
+  moreOpen = false,
+  handlers,
+}: {
+  acts: readonly PageAct[];
+  moreOpen?: boolean;
+  handlers?: PageHandlers | undefined;
+}) {
   const has = (a: PageAct): boolean => acts.includes(a);
   const canEdit = has("edit");
+  const act = (a: PageAct) => wired(handlers, handlers?.acts[a]);
+  const item = (m: MoreItem) =>
+    handlers ? (handlers.more[m] ? { onSelect: handlers.more[m] } : { disabled: true }) : {};
+  const mustKey: PageAct = has("must-on") ? "must-on" : "must-off";
   return (
     <div className="k-f9-acts">
-      {has("must-on") || has("must-off") ? <MustToggle on={has("must-on")} /> : null}
+      {has("must-on") || has("must-off") ? (
+        <MustToggle
+          on={has("must-on")}
+          inert={Boolean(handlers) && !handlers?.acts[mustKey]}
+          onClick={handlers?.acts[mustKey]}
+        />
+      ) : null}
       {has("raise") ? (
-        <Button variant="outlined" size="sm" icon={<ArrowUpToLine size={14} />}>
+        <Button variant="outlined" size="sm" icon={<ArrowUpToLine size={14} />} {...act("raise")}>
           上の棚に上げる
         </Button>
       ) : null}
       {has("share") ? (
-        <Button variant="outlined" size="sm" icon={<Share2 size={14} />}>
+        <Button variant="outlined" size="sm" icon={<Share2 size={14} />} {...act("share")}>
           グループを選んで共有
         </Button>
       ) : null}
       {has("copy") ? (
-        <Button variant={canEdit ? "outlined" : "primary"} size="sm" icon={<Copy size={14} />}>
+        <Button variant={canEdit ? "outlined" : "primary"} size="sm" icon={<Copy size={14} />} {...act("copy")}>
           写して直す
         </Button>
       ) : null}
       {canEdit ? (
-        <Button size="sm" icon={<Pencil size={14} />}>
+        <Button size="sm" icon={<Pencil size={14} />} {...act("edit")}>
           直す
         </Button>
       ) : null}
@@ -77,10 +125,10 @@ export function PageActs({ acts, moreOpen = false }: { acts: readonly PageAct[];
           <MoreHorizontal size={16} aria-hidden="true" />
         </MenuTrigger>
         <MenuPopup>
-          <MenuItem>前の版を見る</MenuItem>
-          <MenuItem>リンクをコピー</MenuItem>
-          {canEdit ? <MenuItem>別のフォルダへ動かす</MenuItem> : null}
-          {canEdit ? <MenuItem>消す…</MenuItem> : null}
+          <MenuItem {...item("versions")}>前の版を見る</MenuItem>
+          <MenuItem {...item("copy-link")}>リンクをコピー</MenuItem>
+          {canEdit ? <MenuItem {...item("move")}>別のフォルダへ動かす</MenuItem> : null}
+          {canEdit ? <MenuItem {...item("delete")}>消す…</MenuItem> : null}
         </MenuPopup>
       </Menu>
     </div>
@@ -104,6 +152,8 @@ export interface PageViewProps {
   moreOpen?: boolean;
   /** 本文（段 5 の文書の木。読む形は DocView） */
   doc: Doc;
+  /** 帯の操作と「…」の動き（画面の入れ物が渡す。下絵は渡さない） */
+  handlers?: PageHandlers | undefined;
 }
 
 export function PageView({
@@ -116,12 +166,13 @@ export function PageView({
   foot,
   moreOpen = false,
   doc,
+  handlers,
 }: PageViewProps) {
   return (
     <article className="k-f9-card" aria-labelledby="kn-title">
       <header className="k-f9-phead">
         <Place place={place} />
-        <PageActs acts={acts} moreOpen={moreOpen} />
+        <PageActs acts={acts} moreOpen={moreOpen} handlers={handlers} />
       </header>
       <h1 id="kn-title" className="k-f9-title">
         {title}
@@ -185,15 +236,36 @@ export function PageEdit({ place, title, desc, saved, doc }: PageEditProps) {
 }
 
 // ---------------------------------------------------------------- ページの帯
+/** 帯の中のボタンの動き（渡したときだけ、動きの無いボタンを押せない形にする） */
+export interface BandHandlers {
+  live: true;
+  withdraw?: (() => void) | undefined;
+  dismiss?: (() => void) | undefined;
+  redo?: (() => void) | undefined;
+  openOriginal?: (() => void) | undefined;
+}
+const bandBtn = (h: BandHandlers | undefined, fn: (() => void) | undefined) =>
+  h ? (fn ? { onClick: fn } : { "aria-disabled": true as const }) : {};
+
 /** 上の棚に上げるのを頼んだ（承認待ち） */
-export function WaitingBand({ to, who, at }: { to: string; who: string; at: string }) {
+export function WaitingBand({
+  to,
+  who,
+  at,
+  handlers,
+}: {
+  to: string;
+  who: string;
+  at: string;
+  handlers?: BandHandlers | undefined;
+}) {
   return (
     <Band
       tone="wait"
       title={`${to}の棚に上げるのを頼んでいます`}
       sub={`${who}の承認を待っています ・ ${at} に頼んだ`}
       acts={
-        <Button variant="outlined" size="sm">
+        <Button variant="outlined" size="sm" {...bandBtn(handlers, handlers?.withdraw)}>
           取り下げる
         </Button>
       }
@@ -202,7 +274,19 @@ export function WaitingBand({ to, who, at }: { to: string; who: string; at: stri
 }
 
 /** 断られた（理由つき） */
-export function DeclinedBand({ to, who, at, reason }: { to: string; who: string; at: string; reason: string }) {
+export function DeclinedBand({
+  to,
+  who,
+  at,
+  reason,
+  handlers,
+}: {
+  to: string;
+  who: string;
+  at: string;
+  reason: string;
+  handlers?: BandHandlers | undefined;
+}) {
   return (
     <Band
       tone="danger"
@@ -210,10 +294,10 @@ export function DeclinedBand({ to, who, at, reason }: { to: string; who: string;
       sub={`${who} ・ ${at}`}
       acts={
         <>
-          <Button variant="outlined" size="sm">
+          <Button variant="outlined" size="sm" {...bandBtn(handlers, handlers?.dismiss)}>
             このお知らせを消す
           </Button>
-          <Button variant="outlined" size="sm">
+          <Button variant="outlined" size="sm" {...bandBtn(handlers, handlers?.redo)}>
             直してもう一度頼む
           </Button>
         </>
@@ -228,14 +312,22 @@ export function DeclinedBand({ to, who, at, reason }: { to: string; who: string;
 }
 
 /** 写し（どのページの写しかを出す。必ず守るのページは写しても上が効く） */
-export function CopyBand({ from, must }: { from: string; must: boolean }) {
+export function CopyBand({
+  from,
+  must,
+  handlers,
+}: {
+  from: string;
+  must: boolean;
+  handlers?: BandHandlers | undefined;
+}) {
   return (
     <Band
       tone="info"
       title={`${from}の写しです`}
       sub="自分用に直せます。直しても、元のページは変わりません。"
       acts={
-        <Button variant="outlined" size="sm">
+        <Button variant="outlined" size="sm" {...bandBtn(handlers, handlers?.openOriginal)}>
           元のページを開く
         </Button>
       }

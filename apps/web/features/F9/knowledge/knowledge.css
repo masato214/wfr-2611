@@ -115,7 +115,7 @@
   font-size: var(--k-text-body-sm);
   cursor: pointer;
 }
-.k-f9-switch button[aria-selected="true"] {
+.k-f9-switch button[aria-pressed="true"] {
   border-color: var(--k-line);
   background: var(--k-card);
   color: var(--k-on-surface);
@@ -276,6 +276,18 @@
   border-radius: var(--k-r-full);
   background: var(--k-secondary-container);
   color: var(--k-on-secondary-container);
+  font-size: var(--k-text-label-xs);
+  font-weight: var(--k-fw-label-xs);
+  line-height: var(--k-lh-body);
+}
+.k-f9-add[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+/* 下書きの印（持ち主にだけ・小さな字） */
+.k-f9-draft {
+  flex: none;
+  color: var(--k-on-surface-variant);
   font-size: var(--k-text-label-xs);
   font-weight: var(--k-fw-label-xs);
   line-height: var(--k-lh-body);

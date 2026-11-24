@@ -18,9 +18,9 @@ import {
   Users,
   X,
 } from "lucide-react";
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import { Button } from "@/components/k";
-import type { AdminCounts, TreeData, TreeGroup, TreeNode, TreePage } from "./types";
+import type { AdminCounts, ShelfKind, TreeData, TreeGroup, TreeNode, TreePage } from "./types";
 import "./knowledge.css";
 
 /** 木の字下げの深さ（CSS は data-depth の 0〜3 の段で字下げする。4 段より深い所は 3 と同じ） */
@@ -50,29 +50,74 @@ function PageMarks({ p }: { p: TreePage }) {
           <Copy size={14} aria-hidden="true" />
         </span>
       ) : null}
+      {p.mark === "draft" ? (
+        <span className="k-f9-draft" data-mark="draft">
+          下書き
+        </span>
+      ) : null}
     </span>
   );
 }
 
-function Nodes({ nodes, depth, current }: { nodes: readonly TreeNode[]; depth: number; current?: string | undefined }) {
+/** 木を押したときの動き（渡さなければ見た目だけ・下絵と同じ） */
+export interface TreeActs {
+  /** ページの行の行き先（無ければ #<id>） */
+  hrefOf?: (id: string) => string;
+  /** ページを押した（a の既定の移動を止めて、入れ物が移す） */
+  onOpenPage?: (id: string) => void;
+  /** フォルダを押した（開き閉じ） */
+  onToggleFolder?: (id: string) => void;
+  /** 棚の「＋」を押した */
+  onAdd?: (target: { shelf: ShelfKind; group_id?: string }) => void;
+  /** 「＋」の動きがまだ無い（押せない形） */
+  inertAdd?: boolean;
+}
+
+function openPage(acts: TreeActs | undefined, id: string) {
+  return acts?.onOpenPage
+    ? (e: MouseEvent<HTMLAnchorElement>) => {
+        if (e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+        e.preventDefault();
+        acts.onOpenPage?.(id);
+      }
+    : undefined;
+}
+
+function Nodes({
+  nodes,
+  depth,
+  current,
+  acts,
+}: {
+  nodes: readonly TreeNode[];
+  depth: number;
+  current?: string | undefined;
+  acts?: TreeActs | undefined;
+}) {
   return (
     <ul className="k-f9-nodes" role="group">
       {nodes.map((n) =>
         n.kind === "folder" ? (
           <li key={n.id} role="treeitem" aria-expanded={Boolean(n.open)}>
-            <button type="button" className="k-f9-node" {...depthAttr(depth)}>
+            <button
+              type="button"
+              className="k-f9-node"
+              {...depthAttr(depth)}
+              {...(acts?.onToggleFolder ? { onClick: () => acts.onToggleFolder?.(n.id) } : {})}
+            >
               {n.open ? <ChevronDown size={14} aria-hidden="true" /> : <ChevronRight size={14} aria-hidden="true" />}
               {n.open ? <FolderOpen size={15} aria-hidden="true" /> : <Folder size={15} aria-hidden="true" />}
               <span className="k-f9-node-t">{n.name}</span>
             </button>
-            {n.open ? <Nodes nodes={n.children} depth={depth + 1} current={current} /> : null}
+            {n.open ? <Nodes nodes={n.children} depth={depth + 1} current={current} acts={acts} /> : null}
           </li>
         ) : (
           <li key={n.id} role="treeitem">
             <a
               className="k-f9-node"
               data-page
-              href={`#${n.id}`}
+              href={acts?.hrefOf ? acts.hrefOf(n.id) : `#${n.id}`}
+              onClick={openPage(acts, n.id)}
               {...depthAttr(depth)}
               aria-current={n.id === current ? "page" : undefined}
             >
@@ -87,7 +132,43 @@ function Nodes({ nodes, depth, current }: { nodes: readonly TreeNode[]; depth: n
   );
 }
 
-function ShelfHead({ icon, name, sub, canAdd }: { icon: ReactNode; name: string; sub?: string; canAdd: boolean }) {
+function AddButton({
+  name,
+  onAdd,
+  inert,
+}: {
+  name: string;
+  onAdd?: (() => void) | undefined;
+  inert?: boolean | undefined;
+}) {
+  return (
+    <button
+      type="button"
+      className="k-f9-add"
+      aria-label={`${name}の棚にページかフォルダを足す`}
+      title="ページ・フォルダを足す"
+      {...(inert ? { "aria-disabled": true } : onAdd ? { onClick: onAdd } : {})}
+    >
+      <Plus size={14} aria-hidden="true" />
+    </button>
+  );
+}
+
+function ShelfHead({
+  icon,
+  name,
+  sub,
+  canAdd,
+  onAdd,
+  inert,
+}: {
+  icon: ReactNode;
+  name: string;
+  sub?: string;
+  canAdd: boolean;
+  onAdd?: (() => void) | undefined;
+  inert?: boolean | undefined;
+}) {
   return (
     <div className="k-f9-shelf-h">
       <span className="k-f9-shelf-ic" aria-hidden="true">
@@ -95,21 +176,26 @@ function ShelfHead({ icon, name, sub, canAdd }: { icon: ReactNode; name: string;
       </span>
       <h2>{name}</h2>
       {sub ? <span className="k-f9-shelf-sub">{sub}</span> : null}
-      {canAdd ? (
-        <button
-          type="button"
-          className="k-f9-add"
-          aria-label={`${name}の棚にページかフォルダを足す`}
-          title="ページ・フォルダを足す"
-        >
-          <Plus size={14} aria-hidden="true" />
-        </button>
-      ) : null}
+      {canAdd ? <AddButton name={name} onAdd={onAdd} inert={inert} /> : null}
     </div>
   );
 }
 
-function GroupBlock({ d, current, canAdd }: { d: TreeGroup; current?: string | undefined; canAdd: boolean }) {
+function addOf(acts: TreeActs | undefined, target: { shelf: ShelfKind; group_id?: string }) {
+  return acts?.onAdd ? () => acts.onAdd?.(target) : undefined;
+}
+
+function GroupBlock({
+  d,
+  current,
+  canAdd,
+  acts,
+}: {
+  d: TreeGroup;
+  current?: string | undefined;
+  canAdd: boolean;
+  acts?: TreeActs | undefined;
+}) {
   return (
     <li role="treeitem" aria-expanded="true">
       <div className="k-f9-group" {...depthAttr(0)}>
@@ -120,17 +206,14 @@ function GroupBlock({ d, current, canAdd }: { d: TreeGroup; current?: string | u
         <span className="k-f9-node-t">{d.name}</span>
         {d.shared ? <span className="k-f9-shared">共有</span> : null}
         {canAdd ? (
-          <button
-            type="button"
-            className="k-f9-add"
-            aria-label={`${d.name}の棚にページかフォルダを足す`}
-            title="ページ・フォルダを足す"
-          >
-            <Plus size={14} aria-hidden="true" />
-          </button>
+          <AddButton
+            name={d.name}
+            onAdd={addOf(acts, { shelf: "group", ...(d.id ? { group_id: d.id } : {}) })}
+            inert={acts?.inertAdd}
+          />
         ) : null}
       </div>
-      <Nodes nodes={d.nodes} depth={1} current={current} />
+      <Nodes nodes={d.nodes} depth={1} current={current} acts={acts} />
     </li>
   );
 }
@@ -149,16 +232,22 @@ export interface KnowledgeTreeProps {
   drawerOpen?: boolean;
   /** まだ読めていない（読み込み中）・1 枚も無い */
   state?: "ready" | "loading";
+  /** 押したときの動き（渡さなければ見た目だけ） */
+  acts?: TreeActs | undefined;
+  /** 引き出しを閉じる（幕・「木を閉じる」） */
+  onCloseDrawer?: (() => void) | undefined;
+  /** 口が木を途中で切った（木の下に一言） */
+  truncated?: boolean | undefined;
 }
 
 function ViewSwitch({ view, admin }: { view: "pages" | "admin"; admin: AdminCounts }) {
   const n = admin.approvals + admin.review;
   return (
-    <div className="k-f9-switch" role="tablist" aria-label="ナレッジの面">
-      <button type="button" role="tab" aria-selected={view === "pages"}>
+    <div className="k-f9-switch" role="group" aria-label="ナレッジの面">
+      <button type="button" aria-pressed={view === "pages"}>
         ページ
       </button>
-      <button type="button" role="tab" aria-selected={view === "admin"}>
+      <button type="button" aria-pressed={view === "admin"}>
         管理
         {n ? <span className="k-f9-count">{n}</span> : null}
       </button>
@@ -213,14 +302,24 @@ export function KnowledgeTree({
   adminList = "approvals",
   drawerOpen = false,
   state = "ready",
+  acts,
+  onCloseDrawer,
+  truncated = false,
 }: KnowledgeTreeProps) {
   return (
     <>
-      {drawerOpen ? <div className="k-f9-scrim" aria-hidden="true" /> : null}
+      {drawerOpen ? (
+        <div className="k-f9-scrim" aria-hidden="true" {...(onCloseDrawer ? { onClick: onCloseDrawer } : {})} />
+      ) : null}
       <aside className="k-f9-tree" aria-label="ナレッジの木" data-open={drawerOpen || undefined}>
         <div className="k-f9-tree-head">
           <b>ナレッジ</b>
-          <button type="button" className="k-f9-drawer-close" aria-label="木を閉じる">
+          <button
+            type="button"
+            className="k-f9-drawer-close"
+            aria-label="木を閉じる"
+            {...(onCloseDrawer ? { onClick: onCloseDrawer } : {})}
+          >
             <X size={16} aria-hidden="true" />
           </button>
         </div>
@@ -238,10 +337,17 @@ export function KnowledgeTree({
         ) : (
           <nav aria-label="棚とページ" className="k-f9-shelves">
             <section className="k-f9-shelf" aria-label="会社の棚">
-              <ShelfHead icon={<Building2 size={14} />} name="会社" sub={data.company} canAdd={data.canWrite.company} />
+              <ShelfHead
+                icon={<Building2 size={14} />}
+                name="会社"
+                sub={data.company}
+                canAdd={data.canWrite.company}
+                onAdd={addOf(acts, { shelf: "company" })}
+                inert={acts?.inertAdd}
+              />
               {data.companyNodes.length ? (
                 <div role="tree" aria-label="会社のページ">
-                  <Nodes nodes={data.companyNodes} depth={0} current={current} />
+                  <Nodes nodes={data.companyNodes} depth={0} current={current} acts={acts} />
                 </div>
               ) : (
                 <p className="k-f9-none">まだありません</p>
@@ -251,15 +357,28 @@ export function KnowledgeTree({
               <ShelfHead icon={<Users size={14} />} name="グループ" canAdd={false} />
               <ul className="k-f9-nodes" role="tree" aria-label="グループのページ">
                 {data.groups.map((d) => (
-                  <GroupBlock key={d.code} d={d} current={current} canAdd={data.canWrite.group.includes(d.code)} />
+                  <GroupBlock
+                    key={d.id ?? d.code}
+                    d={d}
+                    current={current}
+                    canAdd={data.canWrite.group.includes(d.id ?? d.code)}
+                    acts={acts}
+                  />
                 ))}
               </ul>
             </section>
             <section className="k-f9-shelf" aria-label="自分の棚">
-              <ShelfHead icon={<User size={14} />} name="自分" sub="自分だけが読める" canAdd={data.canWrite.me} />
+              <ShelfHead
+                icon={<User size={14} />}
+                name="自分"
+                sub="自分だけが読める"
+                canAdd={data.canWrite.me}
+                onAdd={addOf(acts, { shelf: "me" })}
+                inert={acts?.inertAdd}
+              />
               {data.myNodes.length ? (
                 <div role="tree" aria-label="自分のページ">
-                  <Nodes nodes={data.myNodes} depth={0} current={current} />
+                  <Nodes nodes={data.myNodes} depth={0} current={current} acts={acts} />
                 </div>
               ) : (
                 <p className="k-f9-none">まだありません</p>
@@ -267,6 +386,9 @@ export function KnowledgeTree({
             </section>
           </nav>
         )}
+        {view === "pages" && state === "ready" && truncated ? (
+          <p className="k-f9-note">木が大きいので、一部だけ出しています</p>
+        ) : null}
         {view === "pages" && state === "ready" ? <Legend /> : null}
       </aside>
     </>
@@ -274,10 +396,15 @@ export function KnowledgeTree({
 }
 
 /** 幅 1023 以下で本文の上に出る帯（木を開くボタンと、いまの場所） */
-export function TreeBar({ place }: { place: string }) {
+export function TreeBar({ place, onOpen }: { place: string; onOpen?: (() => void) | undefined }) {
   return (
     <div className="k-f9-mbar">
-      <Button variant="outlined" size="sm" icon={<MenuIcon size={14} aria-hidden="true" />}>
+      <Button
+        variant="outlined"
+        size="sm"
+        icon={<MenuIcon size={14} aria-hidden="true" />}
+        {...(onOpen ? { onClick: onOpen } : {})}
+      >
         木を開く
       </Button>
       <span className="k-f9-mbar-place">{place}</span>

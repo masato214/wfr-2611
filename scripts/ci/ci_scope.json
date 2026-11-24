@@ -1839,6 +1839,50 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/f9-knowledge-tree.ts",
+    "apps/api/src/features/F9/knowledge/tree.ts",
+    "apps/api/src/features/F9/knowledge/tree-parts/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F9/knowledge-tree.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F9/knowledge-tree.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_knowledge_tree.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/hooks/f9-knowledge-page-read.ts",
+    "apps/api/src/features/F9/knowledge/read.ts",
+    "apps/api/src/features/F9/knowledge/versions.ts",
+    "apps/api/src/features/F9/knowledge/page-parts/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F9/knowledge-page-read.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F9/knowledge-page-read.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/F1/terms.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_knowledge_pages_id.test.ts",
+    "apps/api/test/generated/get_knowledge_pages_id_versions.test.ts",
+    "apps/api/test/generated/get_knowledge_pages_id_versions_v.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/hooks/f9-knowledge-draft.ts",
     "apps/api/src/features/F9/knowledge/page-create.ts",
     "apps/api/src/features/F9/knowledge/draft-*.ts"
@@ -1880,6 +1924,16 @@
    ],
    "tests": [
     "apps/api/test/generated/post_knowledge_pages_id_publish.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/web/features/F9/knowledge/**",
+    "apps/web/app/(work)/knowledge/**"
+   ],
+   "tests": [
+    "apps/web/tests/k/k682-knowledge-shell.spec.ts",
+    "apps/web/test/k682-knowledge-shape.test.ts"
    ]
   },
   {
@@ -2166,8 +2220,11 @@
   "packages/db/test/knowledge_shelves.test.ts": "migration packages/db/migrations/20261125011400_knowledge_shelves.sql を readFileSync で読み、同じ文をもう 1 度当てても壊れないことを確かめる（K-674）",
   "apps/api/test/features/F9/knowledge.harness.ts": "入っている葉の hooks のファイル apps/api/src/hooks/f9-knowledge-*.ts を readdirSync と動的 import で読む（まだ入っていない葉の物は無いので、在る物だけを差す）。読む物と使う試験は data_links で結ぶ・K-675",
   "apps/api/test/features/F9/knowledge-base.test.ts": "契約の生成物 08_api/endpoints.json・07_qa/test-specs/errors.json を readFileSync で、置き場 k144.d の名前の一覧を readdirSync で読む。生成物と使う試験は同じ CI で作り直される・K-675",
+  "apps/api/test/features/contract/k144.d/K-677.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-677",
   "apps/api/test/features/contract/k144.d/K-679.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-679",
   "apps/api/test/features/contract/k144.d/K-680.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-680",
+  "apps/web/tests/k/knowledge-mock.ts": "ナレッジの口の差し替えの道具。正本 07_qa/test-specs/errors.json の文を readFileSync で読む（エラーの文を比べるため・ファイルは書かない）・K-682",
+  "apps/web/tests/k/f9-match.ts": "モックと本番の見た目の比べ方。scripts/ci/fidelity_compare.mjs を import して値を比べ、写しを test-results/f9-match/ に書く（人が見る用・判定に使わない）・K-682",
   "apps/api/test/features/F9/settings.harness.ts": "入っている葉の hooks のファイル（ticket-stages-write ほか）を F3/leaf-hooks.ts の動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-705",
   "apps/api/test/features/contract/k144.d/K-705.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-705",
   "apps/api/test/features/contract/k144.d/K-706.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-706",

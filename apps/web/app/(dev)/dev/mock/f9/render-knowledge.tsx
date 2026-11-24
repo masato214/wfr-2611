@@ -181,7 +181,7 @@ function stateOnly(theme: Theme, kind: "empty" | "loading" | "failed" | "noacces
           ) : kind === "failed" ? (
             <ErrorState code={PAGE_ERROR.loadFailed} acts={[noop]} />
           ) : (
-            <NoAccess acts={[noop]} />
+            <NoAccess acts={[noop, noop]} />
           )}
         </div>
       )}

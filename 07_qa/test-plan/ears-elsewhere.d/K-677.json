@@ -1,0 +1,85 @@
+{
+ "ops": {
+  "getKnowledgePage": {
+   "file": "apps/api/test/features/F9/knowledge-page-read.test.ts",
+   "reason": "ページは棚・役・下書きの持ち主・必ず守るの字数で答えが変わる。生成の試験の偽のセッションでは棚も所属も版も作れない（K-677）",
+   "covers": {
+    "test_get_knowledge_pages_id_ok": "K677-API-002",
+    "test_get_knowledge_pages_id_shape": "K677-API-001",
+    "test_get_knowledge_pages_id_rejected_401": "K677-API-021",
+    "test_get_knowledge_pages_id_not_found": "K677-API-012",
+    "test_get_knowledge_pages_id_rate_limited": "K677-API-023",
+    "test_get_knowledge_pages_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_knowledge_pages_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_get_knowledge_pages_id_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_knowledge_pages_id_rejected_403": "見えない物は 403 でなく 404（在るかを漏らさない・K677-API-012）",
+    "test_get_knowledge_pages_id_rejected_422": "道の id が uuid でない行は共有の試験 K144-API-100（この葉の葉のファイル k144.d/K-677.ts）が受ける"
+   }
+  },
+  "listKnowledgeVersions": {
+   "file": "apps/api/test/features/F9/knowledge-page-read.test.ts",
+   "reason": "版の一覧は公開した版だけ・下書きの版は出ない・ページが見えるかで 404 になる。生成の試験の偽のセッションでは版が作れない（K-677）",
+   "covers": {
+    "test_get_knowledge_pages_id_versions_ok": "K677-API-014",
+    "test_get_knowledge_pages_id_versions_shape": "K677-API-014",
+    "test_get_knowledge_pages_id_versions_rejected_401": "K677-API-021",
+    "test_get_knowledge_pages_id_versions_not_found": "K677-API-018",
+    "test_get_knowledge_pages_id_versions_rate_limited": "K677-API-023",
+    "test_get_knowledge_pages_id_versions_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_knowledge_pages_id_versions_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_get_knowledge_pages_id_versions_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_knowledge_pages_id_versions_rejected_403": "見えない物は 404（K677-API-018）",
+    "test_get_knowledge_pages_id_versions_rejected_422": "道の id・cursor・limit は入口の共通の形の確かめ（K-144・K144-API-101）"
+   }
+  },
+  "getKnowledgePageVersion": {
+   "file": "apps/api/test/features/F9/knowledge-page-read.test.ts",
+   "reason": "前の版は公開した版だけ・番号とページの見える・見えないで 404 になる。生成の試験の偽のセッションでは版が作れない（K-677）",
+   "covers": {
+    "test_get_knowledge_pages_id_versions_v_ok": "K677-API-019",
+    "test_get_knowledge_pages_id_versions_v_shape": "K677-API-019",
+    "test_get_knowledge_pages_id_versions_v_rejected_401": "K677-API-021",
+    "test_get_knowledge_pages_id_versions_v_not_found": "K677-API-020",
+    "test_get_knowledge_pages_id_versions_v_rate_limited": "K677-API-023",
+    "test_get_knowledge_pages_id_versions_v_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_knowledge_pages_id_versions_v_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_get_knowledge_pages_id_versions_v_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_knowledge_pages_id_versions_v_rejected_403": "見えない物は 404（K677-API-018・020）",
+    "test_get_knowledge_pages_id_versions_v_rejected_422": "道の id・v の形は入口の共通の形の確かめ（K144-API-102・契約の PATH_PATTERNS）"
+   }
+  }
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "data_links": [
+  {"paths": ["apps/web/features/F9/knowledge/**", "apps/web/app/(work)/knowledge/**"],
+   "tests": ["apps/web/tests/k/k682-knowledge-shell.spec.ts", "apps/web/test/k682-knowledge-shape.test.ts"]}
+ ],
+ "reads_ok": {
+  "apps/web/tests/k/knowledge-mock.ts": "ナレッジの口の差し替えの道具。正本 07_qa/test-specs/errors.json の文を readFileSync で読む（エラーの文を比べるため・ファイルは書かない）・K-682",
+  "apps/web/tests/k/f9-match.ts": "モックと本番の見た目の比べ方。scripts/ci/fidelity_compare.mjs を import して値を比べ、写しを test-results/f9-match/ に書く（人が見る用・判定に使わない）・K-682"
+ }
+}

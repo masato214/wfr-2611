@@ -1,0 +1,8 @@
+{"ops": {"getKnowledgeTree": {"file": "apps/api/test/features/F9/knowledge-tree.test.ts",
+  "reason": "木は棚（会社・グループ・自分）と役（管理者・マネージャー・メンバー）・下書きの持ち主で答えが変わる。生成の試験の偽のセッションでは棚も所属も作れない（K-676）",
+  "covers": {"test_get_knowledge_tree_ok": "K676-API-001", "test_get_knowledge_tree_shape": "K676-API-001",
+             "test_get_knowledge_tree_rejected_401": "K676-API-016", "test_get_knowledge_tree_rate_limited": "K676-API-019",
+             "test_get_knowledge_tree_terms_pending": {"file": "apps/api/test/features/F1/terms.test.ts", "mark": "K53-API-005"},
+             "test_get_knowledge_tree_session_unresolved": {"file": "apps/api/test/features/contract/k144-contract.test.ts", "mark": "K144-API-032"}},
+  "na": {"test_get_knowledge_tree_rejected_403": "本人の木だけを返す口で役は見ない（役ごとの違いは K676-API-002〜004・008・009）",
+         "test_get_knowledge_tree_rejected_422": "入力を受けない GET（cursor・limit は入口の共通の形の確かめ・K-144）"}}}}

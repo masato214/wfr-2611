@@ -263,13 +263,21 @@ test("K138-SH-005 今いる項目：/tickets と /tickets/:id はチケット、
   }
 });
 
-test("K138-SH-006 作っていない項目（ナレッジ・取引先・ワークスペースの管理）は押せない形（読み上げは「使えないリンク」・Tab で止まり Enter でも移らない）・title に準備中・目に見える「準備中」の字が無い", async ({
+test("K138-SH-006 作っていない項目（取引先）は押せない形（読み上げは「使えないリンク」・Tab で止まり Enter でも移らない）・title に準備中・目に見える「準備中」の字が無い。ワークスペースの管理は作った道 /members へ、ナレッジは作った道 /knowledge へ押せる（D-148.49・K-420・K-682）", async ({
   page,
 }) => {
   await mockApi(page);
   await open(page, PATHS.tickets);
   const nav = leftNav(page);
-  for (const name of ["ナレッジ", "取引先", "ワークスペースの管理"]) {
+  // 会社を作った人（R1）もメンバーの画面へ行ける（D-148.49・answer=3d444fc8d59f）。K-420 が /members を作り、R1 の行き先が作った道になる
+  const ws = nav.getByRole("link", { name: /ワークスペースの管理/, disabled: false });
+  await expect(ws).toHaveCount(1);
+  expect(await ws.getAttribute("href")).toBe("/members");
+  // ナレッジは K-682 が /knowledge を作り、押せるリンクになる（段 10・K-682）
+  const kn = nav.getByRole("link", { name: /ナレッジ/, disabled: false });
+  await expect(kn).toHaveCount(1);
+  expect(await kn.getAttribute("href")).toBe("/knowledge");
+  for (const name of ["取引先"]) {
     // 押せるリンクは無く、読み上げには「使えないリンク」として届く（role=link・aria-disabled）
     await expect(nav.getByRole("link", { name: new RegExp(name), disabled: false }), name).toHaveCount(0);
     const item = nav.getByRole("link", { name: new RegExp(name), disabled: true });

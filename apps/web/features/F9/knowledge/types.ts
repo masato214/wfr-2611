@@ -3,8 +3,13 @@
 
 export type ShelfKind = "company" | "group" | "me";
 
-/** 木の行に出す印（必ず守る・承認待ち・断られた・写し） */
-export type PageMark = "waiting" | "declined" | "copy";
+/** 木の行に出す印（承認待ち・断られた・写し・下書き〔口が持ち主だけに返す〕） */
+export type PageMark = "waiting" | "declined" | "copy" | "draft";
+
+/** ページの上の帯の操作（部品の読み：must-on＝押し込んだ形＝いま付いている） */
+export type PageAct = "must-on" | "must-off" | "raise" | "share" | "copy" | "edit";
+/** 「…」の項目 */
+export type MoreItem = "versions" | "copy-link" | "move" | "delete";
 
 export interface TreePage {
   kind: "page";
@@ -25,6 +30,9 @@ export type TreeNode = TreePage | TreeFolder;
 
 /** グループの棚の中の 1 つのグループ（自分の入っているグループか、共有されたグループ） */
 export interface TreeGroup {
+  /** 口の uuid（鍵・書ける棚の判定）。下絵の見本は持たず、札の字で代える */
+  id?: string;
+  /** 札の字（チケットの番号の頭） */
   code: string;
   name: string;
   tone: "teal" | "plum" | "amber";
@@ -39,7 +47,7 @@ export interface TreeData {
   companyNodes: readonly TreeNode[];
   groups: readonly TreeGroup[];
   myNodes: readonly TreeNode[];
-  /** 書ける棚（＋ を出す） */
+  /** 書ける棚（＋ を出す）。group はグループの id（見本は札の字） */
   canWrite: { company: boolean; group: readonly string[]; me: boolean };
 }
 

@@ -3141,6 +3141,23 @@ K-675,ナレッジの口の置き場：契約の宣言（16 本の入力・答�
 - [ ] エラーの台帳（`errors.json`）に E-KNW の 17 件が入り、`packages/errors/src/catalog.ts` が最新
 - [ ] 前からの試験は下の「前からの試験を替えた所」のとおり（替える物は無い）で緑
 - [ ] 手元の CI（このチケットの範囲）が緑"
+K-676,木を読む（getKnowledgeTree）：会社・グループ・自分の 3 つの棚のフォルダとページ・ページの印・書ける棚・管理の数（K-69 の葉）,タスク,K-69,未着手,実装,2026-11-27,F9・ナレッジ,"ナレッジの画面（K-682）の左の木を出すための口 `getKnowledgeTree`（GET /api/v1/knowledge/tree）を作る（契約は K-675 が宣言済み・今は 501）。物は「ナレッジのページ」1 つで、棚は **会社・グループ・自分** の 3 つ。答えは、今の人に**見える**フォルダとページを棚ごとの木にして返す（土台 3.1 の `KnowledgeTree`）。
+
+- 見える物の決めは K-674 の DB の守りと関数（会社＝社内の全員／グループ＝そのグループの人／自分＝本人だけ。下書きのページは持ち主だけ）。口はその上で読み、口の文でも棚で絞る（守りの 2 重）
+- ページの印（`mark`）：下書き（`draft`）・写し（`copy`）はこの葉が決める。**承認待ち（`waiting`）・断られた（`declined`）・承認待ちの数・見直すページの数・共有された物だけのグループは、後ろの葉（K-687・K-688・K-695・K-689）が作る表に頼る**ので、この葉は「無いときの形」（印なし・0・空）で返し、**4 つの小さい関数のファイル**を置く。後ろの葉は自分のファイルの中身だけを差し替える（`tree.ts` を直さない）","- [ ] 下の表の 19 行（K676-API-001〜019）が緑：`apps/api/test/features/F9/knowledge-tree.test.ts`
+- [ ] 契約の口 `getKnowledgeTree` が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-676.json` の covers）
+- [ ] 答えの鍵が土台 3.1 のとおり（7 鍵）で、`@kaname/contracts` の `KnowledgeTree` の形に合う
+- [ ] 手元の CI（このチケットの範囲）が緑"
+K-677,ページを読む（getKnowledgePage）と前の版を読む（listKnowledgeVersions・getKnowledgePageVersion）・AI が開いた数を数える DB の関数（K-69 の葉）,タスク,K-69,未着手,実装,2026-11-27,F9・ナレッジ,"木で選んだページを開くための口 3 本を作る（契約は K-675 が宣言済み・今は 501）：`getKnowledgePage`（GET /api/v1/knowledge_pages/:id・本文・置き場・印・帯・足元）・`listKnowledgeVersions`（GET /api/v1/knowledge_pages/:id/versions・公開した版の一覧）・`getKnowledgePageVersion`（GET /api/v1/knowledge_pages/:id/versions/:v・前の版の本文）。答えの鍵は土台 3.1。
+
+- **見られないページは 404**（在るかを漏らさない）。下書きのページは持ち主だけ・公開済みのページを直している下書きの版は書いている本人だけ
+- 本文は段 5 と同じ `{ doc, text }`（保存したまま返す）
+- 帯の操作（`acts`）・題名の下の帯（`request`・`shared_from`）・上げる小窓（`raise_to`）のうち、**後ろの葉（K-685・K-687・K-689・K-719・K-690）が作る表・口に頼る物は、この葉では空／null で返し、鍵ごとに小さい関数のファイルを分けて置く**。後ろの葉は自分のファイルの中身だけを差し替える（`read.ts` を直さない）
+- AI がこの 30 日に開いた数は `reference_logs`（0072）を数える。この表の行の守りは「チケットが見える人だけ」なので、数える DB の関数 `app.kn_page_ai_opened_30d` をこの葉の migration で作る（見えるページの数だけを返す）","- [ ] 下の表の 24 行（K677-API-001〜023・K677-DB-001）が緑：`apps/api/test/features/F9/knowledge-page-read.test.ts`
+- [ ] 契約の口 3 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-677.json` の covers）
+- [ ] 共有の試験 k144-contract.test.ts の回で、入口の uuid の行 K144-API-100〜102（この葉の葉のファイル `k144.d/K-677.ts`・carry・2026-11-23 に K-675 の葉のファイルから移した）が通る
+- [ ] migration が空の DB に当たり、一覧 `packages/db/src/migrations.generated.ts` が最新。同じ migration をもう 1 度当てても失敗しない。migration の lint（Squawk・G58）を作る段で出す前に流して緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
 K-679,ページを作る・下書きを自動で保存する・やめる（createKnowledgePage・saveKnowledgeDraft・discardKnowledgeDraft）（K-69 の葉）,タスク,K-69,未着手,実装,2026-11-28,F9・ナレッジ,"ナレッジのページを書き始める・書いている途中を自動で保存する・やめる、ための口 3 本を作る（契約は K-675 が宣言済み・今は 501）：`createKnowledgePage`（POST /api/v1/knowledge_pages・201）・`saveKnowledgeDraft`（PATCH /api/v1/knowledge_pages/:id/draft）・`discardKnowledgeDraft`（DELETE /api/v1/knowledge_pages/:id/draft）。入力・答え・断りは土台 2・3.2・4 章。「書き終える」（公開・版が進む）は K-680。
 
 - 作ったページは**下書きのページ**（`state = 'draft'`・持ち主だけが読める・版の数は 0）で、空の下書きの版 1 つが付く。1 度も書き終えていないページを「やめる」と、ページごと消える
@@ -3158,6 +3175,10 @@ K-680,"書き終える（公開・版が進む・必ず守るは 2,000 字まで
 - 書く人は棚で決まる（切り方 0.3）。見えない物は 404・見えるが書けないは 403。**別の人の下書きは書き終えられない**（自分の下書きの版が無い＝409 E-KNW-040）","- [ ] 下の表の 17 行（K680-API-001〜017）が緑：`apps/api/test/features/F9/knowledge-publish.test.ts`
 - [ ] 契約の口 1 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-680.json` の covers）
 - [ ] 共有の試験 k144-contract.test.ts の回で、入口の uuid の行 K144-API-107（`publishKnowledgePage` の道の id・この葉の葉のファイル `k144.d/K-680.ts`・carry・2026-11-23 に K-675 の葉のファイルから移した）が通る
+- [ ] 手元の CI（このチケットの範囲）が緑"
+K-682,ナレッジの画面の入れ物（/knowledge と /knowledge/<ページの id>）：木とページを口から読む・空・読み込み中・読めなかった・見られない・狭い幅の引き出し・左のバーの「ナレッジ」を押せる形に。後ろの葉が操作を差し込む口（page-slots・writing-slot）と、道の形を決める（K-69 の葉）,タスク,K-69,未着手,実装,2026-11-30,F9・画面,ナレッジの主の画面（行為 A114）の入れ物を作る。左に木（会社・グループ・自分の棚）・右にページを出し、**口 K-676（木）と K-677（ページ）から読んで**、K-670 が運んだ見た目の部品に値を渡す。空・読み込み中・読めなかった・見られない・狭い幅の引き出しを出し分け、左のバーの「ナレッジ」を押せる形にする。書く（K-683）・木の操作と「…」（K-684）・必ず守る／上げる／共有（K-691〜K-694）は後ろの葉が、**この葉が置く差し込み口（`page-slots.ts`・`writing-slot.tsx`）に自分の 1 行を足す形**で入る。,"- [ ] 下の表の 30 行（K682-UI-001〜010・013〜026・028、K682-UN-001〜005。UI-011・012・027 は欠番）が緑：`apps/web/tests/k/k682-knowledge-shell.spec.ts`・`apps/web/test/k682-knowledge-shape.test.ts`（画面の試験は取り込んだ後に流す・ticket-flow.yaml の web_defer）
+- [ ] モック /dev/mock/f9/ の 6 状態（kn-tree・kn-empty・kn-loading・kn-failed・kn-noaccess・kn-drawer）と本番が幅 375・768・1440 で同じ（K682-UI-001・f9-match.ts の matchF9。帯の先頭のボタンの opacity だけは比べない：本番は handlers を渡し動きの無い操作は aria-disabled で薄い・下絵は handlers を渡さない。位置・大きさ・字・色は比べる）
+- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑
 - [ ] 手元の CI（このチケットの範囲）が緑"
 K-705,状態（作業の段）を足す・直す（名前・色）・並べる・消す（書く口 4 本と DB の関数 4 本・色の列 color_key・listTicketStages の答えを決める・始めと終わりと仕組みの状態は消せない）（K-69 の葉）,タスク,K-69,未着手,実装,2026-11-26,F9・チケットの設定,"会社の管理者が「チケットの設定 › 状態」で、チケットの状態（作業の段）を足す・直す（名前・色）・並べる・消すための口と DB の関数を作る（切り方 0.13・下絵 v2 の set-stages）。**始めの状態（key が `todo`）と終わりの状態（key が `done`）と仕組みの状態（確認中・承認待ち・実行中）は消せない**。始めと終わりは名前と色を直せる（key は変えないので、作る・完了にする仕組みが探せる）。仕組みの状態は色だけ直せる。
 
