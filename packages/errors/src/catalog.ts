@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。262 件
+// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。263 件
 export interface CatalogEntry {
   id: string;
   cls: string;
@@ -4740,6 +4740,24 @@ export const CATALOG: Record<string, CatalogEntry> = {
     "where": {
       "screen": "tickets",
       "state": "delegate"
+    }
+  },
+  "E-AUTH-022": {
+    "id": "E-AUTH-022",
+    "cls": "auth",
+    "message": "運営の場所は、パスキーしか使えません（メールとパスワードでは入れません）",
+    "action": "パスキーで入る",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "AUTH-022",
+    "must_not": true,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "login",
+      "state": "ops-passkey-only"
     }
   }
 };
