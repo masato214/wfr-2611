@@ -93,7 +93,7 @@ async function newTicket(who: Person, scope: string, assignee: Person): Promise<
       title: "1 つの取引で読む",
       assignee_member_id: assignee.id,
       due_on: jst(3),
-      sections: { purpose: "数える", done: "数えた", todo: "- 数える" },
+      body: { doc: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "数える" }] }] } },
     },
   });
   expect(r.status, await r.clone().text()).toBe(201);
@@ -152,12 +152,11 @@ describe("K-234 読む口は 1 要求 1 トランザクション（数）", () =
     one(m, 5);
   });
 
-  it("K234-API-004 GET /tickets/:id：200・題名と区画と can.delegate が今のまま・begin 1・借りた接続 1・文 16 以下", async () => {
+  it("K234-API-004 GET /tickets/:id：200・題名と can.delegate が今のまま（区画の並びの在る無しは見ない）・begin 1・借りた接続 1・文 16 以下", async () => {
     const m = await measure(`/tickets/${ticketId}`, writer);
     expect(m.res.status, await m.res.clone().text()).toBe(200);
     const d = ((await m.res.json()) as { data: Record<string, unknown> }).data;
     expect(d["ticket"]).toMatchObject({ id: ticketId, title: "1 つの取引で読む" });
-    expect((d["sections"] as { key: string }[]).map((x) => x.key)).toEqual(["purpose", "done", "todo"]);
     expect(d["stage"]).toMatchObject({ key: "todo" });
     expect((d["can"] as Record<string, unknown>)["delegate"]).toBe(true);
     one(m, 16);

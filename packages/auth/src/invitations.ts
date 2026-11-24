@@ -4,6 +4,7 @@ import type pg from "pg";
 import type { TenantContext } from "@kaname/db/context";
 import type { Repository } from "@kaname/db/repository";
 import type { Auth } from "./index.js";
+import { open_, seal } from "./pending.js";
 import { normalizeEmail } from "./signup.js";
 
 export const hashToken = (t: string) => createHash("sha256").update(t).digest("hex");
@@ -55,13 +56,20 @@ export interface InvitationForAccept {
   workspaceSuspended: boolean;
 }
 export async function invitationForAccept(appPool: pg.Pool, token: string): Promise<InvitationForAccept | null> {
+  return invitationForAcceptByHash(appPool, hashToken(token));
+}
+/** 招待の印の sha256 で引く（確認のリンクを押したときは、保留の行が持つ sha256 しか無い・K-422） */
+export async function invitationForAcceptByHash(
+  appPool: pg.Pool,
+  tokenHash: string,
+): Promise<InvitationForAccept | null> {
   const r = await appPool.query<{
     invitation_id: string;
     tenant_id: string;
     email: string | null;
     state: InvitationForAccept["state"];
     workspace_suspended: boolean;
-  }>("select * from app.invitation_for_accept($1)", [hashToken(token)]);
+  }>("select * from app.invitation_for_accept($1)", [tokenHash]);
   const row = r.rows[0];
   if (!row) return null;
   return {
@@ -115,11 +123,20 @@ export async function acceptInvitationAgreeing(
   authUserId: string,
   displayName: string,
 ): Promise<string> {
+  return acceptInvitationAgreeingByHash(appPool, hashToken(token), authUserId, displayName);
+}
+/** 招待の印の sha256 で受諾する（確認のリンクを押したとき・K-422） */
+export async function acceptInvitationAgreeingByHash(
+  appPool: pg.Pool,
+  tokenHash: string,
+  authUserId: string,
+  displayName: string,
+): Promise<string> {
   const cl = await appPool.connect();
   try {
     await cl.query("begin");
     const r = await cl.query<{ member_id: string }>("select app.accept_invitation($1, $2, $3) as member_id", [
-      hashToken(token),
+      tokenHash,
       authUserId,
       displayName,
     ]);
@@ -181,3 +198,145 @@ export async function revokeInvitation(repo: Repository, ctx: TenantContext, id:
   const row = await repo.table("invitations").update(ctx, id, { revoked_at: new Date() });
   return row !== null;
 }
+
+// ---- K-422 招待のリンクで新しく入る人の保留の行（kaname_auth.invitation_link_joins・D-148.51） ----
+// 参加を押した時点では利用者も所属も作らず、この表の 1 行と確認のメールだけを置く。確認のリンクを押したときに参加を決める。
+/** 確認のリンクの期限（24 時間） */
+export const LINK_JOIN_TTL_HOURS = 24;
+
+/** 保留の行を置く（同じ招待・同じメールの待っている行があれば、トークン・期限・包んだパスワード・名前を替えて送った印を空にする）。
+ *  1 文で置くので、同時に押されても一意の違反にならない（先に select しない） */
+export async function putLinkJoin(
+  authPool: pg.Pool,
+  masterKeyB64: string,
+  input: {
+    invitationId: string;
+    invitationToken: string;
+    tenantId: string;
+    email: string;
+    name: string;
+    password: string;
+  },
+): Promise<{ id: string; token: string; expiresAt: Date }> {
+  const token = randomBytes(32).toString("base64url");
+  const expiresAt = new Date(Date.now() + LINK_JOIN_TTL_HOURS * 3600e3);
+  const pw = seal(masterKeyB64, input.password, "invitation-link-join");
+  const r = await authPool.query<{ id: string }>(
+    `insert into kaname_auth.invitation_link_joins
+       (invitation_id, invitation_token_hash, tenant_id, email, display_name, pw_iv, pw_tag, pw_data, token_hash, expires_at)
+     values ($1,$10,$2,$3,$4,$5,$6,$7,$8,$9)
+     on conflict (invitation_id, email) where confirmed_at is null and deleted_at is null do update set
+       token_hash = excluded.token_hash, expires_at = excluded.expires_at,
+       pw_iv = excluded.pw_iv, pw_tag = excluded.pw_tag, pw_data = excluded.pw_data,
+       display_name = excluded.display_name, sent_at = null, send_error = null, updated_at = now()
+     returning id`,
+    [
+      input.invitationId,
+      input.tenantId,
+      normalizeEmail(input.email),
+      input.name,
+      pw.iv,
+      pw.tag,
+      pw.data,
+      hashToken(token),
+      expiresAt,
+      hashToken(input.invitationToken),
+    ],
+  );
+  return { id: r.rows[0]!.id, token, expiresAt };
+}
+
+/** 確認のメールを送れたか・送れなかったかを残す（送れていないのに「送りました」と言わない・G-15） */
+export async function markLinkJoinSent(authPool: pg.Pool, id: string, error: string | null): Promise<void> {
+  await authPool.query(
+    "update kaname_auth.invitation_link_joins set sent_at = case when $2::text is null then now() else null end, send_error = $2, updated_at = now() where id = $1",
+    [id, error],
+  );
+}
+
+/** 確認のリンクで引いた保留の行（パスワードは包んだまま） */
+export interface ClaimedLinkJoin {
+  id: string;
+  invitationId: string;
+  /** 招待のリンクの印の sha256（受諾の関数に渡す） */
+  invitationTokenHash: string;
+  tenantId: string;
+  email: string;
+  name: string;
+  sealed: { iv: string; tag: string; data: string };
+}
+/** 印を付ける 1 文で引く（期限内・まだ印が無い・閉じていない行だけ。同時に何回押しても 1 回だけ取れる）。
+ *  取れなければ同じ token_hash の行をもう 1 回読んで見分ける：無い・閉じた＝missing／印がある＝used／期限切れ＝expired */
+export async function claimLinkJoin(
+  authPool: pg.Pool,
+  token: string,
+): Promise<{ kind: "ok"; row: ClaimedLinkJoin } | { kind: "missing" | "used" | "expired" }> {
+  const h = hashToken(token);
+  const r = await authPool.query<{
+    id: string;
+    invitation_id: string;
+    invitation_token_hash: string;
+    tenant_id: string;
+    email: string;
+    display_name: string;
+    pw_iv: string;
+    pw_tag: string;
+    pw_data: string;
+  }>(
+    `update kaname_auth.invitation_link_joins set confirmed_at = now(), updated_at = now()
+      where token_hash = $1 and confirmed_at is null and deleted_at is null and expires_at > now()
+      returning id, invitation_id, invitation_token_hash, tenant_id, email, display_name, pw_iv, pw_tag, pw_data`,
+    [h],
+  );
+  const x = r.rows[0];
+  if (x)
+    return {
+      kind: "ok",
+      row: {
+        id: x.id,
+        invitationId: x.invitation_id,
+        invitationTokenHash: x.invitation_token_hash,
+        tenantId: x.tenant_id,
+        email: x.email,
+        name: x.display_name,
+        sealed: { iv: x.pw_iv, tag: x.pw_tag, data: x.pw_data },
+      },
+    };
+  const why = await authPool.query<{ confirmed: boolean; expired: boolean; closed: boolean }>(
+    `select confirmed_at is not null as confirmed, expires_at <= now() as expired, deleted_at is not null as closed
+       from kaname_auth.invitation_link_joins where token_hash = $1 limit 1`,
+    [h],
+  );
+  const y = why.rows[0];
+  if (!y || y.closed) return { kind: "missing" };
+  if (y.confirmed) return { kind: "used" };
+  return { kind: y.expired ? "expired" : "missing" };
+}
+
+/** 確認の途中で失敗したら印を戻す（もう一度押せば確認できる） */
+export async function releaseLinkJoin(authPool: pg.Pool, id: string): Promise<void> {
+  await authPool.query(
+    "update kaname_auth.invitation_link_joins set confirmed_at = null, updated_at = now() where id = $1",
+    [id],
+  );
+}
+
+/** 参加が決まらないと分かった保留の行を閉じる（印は戻さない・閉じた行は「無い」と同じ） */
+export async function closeLinkJoin(authPool: pg.Pool, id: string): Promise<void> {
+  await authPool.query(
+    "update kaname_auth.invitation_link_joins set deleted_at = now(), pw_iv = null, pw_tag = null, pw_data = null, updated_at = now() where id = $1",
+    [id],
+  );
+}
+
+/** 参加が決まった：包んだパスワードを空にする（行は「使われた」と「期限切れ」を分けるために残す・sealOffPending と同じ） */
+export async function sealOffLinkJoin(authPool: pg.Pool, id: string): Promise<void> {
+  await authPool.query(
+    "update kaname_auth.invitation_link_joins set pw_iv = null, pw_tag = null, pw_data = null, updated_at = now() where id = $1",
+    [id],
+  );
+}
+
+/** 包んだパスワードを開く（用途 invitation-link-join の鍵。鍵が替わっていれば投げる） */
+export const openLinkJoinPassword = (masterKeyB64: string, sealed: ClaimedLinkJoin["sealed"]): string =>
+  open_(masterKeyB64, sealed, "invitation-link-join");

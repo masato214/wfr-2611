@@ -3,7 +3,7 @@
 //     C1 useAgent／agentSay を呼んでよいのは lib/agent.ts と components/ai/ だけ（画面は useAgentChat と AgentChat を使う）
 //     C2 <Conversation> を直接置いてよいのは components/ai/ だけ（画面は AgentChat を置く）
 //     C3 components/ai/ で会話の入力欄（<textarea>）を持ってよいのは composer.tsx だけ（例外は artifact.tsx の成果物の中身を直す欄 className="aedit" だけ・D-106.3。会話の入力欄ではない）。
-//        1 行の欄（<input>）は composer.tsx・asks.tsx（その他・一言）・list.tsx（探す・名前）・memory.tsx（記憶を直す）・settings.tsx（知らせの切り替え）・artifact.tsx（成果物の名前）だけ
+//        1 行の欄（<input>）は composer.tsx・asks.tsx（その他・一言）・list.tsx（探す・名前）・settings.tsx（知らせの切り替え）・artifact.tsx（成果物の名前）だけ
 //     C4 @assistant-ui／@ag-ui を使わない（D-103.4）
 //     C5 AppShell の panel に渡してよいのは false（会話モード）と、見本の画面の AssistantPanelView だけ（右パネルは共通の枠が出す）
 //     C6 会話の見た目（components/ai/chat.css）はモックから生成したまま（06_mockup/export_web_css.py --check）
@@ -19,7 +19,7 @@ import { pathToFileURL } from "node:url";
 function* walk(dir, re) {
   if (!existsSync(dir)) return;
   for (const f of readdirSync(dir)) {
-    if (["node_modules", ".next", "dist", "test-results", "playwright-report", "pw-reports", "__pycache__"].includes(f)) continue;
+    if (["node_modules", ".next", ".next-prod", "dist", "test-results", "playwright-report", "pw-reports", "__pycache__"].includes(f)) continue;
     const p = join(dir, f);
     if (statSync(p).isDirectory()) yield* walk(p, re);
     else if (re.test(f)) yield p;
@@ -40,8 +40,8 @@ export function check(root) {
     const onlyEditor = rel === "components/ai/artifact.tsx" && [...s.matchAll(/<textarea[\s>][^>]*/g)].every((m) => /className="aedit"/.test(m[0]));
     if (inAi && rel !== "components/ai/composer.tsx" && !onlyEditor && /<textarea[\s>]/.test(s))
       bad.push(`C3 ${rel}: 会話の部品の中で入力欄を別に作っている（会話の入力欄は composer.tsx の 1 つだけ）`);
-    if (inAi && !["components/ai/composer.tsx", "components/ai/asks.tsx", "components/ai/list.tsx", "components/ai/memory.tsx", "components/ai/settings.tsx", "components/ai/artifact.tsx"].includes(rel) && /<input[\s>]/.test(s))
-      bad.push(`C3 ${rel}: 会話の部品の中で 1 行の欄を作っている（composer.tsx・asks.tsx・list.tsx・memory.tsx・settings.tsx・artifact.tsx だけ）`);
+    if (inAi && !["components/ai/composer.tsx", "components/ai/asks.tsx", "components/ai/list.tsx", "components/ai/settings.tsx", "components/ai/artifact.tsx"].includes(rel) && /<input[\s>]/.test(s))
+      bad.push(`C3 ${rel}: 会話の部品の中で 1 行の欄を作っている（composer.tsx・asks.tsx・list.tsx・settings.tsx・artifact.tsx だけ）`);
     if (/from\s+["']@(assistant-ui|ag-ui)\//.test(s)) bad.push(`C4 ${rel}: assistant-ui／AG-UI を使っている（D-103.4）`);
     for (const m of s.matchAll(/<AppShell[^>]*\bpanel=\{([^}]*)\}/g)) {
       const v = m[1].trim();

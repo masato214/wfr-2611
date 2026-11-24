@@ -1,0 +1,128 @@
+/* 本文を見たまま編集する部品（K-567）の見た目の足し。色・字・余白は doc.css・extra.css の k-f4d-* を使い、足りない物だけここに書く（正本のトークンだけ） */
+
+/* 編集欄：外枠は本文の箱（.k-f4d-doc）が持つ。焦点は箱の輪郭で見せる */
+.k-f4d-pm {
+  min-height: inherit;
+  outline: none;
+  overflow-wrap: anywhere;
+}
+.k-f4d-ed2 .k-f4d-editor:focus-within {
+  outline: var(--k-c-f4d-ring-border);
+  outline-offset: var(--k-c-f4d-ring-in-width);
+}
+.k-f4d-pm > * + * {
+  margin-top: var(--k-s-sm);
+}
+/* 薄い字（ひな形・ghost）：段落・見出しとも薄い字の色 */
+.k-f4d-pm [data-ghost="true"] {
+  color: var(--k-neutral-strong);
+}
+/* 押された道具 */
+.k-f4d-bar button[aria-pressed="true"] {
+  background: var(--k-select);
+  color: var(--k-primary);
+}
+/* 広い表・長いコードは本文の中で横に送る（頁は横に溢れない） */
+.k-f4d-pm table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+}
+.k-f4d-pm pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.k-f4d-pm ol {
+  margin: 0;
+  padding-left: var(--k-s-lg);
+}
+.k-f4d-pm blockquote {
+  margin: 0;
+  padding-left: var(--k-s-md);
+  border-left: var(--k-c-f4d-rule-strong-border);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-pm ul[data-type="taskList"] {
+  list-style: none;
+  padding-left: 0;
+}
+.k-f4d-pm ul[data-type="taskList"] li {
+  display: flex;
+  gap: var(--k-s-xs);
+}
+.k-f4d-figure {
+  margin: 0;
+  padding: var(--k-s-sm);
+  border: var(--k-c-f4d-rule-border);
+  border-radius: var(--k-r-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f4d-figure figcaption {
+  font-size: var(--k-text-body-sm);
+}
+/* 開発用の頁（/dev/mock/f4v2-editor）の出力の欄：長い JSON も頁の幅の中で折り返す */
+.k-f4d-devout pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ---- 本文の読む形（K-577・DocView）：寄せ・番号つき・見出し 4・区切りの線・行の中のコード・コードの囲み（トークンだけ） ---- */
+.k-f4d-read [data-align="left"] {
+  text-align: left;
+}
+.k-f4d-read [data-align="center"] {
+  text-align: center;
+}
+.k-f4d-read [data-align="right"] {
+  text-align: right;
+}
+.k-f4d-read [data-align="justify"] {
+  text-align: justify;
+}
+/* 番号つきの並びは番号を出す（下地の初期化が ol の番号を消すので、ul の disc と同じく書く・下絵 v4） */
+.k-f4d-read ol {
+  list-style: decimal;
+  margin: 0;
+  padding-left: var(--k-s-lg);
+}
+.k-f4d-read h4 {
+  margin: var(--k-s-sm) 0 var(--k-s-xs);
+  font-size: var(--k-text-body-md);
+  font-weight: 700;
+}
+.k-f4d-read hr {
+  border: 0;
+  border-top: var(--k-c-f4d-rule-border);
+}
+.k-f4d-read code {
+  font-family: var(--k-font-code);
+  font-size: var(--k-text-body-sm);
+}
+.k-f4d-read pre {
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 0;
+  padding: var(--k-s-sm);
+  border-radius: var(--k-r-sm);
+  background: var(--k-table-head);
+}
+.k-f4d-read blockquote p {
+  margin: 0;
+}
+
+/* ---- 色のある文書の読むだけの形（K-577・doc-view-live）：箱と済みの字を DocView の読む形にそろえる（トークンだけ） ---- */
+.k-f4d-read .k-f4d-pm ul[data-type="taskList"] li {
+  align-items: flex-start;
+  gap: var(--k-s-sm);
+}
+.k-f4d-read .k-f4d-pm ul[data-type="taskList"] input {
+  margin-top: var(--k-s-xs);
+  accent-color: var(--k-primary);
+}
+.k-f4d-read .k-f4d-pm ul[data-type="taskList"] p {
+  margin: 0;
+}
+.k-f4d-read .k-f4d-pm ul[data-type="taskList"] li[data-checked="true"] > div {
+  color: var(--k-on-surface-variant);
+  text-decoration: line-through;
+}

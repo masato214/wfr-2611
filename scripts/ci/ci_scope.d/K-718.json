@@ -1,0 +1,5 @@
+{
+ "reads_ok": {
+  "apps/bridge/test/knowledge-tool.test.ts": "道具のサーバー（MCP_SERVER_SOURCE を一時のフォルダに書いた物）を spawn で子として起こし、JSON-RPC で knowledge_open を呼ぶ。読むのは試験が自分で書いた一時のファイルだけで、リポジトリの別のファイルは読まない（K-718）"
+ }
+}

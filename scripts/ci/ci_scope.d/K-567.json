@@ -1,0 +1,23 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/web/features/F4/doc/editor/",
+    "apps/web/app/(dev)/dev/mock/f4v2-editor/",
+    "apps/web/features/F4/doc/bar-tools.tsx",
+    "apps/web/features/F4/doc/doc.css",
+    "apps/web/features/F4/doc/extra.css",
+    "apps/web/features/F4/doc/views.tsx",
+    "apps/web/features/F4/doc/editor-views.tsx"
+   ],
+   "tests": [
+    "apps/web/tests/k/k567-doc-editor.spec.ts",
+    "apps/web/test/k567-doc-convert.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/web/test/k567-doc-convert.test.ts": "写した部品の関数の頭（apps/web/features/F4/doc/editor/bar/ の use-mark-button.ts・use-undo-redo.ts・use-link-popover.ts）を字で読み、出どころと MIT の表示を確かめる（K567-UN-008）。読む置き場は data_links で結ぶ",
+  "apps/web/features/F4/doc/editor/doc-editor.tsx": "編集の部品の本体 ./doc-editor-live を next/dynamic で遅く読む（同じ置き場の部品・ファイルは読まない）。置き場 apps/web/features/F4/doc/editor/ は data_links で結ぶ"
+ }
+}

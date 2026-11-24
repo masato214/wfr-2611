@@ -187,7 +187,7 @@ export function createApp(o: AppOptions | string = {}): Hono<Vars> {
         }
       : undefined;
   if (opts.repo) app.use("/api/*", tenantContext(opts.repo, resolver));
-  // 決まった名前の道（/invitations/link）に、その名前が持たないメソッドで来たら、「:id」の道に当てず 405 を返す（契約の外のメソッド・K-421）
+  // 決まった名前の道（/invitations/link）に、その名前が持たないメソッドで来たら、「:id」の道に当てず 405 を返す（契約の外のメソッド・K-421。/ticket_stages/order も同じ形・K-705 の契約 fuzz ST204・ST205）
   app.use("/api/*", async (c, next) => {
     const m = c.req.method;
     if (m === "OPTIONS" || m === "HEAD") return next();

@@ -1,0 +1,1 @@
+python3 scripts/ci/k727_flow_test.py

@@ -280,3 +280,7 @@
 .k-inv-link-btn {
   justify-self: start;
 }
+.k-inv-note-err {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-error);
+}

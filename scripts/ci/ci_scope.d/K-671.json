@@ -1,0 +1,9 @@
+{
+ "data_links": [
+  {"paths": ["scripts/ci/design_gate.py", "04_design/DESIGN-kaname.md", "apps/web/styles/k-tokens.css"],
+   "tests": ["apps/web/tests/k/k671-f9-parts-2.spec.ts"]}
+ ],
+ "reads_ok": {
+  "apps/web/tests/k/k671-f9-parts-2.spec.ts": "モックの置き場 apps/web/app/(dev)/dev/mock/f9/（render-admin.tsx・render.tsx）と F9 の部品 apps/web/features/F9/knowledge/（dialogs.tsx・admin-views.tsx）を字で読み、scripts/ci/design_gate.py（正本 04_design/DESIGN-kaname.md・apps/web/styles/k-tokens.css・design-gate.json）を子プロセスで流す。検査の台本と正本は data_links で結ぶ（apps/web/** は jobs.web.paths に在る）・K-671"
+ }
+}

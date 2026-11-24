@@ -1,0 +1,5 @@
+{
+ "data_links": [
+  {"paths": ["apps/web/features/F10/invite/**", "apps/web/app/(work)/members/**"], "tests": ["apps/web/tests/k/k420-members-invite.spec.ts"]}
+ ]
+}

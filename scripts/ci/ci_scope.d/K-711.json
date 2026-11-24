@@ -1,0 +1,46 @@
+{
+  "data_links": [
+    {
+      "paths": [
+        "05_flow/screen_api.py",
+        "08_api/openapi.yaml",
+        "08_api/endpoints.json",
+        "08_api/lint-mapping.json",
+        "08_api/retired-endpoints.json",
+        "08_api/phase1/03_分身の部屋.md",
+        "08_api/phase1/06_運営の配るもの.md",
+        "08_api/phase1/07_ワークスペースの管理.md",
+        "08_api/phase1/08_取引先とクライアントの場所.md",
+        "03_architecture/catalog.json",
+        "03_architecture/catalog.md",
+        "packages/contracts/src/registry.ts",
+        "packages/contracts/src/ops.ts",
+        "apps/api/src/routes/index.ts",
+        "apps/api/src/routes/ops.ts",
+        "apps/api/src/routes/workspace.ts",
+        "scripts/ci/row_rules.mjs",
+        "scripts/ci/zt_gate.py",
+        "11_tickets/K-69.md",
+        "11_tickets/K-71.md",
+        "11_tickets/K-72.md",
+        "01_hearing/決定ログ_進行中.md",
+        "05_flow/flow.json",
+        "05_flow/flows.json",
+        "05_flow/phase1.py",
+        "spec-dependencies.yaml",
+        "04_design/canvas",
+        "04_design/canvas-screens.json",
+        "apps/web/app/(dev)/dev/mock/f1/mocks.tsx",
+        "scripts/ci/canvas_gate.py",
+        "apps/api/src/routes/rules.ts",
+        "apps/api/src/routes/work_types.ts"
+      ],
+      "tests": [
+        "apps/api/test/features/F9/rules-work-types-retire.test.ts"
+      ]
+    }
+  ],
+  "reads_ok": {
+    "apps/api/test/features/F9/rules-work-types-retire.test.ts": "契約と生成物（08_api/openapi.yaml・endpoints.json・types.ts・lint-mapping.json・retired-endpoints.json・packages/contracts/src/registry.ts・ops.ts・apps/api/src/routes/*・03_architecture/catalog.*）と 05_flow/screen_api.py・scripts/ci/row_rules.mjs・zt_gate.py・08_api/phase1/*.md・11_tickets/K-69.md・K-71.md・K-72.md・01_hearing/決定ログ_進行中.md を readFileSync で読み、git grep で外した操作 ID を探す（K711-API-003〜011・014）。05_flow/flow.json・flows.json・spec-dependencies.yaml を readFileSync で読む（015〜017）。04_design/canvas・canvas-screens.json・05_flow/flow.json・apps/web/app/(dev)/dev/mock/f1/mocks.tsx を一時の作業場所に写し、対応表を書き換えて scripts/ci/canvas_gate.py を python3 の子プロセスで流す（018）・K-711"
+  }
+}

@@ -13,6 +13,7 @@
   "checks",
   "clients",
   "conversations",
+  "custom_fields",
   "export_jobs",
   "invitations",
   "kind_sections",
@@ -20,17 +21,15 @@
   "messages",
   "notices",
   "notifications",
-  "policies",
   "reference_logs",
   "security_events",
   "sessions",
-  "skill_versions",
-  "skills",
   "status_incidents",
   "tenant_memberships",
   "tenants",
   "ticket_kinds",
   "ticket_messages",
+  "ticket_stages",
   "tickets"
  ],
  "tables": {
@@ -229,12 +228,16 @@
    "lines": []
   },
   "custom_fields": {
-   "writes": [],
+   "writes": [
+    "F9"
+   ],
    "reads": [
     "F4"
    ],
-   "boundary": false,
-   "lines": []
+   "boundary": true,
+   "lines": [
+    "F9→F4"
+   ]
   },
   "distributions": {
    "writes": [
@@ -329,6 +332,14 @@
     "F9→F4"
    ]
   },
+  "knowledge_folders": {
+   "writes": [
+    "F9"
+   ],
+   "reads": [],
+   "boundary": false,
+   "lines": []
+  },
   "knowledge_links": {
    "writes": [
     "F9"
@@ -355,7 +366,7 @@
   },
   "layers": {
    "writes": [
-    "F9"
+    "F10"
    ],
    "reads": [],
    "boundary": false,
@@ -538,15 +549,11 @@
   },
   "policies": {
    "writes": [
-    "F11",
     "F9"
    ],
    "reads": [],
-   "boundary": true,
-   "lines": [
-    "F11→F9",
-    "F9→F11"
-   ]
+   "boundary": false,
+   "lines": []
   },
   "reference_logs": {
    "writes": [],
@@ -575,7 +582,7 @@
   },
   "scopes": {
    "writes": [
-    "F9"
+    "F10"
    ],
    "reads": [],
    "boundary": false,
@@ -613,40 +620,6 @@
     "F10→F3",
     "F3→F1",
     "F3→F10"
-   ]
-  },
-  "skill_test_runs": {
-   "writes": [
-    "F9"
-   ],
-   "reads": [],
-   "boundary": false,
-   "lines": []
-  },
-  "skill_versions": {
-   "writes": [
-    "F12",
-    "F9"
-   ],
-   "reads": [],
-   "boundary": true,
-   "lines": [
-    "F12→F9",
-    "F9→F12"
-   ]
-  },
-  "skills": {
-   "writes": [
-    "F9"
-   ],
-   "reads": [
-    "F12",
-    "F4"
-   ],
-   "boundary": true,
-   "lines": [
-    "F9→F12",
-    "F9→F4"
    ]
   },
   "status_incidents": {
@@ -806,12 +779,16 @@
    "lines": []
   },
   "ticket_stages": {
-   "writes": [],
+   "writes": [
+    "F9"
+   ],
    "reads": [
     "F4"
    ],
-   "boundary": false,
-   "lines": []
+   "boundary": true,
+   "lines": [
+    "F9→F4"
+   ]
   },
   "tickets": {
    "writes": [
@@ -822,7 +799,9 @@
     "F6",
     "F7"
    ],
-   "reads": [],
+   "reads": [
+    "F8"
+   ],
    "boundary": true,
    "lines": [
     "F11→F3",
@@ -830,31 +809,37 @@
     "F11→F5",
     "F11→F6",
     "F11→F7",
+    "F11→F8",
     "F3→F11",
     "F3→F4",
     "F3→F5",
     "F3→F6",
     "F3→F7",
+    "F3→F8",
     "F4→F11",
     "F4→F3",
     "F4→F5",
     "F4→F6",
     "F4→F7",
+    "F4→F8",
     "F5→F11",
     "F5→F3",
     "F5→F4",
     "F5→F6",
     "F5→F7",
+    "F5→F8",
     "F6→F11",
     "F6→F3",
     "F6→F4",
     "F6→F5",
     "F6→F7",
+    "F6→F8",
     "F7→F11",
     "F7→F3",
     "F7→F4",
     "F7→F5",
-    "F7→F6"
+    "F7→F6",
+    "F7→F8"
    ]
   }
  }

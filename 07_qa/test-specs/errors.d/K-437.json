@@ -1,0 +1,34 @@
+{
+ "errors": [
+  {
+   "id": "E-VAL-028",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "create"
+   },
+   "when": "チケットの開始日が、最終期限より後の日だった",
+   "false_when": "開始日が期限と同じ日か、それより前（開始は入れなくてもよい）",
+   "message": "開始日は期限より前の日にしてください",
+   "action": "開始日か期限を入れ直す",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットを作る",
+    "steps": [
+     "開始に期限より後の日を入れて作る"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-150.34"
+   ],
+   "support_code": "VAL-028"
+  }
+ ]
+}

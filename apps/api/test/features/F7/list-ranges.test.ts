@@ -303,26 +303,31 @@ describe("K-473 親・並び・見せる欄", () => {
     expect(await fieldsOf(bad)).toContain("cursor");
   });
 
-  it("K473-API-016 fields：付けた欄だけ 1 件の鍵に足す（start_on・priority・estimate_minutes・actual_minutes・scope を空白なしでコンマでつなぐ。重なりは 1 つ）。付けなければ K-92 の 12 個のまま", async () => {
+  it("K473-API-016 fields：付けた欄だけ 1 件の鍵に足す（start_on・priority・estimate_minutes・actual_minutes・scope を空白なしでコンマでつなぐ。重なりは 1 つ）。付けなければ K-92 の 13 個（12 個＋ K-560 がいつも付ける scope）のまま。scope はいつも付くので、付けても鍵は増えない", async () => {
     const w = await world();
     const t = await dated(w, "2026-12-30", "2026-12-02");
     await setCols(f, t, { priority: "high", priority_reason: "急ぎ", estimate_minutes: 90, actual_minutes: 30 });
-    const scopeName = (await f.admin.query<{ n: string }>("select name as n from scopes where id = $1", [w.root]))
-      .rows[0]!.n;
+    const rootScope = (
+      await f.admin.query<{ name: string; code: string | null }>(
+        "select name, nullif(ticket_prefix, '') as code from scopes where id = $1",
+        [w.root],
+      )
+    ).rows[0]!;
     const base = (await L(w, "view=all")).data[0]!;
-    expect(Object.keys(base)).toHaveLength(12);
+    expect(Object.keys(base)).toHaveLength(13);
+    expect(base["scope"]).toEqual({ id: w.root, name: rootScope.name, code: rootScope.code });
     const one = (await L(w, "view=all&fields=start_on,priority")).data[0]!;
     expect(one["start_on"]).toBe("2026-12-02");
     expect(one["priority"]).toBe("high");
-    expect(Object.keys(one)).toHaveLength(14);
+    expect(Object.keys(one)).toHaveLength(15);
     const all = (await L(w, "view=all&fields=start_on,priority,estimate_minutes,actual_minutes,scope,start_on"))
       .data[0]!;
     expect(all["estimate_minutes"]).toBe(90);
     expect(all["actual_minutes"]).toBe(30);
-    expect(all["scope"]).toEqual({ id: w.root, name: scopeName });
+    expect(all["scope"]).toEqual({ id: w.root, name: rootScope.name, code: rootScope.code });
     expect(Object.keys(all)).toHaveLength(17);
     const blank = (await L(w, "view=all&fields=")).data[0]!;
-    expect(Object.keys(blank)).toHaveLength(12);
+    expect(Object.keys(blank)).toHaveLength(13);
   });
 
   it("K473-API-017 fields が契約の形（小文字の 5 つの名前を空白なしでコンマでつないだだけ）に合わなければ 422・欄 fields：知らない欄・空の項目・大文字・全角・空白。付けても絞り込み・並び・次の分は変わらない", async () => {
@@ -356,23 +361,30 @@ describe("K-473 親・並び・見せる欄", () => {
     ).toEqual([b]);
   });
 
-  it("K473-API-024 fields=scope：見えるグループは { id, name }・担当だけで見えるチケットの見えないグループは null（名前を出さない）。付けても行の数・並びは変わらない", async () => {
+  it("K473-API-024 scope（K-560 からはいつも付く・fields=scope を付けても同じ）：見えるグループは { id, name, code }・担当だけで見えるチケットの見えないグループは null（名前も頭文字も出さない）。付けても行の数・並びは変わらない", async () => {
     const w = await world();
     const grp = await outsideGroup(f, w, "経理だけのグループ");
     const acct = await f.person(w.tenantId, grp, { name: "経理の人", ticketAbility: "edit" });
     const seen = await make(w, { title: "見えるグループ" });
     const viaAssignee = await make({ ...w, me: acct }, { scope: grp, assignee: acct, title: "担当だけで見える" });
     await setCols(f, viaAssignee.id, { assignee_member_id: w.me.id });
-    const rootName = (await f.admin.query<{ n: string }>("select name as n from scopes where id = $1", [w.root]))
-      .rows[0]!.n;
+    const rootScope = (
+      await f.admin.query<{ name: string; code: string | null }>(
+        "select name, nullif(ticket_prefix, '') as code from scopes where id = $1",
+        [w.root],
+      )
+    ).rows[0]!;
     const plain = await L(w, "view=all");
     const withScope = await L(w, "view=all&fields=scope");
     expect(set(ids(plain))).toEqual(set([seen.id, viaAssignee.id]));
     expect(ids(withScope)).toEqual(ids(plain));
     const scopeOf = Object.fromEntries(withScope.data.map((x) => [x.id, x["scope"]]));
-    expect(scopeOf[seen.id]).toEqual({ id: w.root, name: rootName });
+    expect(scopeOf[seen.id]).toEqual({ id: w.root, name: rootScope.name, code: rootScope.code });
     expect(scopeOf[viaAssignee.id]).toBeNull();
     expect(JSON.stringify(withScope)).not.toContain("経理だけのグループ");
+    // fields を付けなくても同じ（いつも付く）
+    expect(Object.fromEntries(plain.data.map((x) => [x.id, x["scope"]]))).toEqual(scopeOf);
+    expect(JSON.stringify(plain)).not.toContain("経理だけのグループ");
   });
 });
 

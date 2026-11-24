@@ -1,5 +1,5 @@
-// K-5 ナレッジ（0073）と K-6 取引先（0074）の行の守り。
-//   ナレッジ：置き場が見える人だけ・自分の置き場は持ち主だけ・下書きは持ち主と書ける人だけ・直す案は読める人が出せる・版は消さない
+// K-6 取引先（0074）の行の守り。
+//   ナレッジの行の守りは、段 10 の K-674 で棚（会社・グループ・自分）の決めに作り直し、試験は packages/db/test/knowledge_shelves.test.ts に移した。
 //   取引先：社内は 全員／担当グループだけ・取引先の人は自分の取引先の中だけ・見せると決めたチケットだけ・依頼は依頼できる人だけ
 //   柵：取引先の人・PC の文脈では、会社の人の守りを通れない（app.member_ok・ZT2）
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -53,75 +53,6 @@ beforeAll(async () => {
 afterAll(async () => {
   await app.end();
   await admin.end();
-});
-
-describe("ナレッジ（D-128.50〜.52）", () => {
-  const page = (ctx: TenantContext, owner: string, scope: string, extra = "") =>
-    id1(
-      ctx,
-      `insert into knowledge_pages (tenant_id, scope_id, owner_member_id, title${extra ? ", " + extra.split("=")[0] : ""}) values ($1, $2, $3, '請求の手順'${extra ? ", " + extra.split("=")[1] : ""}) returning id`,
-      [S.tenantA, scope, owner],
-    );
-  it("下書きは持ち主と書ける人だけ。公開すると置き場の人が読める", async () => {
-    const p = await page(boss, S.bossA, S.scopeDeptA);
-    expect(await rows(boss, "knowledge_pages", p)).toBe(1);
-    expect(await rows(staff, "knowledge_pages", p)).toBe(0); // 置き場は見えるが、下書きは知らせない
-    await q(boss, "update knowledge_pages set state = 'published' where id = $1", [p]);
-    expect(await rows(staff, "knowledge_pages", p)).toBe(1);
-    expect(await rows(other, "knowledge_pages", p)).toBe(0);
-  });
-  it("自分の置き場は持ち主だけ（書ける人・管理者にも見えない）", async () => {
-    const p = await page(staff, S.staffA, S.scopeDeptA, "is_personal,state=true,'published'");
-    expect(await rows(staff, "knowledge_pages", p)).toBe(1);
-    expect(await rows(boss, "knowledge_pages", p)).toBe(0);
-    expect((await q(boss, "update knowledge_pages set title = 'x' where id = $1 returning id", [p])).length).toBe(0);
-  });
-  it("書けない置き場には作れない・人を持ち主にして作れない", async () => {
-    expect(
-      await fails(
-        staff,
-        "insert into knowledge_pages (tenant_id, scope_id, owner_member_id, title) values ($1, $2, $3, 'x')",
-        [S.tenantA, S.scopeRootA, S.staffA],
-      ),
-    ).toMatch(/row-level security/);
-    expect(
-      await fails(
-        boss,
-        "insert into knowledge_pages (tenant_id, scope_id, owner_member_id, title) values ($1, $2, $3, 'x')",
-        [S.tenantA, S.scopeRootA, S.staffA],
-      ),
-    ).toMatch(/row-level security/);
-  });
-  it("直す案は読める人が出せて、書ける人だけが見て決める。公開した版は読める人が見る。版は消さない", async () => {
-    const p = await page(boss, S.bossA, S.scopeDeptA);
-    await q(boss, "update knowledge_pages set state = 'published' where id = $1", [p]);
-    const pub = await id1(
-      boss,
-      "insert into knowledge_page_versions (tenant_id, page_id, version, kind, published_at, published_by) values ($1, $2, 1, 'published', now(), $3) returning id",
-      [S.tenantA, p, S.bossA],
-    );
-    expect(await rows(staff, "knowledge_page_versions", pub)).toBe(1);
-    // 直す案は出せるが、出したあとに見て決めるのは書ける人（出した人は読み返せないので RETURNING は付けない）
-    await q(
-      staff,
-      "insert into knowledge_page_versions (tenant_id, page_id, version, kind) values ($1, $2, 2, 'proposal')",
-      [S.tenantA, p],
-    );
-    const pid = (
-      await admin.query<{ id: string }>(
-        "select id from knowledge_page_versions where page_id = $1 and kind = 'proposal'",
-        [p],
-      )
-    ).rows[0]!.id;
-    expect(await rows(staff, "knowledge_page_versions", pid)).toBe(0);
-    expect(await rows(boss, "knowledge_page_versions", pid)).toBe(1);
-    expect(
-      await fails(boss, "update knowledge_page_versions set decision = 'rejected', decided_at = now() where id = $1", [
-        pid,
-      ]),
-    ).toMatch(/check/); // 入れないなら理由
-    expect(await fails(boss, "delete from knowledge_page_versions where id = $1", [pub])).toMatch(/permission denied/);
-  });
 });
 
 describe("取引先（D-128.53・D-128.54）と、取引先の人（D-125.121・D-125.122）", () => {

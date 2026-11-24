@@ -26,7 +26,7 @@ OPS_CAPS = {"any", "inquiry", "peek", "money", "stop", "notice", "distribute", "
 STEP_UP_REQUIRED = {"createCredential", "updateCredential", "updateMemberRole", "updateMemberPermissions",
                     "createExport", "openPeek", "stopWorkspace", "recordPayment", "decidePlanProposal",
                     "startTwoFactor", "disableTwoFactor", "regenerateBackupCodes", "changePassword", "deletePasskey", "resetMemberTwoFactor",
-                    "requestEmailChange", "revokeMyDevice", "releaseOpsWorkType", "rollbackOpsWorkType", "releaseOpsTemplate",
+                    "requestEmailChange", "revokeMyDevice", "releaseOpsTemplate",
                     "updateMemberGroups", "suspendMember", "resumeMember", "removeMember", "updateWorkspacePermissions",
                     "changePlan", "requestWorkspaceDeletion", "createInvitations", "createInvitationLink",
                     "changeOpsWorkspacePlan", "resumeWorkspace", "issueOpsInvoices", "addOpsMember", "updateOpsMemberCaps", "removeOpsMember"}

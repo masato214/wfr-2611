@@ -188,7 +188,7 @@ test("CHT-19-005 CHT-19-001 CHT-19-002 自分のAI からの問い合わせに�
     audit.map((a) => a.action),
     "答えは証跡に残る",
   ).toEqual(["bridge.tool_denied", "bridge.tool_allowed"]);
-  await page.goto("/dev/memory");
+  await page.goto("/dev/ai-settings");
   const list = page.locator('[data-part="always-allow"]');
   await expect(list).toContainText("rm -rf 請求書/下書き", { timeout: 15_000 });
   await list.locator("[data-revoke]").click();
@@ -457,7 +457,7 @@ test("CHT-20-002 CHT-20-003 使用量は 5 時間の枠と週の枠の割合と�
   await ready(page);
   await say(page, "上限の近い仕事");
   await expect(page.locator("[data-usage='near']")).toContainText("5 時間の枠が 92%", { timeout: 20_000 });
-  await page.goto("/dev/memory");
+  await page.goto("/dev/ai-settings");
   const usage = page.locator('[data-part="usage"]');
   await expect(usage).toContainText("5 時間の枠", { timeout: 15_000 });
   await expect(usage).toContainText("92%");
@@ -477,167 +477,6 @@ test("CHT-21-005 「覚えて」と言うと、朝を待たずその場で個人
     [u.memberId],
   );
   expect(m.map((x) => x.body)).toEqual(["見積は税抜で出す"]);
-});
-
-test("CHT-21-001 CHT-21-002 CHT-21-003 CHT-21-004 CHT-15-005 CHT-22-006 まとめは押したときだけ始まり、溜まった量が出る。記憶に残さない会話は読まず、承認・差し戻しは読む。結果はその場で戻す・拾い直すができる。一人の会社には上げる候補を出さない", async ({
-  page,
-}) => {
-  const u = await ready(page);
-  await say(page, "京蟻の窓口は鈴木さん");
-  await expect(lastAi(page)).toBeVisible({ timeout: 20_000 });
-  // 記憶に使わない会話：新しく話してから、会話の一覧の下の切り替えをオンにする（目のボタンはやめた・2026-09-30）
-  await page.locator("[data-new-conversation]").click();
-  await expect(page.locator("[data-greet]")).toBeVisible();
-  // 切り替えはその会話の入力欄の側にある（左の一覧には無い・2026-09-30 user）。オンにすると何が起きるかが入力欄の下に出る
-  await expect(page.locator('[data-part="conversation-list"] [data-incognito]')).toHaveCount(0);
-  await page.locator('[data-part="composer"] [data-incognito]').check();
-  await expect(page.locator("[data-incognito]")).toBeChecked();
-  await expect(page.locator('[data-part="composer"] .cmem-note')).toHaveText(
-    "この会話は、自分のAIが毎朝まとめる記憶に入れません",
-  );
-  await say(page, "社外秘の話");
-  await expect(lastAi(page)).toBeVisible({ timeout: 20_000 });
-  await admin(
-    "update messages set created_at = created_at - interval '1 day' where conversation_id in (select id from conversations where owner_member_id = $1)",
-    [u.memberId],
-  );
-  await admin(
-    "insert into approvals (tenant_id, scope_id, approver_member_id, status_id, resolved_at, note) values ($1, $2, $3, 'approved', now() - interval '1 day', '税込で OK')",
-    [u.tenantId, u.scopeId, u.memberId],
-  );
-  await admin(
-    "insert into memories (tenant_id, scope_id, kind_id, owner_member_id, title, body) values ($1, $2, 'preference', $3, '請求書', '請求書は税込を先に書く')",
-    [u.tenantId, u.scopeId, u.memberId],
-  );
-  expect(
-    (await admin("select 1 from memory_digests where member_id = $1", [u.memberId])).length,
-    "時間では動かない",
-  ).toBe(0);
-  await page.goto("/dev/memory");
-  const bar = page.locator("[data-digest='pending']");
-  await expect(bar).toContainText("1 日分・会話 1", { timeout: 15_000 });
-  await page.locator("[data-digest-start]").click();
-  await expect(page.locator("[data-digest='result']")).toBeVisible({ timeout: 30_000 });
-  const prompt = (
-    await admin<{ prompt: string }>(
-      "select j.prompt from memory_digests d join bridge_jobs j on j.id = d.bridge_job_id where d.member_id = $1",
-      [u.memberId],
-    )
-  )[0]!.prompt;
-  expect(prompt).toContain("京蟻の窓口は鈴木さん");
-  expect(prompt, "記憶に残さない会話は読まない").not.toContain("社外秘の話");
-  expect(prompt, "承認・差し戻しを読む").toContain("OK にした：税込で OK");
-  const res = page.locator("[data-digest='result']");
-  await expect(res).toContainText("京蟻の窓口は経理の鈴木さん");
-  await expect(res).toContainText("請求書は税込を先に書き、宛名は御中");
-  await expect(res, "一人の会社には上げる候補を出さない").not.toContainText("上の層に上げる候補");
-  await res.getByRole("button", { name: "戻す" }).click();
-  await expect(res).not.toContainText("まとめた（前と後");
-  expect(
-    (
-      await admin<{ s: string | null }>(
-        "select superseded_by as s from memories where owner_member_id = $1 and title = '請求書'",
-        [u.memberId],
-      )
-    )[0]!.s,
-  ).toBeNull();
-  await res.getByRole("button", { name: "拾い直す" }).click();
-  await expect(res).toContainText("捨てたものから拾い直した");
-});
-
-test("CHT-21-006 PC が閉じていたら始めたことにせず、溜まっている量も減らさない（E-MEM-001）", async ({ page }) => {
-  const u = await ready(page);
-  await say(page, "何か");
-  await expect(lastAi(page)).toBeVisible({ timeout: 20_000 });
-  bridge!.stop();
-  bridge = null;
-  await admin(
-    "update messages set created_at = created_at - interval '1 day' where conversation_id in (select id from conversations where owner_member_id = $1)",
-    [u.memberId],
-  );
-  await admin(
-    "update sessions set last_seen_at = now() - interval '10 minutes' where member_id = $1 and kind_id = 'bridge'",
-    [u.memberId],
-  );
-  await page.goto("/dev/memory");
-  await page.locator("[data-digest-start]").click();
-  await expect(page.getByText("PC が閉じているので、まとめを始められません")).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator("[data-digest='pending']")).toContainText("1 日分・会話 1");
-});
-
-test("CHT-22-001 CHT-22-002 CHT-22-003 CHT-22-005 上げる候補は本人が送るまで上がらず、送ると確認者の確認待ちに出る。食い違いは並べて片方を選び、選んだものが上の層に効く", async ({
-  page,
-}) => {
-  const u = await ready(page);
-  // 担当者 2 人と、それぞれの候補（同じ名前で違う中身）を代表（この人）に送ってある状態
-  const [a, b] = await Promise.all(
-    ["田中", "佐藤"].map(
-      async (n) =>
-        (
-          await admin<{ id: string }>(
-            "insert into members (tenant_id, scope_id, kind_id, display_name, role_id) values ($1, $2, 'human', $3, 'staff') returning id",
-            [u.tenantId, u.scopeId, n],
-          )
-        )[0]!.id,
-    ),
-  );
-  for (const [who, body] of [
-    [a, "月末締め"],
-    [b, "20 日締め"],
-  ] as const) {
-    const m = (
-      await admin<{ id: string }>(
-        "insert into memories (tenant_id, scope_id, kind_id, owner_member_id, title, body) values ($1, $2, 'rule', $3, '請求の締め日', $4) returning id",
-        [u.tenantId, u.scopeId, who, body],
-      )
-    )[0]!.id;
-    const p = (
-      await admin<{ id: string }>(
-        "insert into memory_proposals (tenant_id, scope_id, memory_id, target_scope_id, proposer_member_id, state_id) values ($1, $2, $3, $2, $4, 'draft') returning id",
-        [u.tenantId, u.scopeId, m, who],
-      )
-    )[0]!.id;
-    await admin("select app.agent_proposal_send($1, $2, null)", [who, p]);
-  }
-  // 自分の候補：まとめの結果から上げ先を選んで送る（送るまで上がらない）
-  await say(page, "着手金は契約時に 3 割");
-  await expect(lastAi(page)).toBeVisible({ timeout: 20_000 });
-  await admin(
-    "update messages set created_at = created_at - interval '1 day' where conversation_id in (select id from conversations where owner_member_id = $1)",
-    [u.memberId],
-  );
-  await page.goto("/dev/memory");
-  await page.locator("[data-digest-start]").click();
-  const res = page.locator("[data-digest='result']");
-  await expect(res).toContainText("上の層に上げる候補", { timeout: 30_000 });
-  expect(
-    (await admin("select 1 from memory_proposals where proposer_member_id = $1 and state_id = 'sent'", [u.memberId]))
-      .length,
-    "送るまで上がらない",
-  ).toBe(0);
-  await res.locator("[data-propose-send]").click();
-  await expect(res).toContainText("送りました");
-  // 確認待ち：代表に回ってくる（層に承認できる人がいなければ代表）
-  const rv = page.locator('[data-part="memory-reviews"]');
-  await page.reload();
-  await expect(rv).toContainText("着手金は契約時に 3 割", { timeout: 15_000 });
-  await expect(rv).toContainText("食い違い");
-  await rv.getByRole("button", { name: "月末締めにする" }).click();
-  await expect(rv).not.toContainText("食い違い", { timeout: 15_000 });
-  const st = await admin<{ body: string; state_id: string }>(
-    "select m.body, p.state_id from memory_proposals p join memories m on m.id = p.memory_id where m.title = '請求の締め日' and p.tenant_id = $1 order by m.body",
-    [u.tenantId],
-  );
-  expect(st).toEqual([
-    { body: "20 日締め", state_id: "returned" },
-    { body: "月末締め", state_id: "accepted" },
-  ]);
-  const up = await admin<{ owner: string | null }>(
-    "select owner_member_id as owner from memories where tenant_id = $1 and source_type_id = 'proposal' and body = '月末締め'",
-    [u.tenantId],
-  );
-  expect(up[0]!.owner, "上の層の記憶（持ち主なし＝層の全員に効く）").toBeNull();
-  await expect(page.locator("[data-digest='upper']")).toContainText("月末締め");
 });
 
 test("USH-08-005 USH-08-006 USH-08-013 Shift+Enter は改行、変換を確定する Enter では送らない。書きかけは会話ごとに残り、空で ↑ は前に送った文。長すぎると残りが出る。会話は role=log で読める", async ({
@@ -848,7 +687,7 @@ test("USH-08-012 「終わった」と「許可が要る」は別々にオン・
     w.Notification = N;
   });
   await ready(page);
-  await page.goto("/dev/memory");
+  await page.goto("/dev/ai-settings");
   await page.locator('[data-notify="done"]').check();
   await expect(page.locator('[data-notify="ask"]')).not.toBeChecked();
   await page.goto("/ai/chat");

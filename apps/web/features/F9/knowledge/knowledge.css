@@ -1,0 +1,683 @@
+/* ナレッジ（段 10・作り直し）の下絵。色・字・角丸・余白は正本のトークン（--k-*）だけ。クラスの頭は k-f9-
+   並び：左に木（IDE の左と同じ）・右にページ。幅 1023 以下は木を引き出しにする */
+
+/* ---------------------------------------------------------------- 骨組み */
+.k-f9-wrap {
+  display: flex;
+  /* ナレッジの面の高さ（正本の部品 kn-pane）から上の帯を引いた高さ */
+  min-height: calc(var(--k-c-kn-pane-height) - var(--k-c-shell-bar-height));
+  min-width: 0;
+}
+.k-f9-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-md);
+  padding: var(--k-s-md) var(--k-s-lg) var(--k-s-xl);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  color: var(--k-on-surface);
+}
+.k-f9-sub {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f9-note {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body);
+  color: var(--k-on-surface-variant);
+}
+.k-f9-none {
+  margin: 0;
+  padding: var(--k-s-xs) var(--k-s-sm);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-neutral-strong);
+}
+.k-f9-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--k-s-md);
+  margin-left: var(--k-s-xs);
+  padding: 0 var(--k-s-xs);
+  border-radius: var(--k-r-full);
+  background: var(--k-primary);
+  color: var(--k-on-primary);
+  font-size: var(--k-text-label-xs);
+  font-weight: var(--k-fw-label-xs);
+  line-height: var(--k-lh-body);
+}
+.k-f9-checkbox {
+  flex: none;
+  width: var(--k-s-md);
+  height: var(--k-s-md);
+  margin: 0;
+  accent-color: var(--k-primary);
+}
+
+/* ---------------------------------------------------------------- 左の木 */
+.k-f9-tree {
+  position: sticky;
+  top: var(--k-c-shell-bar-height);
+  align-self: flex-start;
+  flex: none;
+  box-sizing: border-box;
+  width: var(--k-c-create-aside-width);
+  height: calc(var(--k-c-kn-pane-height) - var(--k-c-shell-bar-height));
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-md) var(--k-s-sm);
+  overflow-y: auto;
+  background: var(--k-card);
+  border-right: var(--k-c-detail-rule-border);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  color: var(--k-on-surface);
+}
+.k-f9-tree-head {
+  display: flex;
+  align-items: center;
+  padding: 0 var(--k-s-sm);
+  font-size: var(--k-text-h3);
+}
+.k-f9-drawer-close {
+  display: none;
+  margin-left: auto;
+  padding: var(--k-s-xs);
+  border: 0;
+  border-radius: var(--k-r-md);
+  background: transparent;
+  color: var(--k-on-surface-variant);
+}
+.k-f9-switch {
+  display: flex;
+  gap: var(--k-s-xs);
+  padding: var(--k-s-xs);
+  border-radius: var(--k-r-field);
+  background: var(--k-select);
+}
+.k-f9-switch button {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(var(--k-s-lg) + var(--k-s-xs));
+  border: var(--k-c-f4d-rule-border);
+  border-color: transparent;
+  border-radius: var(--k-r-md);
+  background: transparent;
+  color: var(--k-on-surface-variant);
+  font: inherit;
+  font-size: var(--k-text-body-sm);
+  cursor: pointer;
+}
+.k-f9-switch button[aria-selected="true"] {
+  border-color: var(--k-line);
+  background: var(--k-card);
+  color: var(--k-on-surface);
+  font-weight: var(--k-fw-h3);
+}
+.k-f9-shelves {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-md);
+  min-width: 0;
+}
+.k-f9-shelf {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.k-f9-shelf-h {
+  display: flex;
+  align-items: center;
+  gap: var(--k-s-xs);
+  min-height: calc(var(--k-s-lg) + var(--k-s-xs));
+  padding: 0 var(--k-s-xs) 0 var(--k-s-sm);
+  color: var(--k-neutral-strong);
+}
+.k-f9-shelf-h h2 {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  font-weight: 700;
+  color: var(--k-on-surface-variant);
+}
+.k-f9-shelf-ic {
+  display: grid;
+  place-items: center;
+}
+.k-f9-shelf-sub {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--k-text-label-md);
+}
+.k-f9-add {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--k-s-lg);
+  height: var(--k-s-lg);
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--k-r-sm);
+  background: transparent;
+  color: var(--k-on-surface-variant);
+  cursor: pointer;
+}
+.k-f9-add:hover {
+  background: var(--k-select);
+  color: var(--k-on-surface);
+}
+.k-f9-nodes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.k-f9-node,
+.k-f9-group {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--k-s-xs);
+  width: 100%;
+  min-height: calc(var(--k-s-lg) + var(--k-s-sm));
+  padding: 0 var(--k-s-xs) 0 var(--k-s-sm);
+  border: 0;
+  border-radius: var(--k-r-md);
+  background: transparent;
+  color: var(--k-on-surface);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+/* 字下げ：深さ（data-depth・0〜3）ごとに --k-s-md ずつ右へ */
+:is(.k-f9-node, .k-f9-group)[data-depth="1"] {
+  padding-left: calc(var(--k-s-sm) + var(--k-s-md));
+}
+:is(.k-f9-node, .k-f9-group)[data-depth="2"] {
+  padding-left: calc(var(--k-s-sm) + var(--k-s-md) * 2);
+}
+:is(.k-f9-node, .k-f9-group)[data-depth="3"] {
+  padding-left: calc(var(--k-s-sm) + var(--k-s-md) * 3);
+}
+/* ページの行は、フォルダの開け閉めの印の分だけ字を右にそろえる */
+.k-f9-node[data-page] {
+  padding-left: calc(var(--k-s-sm) + var(--k-s-md) + var(--k-s-xs));
+}
+.k-f9-node[data-page][data-depth="1"] {
+  padding-left: calc(var(--k-s-sm) + var(--k-s-md) * 2 + var(--k-s-xs));
+}
+.k-f9-node[data-page][data-depth="2"] {
+  padding-left: calc(var(--k-s-sm) + var(--k-s-md) * 3 + var(--k-s-xs));
+}
+.k-f9-node[data-page][data-depth="3"] {
+  padding-left: calc(var(--k-s-sm) + var(--k-s-md) * 4 + var(--k-s-xs));
+}
+.k-f9-node svg,
+.k-f9-group svg {
+  flex: none;
+  color: var(--k-neutral-strong);
+}
+.k-f9-node:hover {
+  background: var(--k-select);
+  text-decoration: none;
+}
+.k-f9-node[aria-current="page"] {
+  background: var(--k-primary-soft);
+  color: var(--k-primary);
+  font-weight: var(--k-fw-h3);
+}
+.k-f9-node[aria-current="page"] > svg {
+  color: var(--k-primary);
+}
+.k-f9-node-t {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.k-f9-group {
+  cursor: default;
+  font-weight: var(--k-fw-h3);
+}
+.k-f9-code {
+  display: grid;
+  place-items: center;
+  flex: none;
+  min-width: var(--k-s-lg);
+  height: calc(var(--k-s-md) + var(--k-s-xs));
+  border-radius: var(--k-r-sm);
+  color: var(--k-on-primary);
+  font-size: var(--k-text-label-xs);
+  font-weight: var(--k-fw-label-xs);
+}
+.k-f9-code[data-tone="teal"] {
+  background: var(--k-d-teal);
+}
+.k-f9-code[data-tone="plum"] {
+  background: var(--k-d-plum);
+}
+.k-f9-code[data-tone="amber"] {
+  background: var(--k-d-amber);
+}
+.k-f9-shared {
+  flex: none;
+  padding: 0 var(--k-s-sm);
+  border-radius: var(--k-r-full);
+  background: var(--k-secondary-container);
+  color: var(--k-on-secondary-container);
+  font-size: var(--k-text-label-xs);
+  font-weight: var(--k-fw-label-xs);
+  line-height: var(--k-lh-body);
+}
+.k-f9-marks {
+  display: inline-flex;
+  flex: none;
+  gap: var(--k-s-xs);
+}
+.k-f9-mark {
+  display: grid;
+  place-items: center;
+}
+.k-f9-node .k-f9-mark[data-mark="must"] svg {
+  color: var(--k-primary);
+}
+.k-f9-node .k-f9-mark[data-mark="waiting"] svg {
+  color: var(--k-st-warning);
+}
+.k-f9-node .k-f9-mark[data-mark="declined"] svg {
+  color: var(--k-st-danger);
+}
+.k-f9-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-xs) var(--k-s-md);
+  margin: auto 0 0;
+  padding: var(--k-s-sm) var(--k-s-sm) 0;
+  border-top: var(--k-c-detail-rule-border-bottom);
+  font-size: var(--k-text-label-md);
+  color: var(--k-neutral-strong);
+}
+.k-f9-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-s-xs);
+}
+.k-f9-tree-skel {
+  display: grid;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm);
+}
+.k-f9-tree-skel span {
+  height: var(--k-s-md);
+  border-radius: var(--k-r-sm);
+  background: var(--k-surface-variant);
+}
+.k-f9-tree-skel span:nth-child(2n) {
+  width: calc(100% - var(--k-s-xl));
+}
+.k-f9-tree-skel span:nth-child(3n) {
+  width: calc(100% - var(--k-s-2xl));
+}
+
+/* 管理の面の入口（木の代わりに出る） */
+.k-f9-adminnav {
+  list-style: none;
+  display: grid;
+  gap: var(--k-s-xs);
+  margin: 0;
+  padding: 0;
+}
+.k-f9-adminnav-i {
+  display: grid;
+  gap: 0;
+  padding: var(--k-s-sm);
+  border-radius: var(--k-r-md);
+  color: var(--k-on-surface);
+  text-decoration: none;
+}
+.k-f9-adminnav-i:hover {
+  background: var(--k-select);
+  text-decoration: none;
+}
+.k-f9-adminnav-i[aria-current="page"] {
+  background: var(--k-primary-soft);
+  color: var(--k-primary);
+}
+.k-f9-adminnav-t {
+  display: flex;
+  align-items: center;
+  font-weight: var(--k-fw-h3);
+}
+.k-f9-adminnav-d {
+  font-size: var(--k-text-label-md);
+  color: var(--k-on-surface-variant);
+}
+
+/* 幅 1023 以下：木は引き出し。本文の上に「木を開く」の帯 */
+.k-f9-mbar,
+.k-f9-scrim {
+  display: none;
+}
+@media (max-width: 1023px) {
+  .k-f9-tree {
+    display: none;
+  }
+  .k-f9-tree[data-open] {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: calc(var(--k-c-popup-layer-z) + 1);
+    bottom: 0;
+    width: min(calc(var(--k-s-2xl) * 3 + var(--k-s-lg)), calc(100% - var(--k-s-xl)));
+    height: auto;
+  }
+  .k-f9-tree[data-open] .k-f9-drawer-close {
+    display: grid;
+  }
+  .k-f9-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: var(--k-c-popup-layer-z);
+    background: var(--k-overlay-shadow);
+  }
+  .k-f9-mbar {
+    display: flex;
+    align-items: center;
+    gap: var(--k-s-sm);
+    min-width: 0;
+  }
+  .k-f9-mbar-place {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--k-text-body-sm);
+    color: var(--k-on-surface-variant);
+  }
+}
+@media (max-width: 767px) {
+  .k-f9-main {
+    padding: var(--k-s-md) var(--k-s-md) var(--k-s-xl);
+  }
+}
+
+/* ---------------------------------------------------------------- ページ */
+.k-f9-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-md);
+  min-width: 0;
+  padding: var(--k-s-lg);
+  border: var(--k-c-detail-rule-border);
+  border-radius: var(--k-r-card);
+  background: var(--k-card);
+}
+.k-f9-phead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-sm);
+  min-width: 0;
+}
+.k-f9-place {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-xs);
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f9-place-f::before {
+  content: "›";
+  margin-right: var(--k-s-xs);
+  color: var(--k-neutral);
+}
+.k-f9-shelfchip {
+  padding: 0 var(--k-s-sm);
+  border-radius: var(--k-r-full);
+  font-size: var(--k-text-label-md);
+  font-weight: var(--k-fw-label-md);
+  line-height: var(--k-lh-body);
+}
+.k-f9-shelfchip[data-shelf="company"] {
+  background: var(--k-primary-container);
+  color: var(--k-on-primary-container);
+}
+.k-f9-shelfchip[data-shelf="group"] {
+  background: var(--k-secondary-container);
+  color: var(--k-on-secondary-container);
+}
+.k-f9-shelfchip[data-shelf="me"] {
+  background: var(--k-tertiary-container);
+  color: var(--k-on-tertiary-container);
+}
+.k-f9-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-sm);
+  margin-left: auto;
+}
+.k-f9-must,
+.k-btn.k-f9-more {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-s-xs);
+  min-height: calc(var(--k-s-lg) + var(--k-s-xs));
+  padding: 0 var(--k-s-sm);
+  border: var(--k-c-input-border);
+  border-radius: var(--k-r-md);
+  background: var(--k-card);
+  color: var(--k-on-surface);
+  font: inherit;
+  font-size: var(--k-text-body-sm);
+  cursor: pointer;
+}
+.k-f9-must:hover,
+.k-btn.k-f9-more:hover {
+  background: var(--k-select);
+}
+.k-f9-must[aria-pressed="true"] {
+  border-color: var(--k-primary-line);
+  background: var(--k-primary-soft);
+  color: var(--k-primary);
+  font-weight: var(--k-fw-h3);
+}
+.k-f9-must[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-btn.k-f9-more {
+  justify-content: center;
+  min-width: calc(var(--k-s-lg) + var(--k-s-xs));
+  padding: 0;
+}
+.k-f9-title {
+  margin: 0;
+  font-size: var(--k-text-h1);
+  line-height: var(--k-lh-h1);
+  font-weight: var(--k-fw-h1);
+  overflow-wrap: anywhere;
+}
+.k-f9-desc {
+  margin: 0;
+  font-size: var(--k-text-body-md);
+  line-height: var(--k-lh-body-md);
+  color: var(--k-on-surface-variant);
+  overflow-wrap: anywhere;
+}
+.k-f9-desc-l {
+  margin-right: var(--k-s-sm);
+  padding: 0 var(--k-s-xs);
+  border: var(--k-c-detail-rule-border);
+  border-radius: var(--k-r-sm);
+  font-size: var(--k-text-label-md);
+  color: var(--k-neutral-strong);
+  white-space: nowrap;
+}
+.k-f9-mustline {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--k-s-xs);
+  margin: 0;
+  padding: var(--k-s-xs) var(--k-s-sm);
+  border: var(--k-c-band-info-border);
+  border-radius: var(--k-r-md);
+  background: var(--k-primary-soft);
+  color: var(--k-primary);
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body);
+}
+.k-f9-mustline svg {
+  flex: none;
+  margin-top: var(--k-s-xs);
+}
+.k-f9-bands {
+  display: grid;
+  gap: var(--k-s-sm);
+  min-width: 0;
+}
+.k-f9-reason {
+  margin: var(--k-s-xs) 0 0;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body);
+}
+.k-f9-reason b {
+  margin-right: var(--k-s-sm);
+  font-weight: var(--k-fw-h3);
+}
+/* ページの本文（段 5 の DocView の読む形）を下絵 v4 に合わせる：カードの中では本文の外の余白を持たない（段 5 の本文の面の余白 24px を外す）・行の中のコードは灰色の箱で本文と同じ 13px の段 */
+.k-f9-card .k-f4d-doc.k-f4d-read {
+  padding: 0;
+}
+.k-f9-card .k-f4d-read :not(pre) > code {
+  padding: 0 var(--k-s-xs);
+  border-radius: var(--k-r-sm);
+  background: var(--k-select);
+  font-size: var(--k-text-body);
+}
+/* 並び（・と 1. 2. 3.）の行の間を下絵 v4 に合わせる（1 行ごとに 4px あける） */
+.k-f9-card .k-f4d-read li + li {
+  margin-top: var(--k-s-xs);
+}
+.k-f9-pfoot {
+  padding-top: var(--k-s-sm);
+  border-top: var(--k-c-detail-rule-border-bottom);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-neutral-strong);
+}
+.k-f9-saved {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f9-editfields {
+  display: grid;
+  gap: var(--k-s-md);
+  min-width: 0;
+}
+@media (max-width: 767px) {
+  .k-f9-card {
+    padding: var(--k-s-md);
+  }
+  .k-f9-acts {
+    gap: var(--k-s-xs);
+    margin-left: 0;
+  }
+}
+
+/* ---------------------------------------------------------------- 小窓の中の並び */
+.k-f9-pick {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.k-f9-pick-h {
+  margin: 0 0 var(--k-s-xs);
+  padding: 0;
+  font-size: var(--k-text-body-sm);
+  font-weight: var(--k-fw-h3);
+  color: var(--k-on-surface);
+}
+.k-f9-pick-list {
+  list-style: none;
+  max-height: calc(var(--k-s-xl) * 6);
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  border: var(--k-c-detail-rule-border);
+  border-radius: var(--k-r-md);
+}
+.k-f9-pick-row {
+  display: flex;
+  align-items: center;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm) var(--k-s-md);
+  border-bottom: var(--k-c-detail-rule-border-bottom);
+}
+.k-f9-pick-row:last-child {
+  border-bottom: 0;
+}
+.k-f9-pick-row > svg {
+  flex: none;
+  color: var(--k-primary);
+}
+.k-f9-pick-main {
+  flex: 1;
+  display: grid;
+  min-width: 0;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+}
+.k-f9-pick-main b {
+  font-weight: var(--k-fw-h3);
+  overflow-wrap: anywhere;
+}
+.k-f9-pick-main small,
+.k-f9-pick-desc {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-f9-facts {
+  display: grid;
+  gap: var(--k-s-xs);
+  margin: 0;
+  font-size: var(--k-text-body);
+}
+.k-f9-facts div {
+  display: flex;
+  gap: var(--k-s-md);
+}
+.k-f9-facts dt {
+  flex: none;
+  width: var(--k-s-2xl);
+  color: var(--k-on-surface-variant);
+}
+.k-f9-facts dd {
+  margin: 0;
+  min-width: 0;
+}
+
+/* 前の版を見る小窓の本文（K-684・読むだけ） */
+.k-f9-versionbody {
+  max-height: calc(var(--k-s-xl) * 8);
+  padding: var(--k-s-sm) var(--k-s-md);
+  overflow-y: auto;
+  border: var(--k-c-detail-rule-border);
+  border-radius: var(--k-r-md);
+}

@@ -5,5 +5,4 @@ export { ChoiceChips, ApprovalCard, ReceiptCard, Confidence, Citation, showRecei
 export { Conversation } from "./conversation";
 export { Markdown } from "./markdown";
 export { ConversationList } from "./list";
-export { MemoryDigest, MemoryReviews } from "./memory";
 export { AlwaysAllowList, UsagePanel, NotifyToggles } from "./settings";

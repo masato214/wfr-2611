@@ -153,8 +153,8 @@ describe("K-62 Bridge の手元の口（道具の中継）", () => {
     }
   });
 
-  it("K62-BRG-012 自分のAI に見せる道具は仕事の種類で分ける：チケットの仕事は ticket_read だけ、会話の仕事に ticket_read は出さない（呼べない道具を見せない）", () => {
-    expect(toolDefsFor("ticket").map((t) => t.name)).toEqual(["ticket_read"]);
+  it("K62-BRG-012 自分のAI に見せる道具は仕事の種類で分ける：チケットの仕事は ticket_read と knowledge_open（K-718）、会話の仕事に ticket_read は出さない（呼べない道具を見せない）", () => {
+    expect(toolDefsFor("ticket").map((t) => t.name)).toEqual(["ticket_read", "knowledge_open"]);
     const chat = toolDefsFor("chat").map((t) => t.name);
     expect(chat).not.toContain("ticket_read");
     expect(chat).toEqual(expect.arrayContaining(["draft_read", "goal_set", "remember"]));
@@ -166,7 +166,7 @@ describe("K-62 Bridge の手元の口（道具の中継）", () => {
     ) as {
       env: Record<string, string>;
     };
-    expect(srv.env["KANAME_TOOLS"]).toBe("ticket_read");
+    expect(srv.env["KANAME_TOOLS"]).toBe("ticket_read,knowledge_open");
     expect(MCP_SERVER_SOURCE).toContain("KANAME_TOOLS");
   });
 

@@ -1,7 +1,7 @@
 // K-330「段 3 の部品とモックの画面を本線に入れる」の試験（実 Chrome と、ファイルと検査の道具を読む試験・実装より先に積む）。
 //   的：開発用の置き場 /dev/mock/f2（索引）と /dev/mock/f2/<状態>（1 つの状態）。本番と同じ部品（features/F2/invite/views.tsx・components/k）を、
 //   決めた値で並べたモック（代表 OK 2026-11-18 answer=65b51ba7b8ba・07_functional/段3-F2/機能分解.md）。
-//   見ること：15 の状態が全部描ける・幅 375／768／1440 で横のはみ出し 0・見出しは真ん中（代表の直し）・状態の持ち主が切り方の画面の葉・
+//   見ること：23 の状態（段 3 の 15・K-423 の 8）が全部描ける・幅 375／768／1440 で横のはみ出し 0・見出しは真ん中（代表の直し）・状態の持ち主が切り方の画面の葉・
 //   「あなたに見えるもの」を出さない（answer=7fe1f09fdab4 ⑥）・正本の値の検査が緑。
 //   口は呼ばない（モックは値を決めて並べるだけ）。本人の Bridge（127.0.0.1:38617）にも届かせない（網の手前で 404）。
 //   テストはチケットを作る人が書き、実装する人は変えない（D-128.125）
@@ -19,7 +19,8 @@ const VIEWS_SRC = join(WEB, "features/F2/invite/views.tsx");
 const CUT_DOC = join(ROOT, "07_functional/段3-F2/切り方.md");
 const SHOTS_SRC = join(ROOT, "07_functional/段3-F2/mock-shots.mjs");
 
-/** 画面の葉と、その葉が本物にするモックの状態（mocks.tsx の受け持ちと 07_functional/段3-F2/切り方.md の表のとおり・15 個） */
+/** 画面の葉と、その葉が本物にするモックの状態（mocks.tsx の受け持ちと 07_functional/段3-F2/切り方.md の表のとおり・段 3 の 15 個）。
+ *  K-423（段 9 の前に出す招待のリンク・確認の画面・PM の決め 2026-11-20）が同じ置き場に 8 個を足した（計 23 個） */
 const LEAVES: Record<string, readonly string[]> = {
   "K-335": [
     "inv-new",
@@ -35,6 +36,16 @@ const LEAVES: Record<string, readonly string[]> = {
     "inv-down",
   ],
   "K-336": ["inv-account", "inv-signed", "inv-other", "inv-member"],
+  "K-423": [
+    "inv-link-new",
+    "inv-link-error",
+    "inv-link-sent",
+    "inv-link-failed",
+    "inv-confirm",
+    "inv-confirm-expired",
+    "inv-confirm-used",
+    "inv-confirm-down",
+  ],
 };
 const ALL = Object.values(LEAVES).flat();
 const OWNER = new Map(Object.entries(LEAVES).flatMap(([k, ids]) => ids.map((id) => [id, k] as const)));
@@ -80,9 +91,9 @@ const runPy = (args: string[]) =>
 
 // ---- ファイルの突き合わせ（ブラウザ不要） ----
 
-test("K330-MK-001 モックの状態は 15 個で、画面の葉 2 本（K-335・K-336）が持つ状態の和とちょうど同じ（余りも欠けも重なりも 0）", () => {
+test("K330-MK-001 モックの状態は 23 個で、画面の葉 3 本（K-335・K-336・K-423）が持つ状態の和とちょうど同じ（余りも欠けも重なりも 0）", () => {
   const ids = mockEntries().map((e) => e.id);
-  expect(ids.length).toBe(15);
+  expect(ids.length).toBe(23);
   expect(new Set(ids).size, "同じ id が 2 つある").toBe(ids.length);
   expect([...ids].sort()).toEqual([...ALL].sort());
 });
@@ -94,13 +105,15 @@ test("K330-MK-002 各状態の持ち主（mocks.tsx の ticket）は、その状
   expect(bad, bad.join("\n")).toEqual([]);
 });
 
-test("K330-MK-003 切り方.md の表の画面の葉のモックの欄を開くと、この試験の葉の表（LEAVES）と同じ（正本とずれていない）", () => {
+test("K330-MK-003 段 3 の切り方.md の表の画面の葉のモックの欄を開くと、この試験の葉の表（LEAVES の段 3 の葉 K-335・K-336）と同じ（正本とずれていない）", () => {
   const doc = cutDocLeaves();
-  expect(Object.keys(doc).sort()).toEqual(Object.keys(LEAVES).sort());
-  for (const [k, ids] of Object.entries(LEAVES)) expect([...(doc[k] ?? [])].sort(), k).toEqual([...ids].sort());
+  // K-423 は段 9 の葉（正本は 11_tickets/K-423.md の mock:）なので、段 3 の切り方.md とは比べない
+  const stage3 = Object.entries(LEAVES).filter(([k]) => /^K-3\d\d$/.test(k));
+  expect(Object.keys(doc).sort()).toEqual(stage3.map(([k]) => k).sort());
+  for (const [k, ids] of stage3) expect([...(doc[k] ?? [])].sort(), k).toEqual([...ids].sort());
 });
 
-test("K330-MK-005 写しを撮る台本（mock-shots.mjs）は mocks.tsx の状態を全部（15 個）、幅 375・768・1440 で撮る", () => {
+test("K330-MK-005 写しを撮る台本（mock-shots.mjs）は mocks.tsx の状態を全部（23 個）、幅 375・768・1440 で撮る", () => {
   const src = readFileSync(SHOTS_SRC, "utf8");
   expect(src).toContain("app/(dev)/dev/mock/f2/mocks.tsx");
   expect(src).toContain("localhost:3341/dev/mock/f2");
@@ -142,7 +155,7 @@ test("K330-DS-001 design_gate の D1〜D7（--part --scales --usage）が緑：�
 
 // ---- 実ブラウザ：全部の状態が描ける ----
 
-test("K330-UI-001 索引 /dev/mock/f2：見出し invite-accept と 15 のリンクが出て、各リンクの先は /dev/mock/f2/<状態>", async ({
+test("K330-UI-001 索引 /dev/mock/f2：見出し invite-accept と 23 のリンクが出て、各リンクの先は /dev/mock/f2/<状態>", async ({
   page,
 }) => {
   await guard(page);
@@ -158,7 +171,7 @@ for (const [row, w] of [
   ["K330-UI-003", 768],
   ["K330-UI-004", 1440],
 ] as const) {
-  test(`${row} 幅 ${w}：15 の状態が全部開け（200）、「この状態はありません」が出ず、h1 がちょうど 1 つで真ん中そろえ（代表の直し answer=65b51ba7b8ba）・横のはみ出し 0`, async ({
+  test(`${row} 幅 ${w}：23 の状態が全部開け（200）、「この状態はありません」が出ず、h1 がちょうど 1 つで真ん中そろえ（代表の直し answer=65b51ba7b8ba）・横のはみ出し 0`, async ({
     page,
   }) => {
     test.setTimeout(300_000);
@@ -178,7 +191,7 @@ for (const [row, w] of [
   });
 }
 
-test("K330-UI-005 幅 1440：15 の状態を開いても、ページのエラー（pageerror）と描き直しの食い違い（hydration）の知らせが 0", async ({
+test("K330-UI-005 幅 1440：23 の状態を開いても、ページのエラー（pageerror）と描き直しの食い違い（hydration）の知らせが 0", async ({
   page,
 }) => {
   test.setTimeout(300_000);

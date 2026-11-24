@@ -29,7 +29,15 @@
      "file": "apps/api/test/features/contract/k144-contract.test.ts",
      "mark": "K144-API-032"
     },
-    "test_post_auth_invitations_token_accept_shape": "K332-API-002"
+    "test_post_auth_invitations_token_accept_shape": "K332-API-002",
+    "test_post_auth_invitations_token_accept_rejected_422_2": {
+     "file": "apps/api/test/features/F10/invite-link-confirm.test.ts",
+     "mark": "K422-API-003"
+    },
+    "test_post_auth_invitations_token_accept_conflict_3": {
+     "file": "apps/api/test/features/F10/invite-link-confirm.test.ts",
+     "mark": "K422-API-003"
+    }
    }
   }
  }

@@ -22,24 +22,64 @@ describe("POST /api/v1/tickets", () => {
     expect(readFileSync("apps/api/test/features/F4/create-ticket.test.ts", "utf8")).toContain("K60-API-042");
   });
   it("test_post_tickets_rejected_403", () => {
-    // UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）
+    // UNWANTED: IF そのグループにチケットを書けないなら、Kaname は 403 と FORBIDDEN を返し、チケットを作らない
     // 本物の試験：apps/api/test/features/F4/create-ticket.test.ts の「K60-API-005」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F4/create-ticket.test.ts", "utf8")).toContain("K60-API-005");
   });
+  it("test_post_tickets_conflict", () => {
+    // UNWANTED: IF 親子が 3 段を超えるなら、Kaname は 409 と E-VAL-015 を返し、チケットを作らない
+    // 本物の試験：apps/api/test/features/F4/create-ticket-defaults.test.ts の「K437-API-017」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/create-ticket-defaults.test.ts", "utf8")).toContain("K437-API-017");
+  });
   it("test_post_tickets_rejected_422", () => {
-    // UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない
+    // UNWANTED: IF 区画 sections だけで作り必須の区画が空なら、Kaname は 422 と E-VAL-013 を返し、チケットを作らない
     // 本物の試験：apps/api/test/features/F4/create-ticket.test.ts の「K60-API-008」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/F4/create-ticket.test.ts", "utf8")).toContain("K60-API-008");
   });
-  it("test_post_tickets_rejected_422_2", () => {
-    // UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）
-    // 本物の試験：apps/api/test/features/F4/create-ticket.test.ts の「K60-API-025」（同じ CI の G3 で流れる）
-    expect(readFileSync("apps/api/test/features/F4/create-ticket.test.ts", "utf8")).toContain("K60-API-025");
-  });
   it("test_post_tickets_not_found", () => {
-    // UNWANTED: IF 親のチケットが無いか見えないなら、Kaname は 404 と E-PAGE-001 を返し、チケットを作らない
+    // UNWANTED: IF 選んだ種別・担当者・知らせる人・親・会社の項目が無いか選べないなら、Kaname は 404 と E-PAGE-001 を返し、チケットを作らない
     // 本物の試験：apps/api/test/features/contract/k144-contract.test.ts の「K144-API-019」（同じ CI の G3 で流れる）
     expect(readFileSync("apps/api/test/features/contract/k144-contract.test.ts", "utf8")).toContain("K144-API-019");
+  });
+  it("test_post_tickets_conflict_2", () => {
+    // UNWANTED: IF 期限が今日より前なら、Kaname は 409 と E-VAL-012 を返し、チケットを作らない
+    // 本物の試験：apps/api/test/features/F4/create-ticket.test.ts の「K60-API-023」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/create-ticket.test.ts", "utf8")).toContain("K60-API-023");
+  });
+  it("test_post_tickets_conflict_3", () => {
+    // UNWANTED: IF 開始日が期限より後なら、Kaname は 409 と E-VAL-028 を返し、チケットを作らない
+    // 本物の試験：apps/api/test/features/F4/create-ticket.test.ts の「K60-API-022」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/create-ticket.test.ts", "utf8")).toContain("K60-API-022");
+  });
+  it("test_post_tickets_conflict_4", () => {
+    // UNWANTED: IF その種別に出ない会社の項目に値を付けたなら、Kaname は 409 と E-FLD-001 を返し、チケットを作らない
+    // 本物の試験：apps/api/test/features/F4/create-ticket-defaults.test.ts の「K437-API-007」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/create-ticket-defaults.test.ts", "utf8")).toContain("K437-API-007");
+  });
+  it("test_post_tickets_conflict_5", () => {
+    // UNWANTED: IF 会社の項目の選択肢に無い値を付けたなら、Kaname は 409 と E-FLD-002 を返し、チケットを作らない
+    // 本物の試験：apps/api/test/features/F4/create-ticket-defaults.test.ts の「K437-API-007」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/create-ticket-defaults.test.ts", "utf8")).toContain("K437-API-007");
+  });
+  it("test_post_tickets_conflict_6", () => {
+    // UNWANTED: IF 会社の項目の型と合わない値を付けたなら、Kaname は 409 と E-FLD-003 を返し、チケットを作らない
+    // 本物の試験：apps/api/test/features/F4/create-ticket-defaults.test.ts の「K437-API-009」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/create-ticket-defaults.test.ts", "utf8")).toContain("K437-API-009");
+  });
+  it("test_post_tickets_conflict_7", () => {
+    // UNWANTED: IF 会社が必須にした項目が空なら、Kaname は 409 と E-FLD-004 を返し、チケットを作らない
+    // 本物の試験：apps/api/test/features/F4/create-ticket-defaults.test.ts の「K437-API-006」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/create-ticket-defaults.test.ts", "utf8")).toContain("K437-API-006");
+  });
+  it("test_post_tickets_not_found_2", () => {
+    // UNWANTED: IF 複製の元のチケットが無いか見えないなら、Kaname は 404 と E-DUP-001 を返し、チケットを作らない
+    // 本物の試験：apps/api/test/features/F4/ticket-duplicate.test.ts の「K438-API-017」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-duplicate.test.ts", "utf8")).toContain("K438-API-017");
+  });
+  it("test_post_tickets_conflict_8", () => {
+    // UNWANTED: IF 子チケットを写すと親子が 3 段を超えるなら、Kaname は 409 と E-DUP-002 を返し、チケットを作らない
+    // 本物の試験：apps/api/test/features/F4/ticket-duplicate-children.test.ts の「K438-API-015」（同じ CI の G3 で流れる）
+    expect(readFileSync("apps/api/test/features/F4/ticket-duplicate-children.test.ts", "utf8")).toContain("K438-API-015");
   });
   it("test_post_tickets_too_large", () => {
     // UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない

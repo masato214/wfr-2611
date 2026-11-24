@@ -1,0 +1,10 @@
+{
+ "data_links": [
+  {"paths": ["scripts/ci/design_gate.py", "scripts/ci/canvas_field_gate.py", "scripts/ci/gen_built_routes.py", "04_design/DESIGN-kaname.md", "apps/web/styles/k-tokens.css"],
+   "tests": ["apps/web/tests/k/k670-f9-parts-1.spec.ts"]}
+ ],
+ "reads_ok": {
+  "apps/web/tests/k/f9-mock-kit.ts": "段 10 の下絵の試験の共通の道具。read()（readFileSync）は、試験が渡した道（モックの置き場 apps/web/app/(dev)/dev/mock/f9/・F9 の部品 apps/web/features/F9/**・道の一覧）を字で読むだけで、どれも apps/web/**（jobs.web.paths）の中・K-670",
+  "apps/web/tests/k/k670-f9-parts-1.spec.ts": "モックの置き場 apps/web/app/(dev)/dev/mock/f9/（mocks.tsx・render*.tsx・[id]/page.tsx）・F9 の部品 apps/web/features/F9/**（.ts・.tsx・.css）・道の一覧 apps/web/lib/built-routes.ts を字で読み、scripts/ci/canvas_field_gate.py（11_tickets と置き場を読む）と scripts/ci/design_gate.py（正本 04_design/DESIGN-kaname.md・apps/web/styles/k-tokens.css・design-gate.json）を子プロセスで流す。検査の台本と正本は data_links で結ぶ（apps/web/** は jobs.web.paths に在る）・K-670"
+ }
+}

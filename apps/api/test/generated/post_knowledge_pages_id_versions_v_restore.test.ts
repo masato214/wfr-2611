@@ -3,7 +3,7 @@
 import { describe, it } from "vitest";
 
 describe("POST /api/v1/knowledge_pages/:id/versions/:v/restore", () => {
-  // EVENT-DRIVEN: WHEN POST /api/v1/knowledge_pages/:id/versions/:v/restore が「層ごとのページを書く・直す」として呼ばれたとき THEN Kaname は「版を残す」を行い 2xx を返す
+  // EVENT-DRIVEN: WHEN POST /api/v1/knowledge_pages/:id/versions/:v/restore が「木からページを選び、書く・書き終える・やめる・動かす・消す。必ず守るを付ける・外す」として呼ばれたとき THEN Kaname は「下書きは自動で保存・書き終えると版を残す・必ず守るは上限まで」を行い 2xx を返す
   it.todo("test_post_knowledge_pages_id_versions_v_restore_ok");
   // UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）
   it.todo("test_post_knowledge_pages_id_versions_v_restore_rejected_401");

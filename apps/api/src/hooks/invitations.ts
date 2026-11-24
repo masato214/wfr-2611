@@ -33,7 +33,11 @@ export const register = defineHooks({
       authPool: d.authPool,
       actions: d.actions, // 参加（K-332）の漏れたパスワードの照合（関門 C1・登録と同じ行為）
       ...(d.mailer ? { mailer: d.mailer } : {}),
-      config: { opsEmail: d.config.opsEmail, webBaseUrl: d.config.webBaseUrl ?? "" },
+      config: {
+        opsEmail: d.config.opsEmail,
+        webBaseUrl: d.config.webBaseUrl ?? "",
+        secretsMasterKey: d.config.secretsMasterKey,
+      },
     }),
   fuzz: "same",
 });

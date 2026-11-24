@@ -1,0 +1,28 @@
+{
+ "ops": {
+  "listTicketHandovers": {
+   "file": "apps/api/test/features/F8/handover-queue-read.test.ts",
+   "reason": "渡しの見え方は、チケットの見える範囲・渡した人・答える人（K-401 の app.handover_answerer）の組み合わせで変わる（帯を 1 回だけ出す覚えは画面の手元で、この口は書かない）。生成の試験の種では渡しの行と人の組を作れない（K-405）",
+   "covers": {
+    "test_get_tickets_id_handovers_ok": "K405-API-010",
+    "test_get_tickets_id_handovers_shape": "K405-API-010",
+    "test_get_tickets_id_handovers_rejected_401": "K405-API-017",
+    "test_get_tickets_id_handovers_rejected_403": "K405-API-017",
+    "test_get_tickets_id_handovers_rejected_422": "K405-API-017",
+    "test_get_tickets_id_handovers_not_found": "K405-API-017",
+    "test_get_tickets_id_handovers_rate_limited": "K405-API-018",
+    "test_get_tickets_id_handovers_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_tickets_id_handovers_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_tickets_id_handovers_ok_2": "読む口は渡しの有る・無いで形が変わらない（空の並び 200 は K405-API-016）。2 つ目の成功の筋は無い"
+   }
+  }
+ }
+}

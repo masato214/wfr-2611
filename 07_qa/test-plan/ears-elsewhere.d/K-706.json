@@ -1,0 +1,56 @@
+{
+ "ops": {
+  "listTicketFieldMaster": {
+   "file": "apps/api/test/features/F9/ticket-fields-write.test.ts",
+   "reason": "項目のマスタは権限（custom_fields の edit）・名前の一意・種別の行・値の数で答えが変わる。生成の試験の偽のセッションでは作れない（K-706）",
+   "covers": {
+    "test_get_ticket_field_master_ok": "K706-API-001",
+    "test_get_ticket_field_master_shape": "K706-API-001",
+    "test_get_ticket_field_master_rejected_401": "K706-API-009",
+    "test_get_ticket_field_master_rejected_403": "K706-API-009",
+    "test_get_ticket_field_master_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_ticket_field_master_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_get_ticket_field_master_session_unresolved": "K706-API-012"
+   },
+   "na": {
+    "test_get_ticket_field_master_rejected_422": "問い合わせは cursor・limit を形だけ受けて動きを変えない（入口の共通の確かめ・一覧の口と同じ op.ts）",
+    "test_get_ticket_field_master_rate_limited": "上限は入口の共通（op.ts・120/min/user）。書く口の上限は K706-API-010 が見る",
+    "test_get_ticket_field_master_mfa_pending": "止めは全部の口で同じ 1 か所の入口（op.ts）。apps/api/test/features/F1/mfa-gate.test.ts が見る"
+   }
+  },
+  "createTicketField": {
+   "file": "apps/api/test/features/F9/ticket-fields-write.test.ts",
+   "reason": "項目のマスタは権限（custom_fields の edit）・名前の一意・種別の行・値の数で答えが変わる。生成の試験の偽のセッションでは作れない（K-706）",
+   "covers": {
+    "test_post_ticket_fields_ok": "K706-API-002",
+    "test_post_ticket_fields_shape": "K706-API-002",
+    "test_post_ticket_fields_rejected_401": "K706-API-009",
+    "test_post_ticket_fields_rejected_403": "K706-API-009",
+    "test_post_ticket_fields_conflict": "K706-API-008",
+    "test_post_ticket_fields_conflict_2": "K706-API-006",
+    "test_post_ticket_fields_rejected_422": "K706-API-004",
+    "test_post_ticket_fields_not_found": "K706-API-007",
+    "test_post_ticket_fields_session_unresolved": "K706-API-012",
+    "test_post_ticket_fields_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_ticket_fields_rate_limited": "K706-API-010",
+    "test_post_ticket_fields_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_ticket_fields_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   }
+  }
+ }
+}

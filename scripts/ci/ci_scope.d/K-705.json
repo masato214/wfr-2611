@@ -1,0 +1,33 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/ticket-stages-write.ts",
+    "apps/api/src/features/F9/settings/stages.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F9/ticket-stages-write.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F9/ticket-stages-write.test.ts",
+    "apps/api/test/features/F1/terms.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts",
+    "apps/api/test/features/contract/k144.d/K-705.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_ticket_stages.test.ts",
+    "apps/api/test/generated/post_ticket_stages.test.ts",
+    "apps/api/test/generated/patch_ticket_stages_id.test.ts",
+    "apps/api/test/generated/delete_ticket_stages_id.test.ts",
+    "apps/api/test/generated/post_ticket_stages_order.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F9/settings.harness.ts": "入っている葉の hooks のファイル（ticket-stages-write ほか）を F3/leaf-hooks.ts の動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-705",
+  "apps/api/test/features/contract/k144.d/K-705.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-705"
+ }
+}

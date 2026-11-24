@@ -11,6 +11,8 @@
   O2 結果が空の行は「未実施」で赤（--pending-from-report のときは、今の回の報告で passed なら緑・落ちていれば赤・K-143）。BLOCKED は理由（結果か備考に「（…）」）が無ければ赤。N/A は観点「操作」には書けない（要素がモックにある）。
   O3 「発注者確認」の行は、手順ファイル（テスト項目に書いてある .md）の末尾に「OK: 日付 名前」があるときだけ PASS。無ければ BLOCKED（発注者の確認待ち）だけを許す。
   O4 報告が無い・空・仕様より古い（行の結果が書かれた後に流していない）なら、その旨を赤で出す。
+  --rows-in（チケットの範囲の回）で照らすのは、流した試験のファイルの「試験の題」に出る行 ID だけ（K-1122）：
+     字で書いた題（test/it/describe(…)・row(R["…"])）と、報告の中の流したファイルの試験の題の和。コメント・題でない字は数えない。
 観点の集合は <spec>/op-gate.json（{"evidence_views": [...], "report_max_age_h": 48}）で足せる。プロジェクト名は持たない。
 """
 from __future__ import annotations
@@ -18,6 +20,158 @@ import argparse, glob, json, os, re, sys, time
 
 DEFAULT_VIEWS = ["操作", "状態", "主アクション", "到達性", "横溢れ", "空・止まっている", "表記ゆらぎ", "共通シェル", "部品", "役割の出し分け", "見え方"]
 ID_RE = re.compile(r"\b[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3}(?:-[ABC])?\b")
+
+
+TITLE_HEADS = {"test", "it", "describe"}
+TITLE_MODS = {"describe", "only", "skip", "fixme", "fail", "serial", "parallel", "concurrent", "todo"}
+REGEX_AFTER_WORDS = {"return", "typeof", "case", "do", "else", "in", "of", "new", "delete", "void", "throw", "yield", "await", "instanceof"}
+
+
+def _skip_quoted(src: str, i: int, q: str) -> tuple[str, int]:
+    """'…'・"…" を読む。返すのは中身と次の位置（閉じなければ終わりまで・中身は None 扱いで空）"""
+    j = i + 1
+    out = []
+    while j < len(src):
+        ch = src[j]
+        if ch == "\\":
+            out.append(src[j:j + 2]); j += 2; continue
+        if ch == q:
+            return "".join(out), j + 1
+        if ch == "\n":
+            break
+        out.append(ch); j += 1
+    return "", len(src)   # 閉じない字：後ろは数えない
+
+
+def _skip_template(src: str, i: int) -> tuple[str, int]:
+    """`…` を読む。${…} の中は同じ読み方で読み飛ばし、題の字には数えない（空白 1 つに置き換える）"""
+    j = i + 1
+    out = []
+    while j < len(src):
+        ch = src[j]
+        if ch == "\\":
+            out.append(src[j:j + 2]); j += 2; continue
+        if ch == "`":
+            return "".join(out), j + 1
+        if src.startswith("${", j):
+            _, j = _tokens(src, j + 2, stop_brace=True)
+            out.append(" ")
+            continue
+        out.append(ch); j += 1
+    return "", len(src)
+
+
+def _skip_regex(src: str, i: int) -> int:
+    j, in_class = i + 1, False
+    while j < len(src):
+        ch = src[j]
+        if ch == "\\":
+            j += 2; continue
+        if ch == "\n":
+            return j
+        if in_class:
+            in_class = ch != "]"
+        elif ch == "[":
+            in_class = True
+        elif ch == "/":
+            j += 1
+            while j < len(src) and (src[j].isalnum() or src[j] == "_"):
+                j += 1
+            return j
+        j += 1
+    return len(src)
+
+
+def _tokens(src: str, i: int = 0, stop_brace: bool = False) -> tuple[list[tuple[str, str]], int]:
+    """TS/JS の字を（種類, 値）の並びにする。種類：name・str（字とテンプレートの中身）・p（記号）。コメントと正規表現は捨てる。
+    stop_brace なら、対になる } で止まる（テンプレートの ${…} の中）"""
+    toks: list[tuple[str, str]] = []
+    depth = 0
+    n = len(src)
+    while i < n:
+        ch = src[i]
+        if ch.isspace():
+            i += 1; continue
+        if src.startswith("//", i):
+            k = src.find("\n", i)
+            i = n if k < 0 else k; continue
+        if src.startswith("/*", i):
+            k = src.find("*/", i + 2)
+            i = n if k < 0 else k + 2; continue
+        if ch in "'\"":
+            v, i = _skip_quoted(src, i, ch); toks.append(("str", v)); continue
+        if ch == "`":
+            v, i = _skip_template(src, i); toks.append(("str", v)); continue
+        if ch == "/":
+            prev = toks[-1] if toks else None
+            is_div = prev is not None and (prev[0] == "str" or (prev[0] == "name" and prev[1] not in REGEX_AFTER_WORDS) or prev[1] in (")", "]", "}"))
+            if not is_div:
+                i = _skip_regex(src, i); toks.append(("p", "regex")); continue
+        if ch.isalnum() or ch in "_$":
+            j = i
+            while j < n and (src[j].isalnum() or src[j] in "_$"):
+                j += 1
+            toks.append(("name", src[i:j])); i = j; continue
+        if stop_brace:
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                if depth == 0:
+                    return toks, i + 1
+                depth -= 1
+        toks.append(("p", ch)); i += 1
+    return toks, n
+
+
+def title_ids(src: str) -> set[str]:
+    """試験のファイルの字で書いた題に出る行 ID（K-1122）。コメント・体の中の字・test.step・x.test(…) は数えない"""
+    toks, _ = _tokens(src)
+    ids: set[str] = set()
+    for k, (kind, v) in enumerate(toks):
+        if kind != "name" or (k and toks[k - 1] == ("p", ".")):
+            continue
+        j = k + 1
+        if v in TITLE_HEADS:
+            while j + 1 < len(toks) and toks[j] == ("p", ".") and toks[j + 1][0] == "name" and toks[j + 1][1] in TITLE_MODS:
+                j += 2
+            if j + 1 < len(toks) and toks[j] == ("p", "(") and toks[j + 1][0] == "str":
+                ids |= set(ID_RE.findall(toks[j + 1][1]))
+        elif v == "row":
+            w = toks[j:j + 5]
+            if len(w) == 5 and w[0] == ("p", "(") and w[1][0] == "name" and w[2] == ("p", "[") and w[3][0] == "str" and w[4] == ("p", "]"):
+                ids |= set(ID_RE.findall(w[3][1]))
+    return ids
+
+
+def _same_file(report_file: str, given: str) -> bool:
+    rf = report_file.replace("\\", "/").lstrip("./")
+    g = os.path.normpath(given).replace("\\", "/")
+    return bool(rf) and (g == rf or g.endswith("/" + rf))
+
+
+def report_title_ids(paths: list[str], files: list[str]) -> set[str]:
+    """Playwright の報告のうち、ファイルの名前（testDir からの道）が流した試験のファイルに当たる試験の題の行 ID（上の段の題もつなぐ）"""
+    ids: set[str] = set()
+
+    def walk(s: dict, path: list[str], file: str) -> None:
+        file = s.get("file") or file
+        for sp in s.get("specs", []):
+            f = sp.get("file") or file
+            if f and any(_same_file(f, g) for g in files):
+                ids.update(ID_RE.findall(" ".join(path + [sp.get("title", "")])))
+        for c in s.get("suites", []):
+            walk(c, path + [s.get("title", "")], file)
+
+    for p in paths:
+        if not os.path.exists(p):
+            continue
+        try:
+            rep = json.load(open(p, encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue   # 読めない報告は O4 が赤にする
+        for s in rep.get("suites", []):
+            walk(s, [], "")
+    return ids
 
 
 def load_rows(spec: str) -> dict[str, dict]:
@@ -124,10 +278,14 @@ def main() -> int:
         tasks = {t["id"]: t for t in tj["tasks"]}
     targets = list(a.task)
     only: set[str] | None = None
-    if a.rows_in:   # チケットの範囲の回（K-177）：流した試験に書かれた行だけ。持ち主のチケットでない行も照らす
-        text = "\n".join(open(f, encoding="utf-8", errors="replace").read() for f in a.rows_in)
+    # 報告の一覧は op-gate.json に 1 つだけ持つ。--report を書かなければそれを使う（呼ぶ側に書き写すと足し忘れる）
+    reports = a.report or cfg.get("reports", [])
+    if a.rows_in:   # チケットの範囲の回（K-177）：流した試験の題に出る行だけ（K-1122・コメントは数えない）。持ち主のチケットでない行も照らす
+        named: set[str] = report_title_ids(reports, a.rows_in)
+        for f in a.rows_in:
+            named |= title_ids(open(f, encoding="utf-8", errors="replace").read())
         rows_all = load_rows(a.spec)
-        only = {rid for rid in rows_all if re.search(rf"\b{re.escape(rid)}\b", text)}
+        only = {rid for rid in rows_all if rid in named}
         for rid in only:
             t = rows_all[rid]["task"]
             tasks.setdefault(t, {"id": t, "deliverable_layer": "ui", "status": "done", "qa_rows": {"l1": []}})
@@ -146,8 +304,6 @@ def main() -> int:
             print("流した試験のファイルに、仕様の行 ID が 1 つも無い（照らす行が無い）"); return 0
         print("対象のタスクが無い（--task / --wave / --all）"); return 2
     rows = load_rows(a.spec)
-    # 報告の一覧は op-gate.json に 1 つだけ持つ。--report を書かなければそれを使う（呼ぶ側に書き写すと足し忘れる）
-    reports = a.report or cfg.get("reports", [])
     by_id, newest = load_report(reports)
     fails: list[str] = []
     stats = {"checked": 0, "evidenced": 0, "blocked": 0, "na": 0}

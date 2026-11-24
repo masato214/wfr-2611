@@ -1,0 +1,18 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/web/features/F4/doc/editor/",
+    "apps/web/app/(dev)/dev/mock/f4v2-editor/",
+    "apps/web/features/F4/doc/doc.css",
+    "apps/web/features/F4/doc/extra.css"
+   ],
+   "tests": [
+    "apps/web/tests/k/k577-doc-view.spec.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/web/features/F4/doc/editor/doc-view-color.tsx": "色のある文書の読むだけの形の本体 ./doc-view-live を import() で遅く読む（同じ置き場の部品・ファイルは読まない）。置き場 apps/web/features/F4/doc/editor/ は data_links で結ぶ"
+ }
+}

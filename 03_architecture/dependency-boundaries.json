@@ -187,6 +187,25 @@
    "source": [
     "D-104.22"
    ]
+  },
+  {
+   "id": "B10",
+   "concern": "本文の見たまま編集",
+   "vendor": "Tiptap（ProseMirror）",
+   "allowed_paths": [
+    "apps/web/features/F4/doc/editor/"
+   ],
+   "forbidden_import_patterns": [
+    "@tiptap/",
+    "prosemirror-"
+   ],
+   "interface": "DocEditor（doc を受けて onChange(doc) を返す）",
+   "swap_cost_days": "3",
+   "also_choke_point": null,
+   "ci_check": "pnpm ci:boundary -- --id B10",
+   "source": [
+    "D-150.48"
+   ]
   }
  ],
  "ci_gates": [

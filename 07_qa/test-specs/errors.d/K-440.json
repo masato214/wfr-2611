@@ -1,0 +1,136 @@
+{
+ "errors": [
+  {
+   "id": "E-TKT-001",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "detail"
+   },
+   "when": "親に、そのチケット自身を決めようとした（K-440。親を決める小窓か、口 PATCH /api/v1/tickets/:id の parent_ticket_id）",
+   "false_when": "親に、自分とは別のチケットを決めた",
+   "message": "自分自身は親にできません",
+   "action": "別のチケットを親に選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "チケットの詳細",
+    "steps": [
+     "口に、そのチケット自身の id を parent_ticket_id で送る"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.32",
+    "D-128.65",
+    "D-150.16"
+   ],
+   "support_code": "TKT-001"
+  },
+  {
+   "id": "E-TKT-002",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "detail"
+   },
+   "when": "親に、そのチケットの子・孫（下の段）を決めようとした＝親子が輪になる（K-440。同時に A の親を B・B の親を A にしたときの後の 1 本も）",
+   "false_when": "自分の下の段に無いチケットを親にした",
+   "message": "自分の下にあるチケットは親にできません（親子が輪になります）",
+   "action": "自分の下にないチケットを親に選ぶ",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "親と子のチケット",
+    "steps": [
+     "親のチケットに、その子の id を parent_ticket_id で送る"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.32",
+    "D-128.65",
+    "D-150.16"
+   ],
+   "support_code": "TKT-002"
+  },
+  {
+   "id": "E-TKT-003",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "detail"
+   },
+   "when": "親を決めると親子が 3 段を超える（親が 3 段目、または自分の下の段を数えて 3 段を超える・K-440）",
+   "false_when": "親子が 3 段までに収まる",
+   "message": "親子は 3 段までです。もっと上の段のチケットを親にしてください",
+   "action": "3 段に収まる親を選ぶ（または先に子の段を減らす）",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "3 段の親子のチケット",
+    "steps": [
+     "3 段目のチケットを親にする口を直に呼ぶ"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.32",
+    "D-128.65",
+    "D-150.16"
+   ],
+   "support_code": "TKT-003"
+  },
+  {
+   "id": "E-TKT-004",
+   "class": "conflict",
+   "where": {
+    "screen": "tickets",
+    "state": "detail"
+   },
+   "when": "今の自分の期限が親の期限より後のチケットに、その親を決めようとした（どちらかの期限が空なら対象外・親の期限より後の期限にする側は期限の口・K-440）",
+   "false_when": "自分の期限が親の期限と同じか前（または、どちらかの期限が空）",
+   "message": "このチケットの期限が親の期限より後です。期限を親に合わせてから、親を決めてください",
+   "action": "期限を親の期限以前に直してから親を決める",
+   "undo": false,
+   "layers": [
+    "UI",
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "期限が親より後のチケット",
+    "steps": [
+     "親の期限より後の期限のチケットに、その親を parent_ticket_id で送る"
+    ],
+    "needs": "なし"
+   },
+   "severity": "low",
+   "source": [
+    "D-125.32",
+    "D-128.65",
+    "D-150.16"
+   ],
+   "support_code": "TKT-004"
+  }
+ ]
+}

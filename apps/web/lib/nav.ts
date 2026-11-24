@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/gen_routes.mjs ← 05_flow/flow.json navigation／screens／product_states）。手で直さない。flow:17a514abc715d29c
+// 生成物（scripts/ci/gen_routes.mjs ← 05_flow/flow.json navigation／screens／product_states）。手で直さない。flow:689868f0131ef036
 export interface NavSection { key: string; label: string; icon: string; screens: string[]; tab?: string }
 export interface SubItem { label: string; desc: string; group?: string; state?: string }
 export interface ScreenMeta { id: string; name: string; route: string; needsLogin: boolean; hasShell: boolean; roles: string[]; purpose: string; primaryAction: string; release: string }
@@ -36,9 +36,7 @@ export const NAV: NavData = {
       "icon": "bot",
       "screens": [
         "clone-chat",
-        "ai-activity",
-        "work-types",
-        "rules"
+        "ai-activity"
       ],
       "tab": "AI"
     },
@@ -149,9 +147,9 @@ export const NAV: NavData = {
       "approvals",
       "clone-chat",
       "ai-activity",
-      "work-types",
-      "rules",
       "knowledge",
+      "members",
+      "member-detail",
       "layers",
       "masters",
       "audit",
@@ -170,8 +168,6 @@ export const NAV: NavData = {
       "approvals",
       "clone-chat",
       "ai-activity",
-      "work-types",
-      "rules",
       "knowledge",
       "members",
       "member-detail",
@@ -193,8 +189,6 @@ export const NAV: NavData = {
       "approvals",
       "clone-chat",
       "ai-activity",
-      "work-types",
-      "rules",
       "knowledge",
       "account",
       "credentials",
@@ -317,21 +311,25 @@ export const NAV: NavData = {
     "knowledge": [
       {
         "label": "ページ",
-        "desc": "層ごとのページ"
+        "desc": "会社・グループ・自分の棚のページ"
       },
       {
-        "label": "記憶",
-        "desc": "自分の AI の記憶と上がってきた候補"
+        "label": "管理",
+        "desc": "承認待ちと見直すページ（管理者とマネージャーだけ）"
       }
     ],
     "masters": [
       {
-        "label": "守ること・承認・やり方",
-        "desc": "全員の分身に効く決まりと、承認を上に回すとき"
+        "label": "種別",
+        "desc": "名前・色・本文のひな形"
       },
       {
-        "label": "チケットの形",
-        "desc": "種別ごとの欄の並び・必須・出す・外す"
+        "label": "状態",
+        "desc": "名前・色・並び"
+      },
+      {
+        "label": "項目",
+        "desc": "会社が足す項目"
       }
     ],
     "member-detail": [
@@ -452,8 +450,12 @@ export const NAV: NavData = {
     ],
     "ops-skills": [
       {
-        "label": "業務の型と操作",
-        "desc": "上げる → 機械の検査 → 版を出す"
+        "label": "操作",
+        "desc": "読むだけ。版はコードで出す"
+      },
+      {
+        "label": "ひな形",
+        "desc": "種別・状態・項目の版を出す"
       },
       {
         "label": "プラン",
@@ -1003,6 +1005,7 @@ export const NAV: NavData = {
       "needsLogin": true,
       "hasShell": true,
       "roles": [
+        "R1",
         "R2"
       ],
       "purpose": "グループごとに人を並べ、役割をその場で変える。招く・グループを作る。上に気づいてほしいこと（PC がつながっていない人・招待中）を 1 行。名前を押すとメンバーの 1 人",
@@ -1242,7 +1245,7 @@ export const NAV: NavData = {
       "roles": [
         "R6"
       ],
-      "purpose": "業務の型と操作を上げる（機械の検査 → 版を出す）。プランの値段と中身を版で持ち、変えるときは案を作り別の人が決める",
+      "purpose": "全部のワークスペースに効く物を版で持つ：操作（読むだけ・版はコードで出す）・ひな形（新しく入る会社が最初に使う既定の形。種別・状態・項目の版を出し、会社が手を付けていない所だけ「そのままにする／変える」を選ぶ）・プラン（値段と中身。変えるときは案を作り別の人が決める）",
       "primaryAction": "版を出す",
       "release": "v1"
     },
@@ -1389,6 +1392,7 @@ export const NAV: NavData = {
       "needsLogin": true,
       "hasShell": true,
       "roles": [
+        "R1",
         "R2"
       ],
       "purpose": "グループと役割・できること（役割の束と個別に足した／外したもの）・担当しているもの・分身・ログイン・最近の記録。一時的に止める・外す（担当を引き継いでから）・2 段階認証を戻す",
@@ -1413,16 +1417,16 @@ export const NAV: NavData = {
     },
     "masters": {
       "id": "masters",
-      "name": "決まり",
-      "route": "/workspace/rules",
+      "name": "チケットの設定",
+      "route": "/workspace/ticket-settings",
       "needsLogin": true,
       "hasShell": true,
       "roles": [
         "R1",
         "R2"
       ],
-      "purpose": "ワークスペースの管理 › 決まり。全員の分身とチケットに効く 守ること・承認を回すとき・やり方 と、チケットの形（種別ごとの欄の並び・必須）",
-      "primaryAction": "この形にする",
+      "purpose": "ワークスペースの管理 › チケットの設定。種別（名前・色・本文のひな形）・状態（名前・色・並び）・項目（会社が足す項目）を会社のやり方に合わせて足す・直す・並べる・消す。管理者だけが開ける",
+      "primaryAction": "保存する",
       "release": "v1"
     },
     "layers": {
@@ -1452,7 +1456,7 @@ export const NAV: NavData = {
       ],
       "purpose": "会社・層・個人・取引先 ごとにルール（書式・宛名・CC・禁止）を書く。見える・直せる範囲は権限で変わる",
       "primaryAction": "保存する",
-      "release": "v1"
+      "release": "v2"
     },
     "work-types": {
       "id": "work-types",
@@ -1467,7 +1471,7 @@ export const NAV: NavData = {
       ],
       "purpose": "業務の型（運営の全社向け／運営が作った会社向け／会社／グループ／自分）を見る・作る・広げる。見せるのは欄と説明だけで、裏のスキルの作りは見せない",
       "primaryAction": "作る",
-      "release": "v1"
+      "release": "v2"
     },
     "knowledge": {
       "id": "knowledge",
@@ -1480,7 +1484,7 @@ export const NAV: NavData = {
         "R2",
         "R3"
       ],
-      "purpose": "層ごとのページと記憶を書く・直す・確かめる。どのチケットで使われたかが分かる",
+      "purpose": "会社・グループ・自分の棚のページを、フォルダの木から選んで書く・直す・上げる・共有する・写す。必ず守るのページは AI が毎回読んで守る。管理する人は承認待ちと見直すページを見る",
       "primaryAction": "ページを書く",
       "release": "v1"
     },

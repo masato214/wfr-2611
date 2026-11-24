@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。263 件
+// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。321 件
 export interface CatalogEntry {
   id: string;
   cls: string;
@@ -3176,7 +3176,7 @@ export const CATALOG: Record<string, CatalogEntry> = {
   },
   "E-VAL-012": {
     "id": "E-VAL-012",
-    "cls": "validation",
+    "cls": "conflict",
     "message": "期限は今日か、それより後の日にしてください",
     "action": "期限を入れ直す",
     "undo": false,
@@ -3232,7 +3232,7 @@ export const CATALOG: Record<string, CatalogEntry> = {
   },
   "E-VAL-015": {
     "id": "E-VAL-015",
-    "cls": "validation",
+    "cls": "conflict",
     "message": "チケットの親子は 3 段までです。ほかの親を選んでください",
     "action": "親を選び直す",
     "undo": false,
@@ -4049,6 +4049,244 @@ export const CATALOG: Record<string, CatalogEntry> = {
       "state": "progress"
     }
   },
+  "E-HND-001": {
+    "id": "E-HND-001",
+    "cls": "validation",
+    "message": "この渡し方は、まだ使えません",
+    "action": "別の渡し方を選ぶ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-HND-001",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-002": {
+    "id": "E-HND-002",
+    "cls": "permission",
+    "message": "このチケットでは、この操作はできません",
+    "action": "担当者かグループを管理する人に頼む",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-HND-002",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-003": {
+    "id": "E-HND-003",
+    "cls": "conflict",
+    "message": "AI の実行（承認）が終わってから渡してください",
+    "action": "AI の実行か承認が終わるのを待つ",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-HND-003",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-004": {
+    "id": "E-HND-004",
+    "cls": "conflict",
+    "message": "いま{名前}さんの返事を待っています。先にその渡しを取り消してください",
+    "action": "前の渡しを取り消してから渡し直す",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-HND-004",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-005": {
+    "id": "E-HND-005",
+    "cls": "conflict",
+    "message": "この渡しはもう決まっています（受けた・断った・取り消された）",
+    "action": "画面を開き直して今の状態を見る",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-HND-005",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-006": {
+    "id": "E-HND-006",
+    "cls": "validation",
+    "message": "{名前}さんは今は選べません（{訳}）。別の人を選んでください",
+    "action": "別の人を選ぶ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-HND-006",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-007": {
+    "id": "E-HND-007",
+    "cls": "validation",
+    "message": "理由を書いてください",
+    "action": "理由を書く",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-HND-007",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-008": {
+    "id": "E-HND-008",
+    "cls": "validation",
+    "message": "返事の期限は今より後にしてください",
+    "action": "返事の期限を今より後にする",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-HND-008",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-009": {
+    "id": "E-HND-009",
+    "cls": "conflict",
+    "message": "完了した・消したチケットは渡せません",
+    "action": "開き直してから、別のチケットで渡す",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-HND-009",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-010": {
+    "id": "E-HND-010",
+    "cls": "validation",
+    "message": "自分には渡せません。別の人を選んでください",
+    "action": "別の人を選ぶ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-HND-010",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-011": {
+    "id": "E-HND-011",
+    "cls": "validation",
+    "message": "一緒に切り替えるものの選び方が、ワークスペースの決まりと合いません",
+    "action": "切り替えるものを選び直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-HND-011",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-012": {
+    "id": "E-HND-012",
+    "cls": "validation",
+    "message": "渡す先のグループが見つかりません。選び直してください",
+    "action": "グループを選び直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-HND-012",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-013": {
+    "id": "E-HND-013",
+    "cls": "validation",
+    "message": "渡す相手を選んでください",
+    "action": "相手を選ぶ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-HND-013",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
+  "E-HND-014": {
+    "id": "E-HND-014",
+    "cls": "validation",
+    "message": "選んだ人が見つかりません。選び直してください",
+    "action": "相手を選び直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-HND-014",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets"
+    }
+  },
   "E-INV-009": {
     "id": "E-INV-009",
     "cls": "validation",
@@ -4119,6 +4357,78 @@ export const CATALOG: Record<string, CatalogEntry> = {
     "where": {
       "screen": "members",
       "state": "invite"
+    }
+  },
+  "E-INV-013": {
+    "id": "E-INV-013",
+    "cls": "validation",
+    "message": "メールアドレスを入れてください",
+    "action": "メールアドレスを入れ直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-INV-013",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "invite-accept",
+      "state": "a"
+    }
+  },
+  "E-INV-016": {
+    "id": "E-INV-016",
+    "cls": "conflict",
+    "message": "メールアドレスを入れてください",
+    "action": "メールアドレスを入れて、もう一度参加する",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-INV-016",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "invite-accept",
+      "state": "a"
+    }
+  },
+  "E-INV-014": {
+    "id": "E-INV-014",
+    "cls": "not_found",
+    "message": "確認のリンクの期限（24 時間）が過ぎました。招待のリンクから、もう一度参加してください",
+    "action": "招待のリンクから、もう一度参加する",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-INV-014",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "invite-accept",
+      "state": "a"
+    }
+  },
+  "E-INV-015": {
+    "id": "E-INV-015",
+    "cls": "not_found",
+    "message": "この確認のリンクはもう使われています。ログインして入ってください",
+    "action": "ログインして入る",
+    "undo": false,
+    "severity": "medium",
+    "support_code": "E-INV-015",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "invite-accept",
+      "state": "a"
     }
   },
   "E-SEC-004": {
@@ -4221,6 +4531,138 @@ export const CATALOG: Record<string, CatalogEntry> = {
     ],
     "where": {
       "screen": "tickets"
+    }
+  },
+  "E-VAL-028": {
+    "id": "E-VAL-028",
+    "cls": "conflict",
+    "message": "開始日は期限より前の日にしてください",
+    "action": "開始日か期限を入れ直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "VAL-028",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "create"
+    }
+  },
+  "E-DUP-001": {
+    "id": "E-DUP-001",
+    "cls": "not_found",
+    "message": "複製の元のチケットが見つかりませんでした。消されたか、見る権限が無いかもしれません",
+    "action": "元を選び直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "DUP-001",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "duplicate"
+    }
+  },
+  "E-DUP-002": {
+    "id": "E-DUP-002",
+    "cls": "conflict",
+    "message": "子チケットを写すと、親子が 3 段を超えます。子を写さないか、別の親を選んでください",
+    "action": "子を写さずに作る",
+    "undo": false,
+    "severity": "low",
+    "support_code": "DUP-002",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "duplicate"
+    }
+  },
+  "E-TKT-001": {
+    "id": "E-TKT-001",
+    "cls": "conflict",
+    "message": "自分自身は親にできません",
+    "action": "別のチケットを親に選ぶ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "TKT-001",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "detail"
+    }
+  },
+  "E-TKT-002": {
+    "id": "E-TKT-002",
+    "cls": "conflict",
+    "message": "自分の下にあるチケットは親にできません（親子が輪になります）",
+    "action": "自分の下にないチケットを親に選ぶ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "TKT-002",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "detail"
+    }
+  },
+  "E-TKT-003": {
+    "id": "E-TKT-003",
+    "cls": "conflict",
+    "message": "親子は 3 段までです。もっと上の段のチケットを親にしてください",
+    "action": "3 段に収まる親を選ぶ（または先に子の段を減らす）",
+    "undo": false,
+    "severity": "low",
+    "support_code": "TKT-003",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "detail"
+    }
+  },
+  "E-TKT-004": {
+    "id": "E-TKT-004",
+    "cls": "conflict",
+    "message": "このチケットの期限が親の期限より後です。期限を親に合わせてから、親を決めてください",
+    "action": "期限を親の期限以前に直してから親を決める",
+    "undo": false,
+    "severity": "low",
+    "support_code": "TKT-004",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "detail"
     }
   },
   "E-LNK-001": {
@@ -4723,6 +5165,78 @@ export const CATALOG: Record<string, CatalogEntry> = {
       "screen": "tickets"
     }
   },
+  "E-FLD-001": {
+    "id": "E-FLD-001",
+    "cls": "conflict",
+    "message": "この項目は、このチケットの種別では使えません",
+    "action": "項目の一覧を読み直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "FLD-001",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "detail"
+    }
+  },
+  "E-FLD-002": {
+    "id": "E-FLD-002",
+    "cls": "conflict",
+    "message": "選べない値が含まれています。選択肢から選び直してください",
+    "action": "選択肢から選び直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "FLD-002",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "detail"
+    }
+  },
+  "E-FLD-003": {
+    "id": "E-FLD-003",
+    "cls": "conflict",
+    "message": "この項目に入れられない形の値です",
+    "action": "値を入れ直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "FLD-003",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "detail"
+    }
+  },
+  "E-FLD-004": {
+    "id": "E-FLD-004",
+    "cls": "conflict",
+    "message": "必須の項目は空にできません。値を入れてください",
+    "action": "値を入れる",
+    "undo": false,
+    "severity": "low",
+    "support_code": "FLD-004",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "tickets",
+      "state": "detail"
+    }
+  },
   "E-CONF-020": {
     "id": "E-CONF-020",
     "cls": "conflict",
@@ -4740,6 +5254,499 @@ export const CATALOG: Record<string, CatalogEntry> = {
     "where": {
       "screen": "tickets",
       "state": "delegate"
+    }
+  },
+  "E-KNW-010": {
+    "id": "E-KNW-010",
+    "cls": "conflict",
+    "message": "このページはまだ書き終えていません。書き終えてから使ってください",
+    "action": "書き終える",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-010",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-011": {
+    "id": "E-KNW-011",
+    "cls": "conflict",
+    "message": "このページを上の棚へ上げる（共有する）頼みが承認待ちです。決まるまでは変えられません",
+    "action": "頼みを取り下げる／決まるのを待つ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-011",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-012": {
+    "id": "E-KNW-012",
+    "cls": "conflict",
+    "message": "ほかの人がこのページを書いています。書き終えるまで待ってください",
+    "action": "少し待つ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-012",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-020": {
+    "id": "E-KNW-020",
+    "cls": "conflict",
+    "message": "同じ場所に同じ名前のフォルダがあります",
+    "action": "名前を変える",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-020",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-021": {
+    "id": "E-KNW-021",
+    "cls": "conflict",
+    "message": "フォルダは 6 つ入れ子までです",
+    "action": "浅い所に置く",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-021",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-022": {
+    "id": "E-KNW-022",
+    "cls": "conflict",
+    "message": "フォルダを自分の中には動かせません",
+    "action": "別の場所を選ぶ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-022",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-023": {
+    "id": "E-KNW-023",
+    "cls": "conflict",
+    "message": "フォルダは別の棚には動かせません",
+    "action": "同じ棚の中で動かす",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-023",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-024": {
+    "id": "E-KNW-024",
+    "cls": "conflict",
+    "message": "中にページかフォルダがあるので消せません",
+    "action": "先に動かすか消す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-024",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-030": {
+    "id": "E-KNW-030",
+    "cls": "conflict",
+    "message": "捨てる下書きがありません",
+    "action": "画面を開き直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-030",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-040": {
+    "id": "E-KNW-040",
+    "cls": "conflict",
+    "message": "書き終える下書きがありません",
+    "action": "画面を開き直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-040",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-041": {
+    "id": "E-KNW-041",
+    "cls": "conflict",
+    "message": "「必ず守る」のページは本文を 2,000 字までにしてください",
+    "action": "本文を短くする",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-041",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-050": {
+    "id": "E-KNW-050",
+    "cls": "conflict",
+    "message": "「必ず守る」が付いているので消せません",
+    "action": "先に外す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-050",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-051": {
+    "id": "E-KNW-051",
+    "cls": "conflict",
+    "message": "ほかのグループに共有しているので消せません",
+    "action": "先に共有をやめる",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-051",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-052": {
+    "id": "E-KNW-052",
+    "cls": "conflict",
+    "message": "ページは別の棚には動かせません。上の棚へは「上げる」を使ってください",
+    "action": "「上げる」を使う",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-052",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-060": {
+    "id": "E-KNW-060",
+    "cls": "conflict",
+    "message": "「必ず守る」の上限に届きました",
+    "action": "今付いているページから外す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-060",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-061": {
+    "id": "E-KNW-061",
+    "cls": "conflict",
+    "message": "本文が 2,000 字を超えているので、「必ず守る」は付けられません",
+    "action": "本文を短くする",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-061",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-KNW-080": {
+    "id": "E-KNW-080",
+    "cls": "conflict",
+    "message": "自分の棚のページは写せません",
+    "action": "上の棚のページを選ぶ",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-KNW-080",
+    "must_not": false,
+    "layers": [
+      "UI",
+      "API"
+    ],
+    "where": {
+      "screen": "knowledge"
+    }
+  },
+  "E-STG-001": {
+    "id": "E-STG-001",
+    "cls": "conflict",
+    "message": "同じ名前の状態がすでにあります",
+    "action": "別の名前にする",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-STG-001",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-STG-002": {
+    "id": "E-STG-002",
+    "cls": "conflict",
+    "message": "状態は 8 つまで足せます",
+    "action": "使っていない状態を消してから足す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-STG-002",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-STG-003": {
+    "id": "E-STG-003",
+    "cls": "conflict",
+    "message": "この状態は仕組みが使うので、消せません",
+    "action": "消さずに名前や色を直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-STG-003",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-STG-004": {
+    "id": "E-STG-004",
+    "cls": "conflict",
+    "message": "この状態の名前は変えられません",
+    "action": "色だけを直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-STG-004",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-STG-005": {
+    "id": "E-STG-005",
+    "cls": "conflict",
+    "message": "この状態のチケットがあるので、消せません",
+    "action": "チケットを別の状態に移してから消す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-STG-005",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-STG-006": {
+    "id": "E-STG-006",
+    "cls": "conflict",
+    "message": "並びが古くなっています。開き直してください",
+    "action": "開き直してから並べる",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-STG-006",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-STG-007": {
+    "id": "E-STG-007",
+    "cls": "conflict",
+    "message": "始めの状態は先頭に、終わりの状態は最後に置きます",
+    "action": "始めを先頭・終わりを最後にして並べる",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-STG-007",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-FMS-001": {
+    "id": "E-FMS-001",
+    "cls": "conflict",
+    "message": "同じ名前の項目がすでにあります",
+    "action": "別の名前にする",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-FMS-001",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-FMS-004": {
+    "id": "E-FMS-004",
+    "cls": "conflict",
+    "message": "同じ名前の選ぶ物があります",
+    "action": "選ぶ物の名前を変える",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-FMS-004",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-FMS-002": {
+    "id": "E-FMS-002",
+    "cls": "conflict",
+    "message": "値が入っている項目は、型を変えられません",
+    "action": "型はそのままにするか、新しい項目を足す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-FMS-002",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-FMS-003": {
+    "id": "E-FMS-003",
+    "cls": "conflict",
+    "message": "並びが今の項目と合いません",
+    "action": "画面を開き直してから並べる",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-FMS-003",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
+    }
+  },
+  "E-FMS-005": {
+    "id": "E-FMS-005",
+    "cls": "conflict",
+    "message": "選ぶ型でない項目には、選ぶ物を付けられません",
+    "action": "型を選ぶ型に変えてから選ぶ物を足す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-FMS-005",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "masters"
     }
   },
   "E-AUTH-022": {

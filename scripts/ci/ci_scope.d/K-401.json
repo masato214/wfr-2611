@@ -1,0 +1,29 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/handovers.ts",
+    "apps/api/src/features/F8/handovers/**"
+   ],
+   "tests": [
+    "apps/api/test/features/F8/handover-base.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F8/handover-base.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_tickets_id_handover_preview.test.ts",
+    "apps/api/test/generated/post_tickets_id_handovers.test.ts",
+    "apps/api/test/generated/patch_ticket_handovers_id.test.ts",
+    "apps/api/test/generated/get_handover_rules.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F8/handover.harness.ts": "口の hooks のファイル apps/api/src/hooks/handovers.ts を試験の本体で動的 import で読む（切る段の smoke で、まだ無いファイルを準備で読まない）。読む物と使う試験は data_links で結ぶ・K-401。後ろの葉（K-402〜K-404）は自分の断片に paths → 自分の試験の 1 行を足す",
+  "apps/api/test/features/contract/k144.d/K-401.ts": "準備（setup）で口の hooks のファイル apps/api/src/hooks/handovers.ts を最初の要求の前に動的 import で読む（k144.d の README の決まり）。hooks → k144 は上の data_links で結ぶ・K-401"
+ }
+}

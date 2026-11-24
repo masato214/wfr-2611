@@ -129,7 +129,7 @@ const ticketBody = (extra: Record<string, unknown> = {}) => ({
   title: "契約の形を確かめる",
   assignee_member_id: mate.id,
   due_on: jst(3),
-  sections: { purpose: "目的", done: "完了の条件", todo: "実施事項" },
+  body: { doc: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: "目的" }] }] } },
   ...extra,
 });
 const create = (b: unknown) => f.req("POST", "/tickets", { body: b, headers: writer.auth });
@@ -894,6 +894,8 @@ export const RANGE_CASES: RangeCase[] = [
   ["createTicket", "start_on", "", true],
   ["createTicket", "start_on", "@today", true],
   ["createTicket", "start_on", "2026/01/01", false],
+  ["createTicket", "start_on", "0000-00-00", false], // K-437
+  ["createTicket", "start_on", "2026-02-30", false], // K-437
   ["createTicket", "priority", "", true],
   ["createTicket", "priority", "mid", true],
   ["createTicket", "priority", "high", true],
@@ -911,6 +913,14 @@ export const RANGE_CASES: RangeCase[] = [
   ["createTicket", "estimate_minutes", true, false],
   ["createTicket", "sections", {"purpose": "目的", "done": "完了", "todo": "実施"}, true],
   ["createTicket", "sections", {"purpose": "目的", "done": "完了", "todo": "実施", "Bad": "a"}, false],
+  ["createTicket", "body", {"doc": {"type": "doc", "content": [{"type": "paragraph", "content": [{"type": "text", "text": "本文"}]}]}}, true], // K-437
+  ["createTicket", "body", {"doc": {"type": "doc", "content": []}, "text": "x"}, false], // K-437
+  ["createTicket", "fields", {}, true], // K-437
+  ["createTicket", "fields", {"not-a-uuid": "x"}, false], // K-437
+  ["createTicket", "specs", ["確認 A", "確認 B"], true], // K-437
+  ["createTicket", "specs", ["確認 1", "確認 2", "確認 3", "確認 4", "確認 5", "確認 6", "確認 7", "確認 8", "確認 9", "確認 10", "確認 11", "確認 12", "確認 13", "確認 14", "確認 15", "確認 16", "確認 17", "確認 18", "確認 19", "確認 20", "確認 21", "確認 22", "確認 23", "確認 24", "確認 25", "確認 26", "確認 27", "確認 28", "確認 29", "確認 30", "確認 31", "確認 32", "確認 33", "確認 34", "確認 35", "確認 36", "確認 37", "確認 38", "確認 39", "確認 40", "確認 41", "確認 42", "確認 43", "確認 44", "確認 45", "確認 46", "確認 47", "確認 48", "確認 49", "確認 50", "確認 51"], false], // K-437
+  ["createTicket", "links", [], true], // K-581
+  ["createTicket", "links", [{"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000001"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000002"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000003"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000004"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000005"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000006"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000007"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000008"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000009"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000010"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000011"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000012"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000013"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000014"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000015"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000016"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000017"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000018"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000019"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000020"}, {"kind": "related", "other_ticket_id": "00000000-0000-4000-8000-000000000021"}], false], // K-581
   ["createTicket", "notify_member_ids", [], true],
   ["createTicket", "notify_member_ids", Array.from({ length: 21 }, () => randomUUID()), false],
   ["claimPairingCode", "code", "@code:plain", true],
@@ -1078,17 +1088,37 @@ describe("K-144 ㉑ 長さの数え方（精査 R1 回 10 追加-2・D-130.1）�
     const named = async (r: Response, field: string) =>
       r.status === 422 && fields(await json(r)).some((x) => x === field || x.startsWith(`${field}.`));
     for (const [label, extra, field, ok] of [
-      ["区画 20000 字", { sections: { purpose: E.repeat(20000), done: "完了", todo: "実施" } }, "sections", true],
       [
-        "区画 20001 字（D-130.3 で上限を外した）",
-        { sections: { purpose: E.repeat(20001), done: "完了", todo: "実施" } },
-        "sections",
+        "本文 20000 字",
+        {
+          body: {
+            doc: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: E.repeat(20000) }] }] },
+          },
+        },
+        "body",
         true,
       ],
       [
-        "区画 50000 字（D-130.3）",
-        { sections: { purpose: "あ".repeat(50000), done: "完了", todo: "実施" } },
-        "sections",
+        "本文 20001 字（D-130.3 で上限を外した）",
+        {
+          body: {
+            doc: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: E.repeat(20001) }] }] },
+          },
+        },
+        "body",
+        true,
+      ],
+      [
+        "本文 50000 字（D-130.3）",
+        {
+          body: {
+            doc: {
+              type: "doc",
+              content: [{ type: "paragraph", content: [{ type: "text", text: "あ".repeat(50000) }] }],
+            },
+          },
+        },
+        "body",
         true,
       ],
       ["自由に書く欄 10001 字（😀）", { priority_reason: E.repeat(10001) }, "priority_reason", true],
@@ -1316,13 +1346,17 @@ describe("K-144 ㉔ 自由に書く欄の上限を外す（D-130.3・D-130.4・�
     const bad: string[] = [];
     // 区画（チケットの本文）
     const section = noisy(30000);
-    const t = await create(ticketBody({ sections: { purpose: section, done: "完了", todo: "実施" } }));
+    const t = await create(
+      ticketBody({
+        body: { doc: { type: "doc", content: [{ type: "paragraph", content: [{ type: "text", text: section }] }] } },
+      }),
+    );
     if (t.status !== 201) bad.push(`区画 30000 字：${t.status} ${(await t.clone().text()).slice(0, 200)}`);
     else {
       const tid = ((await json(t)).data as { id: string }).id;
       const got = (
         await f.admin.query<{ v: string | null }>(
-          "select body->>'text' as v from ticket_sections where ticket_id = $1 and section_key = 'purpose'",
+          "select body->>'text' as v from ticket_sections where ticket_id = $1 and section_key = 'body'",
           [tid],
         )
       ).rows[0]?.v;

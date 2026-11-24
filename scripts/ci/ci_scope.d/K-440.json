@@ -1,0 +1,19 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/features/F4/ticket-sort/**",
+    "apps/api/src/features/ticket-update/**",
+    "apps/api/src/hooks/ticket-update.ts",
+    "08_api/openapi.yaml"
+   ],
+   "tests": [
+    "apps/api/test/features/F4/ticket-sort.test.ts",
+    "apps/api/test/features/F6/progress.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F4/ticket-sort.test.ts": "この葉が足す組の口 apps/api/src/hooks/ticket-update.ts（K-387 の hooks のファイル）を、最初の要求の前に動的 import で読む（まだ無い実装の前の準備を落とさないため）。また契約 08_api/openapi.yaml の updateTicket の入力の oneOf を readFileSync で読む（K440-API-002）。読む物と使う試験はどれも data_links で結ぶ・K-440"
+ }
+}

@@ -263,13 +263,17 @@ test("K138-SH-005 今いる項目：/tickets と /tickets/:id はチケット、
   }
 });
 
-test("K138-SH-006 作っていない項目（ナレッジ・取引先・ワークスペースの管理）は押せない形（読み上げは「使えないリンク」・Tab で止まり Enter でも移らない）・title に準備中・目に見える「準備中」の字が無い", async ({
+test("K138-SH-006 作っていない項目（ナレッジ・取引先）は押せない形（読み上げは「使えないリンク」・Tab で止まり Enter でも移らない）・title に準備中・目に見える「準備中」の字が無い。ワークスペースの管理は作った道 /members へ押せる（D-148.49・K-420）", async ({
   page,
 }) => {
   await mockApi(page);
   await open(page, PATHS.tickets);
   const nav = leftNav(page);
-  for (const name of ["ナレッジ", "取引先", "ワークスペースの管理"]) {
+  // 会社を作った人（R1）もメンバーの画面へ行ける（D-148.49・answer=3d444fc8d59f）。K-420 が /members を作り、R1 の行き先が作った道になる
+  const ws = nav.getByRole("link", { name: /ワークスペースの管理/, disabled: false });
+  await expect(ws).toHaveCount(1);
+  expect(await ws.getAttribute("href")).toBe("/members");
+  for (const name of ["ナレッジ", "取引先"]) {
     // 押せるリンクは無く、読み上げには「使えないリンク」として届く（role=link・aria-disabled）
     await expect(nav.getByRole("link", { name: new RegExp(name), disabled: false }), name).toHaveCount(0);
     const item = nav.getByRole("link", { name: new RegExp(name), disabled: true });
@@ -569,7 +573,9 @@ test("K138-SH-019 幅 375：本文を一番下まで送っても、本文の最�
       });
       return Math.max(...all.map((e) => e.getBoundingClientRect().bottom));
     });
-    expect(lastBottom, path).toBeLessThanOrEqual(tabsTop);
+    // 文書の高さ（scrollHeight）は整数に丸められ、字の行の高さで本文の高さが端数（例 .39px）になると最後の 1px 未満までは送れない。
+    // 被りは 1px からを数える（K-1114：G48 で 840.39 ＞ 840 が赤だった。最後の物は面の下の余白で、字は 16px 上で終わっていた）
+    expect(lastBottom, path).toBeLessThan(tabsTop + 1);
   }
 });
 

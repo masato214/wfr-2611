@@ -30,7 +30,7 @@ counters:
     type: json_nested_array_length
     file: 05_flow/flow.json
     json_path: $.backbone[*].acts
-  expected_value: 134
+  expected_value: 136
   mirrors:
   - file: 05_flow/使ってもらい方.md
     regex: 行為 (\d+) ／ オブジェクト
@@ -40,7 +40,7 @@ counters:
     type: json_array_length
     file: 05_flow/flow.json
     json_path: $.objects
-  expected_value: 94
+  expected_value: 96
   mirrors:
   - file: 05_flow/使ってもらい方.md
     regex: オブジェクト (\d+) ／ 画面
@@ -62,7 +62,7 @@ counters:
     json_path: $.screens
     filter:
       release: v1
-  expected_value: 37
+  expected_value: 35
   mirrors: []
 - id: choke_point_count
   description: 関門の数（C1〜C8）
@@ -80,7 +80,7 @@ counters:
     type: json_array_length
     file: 05_flow/flow.json
     json_path: $.walking_skeleton
-  expected_value: 14
+  expected_value: 13
   mirrors:
   - file: 05_flow/使ってもらい方.md
     regex: 最初の一周 (\d+) 手

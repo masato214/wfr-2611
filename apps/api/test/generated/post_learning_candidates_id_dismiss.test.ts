@@ -5,7 +5,7 @@ import { describe, it } from "vitest";
 describe("POST /api/v1/learning_candidates/:id/dismiss", () => {
   // EVENT-DRIVEN: WHEN POST /api/v1/learning_candidates/:id/dismiss が「覚えてほしいことを伝える」として呼ばれたとき THEN Kaname は「—」を行い 2xx を返す（自動側：記憶にする）
   it.todo("test_post_learning_candidates_id_dismiss_ok");
-  // EVENT-DRIVEN: WHEN POST /api/v1/learning_candidates/:id/dismiss が「上がってきた候補を確かめて決める」として呼ばれたとき THEN Kaname は「—」を行い 2xx を返す
+  // EVENT-DRIVEN: WHEN POST /api/v1/learning_candidates/:id/dismiss が「管理の一覧で見直すページを開き、直す・外す・書き方を直す」として呼ばれたとき THEN Kaname は「—」を行い 2xx を返す（自動側：使われていない・食い違い・破られた数を数えて出す）
   it.todo("test_post_learning_candidates_id_dismiss_ok_2");
   // UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）
   it.todo("test_post_learning_candidates_id_dismiss_rejected_401");

@@ -1,0 +1,27 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/handovers-read.ts",
+    "apps/api/src/features/F8/handovers/list.ts",
+    "apps/api/src/features/F4/create-ticket/hooks.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F8/handover-queue-read.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F8/handover-queue-read.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_tickets_id_handovers.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F8/handover-queue-read.test.ts": "この葉の hooks のファイル apps/api/src/hooks/handovers-read.ts を it の中で existsSync と動的 import で読む（切る段の smoke で準備ごと落とさないため）。読む物と試験は data_links で結ぶ・K-405",
+  "apps/api/test/features/contract/k144.d/K-405.ts": "準備（setup）で apps/api/src/hooks/handovers-read.ts を動的 import で読む。読む物と試験は data_links で結ぶ・K-405"
+ }
+}

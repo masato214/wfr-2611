@@ -1,0 +1,24 @@
+{
+ "ops": {
+  "updateTicket": {
+   "covers": {
+    "test_patch_tickets_id_conflict_10": {
+     "file": "apps/api/test/features/F4/ticket-field-values.test.ts",
+     "mark": "K564-API-007"
+    },
+    "test_patch_tickets_id_conflict_11": {
+     "file": "apps/api/test/features/F4/ticket-field-values.test.ts",
+     "mark": "K564-API-008"
+    },
+    "test_patch_tickets_id_conflict_12": {
+     "file": "apps/api/test/features/F4/ticket-field-values.test.ts",
+     "mark": "K564-API-009"
+    },
+    "test_patch_tickets_id_conflict_13": {
+     "file": "apps/api/test/features/F4/ticket-field-values.test.ts",
+     "mark": "K564-API-005"
+    }
+   }
+  }
+ }
+}

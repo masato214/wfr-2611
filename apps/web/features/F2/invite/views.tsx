@@ -3,6 +3,9 @@
 //   キャンバス AuthInvite（04_design/canvas_gen/auth.py）：頭文字の印・「〈ワークスペース〉に招待されています」・招いた人とグループと役割・ひとこと・
 //   メール（読むだけ）・名前。入り方は登録と同じ（名前とパスワード → 入った直後に「付けるまで進めない」・代表の答え answer=becc3d3aa526 ①）。
 //   参加した後に見える物の一覧の区画は出さない（answer=7fe1f09fdab4 ⑥）。キャンバスに無い状態（ログイン中・別のメール・もう入っている・期限切れ など）は同じ部品で足した
+//   招待のリンク（宛てのメールが空・K-421）で新しく入る人は、確認のメールを押すまで参加が決まらない（D-148.51・K-422）：書けるメールの欄・
+//   「確認のメールを送りました」（sent）・確認の画面 InviteConfirm（/invite/confirm/:token）を同じ部品で足した（K-423・正の絵は /dev/mock/f2）。
+//   宛てのメールが在る招待の見た目は変えない
 import Link from "next/link";
 import type { Route } from "next";
 import type { FormEvent, ReactNode } from "react";
@@ -15,6 +18,7 @@ import "../../F1/login/views.css";
 /** 画面の状態（07_functional/段3-F2/機能分解.md の 2 章） */
 export type InviteState =
   | "new"
+  | "sent"
   | "account"
   | "signed"
   | "other"
@@ -44,6 +48,8 @@ export const INVITE_NOTICE = {
   down: "いま Kaname の調子が悪くなっています。少し待ってから、もう一度押してください",
   /** 送り直しの口の答えが failed（メールが送れなかった） */
   resendFailed: "送れませんでした。もう一度押してください",
+  /** リンクの招待の参加の口の答えが failed（確認のメールが送れなかった・K-422・K-423） */
+  confirmFailed: "確認のメールを送れませんでした。もう一度押してください",
 } as const;
 
 /** 下見の答え（getInvitation）を画面の言葉にした物 */
@@ -66,13 +72,17 @@ export interface InvitePreview {
 export interface InviteJoin {
   name: string;
   password: string;
+  /** 招待のリンク（宛てのメールが空）で新しく入るときだけ。欄が空なら入れない（K-422 が 409 E-INV-016 で返す） */
+  email?: string;
 }
 
 export interface InviteAcceptProps {
   state: InviteState;
   preview?: InvitePreview;
   /** 入力の誤り（口の 422 の文・E-VAL-*） */
-  errors?: { name?: string; password?: string };
+  errors?: { name?: string; password?: string; email?: string };
+  /** 確認のメールを送りました（sent）の伏せたメール（例「ki****@engine-base.example」・K-422 の答え） */
+  sentEmail?: string;
   /** 赤の知らせ（押した口が失敗した・K-335）。新しく作って参加・期限切れ・ログイン中の 2 つ（今のアカウントで参加・別のメール宛て）の、押したボタンの上に出す。押し直せる */
   notice?: string | null;
   /** 送りすぎのあと何秒（429） */
@@ -254,7 +264,7 @@ export function InviteAccept(p: InviteAcceptProps) {
       <AuthFrame links={links}>
         <div className="k-auth-form" data-auth="invite" data-state="signed">
           <InviteHead p={pv} />
-          <TextField size="lg" label="メール" name="email" value={pv.email} readOnly />
+          <TextField size="lg" label="メール" name="email" value={pv.email || (pv.signedInEmail ?? "")} readOnly />
           {p.notice ? <ResultBox tone="bad">{p.notice}</ResultBox> : null}
           <Button size="lg" loading={p.busy} onClick={() => p.onJoin?.()}>
             今のアカウントで参加する
@@ -279,24 +289,55 @@ export function InviteAccept(p: InviteAcceptProps) {
         <Foot p={pv} />
       </AuthFrame>
     );
-  // new：新しく作って参加（名前とパスワード → 入った直後に「付けるまで進めない」）
+  if (p.state === "sent")
+    return (
+      <AuthFrame links={links}>
+        <div className="k-auth-form" data-auth="invite" data-state="sent">
+          <InviteHead p={pv} />
+          <NoteBox>
+            {`確認のメールを送りました。メールのリンクを押すと参加が決まります（${p.sentEmail ?? ""}・24 時間で切れます）`}
+          </NoteBox>
+        </div>
+        <Foot p={pv} />
+      </AuthFrame>
+    );
+  // new：新しく作って参加（名前とパスワード → 入った直後に「付けるまで進めない」）。宛てのメールが空（招待のリンク）ならメールも書く
+  const link = pv.email === "";
   const submit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
-    p.onJoin?.({ name: String(f.get("name") ?? ""), password: String(f.get("password") ?? "") });
+    const email = link ? String(f.get("email") ?? "").trim() : "";
+    p.onJoin?.({
+      name: String(f.get("name") ?? ""),
+      password: String(f.get("password") ?? ""),
+      ...(email ? { email } : {}),
+    });
   };
   return (
     <AuthFrame links={links}>
       <form className="k-auth-form" data-auth="invite" data-state="new" noValidate onSubmit={submit}>
         <InviteHead p={pv} />
-        <TextField
-          size="lg"
-          label="メール"
-          name="email"
-          value={pv.email}
-          readOnly
-          hint="招待されたアドレス。変えられない"
-        />
+        {link ? (
+          <TextField
+            size="lg"
+            label="メール"
+            name="email"
+            type="email"
+            autoComplete="email"
+            defaultValue=""
+            hint="このメールでアカウントを作ります"
+            error={p.errors?.email}
+          />
+        ) : (
+          <TextField
+            size="lg"
+            label="メール"
+            name="email"
+            value={pv.email}
+            readOnly
+            hint="招待されたアドレス。変えられない"
+          />
+        )}
         <TextField
           size="lg"
           label="名前"
@@ -331,6 +372,46 @@ export function InviteAccept(p: InviteAcceptProps) {
         に同意したことになる
       </p>
       <Foot p={pv} loginHref={p.loginHref ?? "/login"} />
+    </AuthFrame>
+  );
+}
+
+/** 確認のメールのリンクを開いた画面（/invite/confirm/:token・K-423）。開いただけでは口を呼ばず、「参加を決める」で確かめる（K-422）。
+ *  ready＝押す前（notice は押した口が答えなかったとき・押し直せる）／closed＝もう使えない（文を出し、ボタンは出さない。login なら「ログインして入る」） */
+export interface InviteConfirmProps {
+  state: "ready" | "closed";
+  /** closed のときの文（正本の E-INV-001・014・015 など） */
+  message?: string;
+  /** closed のとき「ログインして入る」を出す（E-INV-015：もう使った確認のリンク） */
+  login?: boolean;
+  notice?: string | null;
+  busy?: boolean;
+  onConfirm?: () => void;
+}
+
+export function InviteConfirm(p: InviteConfirmProps) {
+  return (
+    <AuthFrame foot="status">
+      <div className="k-auth-form" data-auth="invite-confirm" data-state={p.state}>
+        <h1>参加を確かめる</h1>
+        {p.state === "ready" ? (
+          <>
+            {p.notice ? <ResultBox tone="bad">{p.notice}</ResultBox> : null}
+            <Button size="lg" loading={p.busy} onClick={p.onConfirm}>
+              参加を決める
+            </Button>
+          </>
+        ) : (
+          <>
+            <ResultBox tone="bad">{p.message ?? ""}</ResultBox>
+            {p.login ? (
+              <Link href="/login" className="k-btn" data-variant="primary" data-size="lg">
+                ログインして入る
+              </Link>
+            ) : null}
+          </>
+        )}
+      </div>
     </AuthFrame>
   );
 }
