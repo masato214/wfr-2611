@@ -27043,6 +27043,101 @@
    "file": "11_tickets/K-948.md"
   },
   {
+   "id": "K-949",
+   "title": "問い合わせる口（createInquiry）：何について・題・内容・画面の情報・検査の済んだ添付で問い合わせを作り、運営の受信箱の「担当なし」に入れる。本人だけが読める行の守り・社内メモの印（messages.visibility）を足す（K-72 の葉・W1）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "問い合わせ",
+   "assignee": "実装",
+   "due": "2026-12-06",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い段 10 の K-704（DB の関数で権限と状態を確かめて書く・証跡・試験 25 行・見込み 1）と段 4 の K-351（行の守りの作り直し・作り手で policies を作る・見込み 1）から引いた：migration（列 7 つ・check 3 つ・関数 1 つ）と行の守りの作り直し 20 分・口 1 本（入力の整え・関数の断りの言葉 → 番号）15 分・登録先（hooks・.d・errors.d・ci_scope・ER 図・db-columns）10 分・自分の確かめ 15 分。試験の土台 inquiry.harness.ts は切る段で書いた",
+   "decisions": [
+    "D-156.5",
+    "D-156.11",
+    "D-156.12",
+    "D-156.17",
+    "D-156.25",
+    "D-156.26",
+    "D-128.71",
+    "D-125.130",
+    "D-130.1"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2",
+    "C4",
+    "C6"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/inquiry-create.test.ts",
+    "apps/api/test/generated/post_inquiries.test.ts"
+   ],
+   "carry": [
+    "apps/api/test/features/F12/inquiry.harness.ts"
+   ],
+   "depends_on": [
+    "K-948"
+   ],
+   "acts": [
+    "A67"
+   ],
+   "screens": [
+    "inquiry"
+   ],
+   "apis": [
+    "createInquiry"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。問い合わせる小窓は K-953（正は /dev/mock/f12-user の uh-ask・uh-ask-invalid・uh-ask-sent）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128004900_inquiries.sql",
+    "packages/db/policies/20261128004900_inquiries.sql",
+    "packages/db/src/migrations.generated.ts",
+    "05_flow/rls_policies.py",
+    "05_flow/screen_api.d/K-949.py",
+    "scripts/ci/contract_shape.d/K-949.py",
+    "07_qa/test-specs/errors.d/K-949.json",
+    "07_qa/test-plan/ears-elsewhere.d/K-949.json",
+    "scripts/ci/ci_scope.d/K-949.json",
+    "apps/api/src/hooks/inquiry-create.ts",
+    "apps/api/src/features/F12/inquiries/create.ts",
+    "apps/api/src/features/F12/inquiries/shape.ts",
+    "apps/api/src/features/F12/inquiries/errors.ts",
+    "08_api/db-columns.json",
+    "03_architecture/ER図.md"
+   ],
+   "flow": "困ったときに運営に聞き、お知らせと請求を見る",
+   "sections": {
+    "目的": "顧客（R1〜R3）が「困ったとき・お知らせ › 問い合わせる」から運営に聞く口 `createInquiry`（POST /api/v1/inquiries）を作る（今は 501）。答えの形は K-948 の「画面が使う答えの形」（`MyInquiry` の 7 欄）。\n\n- 何について（4 つ）・題・内容・検査の済んだ添付（K-950 が上げた物）・いま見ている画面の情報（D-128.71）で問い合わせを 1 件作り、最初の書き込みを会話に置く\n- 作った問い合わせは運営の受信箱の「担当なし」の箱に入る（状態 open・担当なし。受信箱の口は K-973）。運営へのメール・鈴は出さない（D-125.130：知らせは画面の中だけ。運営は受信箱の数で知る）\n- **見えるのは書いた本人だけ**（D-156.25）：今の行の守り（同じ会社の全員が読める・inquiries の edit を持つ人は他人の問い合わせも書ける）を、本人だけに作り直す\n- 運営の社内メモの印 `messages.visibility`（`all`／`ops_only`）を足し、本人は自分の会話でも ops_only を読めない形にする（ER 図 508 行の決め。書くのは K-975）\n\n読む口は K-951、返事を書く・済みにするは K-952、添付を上げるのは K-950、画面は K-953。",
+    "完了の条件": "- [ ] 下の表の 20 行（K949-API-001〜018・K949-DB-001・002）が緑：`apps/api/test/features/F12/inquiry-create.test.ts`（土台 `inquiry.harness.ts`）\n- [ ] 契約の口 `createInquiry` が 501 でない。生成の試験 `apps/api/test/generated/post_inquiries.test.ts` の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-949.json` の covers）\n- [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑\n- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: CRUD, PERM, FILE\n\n- **生成の試験は作る段の最初に作る**：契約の断片（`05_flow/screen_api.d/K-949.py`・`scripts/ci/contract_shape.d/K-949.py`）を足して作り手（`python3 05_flow/build_api.py && node scripts/ci/contract.mjs gen && node scripts/ci/gen_ears_tests.mjs && python3 scripts/ci/build_registries.py && python3 scripts/tickets/regen_all.py`）で生成の試験を作り、**実装より先に 1 つのコミットにする**（その後は変えない）。**先の葉の契約を前提にした前からの試験は carry に入れない**（carry は土台 `inquiry.harness.ts` だけ）\n- **入力の形（契約＝422）**は K-948 の断片が持つ（topic 4 つ・title 1〜100・body 1〜4000・attachment_ids は uuid 5 つまで・context は object・余計な欄は受けない）。**題・内容の空白だけ**（全角の空白・タブ・改行を含む）も契約の形で 422 にする：K-948 の断片の VALUE_RANGES の createInquiry の title・body の `\"pattern\": \"\\\\S\"`（D-156.38・K-948 に足した・K948-DC-017）で断る（K949-API-003 が見る）。NUL は入口が 422（K-427）\n- 題と内容は前後の空白（全角・タブ・改行）を落として残す（NFKC にしない）。字数の上限は契約のまま（D-130.1：守りは送る量 1MB）\n- **画面の情報 `context`**（D-128.71）：鍵 `path`（文字・500 字まで）・`at`（文字・40 字まで）・`browser`（文字・200 字まで）・`pc`（真偽）だけを残し、知らない鍵・型の違う値・長すぎる値は落とす（422 にしない：画面の情報は付けるかを選べる付け足しで、欠けても問い合わせは届く。チケットの中身や会話を運営に渡さない）。無ければ `{}`\n- **添付**（`attachment_ids`）：K-950 が作る `attachments` の行（`owner_type = 'inquiry'`・`uploaded_by` が本人・会社が本人の会社・消していない）だけを付けられる。無い・別の人・別の会社・消した → **404 E-PAGE-001**（欄・details・detail を付けない＝在るかを漏らさない）。検査が済んでいない（`scanned_at` か `storage_ref` が空）・もう付けた（`owner_id` がある）→ **409 E-INQ-001**（欄なし）。同じ id の重なりは 1 つにする。付けたら `attachments.owner_id` を最初の書き込みの id にし、書き込みの `attachments` に `[{ id, name, size }]` を並びのまま入れる。同時に同じ添付を付けたら片方だけ通る（行を `for update` で取る）\n- **断る番号**（控え帳・D-156.12・D-156.17）：先方の権限の人（role client）は入口が 403（契約の auth member・op.ts）／ログインなし 401／上限 429（契約の 60/分/人）／DB の失敗 503 E-PAGE-003（何も残さない）\n- **関門の宣言** choke_points は契約の口と同じ [C2, C4, C6]（KC4）。この口が通るのは C2 だけ：C4 の検査は K-950 が上げるときに済ませ、この口は済んだ印を見るだけ。C6 は呼ばない（D-125.130・運営は受信箱の数で知る）\n- ログに題・内容・画面の情報・ファイルの名前を出さない（会社の id・口の名前・例外の種類だけ）\n\n### 表と関数（migration `20261128004900_inquiries.sql`・K-949 → 49 分）\n\n- `inquiries`：`title text`・`topic_key text`（check `topic_key is null or topic_key in ('usage','trouble','billing','other')`）・`state text not null default 'open'`（check `in ('open','waiting','later','done')`：open＝運営が返していない・waiting＝運営が返して顧客を待つ・later＝運営が後でにした・done＝済み）・`asker_read_at timestamptz`（本人が最後に開いた時刻・K-951）・`last_message_at timestamptz`。前からの `status_id`・`kind_id` は使わない（消さない）\n- `messages`：`visibility text not null default 'all'`（check `in ('all','ops_only')`）・`author_name text`（運営の返事の名前の写し。運営の会社の人の名前は顧客の会社から読めないので、書くときに写す・K-975）\n- **顧客の状態の読み替え**（K-951・K-952 も使う・`features/F12/inquiries/shape.ts` の `toMyInquiry`）：open・later → `waiting`（返事を待っている）／waiting → `replied`（返事あり）／done → `done`（済み）\n- `app.inquiry_create(p_topic text, p_title text, p_body text, p_attachment_ids uuid[], p_context jsonb) returns jsonb`（security definer・`search_path = public, app`・public から外す・`kaname_app` に execute）：ⓐ `app.role() = 'member'` と `app.member_ok()` でなければ `{\"error\":\"forbidden\"}` ⓑ 添付を `for update` で引き、上の決まりで `{\"error\":\"not_found\"}`／`{\"error\":\"attachment_unusable\"}`（何も書かない）ⓒ 会話 `conversations`（会社・本人の層・`owner_member_id` 本人・`area 'inquiry'`・題）ⓓ 問い合わせ（`opened_by_member_id` 本人・`state 'open'`・`context`・`conversation_id`・`last_message_at now()`）ⓔ 最初の書き込み `messages`（`sender_member_id` 本人・`kind 'inquiry'`・`visibility 'all'`・`attachments`）ⓕ 添付の `owner_id` ⓖ 証跡 `audit_events`（action `inquiry.create`・target_type `inquiries`・choke_point_id `C2`・payload は `{topic, attachments: <数>}` だけ。題・内容は入れない）ⓗ `{\"data\": <MyInquiry の 7 欄>}`\n- **行の守り**（`05_flow/rls_policies.py` の POLICIES に足す・作り手で policies を作る）：`inquiries`＝① `inquiries_self_read`（select・member）`tenant_id = T AND opened_by_member_id = U` ② 書く守りは置かない（書くのは関数だけ。前の `inquiries_self_only_write_*`・`inquiries_permission_write_*` は生成した SQL が外す）③ `ops_read(\"inquiries\")`。`messages`＝前の `messages_conversation_read` の述語に `AND visibility <> 'ops_only'` を足す（会話の書く守りは今のまま）\n- 社内メモの守りは 2 重：行の守り（本人は ops_only を読めない）と、読む口の文（K-951 が `visibility = 'all'` だけを引く）",
+    "依存の理由": "- K-948: 要る — `createInquiry` の入力と答えの形（`MyInquiry`・topic の 4 つ・attachment_ids・context）を K-948 が契約に書く。形が入る前は生成の試験が作れない",
+    "目録で探した結果": "- 使う：`inquiries`（0015・`context`・`later_until` は 0078）・`conversations`（`owner_member_id` は 0027）・`messages`（0012）・`attachments`（0016・`name`・`uploaded_by` は 0041）・`audit_events`（0003）・`withTenant`・`app.member_ok`・K-704 の「関数の断りの言葉 → 番号」の書き方・K-351 の hooks の書き方（`defineHooks`・`fuzz: \"same\"`）・K-351 の行の守りの作り直しの手順\n- 作る：列 7 つ・`app.inquiry_create`・`apps/api/src/hooks/inquiry-create.ts`・`apps/api/src/features/F12/inquiries/`（create.ts・shape.ts・errors.ts）。探したが問い合わせを作る物は無かった（`listMyInquiries` は表の素の読みで、K-948 が外した）。会話の部品は AI との会話（0028 の `app.agent_say`）と同じ表を使うが、問い合わせは `area 'inquiry'` で分ける",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128004900_inquiries.sql`（上の「表と関数」）。一覧は作り手 `python3 scripts/ci/gen_migrations.py`（生成物） |\n| 行の守り | `05_flow/rls_policies.py` に `inquiries` と `messages` を足し、`python3 05_flow/build_functional.py` → `python3 scripts/ci/gen_rls.py --tables inquiries,messages -o packages/db/policies/20261128004900_inquiries.sql`（migration と同じ名前・手で直さない） |\n| 口 | `apps/api/src/features/F12/inquiries/create.ts`：入力を整える（前後の空白・context の 4 つの鍵・添付の重なり）→ `app.inquiry_create` を withTenant の 1 取引で呼ぶ → 断りの言葉 → 番号（`errors.ts`：`forbidden`＝403・`not_found`＝404 E-PAGE-001・`attachment_unusable`＝409 E-INQ-001）。想定外の例外は 503 E-PAGE-003（ログは `[inquiries] 問い合わせを作れなかった（<例外の種類>）` だけ）。答え 201 `{ data: MyInquiry }` |\n| 答えの形 | `apps/api/src/features/F12/inquiries/shape.ts`：`toMyInquiry(row)`（7 欄・状態の読み替え・`has_unread_reply` は運営の返事 `visibility 'all'` かつ `sender_member_id is null` の最新が `asker_read_at` より後か）。K-951・K-952 も同じ関数で答える |\n| 口の登録（K-326） | `apps/api/src/hooks/inquiry-create.ts`：`export function inquiryCreateHooks(d: HookDeps): Record<string, Hook>`（createInquiry の before）と `export const register = defineHooks({ name: \"inquiryCreateHooks\", make: (d) => inquiryCreateHooks(d), fuzz: \"same\" })`。server.ts・fuzz の的に差す行は書かない（作り手 `python3 scripts/ci/gen_ts_registries.py`） |\n| 契約の断片 | `05_flow/screen_api.d/K-949.py`：`ERRORS_4XX` に createInquiry の 404 E-PAGE-001（添付が無い・見えない）と 409 E-INQ-001（添付が使えない）。形の鍵は足さない（K-948 が持つ）。`scripts/ci/contract_shape.d/K-949.py`（空の表） |\n| 誤りの正本 | `07_qa/test-specs/errors.d/K-949.json`：E-INQ-001（class conflict・where inquiry・「このファイルはまだ付けられません」・action「付け直す」・layers API・DB・source D-156.26）。字は K-953 の画面の字と合わせる |\n| 登録先 | `07_qa/test-plan/ears-elsewhere.d/K-949.json`（下の生成の試験）・`scripts/ci/ci_scope.d/K-949.json`（data_links：`apps/api/src/hooks/inquiry-*.ts`・`apps/api/src/features/F12/inquiries/**` → この葉の試験。reads_ok：土台 `inquiry.harness.ts` は葉の hooks のファイルと上げる先の受け口を動的 import で読む）。`python3 scripts/ci/build_registries.py`・`python3 scripts/ci/gen_ts_registries.py` |\n| 生成物・文書 | `pnpm db:columns`（08_api/db-columns.json）。`03_architecture/ER図.md` の inquiries の行（308 行）と 508 行に列・状態・行の守りを書き足す |\n| 親 | `11_tickets/K-72.md` は触らない：K-1000 の試験 K1000-FL-006 が親の apis に利用者の口 14 本が在ることを見るので、親から口を外さない（親と葉の両方に書く形の扱いはまとめ役が決める・申し送り） |\n\n### 生成の試験（ears-elsewhere.d/K-949.json）\n\n```json\n{\"ops\": {\"createInquiry\": {\"file\": \"apps/api/test/features/F12/inquiry-create.test.ts\",\n  \"reason\": \"問い合わせは本人の会社・本人の添付（検査済み・まだ使っていない）・行の守り（本人だけ）で答えが変わる。生成の試験の種では添付の行と本人を作れない（K-949）\",\n  \"covers\": {\"test_post_inquiries_ok\": \"K949-API-001\", \"test_post_inquiries_rejected_401\": \"K949-API-010\", \"test_post_inquiries_rejected_403\": \"K949-API-009\",\n             \"test_post_inquiries_rejected_422\": \"K949-API-012\", \"test_post_inquiries_not_found\": \"K949-API-005\", \"test_post_inquiries_conflict\": \"K949-API-006\",\n             \"test_post_inquiries_rate_limited\": \"K949-API-011\", \"test_post_inquiries_shape\": \"K949-API-001\",\n             \"test_post_inquiries_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_post_inquiries_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {\"test_post_inquiries_too_large\": \"送る量の守り（1MB）は入口の共通（op.ts・K-144）で、口ごとに変わらない\"}}}}\n```\n\n作り手が出す生成の試験の名前に covers の鍵を合わせる（出た名前で 1 対 1 に結び、余る名前は na に理由を書く）。",
+    "外に影響する手順": "1. DB に書く：会話・問い合わせ・最初の書き込み・添付の持ち主・証跡を `app.inquiry_create` の 1 取引で書く［残る］— 失敗の行：K949-API-013（途中で落ちたら何も残らない＝後片付けの要らない形。1 つの取引なので片付けの失敗は起きない）\n2. お知らせ・メール：送らない（D-125.130・運営は受信箱の数で知る）— 失敗の行：なし（呼ばない。K949-API-001 は運営の受信箱の形の行ができることだけを見る）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/inquiry-create.test.ts`（本物の DB・本物の行の守り・口の入口は createApp と契約の op・偽の画面のログイン。土台 `inquiry.harness.ts`）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 添付なし | 小窓の「送る」 | 会社の人（R1〜R3） | 201・waiting・受信箱の担当なし | このチケット | K949-API-001・002・003 |\n| 検査済み・未使用の自分の添付 | 同じ | 会社の人 | 付く | このチケット | K949-API-004・007 |\n| 無い・他人・別の会社・消した添付 | 同じ・直に口 | 会社の人 | 404・何も書かない | このチケット | K949-API-005 |\n| 検査中・使った添付 | 同じ | 会社の人 | 409 E-INQ-001 | このチケット | K949-API-006・016 |\n| どれでも | 同じ | 先方の権限の人 | 403 | このチケット（入口） | K949-API-009 |\n| どれでも | 同じ | ログインしていない | 401 | このチケット | K949-API-010 |\n| どれでも | 同じ | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n| どれでも | 同じ | 会社から抜けた人 | 403 | 入口の共通（K-166） | K166 の行 |\n| 作った後 | 直に表を読む | 同じ会社の管理者・別の会社 | 0 行 | このチケット | K949-API-017・018 |\n\n### 入力・失敗・操作の揺れ・守り\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K949-API-001 | 対象の状態 | 添付なしで送る | 201・答えの鍵ちょうど 7・state waiting・last_reply_at null・has_unread_reply false。行は本人・state open・担当なし・後でなし。会話の持ち主は本人・最初の書き込みは visibility all |\n| K949-API-002 | 入力 | 何について | usage・trouble・billing・other は 201 でそのまま返る・request は 422 で件数が変わらない |\n| K949-API-003 | 入力 | 前後と空白だけ | 「　 請求書の宛名 \\t」は「請求書の宛名」・内容も前後を落とす。題か内容が空白だけなら 422 で件数が変わらない |\n| K949-API-004 | 対象の状態 | 自分の添付 2 つ | 書き込みの attachments が `[{id,name,size}]` の 2 つ（並びのまま）・2 つの添付の owner_id が書き込みの id |\n| K949-API-005 | 守り | 無い・他人・別の会社・消した添付 | どれも 404 E-PAGE-001・field・details・detail が無い・件数が変わらない |\n| K949-API-006 | 対象の状態 | 検査中・もう使った | どれも 409 E-INQ-001・欄が無い・件数も添付の owner_id も変わらない |\n| K949-API-007 | 操作の揺れ | 同じ id を 2 回 | 201・書き込みの添付は 1 つ |\n| K949-API-008 | 入力 | 画面の情報 | path・at・browser・pc だけが残る（ticket_body などは落ちる）・型の違う値は落ちて {}・付けなければ {} |\n| K949-API-009 | 守り | 先方の権限の人 | 403・件数が変わらない |\n| K949-API-010 | 利用者の状態 | ログインしていない | 401・件数が変わらない |\n| K949-API-011 | 守り | 上限 | 2 回目が 429・retry_after_sec は 1〜60 の整数 |\n| K949-API-012 | 入力 | 余計な欄・NUL | tenant_id・state・opened_by_member_id を付けると 422・内容に NUL で 422・件数が変わらない |\n| K949-API-013 | 失敗 | DB が落ちる（書き込みの表で例外） | 503 E-PAGE-003・問い合わせも会話も増えない・ログに題と内容の字が無い |\n| K949-API-014 | 守り | 証跡 | inquiry.create が 1 行・C2・payload の topic は billing・題と内容の字が無い |\n| K949-API-015 | 操作の揺れ | 同じ冪等の鍵で 2 回 | どちらも 201・同じ id・件数は 1 だけ増える |\n| K949-API-016 | 操作の揺れ | 同じ添付を同時に 2 つへ | 201 と 409（E-INQ-001）が 1 つずつ |\n| K949-API-017 | 守り | 行の守り（読む） | 本人は 1 行・同じ会社の管理者（inquiries の edit を持つ）も別の会社の人も 0 行 |\n| K949-API-018 | 守り | 社内メモ | 本人が会話の書き込みを直に読むと、最初の書き込みと運営の返事だけで社内メモは出ない |\n| K949-DB-001 | 守り | 状態と何について の check | answered・request は 23514・open・waiting・later・done は入る |\n| K949-DB-002 | 守り | 見え方の check | secret は 23514・visibility が空の行は 0（前からの行は all） |\n\n### テストの型の受け（分類 CRUD・PERM・FILE）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-CRUD-01 作った物が読める | K949-API-001（行を DB で読み直す。口で読むのは K-951） |\n| TP-CRUD-02 入力の境界 | K949-API-002・003・012（形の境界は契約・K-948 の行が持つ） |\n| TP-CRUD-03 二重に作らない | K949-API-015・016 |\n| TP-CRUD-04 消した物 | K949-API-005（消した添付）。問い合わせを消す口は無い |\n| TP-CRUD-05 保存の途中で失敗 | K949-API-013（1 取引で何も残らない） |\n| TP-CRUD-06 書きかけで戻る・再読み込み・セッション切れ | 要らない：口は 1 回で書き終わる（書きかけを持たない）。セッション切れは 401（K949-API-010）・書きかけの扱いは画面の葉 K-953 |\n| TP-PERM-01 役が合わない人 | K949-API-009 |\n| TP-PERM-02 権限を外した直後 | 要らない：この口は本人の口で、権限の言葉を読まない（抜けた人は入口の共通 K-166） |\n| TP-PERM-03 他の会社の ID を指す | K949-API-005・017 |\n| TP-PERM-04 一覧・数に混ざらない | K949-API-017（同じ会社の管理者にも見えない）。一覧の口は K-951 |\n| TP-PERM-05 権限を付けた直後 | 要らない：権限の言葉を読まない |\n| TP-FILE-01 大きすぎる・種類が違う | 要らない：この口はファイルを受けない（上げるのは K-950） |\n| TP-FILE-02 他人のファイル | K949-API-005 |\n| TP-FILE-03 検査の前のファイル | K949-API-006 |\n| TP-FILE-04 上げる途中で切れた | K949-API-006（検査の済んでいない行は付けられない） |\n| TP-FILE-05 消したファイル | K949-API-005 |\n| G-11〜G-16 | G-11：N/A（外の資源を使わない・置き場は K-950）。G-12：K949-API-006（検査が済む前の瞬間）。G-13：K949-API-016（同時に同じ添付）。G-14：入口の共通（抜けた人 K-166・先方の人 K949-API-009）。G-15：K949-API-013（途中で落ちたら成功にしない）。G-16：1 取引・文は関数 1 回（有限の資源の消費は 1 接続） |",
+    "前からの試験を替えた所": "行の守り（inquiries・messages）と表 inquiries・messages の列を変えるので、表の名前と作る口を読む前からの試験を探した（作り手が作り直す生成の試験と段 13 のこの葉の試験は外した）。\n\n```search\ngit grep -l -E \"inquiries|createInquiry|messages_conversation_read|visibility\" -- 'apps/api/test' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/*'\n8\n```\n\n- 段 13 のほかの葉が切る段で書いた自分の試験・道具 1 本（scripts/ci/k999_staging_spec_test.py（K-999））: 替えない — この葉の後に入る葉が、その葉の口と画面の形で書いた物で、この葉の前からの試験ではない（2026-11-23 に数え直した）\n- scripts/ci/k1102_staging_spec_test.py（K-1102）: 替えない — この葉の後に作る葉（この葉に依存する）の試験で、この葉が作る形に合わせて書いてある（ステージの通しの試験の形を見る）\n\n- apps/api/test/qa-d.test.ts: 替えない — K-948 が `GET /api/v1/inquiries` を素の読みから外し、CHANGED に理由を足した（K-948 の carry）。この葉は createInquiry を作るだけで、qa-d は表の素の読み書きの口だけを回す\n- packages/db/test/knowledge_clients.test.ts・packages/db/test/ops_grants.test.ts: 替えない — 当たったのは別の表の `visibility`（clients）・`client_visibility_default`（tenants）の字で、inquiries・messages を読まない\n- scripts/ci/k1000_flow_test.py（K-1000）・scripts/ci/k948_inquiry_contract_test.py（K-948）・scripts/ci/k1006_ops_workspace_contract_test.py（K-1006）: 替えない — 契約と流れの正本の欄を読むだけ。この葉は契約の形を変えず、断りの番号（ERRORS_4XX）だけを足す\n- 場合表（`packages/db/test/matrix.test.ts`・`matrix_breaks.test.ts`・`self_only.test.ts`）は表の名前を字で書かないので件数に入らないが、生成物 access-matrix.json を読む。作り直すと inquiries の守りが `inquiries_self_read` だけになり、self_only の表の一覧から inquiries が外れる。種は代表の行（opened_by が代表）なので「見える範囲 OK」「別の会社 NG」は通り、書く行は誰も書けない側に倒れて NG のまま。仕様書 `07_qa/test-specs/rls-matrix.md` の inquiries の「本人のもの」の行は、作る段で「もう無い行」へ移す（仕様書は試験のファイルでない）\n- AI との会話の試験は messages の行の守りの名前を書かないので件数に入らない。visibility の既定が all なので、前からの書き込みは今までどおり読める（K949-DB-002）",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.11・12・17・25・26）\n- 切る段の決め（作り方・この md に残す）：社内メモの印は ER 図 508 行のとおり `messages.visibility`（ops_only）。問い合わせの状態は inquiries.state の 4 つで持ち、顧客の 3 つ（D-156.25）は読み替え。運営の返事の名前は書くときに写す（`messages.author_name`）",
+    "リスク": "- 行の守りを作り直すと、場合表の種（seed_generic.ts）で inquiries の書く行が NG になる → 上の「前からの試験」のとおり NG の期待のまま通る見込み。外れたら作る段で場合表の期待を確かめる（緩めない）",
+    "申し送り": "- K-948：createInquiry・postInquiryMessage・replyOpsInquiry・addOpsInquiryNote の title・body に `\"pattern\": \"\\\\S\"` を足した（D-156.38・済み）\n- K-950：作る添付の行は `attachments`（`owner_type 'inquiry'`・`owner_id null`・`uploaded_by` 本人・`scope_id` 本人の層）。検査が済んだら `scanned_at` と `storage_ref` を入れる（この口はその 2 つと `owner_id is null` を見る）\n- K-950（2026-11-23 の決め）：体はブラウザが置き場へ直に送る形になった（口＝Vercel の関数の体の上限 4.5MB を通さない）。「検査の済んだ印」（`scanned_at`・`storage_ref`）は、上げ終わりの受け口（`POST /api/uploads/inquiry/:token/done`）が置き場の物の頭と大きさを照らした後に入る。置き場に置いただけ（上げ終わり前）の添付はこの口で 409 のまま（K950-UP-010）。この葉の確かめは変えない\n- K-951・K-952：答えは `shape.ts` の `toMyInquiry`。顧客の状態の読み替えは上の表。書き込みは `visibility = 'all'` だけを引く（行の守りと 2 重）\n- K-973〜K-975（運営）：受信箱の箱は state と担当で決める（担当なし＝open・担当なし／後で＝later／待ち＝waiting／済み＝done）。返事は `messages`（`sender_member_id null`・`author_name` に運営の人の名前・kind `inquiry_reply`・state を waiting に）・社内メモは `visibility 'ops_only'`・kind `inquiry_note`（state は変えない）\n- K-953：context は `{ path, at, browser, pc? }` で送る（この葉はほかの鍵を落とす）",
+    "代表に聞くこと": "- #6 代表の答え 2026-11-23（D-156.25）（状態 3 つ・見えるのは書いた本人だけ・社内メモは出ない）\n- #7 代表の答え 2026-11-23（D-156.26）（何について 4 つ・添付・書けるのは R1〜R3）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 20 行（上限 30）。"
+   },
+   "file": "11_tickets/K-949.md"
+  },
+  {
    "id": "K-954",
    "title": "お知らせを読む（listNotices）と読んだ印（markNoticeRead）：届け先の決め（全部・プラン・ワークスペース・出したか）を DB の関数 1 か所に置き、本人の既読を notice_deliveries に 1 行で持つ。続報の置き場 notice_updates・列 target_tenant_ids・impact を足す（K-72 の葉・W2）",
    "kind": "タスク",
@@ -27428,6 +27523,99 @@
     "見込み": "1 時間（実測なし・仮）。試験の行は 21 行（上限 30）。"
    },
    "file": "11_tickets/K-963.md"
+  },
+  {
+   "id": "K-973",
+   "title": "運営の受信箱を読む口（listOpsInquiries：5 つの箱・種類・新しい順・全社をまたぐ／getOpsInquiry：やり取り（顧客の内容・運営の返事・社内メモ）・画面の情報・右のワークスペースの様子）（K-72 の葉・W5）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "運営の受信箱",
+   "assignee": "実装",
+   "due": "2026-12-11",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-1011（運営の読む口 2 本・関数 2 つ・試験 13 行・見込み 1）と K-951（問い合わせのやり取りを読む）から引いた：migration（関数 2 つ・箱の決め・様子）20 分・口 2 本（問い合わせの値の整え）10 分・登録先 10 分・試験 13 行を流して直す 20 分。試験の土台 ops-inbox.harness.ts は切る段で書いた",
+   "decisions": [
+    "D-156.3",
+    "D-156.12",
+    "D-156.17",
+    "D-156.25",
+    "D-156.26",
+    "D-125.129",
+    "D-128.71"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-inbox-read.test.ts",
+    "apps/api/test/generated/get_ops_inquiries.test.ts",
+    "apps/api/test/generated/get_ops_inquiries_id.test.ts"
+   ],
+   "carry": [
+    "apps/api/test/features/F12/ops-inbox.harness.ts"
+   ],
+   "depends_on": [
+    "K-947",
+    "K-948",
+    "K-949",
+    "K-963",
+    "K-1001",
+    "K-468"
+   ],
+   "acts": [
+    "A70"
+   ],
+   "screens": [
+    "ops-support"
+   ],
+   "apis": [
+    "listOpsInquiries",
+    "getOpsInquiry"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。受信箱の画面は K-976（oq-inbox・oq-inbox-thread）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128011300_ops_inbox_read.sql",
+    "packages/db/src/migrations.generated.ts",
+    "05_flow/screen_api.d/K-973.py",
+    "scripts/ci/contract_shape.d/K-973.py",
+    "07_qa/test-plan/ears-elsewhere.d/K-973.json",
+    "scripts/ci/ci_scope.d/K-973.json",
+    "apps/api/src/hooks/ops-inbox-read.ts",
+    "apps/api/src/features/F12/ops/inbox-read.ts",
+    "apps/api/src/features/F12/ops/inbox-shape.ts",
+    "apps/api/test/features/F12/ops-inbox.harness.ts"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営が全社の問い合わせを 1 つの受信箱で見て、1 件を開くとやり取りと、問い合わせてきたワークスペースの様子（数と種類だけ）が分かるようにする（行為 A70・D-125.129）。この葉は読むだけ。担当・状態・後では K-974、返す・社内メモは K-975。\n\n- **listOpsInquiries**（ops:inquiry）：K-948 の 1 行 10 欄。箱は K-963 の受信箱の数と同じ決め\n- **getOpsInquiry**（ops:inquiry）：10 欄と `messages`・`context`・`workspace_status`（13 欄）",
+    "完了の条件": "- [ ] 下の表の 13 行（K973-API-001〜012・K973-DB-001）が緑：`apps/api/test/features/F12/ops-inbox-read.test.ts`（土台 `ops-inbox.harness.ts`・この葉が運ぶ）\n- [ ] 契約の口 2 本が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-973.json`）\n- [ ] 運営の関数の検査（`ops_definer_gate.py`・K-947）と migration の lint（Squawk・G58）が緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: LIST, PERM\n\n- **生成の試験は作る段の最初に作る**：契約の断片（`05_flow/screen_api.d/K-973.py`・`scripts/ci/contract_shape.d/K-973.py`）を足して作り手で生成の試験を作り、**実装より先に 1 つのコミットにする**。先の葉の契約を前提にした前からの試験は carry に入れない（carry は土台だけ）\n- 答えの形は K-948（問い合わせ `box`・`topic`・cursor・limit／1 行 10 欄／1 件 13 欄）。受信箱の口は全社（K-1001 の ops_all・会社の文脈なし）\n- **箱**（K-963 の数と同じ決め・同じ件数になる）：問い合わせの `deleted_at is null`・会社が消していない・作りかけでない・運営の会社でない物だけ。`unassigned`（既定）＝担当なし・`state <> 'done'`／`mine`＝担当が自分（`assignee_ops_member_id = app.user_id()`）・`state <> 'done'`／`waiting`＝`state 'waiting'`／`later`＝`state 'later'`／`done`＝`state 'done'`\n- **種類**（`topic`）：usage・trouble・billing・other（D-156.26）。付けなければ全部\n- **並び**：`last_message_at` の新しい順・同じなら id。件数は limit 1〜100（既定 50・K-468 の QUERY_RANGES）・cursor は形だけ（K-1011 と同じ）\n- **1 行**：`id`・`title`・`topic`（topic_key）・`state`（運営の 4 つ open・waiting・later・done のまま）・`workspace`（`{ id, name }`）・`asker`（`{ name }`＝opened_by の members.display_name）・`owner`（担当の運営の人の `{ member_id, name }` か null）・`later_until`・`created_at`・`last_message_at`\n- **1 件のやり取り**（`messages`）：その問い合わせの会話の消していない書き込みを古い順に（`created_at, id`）。`kind` は 顧客の書き込み（`sender_member_id` あり）＝`customer`／`inquiry_reply`＝`reply`／`inquiry_note`（visibility ops_only）＝`note`。`author_name` は customer なら書いた人の display_name・ほかは `messages.author_name`。`attachments` は `[{ id, name, size }]`（無ければ `[]`）。6 欄\n- **画面の情報**（`context`）：K-949 が残した 4 つの鍵のまま（チケットの中身や会話は付かない・D-128.71）\n- **右の様子**（`workspace_status`・数と種類だけ・D-156.3）：`plan_name`（今のプランの名前）・`members`（消していない人のメンバーの数）・`pc`（問い合わせた人の PC：connected＝生きている知らせが 90 秒の内／paired＝セッションはあるが切れている／never＝無い・K-966 と同じ言葉）・`stuck_runs`（直近 7 日の `status_id 'stopped'` の数）・`overdue`（期限を過ぎた請求書の数）。数え方は K-963 の `app.workspace_facts` を使う（同じ数え方を 2 つ書かない）\n- 読むだけなので運営の記録・顧客の読んだ印は書かない\n- 断る番号（控え帳）：ログインなし 401・運営でない・inquiry を持たない 403（入口）・形 422（入口・契約）・無い・消した問い合わせ 404（欄なし）・DB の失敗 503 E-PAGE-003（空の一覧を返さない・G-15）・上限 429\n\n### 関数（migration `20261128011300_ops_inbox_read.sql`・K-973 → 73 分）\n\n- `app.ops_inquiries(p_box text, p_topic text, p_limit integer) returns jsonb`（security definer・stable）：`app.ops_require('inquiry')` → 上の箱・種類・並び → `[...]`\n- `app.ops_inquiry(p_id uuid) returns jsonb`（security definer・stable）：`app.ops_require('inquiry')` → 問い合わせ（上の条件）を引けなければ `no_data_found` → 13 欄\n- どちらも `search_path = public, app, pg_temp`・`revoke … from public`・`grant execute … to kaname_app`。答えの形づくりは関数の中（口は `inbox-shape.ts` で鍵の並びだけそろえる）",
+    "依存の理由": "- K-947: 要る — `app.ops_require`・`opsTx`・`opsErrorReply`・運営の関数の検査\n- K-948: 要る — 2 本の入力と答えの形（box・topic の enum・10 欄・13 欄）\n- K-949: 要る — 問い合わせの列（title・topic_key・state・context）・書き込みの `visibility`・`author_name`・試験の土台 `inquiry.harness.ts`（顧客の問い合わせを口で作る）\n- K-963: 要る — 箱の決め（受信箱の数と同じ）と `app.workspace_facts`（様子の数え方）\n- K-1001: 要る — 全社の口（ops_all）の入口の柵（運営の口は会社の文脈なし）\n- K-468: 要る — 一覧の問い合わせの値の形（limit・cursor）を契約に書く仕組み",
+    "目録で探した結果": "- 使う：`inquiries`（0015・0078・K-949）・`messages`・`conversations`・`attachments`・`members`・`ops_members`・K-963 の `app.workspace_facts`・K-947 の土台・K-949 の `inquiry.harness.ts`\n- 作る：関数 2 つ・hooks `ops-inbox-read.ts`・`features/F12/ops/inbox-read.ts`・`inbox-shape.ts`・試験の土台 `ops-inbox.harness.ts`（運営の人を足し、運営の記録を片付ける・K-974・K-975 も使う）。探したが運営が全社の問い合わせを読む物は無かった（1 社の問い合わせの一覧 K-1011 は 1 社の分だけ・7 欄）",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128011300_ops_inbox_read.sql`（上の「関数」）。一覧は `python3 scripts/ci/gen_migrations.py`（生成物） |\n| 口 | `features/F12/ops/inbox-read.ts`：問い合わせの値（box・topic・limit）を整え → `opsTx` で関数 → `{ data }`。DB の断りは `opsErrorReply(e, \"inbox-read\")` |\n| 口の登録（K-326） | `apps/api/src/hooks/ops-inbox-read.ts`（2 本の before・`register`・fuzz `\"same\"`） |\n| 契約の断片 | `05_flow/screen_api.d/K-973.py`：`LIST_DETAILS`（listOpsInquiries の `limit_max: 100`）・`ERRORS_4XX` に getOpsInquiry の 404 NOT_FOUND。`scripts/ci/contract_shape.d/K-973.py`（空の表） |\n| 登録先 | `07_qa/test-plan/ears-elsewhere.d/K-973.json`（下）・`scripts/ci/ci_scope.d/K-973.json`（data_links：hooks・features・migration → この葉の試験） |\n\n### 生成の試験（ears-elsewhere.d/K-973.json）\n\n```json\n{\"ops\": {\n \"listOpsInquiries\": {\"file\": \"apps/api/test/features/F12/ops-inbox-read.test.ts\",\n  \"reason\": \"箱・担当・状態・種類で答えが変わり、全社をまたぐ。種では作れない（K-973）\",\n  \"covers\": {\"test_get_ops_inquiries_ok\": \"K973-API-001\", \"test_get_ops_inquiries_shape\": \"K973-API-001\",\n             \"test_get_ops_inquiries_rejected_401\": \"K973-API-008\", \"test_get_ops_inquiries_rejected_403\": \"K973-API-008\",\n             \"test_get_ops_inquiries_rejected_422\": \"K973-API-009\", \"test_get_ops_inquiries_rate_limited\": \"K973-API-012\",\n             \"test_get_ops_inquiries_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_ops_inquiries_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}}},\n \"getOpsInquiry\": {\"file\": \"apps/api/test/features/F12/ops-inbox-read.test.ts\",\n  \"reason\": \"やり取り・社内メモ・様子で答えが変わる。種では作れない（K-973）\",\n  \"covers\": {\"test_get_ops_inquiries_id_ok\": \"K973-API-005\", \"test_get_ops_inquiries_id_shape\": \"K973-API-005\",\n             \"test_get_ops_inquiries_id_not_found\": \"K973-API-007\", \"test_get_ops_inquiries_id_rejected_401\": \"K973-API-008\",\n             \"test_get_ops_inquiries_id_rejected_403\": \"K973-API-008\", \"test_get_ops_inquiries_id_rejected_422\": \"K973-API-009\",\n             \"test_get_ops_inquiries_id_rate_limited\": {\"file\": \"apps/api/test/features/F12/ops-inbox-read.test.ts\", \"mark\": \"K973-API-012\"},\n             \"test_get_ops_inquiries_id_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_get_ops_inquiries_id_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}}}}}\n```\n\n（作り手が出す名前が違えば、出た名前に合わせる）",
+    "外に影響する手順": "- なし — 読むだけの口 2 本。運営の記録も顧客の読んだ印も書かない（K973-API-010 が変わらないことを見る）。読む失敗は K973-API-011",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/ops-inbox-read.test.ts`（本物の DB・本物の入口・偽のログイン。顧客の問い合わせは口で作り、返事・メモ・状態・担当は DB に直に置く）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 届いたばかり | 受信箱を開く | inquiry を持つ運営の人 | 担当なしの箱に 1 行 | このチケット | K973-API-001 |\n| 担当・状態のちがう 6 件 | 箱を選ぶ | 同じ | 箱ごとの問い合わせ | このチケット | K973-API-002 |\n| 種類のちがう 3 件 | 種類を選ぶ | 同じ | その種類だけ・新しい順 | このチケット | K973-API-003 |\n| 別の会社・消した・消した会社 | 受信箱 | 同じ | 別の会社は出る・消した物は出ない | このチケット | K973-API-004 |\n| やり取り 3 つ・画面の情報 | 1 件を開く | 同じ | 13 欄・3 種類 | このチケット | K973-API-005・006 |\n| 無い・消した | 古いリンク | 同じ | 404 | このチケット | K973-API-007 |\n| どれでも | 同じ | ログインなし・会社の人・inquiry なし | 401・403 | このチケット | K973-API-008 |\n| 形の誤り | 直に口 | 同じ | 422 | このチケット | K973-API-009 |\n| どれでも | 読む | 同じ | 何も書かない | このチケット | K973-API-010 |\n| 読めない | 開く | 同じ | 503 | このチケット | K973-API-011 |\n| どれでも | 同じ | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K973-API-001 | 対象の状態 | 既定の箱 | 200・届いた 1 行の鍵はちょうど 10・題・trouble・open・owner null・later_until null・workspace は id と名前・asker は `{ name: 田中 }` |\n| K973-API-002 | 入力 | 箱 | 担当なしに担当なし・後で（済み・担当ありは無い）／自分に自分の担当と返事待ち（ほかの人の担当・済みは無い）／返事待ち・後で・済みはその状態だけ |\n| K973-API-003 | 入力 | 種類と並び | topic=billing はお金・プランの 2 件だけ（使い方は無い）・新しい方が先 |\n| K973-API-004 | 守り | 全社と消した物 | 別の会社の問い合わせは出る・消した問い合わせ・消した会社の問い合わせは出ない |\n| K973-API-005 | 対象の状態 | 1 件 | 200・鍵はちょうど 13・やり取りは customer「最初の内容です」田中 → reply「確かめます」→ note「PC のログを見る」・各 6 欄・context は 4 つの鍵のまま |\n| K973-API-006 | 守り | 右の様子 | workspace_status は 5 欄・members は数・pc never・stuck_runs 1・overdue 0・問い合わせの題の字が無い |\n| K973-API-007 | 守り | 無い・消した | 404・欄なし |\n| K973-API-008 | 利用者の状態 | 入口 | ログインなし 401・会社の人 403・inquiry を持たない運営の人 403（一覧・1 件） |\n| K973-API-009 | 入力 | 形の誤り | box=all・topic=bug・limit=101・:id が uuid でないは 422 |\n| K973-API-010 | 守り | 読むだけ | 開いても状態・担当・顧客の読んだ印・運営の記録の数が変わらない |\n| K973-API-011 | 失敗 | 読めない | 一覧の関数が呼べないと 503・E-PAGE-003・data が無い |\n| K973-API-012 | 守り | 上限 | 上限の次が 429・retry_after_sec は 1〜60 の整数 |\n| K973-DB-001 | 守り | 2 層目・関数の権限 | 会社の人の文脈で app.ops_inquiries を直に呼ぶと 42501・2 つの関数は security definer で PUBLIC は呼べない |\n\n### テストの型の受け（分類 LIST・PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-LIST-01 0 件・1 件・境目 | K973-API-001（1 件）・002（箱ごと）。ページの境目は limit 100（K973-API-009 の 101 は 422） |\n| TP-LIST-02 同じ値の並び | 並びは last_message_at と id（同じ時刻でも id で揺れない）・K973-API-003 |\n| TP-LIST-03 絞り込みの URL | K973-API-002・003（box・topic は問い合わせの値。画面の URL は K-976） |\n| TP-LIST-04 表記ゆれ・長い語 | 要らない：探す語を受けない（箱と種類の enum だけ） |\n| TP-PERM-01 役が合わない人 | K973-API-008 |\n| TP-PERM-02 権限を外した直後 | 要らない：関数の頭の ops_require が呼ぶたびに引く（K947-API-004） |\n| TP-PERM-03 他の会社の ID を指す | 要らない：受信箱は全社をまたぐ運営の場所（D-125.129）。消した会社は出ない（K973-API-004） |\n| TP-PERM-04 一覧・数に混ざらない | K973-API-004（消した物）・002（ほかの人の担当は自分の箱に出ない） |\n| TP-PERM-05 権限を付けた直後 | 要らない：同上 |\n| G-11〜G-16 | G-11：N/A。G-12：K973-API-002（済みにした直後に担当なし・自分の箱から消える）。G-13：K973-API-002（担当 × 状態）。G-14：消した会社（K973-API-004）・外した運営の人は K947-API-004。G-15：K973-API-011。G-16：1 回の口で関数 1 回・limit 100 まで |",
+    "前からの試験を替えた所": "口の振る舞いを作り、関数を 2 つ足す。口の名前・道・関数の名前を読む前からの試験を探した（2026-11-23）。\n\n```search\ngit grep -l -E \"listOpsInquiries|getOpsInquiry|/ops/inquiries|ops_inquiries|ops_inquiry\\b\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/*'\n2\n```\n\n- scripts/ci/k948_inquiry_contract_test.py（K-948）: 替えない — 2 本の契約の欄を読むだけ\n- scripts/ci/k1000_flow_test.py（K-1000）: 替えない — 流れと文書の口の名前を読むだけ（この葉は名前も道も変えない）",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.3・D-156.25）\n- 切る段の決め（作り方・この md に残す）：受信箱の箱は K-963 の受信箱の数と同じ決め（既定は担当なし）。1 件のやり取りは customer・reply・note の 3 つで、社内メモも運営には見せる。右の様子は数と種類の 5 欄",
+    "リスク": "- K-963 の数と箱の決めが別々に書かれて食い違う → この葉の関数が K-963 と同じ条件を使う（同じ件数）。食い違えば外枠の数と箱の行数が合わない（K-976 の画面の試験で気づく）\n- 問い合わせが増えると一覧が重い → 索引は `inquiries_assignee_ops_member_id_idx`（0015）と state。limit 100 まで",
+    "申し送り": "- 土台 ops-inbox.harness.ts（この葉が運ぶ・K-974・K-975 も使う）：運営の記録（ops_audit_events）は追記専用なので後片付けで消さない（まとめ役が直した）。記録を数える試験は target_id（問い合わせの id）かその回の会社で絞る（今の試験はそうなっている）。breakWrites（元の inquiry.harness.ts）は only に当たる行だけを落とす\n- K-976：受信箱の箱の数は外枠の getOpsShell（K-963）・一覧は box・topic・1 件は 13 欄。下絵 oq-inbox の種類の札に「ほか」が無い（D-156.26 は 4 つ）→ まとめ役に下絵の直しを頼んだ（K-976）\n- K-974・K-975：試験の土台 `ops-inbox.harness.ts` を使う（運営の人・問い合わせを口で作る）",
+    "代表に聞くこと": "- なし（全社をまたぐ受信箱・状態・社内メモは D-125.129・D-156.25 のまま）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 13 行（上限 30）。"
+   },
+   "file": "11_tickets/K-973.md"
   },
   {
    "id": "K-1000",

@@ -1807,7 +1807,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-949"
    ]
   },
   {
@@ -3547,7 +3548,9 @@
     "inquiries"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-973"
+   ]
   },
   {
    "op": "getOpsInquiry",
@@ -3562,7 +3565,9 @@
     "inquiries"
    ],
    "status": "契約だけ（501）",
-   "owner_tickets": []
+   "owner_tickets": [
+    "K-973"
+   ]
   },
   {
    "op": "updateOpsInquiry",
