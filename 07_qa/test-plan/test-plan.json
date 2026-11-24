@@ -840,11 +840,11 @@
   "tickets": 218,
   "l1_rows": 5094,
   "ears_endpoints": 359,
-  "ears_tests": 4004,
+  "ears_tests": 4005,
   "entities": 146,
   "policies": 421,
   "access_cases": 1574,
-  "errors": 322,
+  "errors": 323,
   "journey_rows": 88,
   "critical_tasks": 88
  },

@@ -252,7 +252,7 @@ export async function startBilling(prefix: string, hookFiles: readonly string[])
         o.amount ?? 16_500,
         o.issued ?? true,
         o.dueOn,
-        o.pdf === false ? null : `tenants/${tenantId}/invoices/${id}.pdf`,
+        o.pdf === false ? null : `tenants/${tenantId}/${randomUUID()}`, // 置き場の関門 objects.put が作る鍵の形（parseRef は tenants/<会社>/<uuid> だけ署名する）
         o.deleted ?? false,
       ],
     );

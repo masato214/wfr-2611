@@ -1,0 +1,49 @@
+{
+ "ops": {
+  "getBilling": {
+   "file": "apps/api/test/features/F12/billing-read.test.ts",
+   "reason": "能力・契約・請求書と入金の行で答えが変わる。種では請求書と入金と能力の行を作れない（K-958）",
+   "covers": {
+    "test_get_workspace_billing_ok": "K958-API-001",
+    "test_get_workspace_billing_rejected_401": "K958-API-010",
+    "test_get_workspace_billing_rejected_403": "K958-API-010",
+    "test_get_workspace_billing_rejected_422": "K958-API-001",
+    "test_get_workspace_billing_rate_limited": "K958-API-012",
+    "test_get_workspace_billing_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_workspace_billing_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  },
+  "downloadInvoicePdf": {
+   "file": "apps/api/test/features/F12/billing-read.test.ts",
+   "reason": "出した請求書と PDF の置き場の参照で答えが変わる。種では作れない（K-958）",
+   "covers": {
+    "test_get_invoices_id_pdf_ok": "K958-API-013",
+    "test_get_invoices_id_pdf_rejected_401": "K958-API-016",
+    "test_get_invoices_id_pdf_rejected_403": "K958-API-016",
+    "test_get_invoices_id_pdf_not_found": "K958-API-014",
+    "test_get_invoices_id_pdf_rejected_422": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-958"
+    },
+    "test_get_invoices_id_pdf_rate_limited": "K958-API-012",
+    "test_get_invoices_id_pdf_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_invoices_id_pdf_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_get_invoices_id_pdf_conflict": "K958-API-015"
+   },
+   "na": {}
+  }
+ }
+}
