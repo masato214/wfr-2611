@@ -67,7 +67,7 @@ async function mockApi(page: Page): Promise<Mock> {
       verify: () => ({
         status: 200,
         headers: { "set-auth-token": "tok-k946" },
-        body: { session: { token: "tok-k946" }, user: { id: "u-k946", email: "ops@example.test" } },
+        body: { session: { token: "tok-k946" }, user: { id: "u-k946", email: "ops@example.test", name: "高本 聖斗" } },
       }),
       shell: () => ({ status: 200, body: shellBody() }),
     },
@@ -96,7 +96,9 @@ async function mockApi(page: Page): Promise<Mock> {
       const x = m.on.shell();
       if (x === "abort") return route.abort("failed");
       r = x;
-    } else if (p === "/api/auth/get-session") r = { status: 200, body: { session: null, user: null } };
+    } else if (p === "/api/auth/get-session")
+      // 右上の人はログインの人の名前（authClient.getSession の user.name・K-965 の ops-mock.ts と同じ形）
+      r = { status: 200, body: { session: { token: "tok-k946" }, user: { id: "u-k946", name: "高本 聖斗" } } };
     await route.fulfill({
       status: r.status,
       headers: { ...CORS, ...(r.headers ?? {}) },
