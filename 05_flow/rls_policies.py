@@ -308,8 +308,8 @@ POLICIES: dict[str, list[dict]] = {
         ops_read("conversations"),
     ],
     "messages": [
-        {"name": "messages_conversation_read", "operation": "select", "role": "member", "predicate": f"tenant_id = {T} AND app.conversation_visible(conversation_id)",
-         "rationale": "その会話を読める人だけ（自分の会話・一緒に話している人）。同じ会社の他人の会話の発言は見せない", "source": ["D-104", "D-112"]},
+        {"name": "messages_conversation_read", "operation": "select", "role": "member", "predicate": f"tenant_id = {T} AND app.conversation_visible(conversation_id) AND visibility <> 'ops_only'",
+         "rationale": "その会話を読める人だけ（自分の会話・一緒に話している人）。同じ会社の他人の会話の発言は見せない。運営の社内メモ（visibility ops_only）は本人の会話でも読めない（K-949・ER 図 508 行）", "source": ["D-104", "D-112", "D-156.25"]},
         {"name": "messages_conversation_write", "operation": "insert,update", "role": "member", "predicate": f"tenant_id = {T} AND app.conversation_visible(conversation_id)",
          "rationale": "その会話の人だけが書く（PC の写し・分身の返事は関門の関数 app.* が書く）", "source": ["D-104", "D-112"]},
         ops_read("messages"),
@@ -321,14 +321,12 @@ POLICIES: dict[str, list[dict]] = {
          "rationale": "自分の記憶だけを足し・直し・消す。他人を持ち主にして作れない", "source": ["D-128.42"]},
         ops_read("memories"),
     ],
+    # 問い合わせ（K-949・D-156.25）：見えるのは書いた本人だけ（同じ会社の管理者にも見せない）。書く守りは置かない：
+    #   作る・返事・済みにするは関門の関数 app.inquiry_*（security definer）だけが書く。前の書く守りは生成した SQL が外す
     "inquiries": [
         {"name": "inquiries_self_read", "operation": "select", "role": "member", "predicate": f"tenant_id = {T} AND opened_by_member_id = {U}",
-         "rationale": "自分の問い合わせだけ（契約の権限の言葉 self・screen_api の listMyInquiries）", "source": ["D-128.88", "D-125.24"]},
-        {"name": "inquiries_self_only_write", "operation": "insert,update", "role": "member", "predicate": f"tenant_id = {T} AND opened_by_member_id = {U}",
-         "rationale": "自分の問い合わせを出し・閉じる", "source": ["D-128.88", "D-125.24"]},
+         "rationale": "自分の問い合わせだけ（契約の権限の言葉 self・D-156.25：見えるのは書いた本人だけ）", "source": ["D-128.88", "D-125.24", "D-156.25"]},
         ops_read("inquiries"),
-        {"name": "inquiries_ops_write", "operation": "update", "role": "ops", "predicate": f"current_setting('app.role', true) = 'ops' AND tenant_id = {T}",
-         "rationale": "運営が対応して書く行（assignee_ops_member_id）。会社の 1 社の中で・証跡に残す", "source": ["D-075", "D-077.1"]},
     ],
     # ---- 承認（K-9・D-128.86・D-128.87・D-128.89）：承認する人・頼んだ人・担当者（チケットを読める人）・マネージャー
     "approvals": [

@@ -6786,7 +6786,8 @@
     "E-ACT-037",
     "E-PAY-003",
     "E-PAY-004",
-    "E-PAY-006"
+    "E-PAY-006",
+    "E-INQ-001"
    ],
    "policies": [
     "C2",
@@ -7209,8 +7210,8 @@
     {
      "act": "A70",
      "role": "action",
-     "method": "PATCH",
-     "path_draft": "/api/inquiries/:id",
+     "method": "POST",
+     "path_draft": "/api/inquiries",
      "auth": "session（会社・層・権限）",
      "related_entities": [
       "E-074",

@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 359（作った 115・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 320・部品 68・設定 41
+API 359（作った 118・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 321・部品 68・設定 41
 
 ## 共通の処理
 
@@ -240,9 +240,9 @@ API 359（作った 115・後のフェーズの行為だけ 20）・前の道す
 | `getPortalTicket` | GET /api/v1/portal/tickets/:id | 取得（portal）— 進みと成果物を見る | F11 | 契約だけ（501） |  |
 | `requestAcceptance` | POST /api/v1/tickets/:id/acceptances | 作成・実行（tickets）— 成果物を確認してもらう（検収を頼む） | F11 | 契約だけ（501） | K-71 |
 | `updateTicketClientShare` | PATCH /api/v1/tickets/:id/client-share | 更新（tickets）— 成果物を確認してもらう（検収を頼む） | F11 | 契約だけ（501） | K-71 |
-| `listMyInquiries` | GET /api/v1/inquiries | 取得（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
-| `createInquiry` | POST /api/v1/inquiries | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
-| `getMyInquiry` | GET /api/v1/inquiries/:id | 取得（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
+| `listMyInquiries` | GET /api/v1/inquiries | 取得（inquiries）— 運営に問い合わせる | F12 | 作った | K-72,K-951 |
+| `createInquiry` | POST /api/v1/inquiries | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 作った | K-72,K-949 |
+| `getMyInquiry` | GET /api/v1/inquiries/:id | 取得（inquiries）— 運営に問い合わせる | F12 | 作った | K-72,K-951 |
 | `postInquiryMessage` | POST /api/v1/inquiries/:id/messages | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `resolveMyInquiry` | POST /api/v1/inquiries/:id/resolve | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `uploadInquiryAttachment` | POST /api/v1/inquiries/attachments | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |

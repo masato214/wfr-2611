@@ -19312,8 +19312,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "messages_conversation_write",
-    "inquiries_self_only_write",
-    "inquiries_ops_write",
     "notifications_self_only_write",
     "attachments_permission_write"
    ],
@@ -19338,12 +19336,16 @@
     },
     {
      "status": 409,
-     "code": "CONFLICT",
+     "code": "E-INQ-001",
      "body": {
-      "error": "conflict"
+      "error": "conflict",
+      "code": "E-INQ-001"
      },
-     "trigger": "二重送信・同時編集・既に登録済み（冪等キーで防ぐ）",
-     "ears_form": "UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない"
+     "errors": [
+      "E-INQ-001"
+     ],
+     "trigger": "付けた添付の検査が済んでいない（上げ終わる前）か、もう別の問い合わせに付けた（同時に付けたときの後の 1 つも）",
+     "ears_form": "UNWANTED: IF 付けた添付がまだ付けられないなら、Kaname は 409 と E-INQ-001 を返し、問い合わせも添付も前のまま残す"
     },
     {
      "status": 422,
@@ -19354,6 +19356,19 @@
      },
      "trigger": "必須・形式・値域・表記ゆらぎ（全角半角・空白・記号）。id・一覧の limit・cursor・sort・scope_id の形",
      "ears_form": "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）"
+    },
+    {
+     "status": 404,
+     "code": "E-PAGE-001",
+     "body": {
+      "error": "not_found",
+      "code": "E-PAGE-001"
+     },
+     "errors": [
+      "E-PAGE-001"
+     ],
+     "trigger": "付けた添付が無い・別の人の・別の会社の・消した物（欄も details も付けない＝在るかを漏らさない・D-156.26）",
+     "ears_form": "UNWANTED: IF 付けた添付が無いか見えないなら、Kaname は 404 と E-PAGE-001 を返し、在るかを漏らさず何も書かない"
     },
     {
      "status": 413,
@@ -19410,8 +19425,9 @@
     "EVENT-DRIVEN: WHEN POST /api/v1/inquiries が「問い合わせを書いて送る」として呼ばれたとき THEN Kaname は「受信箱に届ける」を行い 2xx を返す",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
-    "UNWANTED: IF 同じ冪等キーで二度来たら、Kaname は最初の結果を返し副作用を繰り返さない",
+    "UNWANTED: IF 付けた添付がまだ付けられないなら、Kaname は 409 と E-INQ-001 を返し、問い合わせも添付も前のまま残す",
     "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
+    "UNWANTED: IF 付けた添付が無いか見えないなら、Kaname は 404 と E-PAGE-001 を返し、在るかを漏らさず何も書かない",
     "UNWANTED: IF 1 回に送る内容が 1MB（1,048,576 バイト）を超えたなら、Kaname は 413 と PAYLOAD_TOO_LARGE を返し、振る舞いに届かず何も書かない",
     "UNWANTED: IF 60/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",
@@ -19504,12 +19520,16 @@
     },
     {
      "status": 404,
-     "code": "NOT_FOUND",
+     "code": "E-PAGE-001",
      "body": {
-      "error": "not_found"
+      "error": "not_found",
+      "code": "E-PAGE-001"
      },
-     "trigger": "無い・消えた・取り消された（期限切れ・削除済み・他社の行）",
-     "ears_form": "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）"
+     "errors": [
+      "E-PAGE-001"
+     ],
+     "trigger": "他人の（同じ会社の管理者が開く）・別の会社の・無い・消した問い合わせ（欄も details も付けない＝在るかを漏らさない・D-156.25）",
+     "ears_form": "UNWANTED: IF 開いた問い合わせが本人の物でないか無いなら、Kaname は 404 と E-PAGE-001 を返し、在るかを漏らさず読んだ印も入れない"
     },
     {
      "status": 422,
@@ -19566,7 +19586,7 @@
     "EVENT-DRIVEN: WHEN GET /api/v1/inquiries/:id が「問い合わせを書いて送る」として呼ばれたとき THEN Kaname は「受信箱に届ける」を行い 2xx を返す",
     "UNWANTED: IF セッションが無いか失効しているなら、Kaname は 401 を返し入り直しを促す（発行済みトークンの期限に頼らない）",
     "UNWANTED: IF 権限が無いなら、Kaname は 403 を返し副作用を一切起こさない（認可 → ポリシー → 承認 → 副作用 → 記録の順）",
-    "UNWANTED: IF 対象が無いか他社の行なら、Kaname は 404 を返す（存在を漏らさない）",
+    "UNWANTED: IF 開いた問い合わせが本人の物でないか無いなら、Kaname は 404 と E-PAGE-001 を返し、在るかを漏らさず読んだ印も入れない",
     "UNWANTED: IF 入力が受け付けられないなら、Kaname は 422 と項目ごとの理由を返す（表記ゆらぎはサーバーで正規化してから判定）",
     "UNWANTED: IF 120/min/user を超えたら、Kaname は 429 と retry_after_sec を返す",
     "UNWANTED: IF 同意し直しが要るセッションなら、Kaname は 403 と E-AUTH-010 を返し、副作用を起こさない",
@@ -19642,8 +19662,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "messages_conversation_write",
-    "inquiries_self_only_write",
-    "inquiries_ops_write",
     "notifications_self_only_write"
    ],
    "outputs_4xx": [
@@ -19822,10 +19840,7 @@
     "scheme": "session（Better Auth・sessions 表を見る。app.tenant_id / app.user_id / app.role を SET LOCAL）"
    },
    "rate_limit": "60/min/user",
-   "access_control_policies": [
-    "inquiries_self_only_write",
-    "inquiries_ops_write"
-   ],
+   "access_control_policies": [],
    "outputs_4xx": [
     {
      "status": 401,
@@ -37815,10 +37830,7 @@
     "scheme": "session（Better Auth・sessions 表を見る。app.tenant_id / app.user_id / app.role を SET LOCAL）"
    },
    "rate_limit": "60/min/user",
-   "access_control_policies": [
-    "inquiries_self_only_write",
-    "inquiries_ops_write"
-   ],
+   "access_control_policies": [],
    "outputs_4xx": [
     {
      "status": 401,
@@ -37988,9 +38000,7 @@
    },
    "rate_limit": "60/min/user",
    "access_control_policies": [
-    "messages_conversation_write",
-    "inquiries_self_only_write",
-    "inquiries_ops_write"
+    "messages_conversation_write"
    ],
    "outputs_4xx": [
     {
@@ -38174,8 +38184,6 @@
    "rate_limit": "60/min/user",
    "access_control_policies": [
     "messages_conversation_write",
-    "inquiries_self_only_write",
-    "inquiries_ops_write",
     "notifications_self_only_write"
    ],
    "outputs_4xx": [
@@ -44490,10 +44498,7 @@
     "scheme": "session（Better Auth・sessions 表を見る。app.tenant_id / app.user_id / app.role を SET LOCAL）"
    },
    "rate_limit": "60/min/user",
-   "access_control_policies": [
-    "inquiries_self_only_write",
-    "inquiries_ops_write"
-   ],
+   "access_control_policies": [],
    "outputs_4xx": [
     {
      "status": 401,

@@ -1,0 +1,15 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/inquiry-read.ts",
+    "apps/api/src/features/F12/inquiries/read.ts",
+    "packages/db/migrations/20261128005100_inquiry_read.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/inquiry-read.test.ts",
+    "apps/api/test/features/contract/k144-contract.test.ts"
+   ]
+  }
+ ]
+}

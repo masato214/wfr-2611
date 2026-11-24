@@ -1,0 +1,54 @@
+{
+ "ops": {
+  "listMyInquiries": {
+   "file": "apps/api/test/features/F12/inquiry-read.test.ts",
+   "reason": "本人だけ・状態の読み替え・返事の読んだ印で答えが変わる。生成の試験の種では本人の問い合わせと運営の返事を作れない（K-951）",
+   "covers": {
+    "test_get_inquiries_ok": "K951-API-001",
+    "test_get_inquiries_shape": "K951-API-001",
+    "test_get_inquiries_rejected_401": "K951-API-011",
+    "test_get_inquiries_rejected_403": "K951-API-011",
+    "test_get_inquiries_rate_limited": "K951-API-012",
+    "test_get_inquiries_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_inquiries_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_get_inquiries_rejected_422": "絞り込みを持たない（cursor・limit は入口の共通の形の確かめ・K-144）"
+   }
+  },
+  "getMyInquiry": {
+   "file": "apps/api/test/features/F12/inquiry-read.test.ts",
+   "reason": "本人だけ・社内メモを外す・開いたら読んだ印。種では作れない（K-951）",
+   "covers": {
+    "test_get_inquiries_id_ok": "K951-API-008",
+    "test_get_inquiries_id_shape": "K951-API-008",
+    "test_get_inquiries_id_not_found": "K951-API-010",
+    "test_get_inquiries_id_rejected_401": "K951-API-011",
+    "test_get_inquiries_id_rejected_403": "K951-API-011",
+    "test_get_inquiries_id_rejected_422": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-980"
+    },
+    "test_get_inquiries_id_rate_limited": {
+     "file": "apps/api/test/features/F12/inquiry-read.test.ts",
+     "mark": "K951-API-012"
+    },
+    "test_get_inquiries_id_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_get_inquiries_id_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {}
+  }
+ }
+}
