@@ -20,6 +20,7 @@ import { resendMail, signedMail, type MailLike } from "@kaname/notify";
 import { ActionGateway, RateLimiter } from "@kaname/actions";
 import { assertApiStartup } from "./startup.js";
 import { nearLimitNotifier } from "./ops-alert.js";
+import { inquiryUploadRoute } from "./features/F12/inquiries/upload-route.js";
 
 export interface BootOptions {
   /** 起動時の存在確認の差し替え（テスト用。本番は S3 の HEAD） */
@@ -102,7 +103,7 @@ export async function bootApi(config: Config, o: BootOptions = {}): Promise<Boot
   //   外の置き場（Bridge の配布物・BRIDGE_RELEASE_BASE）の期限つき URL は、置き場の仕組み（S3 の署名つき URL）で作る（D-128.160）
   const objects = new ObjectStore(repo, o.storageDriver ?? s3, {
     signingSecret: `${config.authSecret}:files`,
-    externalSigner: s3Presigner(s3c, config.storage.endpoint),
+    externalSigner: s3Presigner(s3c, config.storage.endpoint, config.storage.bucket),
   });
   // 会話が変わった知らせを受ける 1 本（D-113・台帳 X-008）。URL が無ければ持たない（画面は見に行く形のまま）
   // 外への口（関門 C1）。登録の漏れたパスワードの照合が通る（K-51）。宛先は照合のサービスだけ
@@ -146,6 +147,8 @@ export async function bootApi(config: Config, o: BootOptions = {}): Promise<Boot
       hooks: buildHooks(HOOK_MODULES, hookDeps, "server"),
     },
   });
+  // 問い合わせの添付の上げ終わり（契約の口の外・K-950）。外の置き場が無いときだけローカルの上げ先も持つ
+  app.route("/api/uploads", inquiryUploadRoute(hookDeps));
   return { app, report, close };
 }
 

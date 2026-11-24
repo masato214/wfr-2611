@@ -100,10 +100,21 @@ export async function ensureBucket(client: S3Like, bucket: string): Promise<"exi
 
 /** 外の置き場の期限つき URL（D-128.160）：置き場の仕組み（S3 の署名つき URL・SigV4）で作る。Kaname の鍵では署名しない。
  *  URL は置き場の出どころ（endpoint・道の頭まで）の下で、道が「/<バケット>/<鍵>」（path-style）のものだけ。ほかは作らない（null） */
-export function s3Presigner(client: S3Client, endpoint: string): ExternalSigner {
+export function s3Presigner(client: S3Client, endpoint: string, bucket?: string): ExternalSigner {
   const ep = new URL(endpoint);
   const head = ep.pathname.replace(/\/$/, "");
+  /** ブラウザが置き場へ直に置く上げ先（K-950）：大きさ（content-length）と種類（content-type）を署名に入れ、違う体は置き場が 403 で断る。
+   *  置き場の名前を知らなければ持たない（ObjectStore はローカルの上げ先を出す） */
+  const presignPut: ExternalSigner["presignPut"] = bucket
+    ? (key, o) =>
+        getSignedUrl(
+          client,
+          new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: o.contentType, ContentLength: o.size }),
+          { expiresIn: o.ttlSec, signableHeaders: new Set(["content-length", "content-type"]) },
+        )
+    : undefined;
   return {
+    ...(presignPut ? { presignPut } : {}),
     async presignGet(url, ttlSeconds) {
       if (url.origin !== ep.origin || !url.pathname.startsWith(`${head}/`)) return null;
       const rest = url.pathname

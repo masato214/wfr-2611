@@ -6194,6 +6194,16 @@ components:
           type: string
           format: date-time
           nullable: true
+        upload_token_hash:
+          type: string
+          nullable: true
+        upload_expires_at:
+          type: string
+          format: date-time
+          nullable: true
+        upload_ref:
+          type: string
+          nullable: true
         id:
           type: string
           format: uuid
@@ -6231,6 +6241,8 @@ components:
       - D-076.4
       - D-104
       - D-104.11
+      - D-156.11
+      - D-156.26
     AttachmentsInput:
       type: object
       properties:

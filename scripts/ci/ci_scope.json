@@ -2162,6 +2162,28 @@
   },
   {
    "paths": [
+    "apps/api/src/hooks/inquiry-upload.ts",
+    "apps/api/src/features/F12/inquiries/upload.ts",
+    "apps/api/src/features/F12/inquiries/upload-route.ts",
+    "apps/api/src/features/F12/inquiries/sniff.ts",
+    "packages/storage/src/index.ts",
+    "packages/storage/src/s3.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/inquiry-upload.test.ts",
+    "apps/api/test/generated/post_inquiries_attachments.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/inquiry-upload.test.ts"
+   ],
+   "tests": [
+    "apps/api/test/generated/post_inquiries_attachments.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/web/features/F6/progress/progress.css",
     "04_design/DESIGN-kaname.md",
     "apps/web/styles/k-tokens.css"

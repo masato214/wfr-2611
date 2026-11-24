@@ -8834,6 +8834,27 @@
    "reason": null
   },
   {
+   "entity": "attachments",
+   "field": "upload_token_hash",
+   "consumed_by_screens": [],
+   "internal": true,
+   "reason": "共通列・参照 ID・秘密の実体は画面に出さない"
+  },
+  {
+   "entity": "attachments",
+   "field": "upload_expires_at",
+   "consumed_by_screens": [],
+   "internal": true,
+   "reason": "共通列・参照 ID・秘密の実体は画面に出さない"
+  },
+  {
+   "entity": "attachments",
+   "field": "upload_ref",
+   "consumed_by_screens": [],
+   "internal": true,
+   "reason": "共通列・参照 ID・秘密の実体は画面に出さない"
+  },
+  {
    "entity": "skills",
    "field": "<common>",
    "consumed_by_screens": [],

@@ -26,6 +26,16 @@ export interface StoreOptions {
 /** 外の置き場（S3 互換）のファイルの期限つき URL を、置き場自身の署名（SigV4）で作る。置き場の外の URL なら null（作らない） */
 export interface ExternalSigner {
   presignGet(url: URL, ttlSeconds: number): Promise<string | null>;
+  /** 置き場の鍵（参照）へブラウザが直に置く上げ先（S3 の署名つき PUT・K-950）。大きさと種類を署名に入れ、違う体は置き場が断る。
+   *  置き場の名前（バケット）を知らない signer は持たない（そのときはローカルの上げ先を出す） */
+  presignPut?(key: string, o: { contentType: string; size: number; ttlSec: number }): Promise<string>;
+}
+/** 上げ先を出すときの指定（K-950）。localBase は外の置き場が無いときのローカルの上げ先の住所（口の /api/uploads/local） */
+export interface PresignPutOptions {
+  contentType: string;
+  size: number;
+  ttlSec: number;
+  localBase: string;
 }
 export type Outcome<T> =
   | { status: "done"; value: T; auditId?: string | undefined }
@@ -80,12 +90,35 @@ export class ObjectStore {
     return ctx.tenantId ? this.repo.audit(ctx, `object.${action}`, "object", ref, "C4", payload) : undefined;
   }
 
+  /** 置く。参照を渡さなければ新しい参照を作る。参照を渡すなら、その会社の名前空間の中だけ（上げ先で決めた参照に置く・K-950） */
   async put(
     ctx: TenantContext,
     body: Uint8Array,
     meta: { contentType?: string; retentionDays?: number | null },
+  ): Promise<Outcome<{ ref: string; size: number }>>;
+  async put(
+    ctx: TenantContext,
+    ref: string,
+    body: Uint8Array,
+    meta: { contentType?: string; retentionDays?: number | null },
+  ): Promise<Outcome<{ ref: string; size: number }>>;
+  async put(
+    ctx: TenantContext,
+    a: Uint8Array | string,
+    b: Uint8Array | { contentType?: string; retentionDays?: number | null },
+    c?: { contentType?: string; retentionDays?: number | null },
   ): Promise<Outcome<{ ref: string; size: number }>> {
+    const given = typeof a === "string" ? a : null;
+    const body = (typeof a === "string" ? b : a) as Uint8Array;
+    const meta = (typeof a === "string" ? c : b) as { contentType?: string; retentionDays?: number | null };
     if (!ctx.tenantId) return { status: "denied", reason: "文脈が無い", handoff: "ログインし直す" };
+    if (given !== null && !this.allowed(given, ctx))
+      return {
+        status: "denied",
+        reason: "ここには置けません",
+        handoff: "権限のある人に頼む",
+        auditId: await this.audit(ctx, "denied", given, { reason: "cross_tenant_or_bad_ref" }),
+      };
     const max = this.o.maxBytes ?? MAX_BYTES_DEFAULT;
     if (body.byteLength > max)
       return {
@@ -94,7 +127,7 @@ export class ObjectStore {
         handoff: "分けるか圧縮して上げ直す",
         auditId: await this.audit(ctx, "denied", null, { size: body.byteLength, reason: "too_large" }),
       };
-    const ref = refOf(ctx.tenantId, uuidv7());
+    const ref = given ?? refOf(ctx.tenantId, uuidv7());
     const days = meta.retentionDays === undefined ? (this.o.defaultRetentionDays ?? null) : meta.retentionDays;
     const m: ObjectMeta = {
       size: body.byteLength,
@@ -205,6 +238,90 @@ export class ObjectStore {
       // 目録（運営の中身）を読むための署名は証跡を残さない（D-138.2・K-133）。入れ物を渡すときは残す
       auditId: opts.audit === false ? undefined : await this.audit(ctx, "sign_external", null, { name, ttl }),
     };
+  }
+  /** 上げ先（K-950）：ブラウザが置き場へ直に置く、期限つきの URL。大きさと種類を署名に入れる（違う体は断る）。
+   *  外の置き場（S3 互換）は置き場の署名（SigV4）、無ければローカルの上げ先（口の localBase・Kaname の鍵の署名・acceptSignedPut が受ける）。
+   *  誰に出したかを証跡に残す（名前は入れない） */
+  async presignPut(
+    ctx: TenantContext,
+    ref: string,
+    o: PresignPutOptions,
+  ): Promise<Outcome<{ url: string; expiresAt: Date }>> {
+    if (!this.allowed(ref, ctx))
+      return {
+        status: "denied",
+        reason: "ここには置けません",
+        handoff: "権限のある人に頼む",
+        auditId: await this.audit(ctx, "denied", ref, { reason: "cross_tenant_or_bad_ref" }),
+      };
+    const max = this.o.maxBytes ?? MAX_BYTES_DEFAULT;
+    if (!Number.isInteger(o.size) || o.size < 1 || o.size > max || !o.contentType)
+      return { status: "denied", reason: "このファイルは置けません", handoff: "分けるか圧縮して上げ直す" };
+    const ttl = Math.min(Math.max(Math.floor(o.ttlSec), 10), 3600);
+    const exp = Math.floor(Date.now() / 1000) + ttl;
+    let url: string;
+    const ext = this.o.externalSigner;
+    try {
+      if (ext?.presignPut) url = await ext.presignPut(ref, { contentType: o.contentType, size: o.size, ttlSec: ttl });
+      else {
+        const q = new URLSearchParams({
+          ref,
+          ct: o.contentType,
+          size: String(o.size),
+          exp: String(exp),
+          sig: this.signPut(ref, o.contentType, o.size, exp),
+        });
+        url = `${o.localBase.replace(/\/$/, "")}?${q.toString()}`;
+      }
+    } catch (e) {
+      return {
+        status: "failed",
+        reason: "上げ先を作れませんでした",
+        handoff: "少し待ってやり直す。続くなら運営に問い合わせる",
+        auditId: await this.audit(ctx, "failed", ref, { reason: (e as Error)?.name ?? "Error" }),
+      };
+    }
+    return {
+      status: "done",
+      value: { url, expiresAt: new Date(exp * 1000) },
+      auditId: await this.audit(ctx, "presign_put", ref, { size: o.size, mime: o.contentType }),
+    };
+  }
+  /** 上げ先を外の置き場（S3 の署名つき PUT）が出すか。出さないならローカルの上げ先の受け口（acceptSignedPut）が要る（K-950） */
+  hasExternalPut(): boolean {
+    return !!this.o.externalSigner?.presignPut;
+  }
+  /** ローカルの上げ先の受け口（外の置き場が無いときだけ・K-950）：署名・期限・体の大きさ・種類が署名どおりなら置く（S3 と同じ振る舞い）。
+   *  違えば denied（受け口が 403）。セッションは見ない（署名だけで判定） */
+  async acceptSignedPut(
+    query: Record<string, string | undefined>,
+    body: Uint8Array,
+    contentType: string | null,
+    now = Date.now(),
+  ): Promise<Outcome<{ ref: string; size: number }>> {
+    const deny = { status: "denied" as const, reason: "この上げ先は使えません", handoff: "もう一度ファイルを選ぶ" };
+    const ref = query["ref"] ?? "";
+    const ct = query["ct"] ?? "";
+    const size = Number(query["size"]);
+    const exp = Number(query["exp"]);
+    const sig = query["sig"] ?? "";
+    if (!parseRef(ref) || !ct || !Number.isInteger(size) || size < 1 || !Number.isFinite(exp) || exp * 1000 < now)
+      return deny;
+    const want = Buffer.from(this.signPut(ref, ct, size, exp));
+    const got = Buffer.from(sig);
+    if (want.length !== got.length || !timingSafeEqual(want, got)) return deny;
+    if (body.byteLength !== size || (contentType ?? "").split(";")[0]!.trim().toLowerCase() !== ct) return deny;
+    try {
+      await this.driver.put(ref, body, { size, contentType: ct, expiresAt: null });
+    } catch {
+      return { status: "failed", reason: "保存先に書けませんでした", handoff: "少し待ってやり直す" };
+    }
+    return { status: "done", value: { ref, size } };
+  }
+  private signPut(ref: string, contentType: string, size: number, exp: number): string {
+    return createHmac("sha256", this.o.signingSecret)
+      .update(`put\n${ref}\n${contentType}\n${size}\n${exp}`)
+      .digest("base64url");
   }
   private sign(ref: string, exp: number): string {
     return createHmac("sha256", this.o.signingSecret).update(`${ref}\n${exp}`).digest("base64url");

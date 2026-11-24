@@ -734,6 +734,18 @@
     "type": "uuid",
     "nullable": true
    },
+   "upload_expires_at": {
+    "type": "timestamp with time zone",
+    "nullable": true
+   },
+   "upload_ref": {
+    "type": "text",
+    "nullable": true
+   },
+   "upload_token_hash": {
+    "type": "text",
+    "nullable": true
+   },
    "uploaded_by": {
     "type": "uuid",
     "nullable": true

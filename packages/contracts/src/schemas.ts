@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:8bb9cba2af46233d
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:08ec911660feed62
 import { z } from "zod";
 
 export const Tenants = z.strictObject({
@@ -2226,6 +2226,9 @@ export const Attachments = z.strictObject({
   name: z.string().nullable().optional(),
   uploaded_by: z.uuid().nullable().optional(),
   scanned_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  upload_token_hash: z.string().nullable().optional(),
+  upload_expires_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  upload_ref: z.string().nullable().optional(),
   id: z.uuid(),
   tenant_id: z.uuid().optional(),
   created_at: z.iso.datetime({ offset: true }).optional(),
