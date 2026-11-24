@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。320 件
+// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。321 件
 export interface CatalogEntry {
   id: string;
   cls: string;
@@ -5747,6 +5747,23 @@ export const CATALOG: Record<string, CatalogEntry> = {
     ],
     "where": {
       "screen": "masters"
+    }
+  },
+  "E-INQ-001": {
+    "id": "E-INQ-001",
+    "cls": "conflict",
+    "message": "このファイルはまだ付けられません",
+    "action": "付け直す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-INQ-001",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "inquiry"
     }
   }
 };

@@ -4938,11 +4938,12 @@
      "name": "messages_conversation_read",
      "operation": "select",
      "role": "member",
-     "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.conversation_visible(conversation_id)",
-     "rationale": "その会話を読める人だけ（自分の会話・一緒に話している人）。同じ会社の他人の会話の発言は見せない",
+     "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND app.conversation_visible(conversation_id) AND visibility <> 'ops_only'",
+     "rationale": "その会話を読める人だけ（自分の会話・一緒に話している人）。同じ会社の他人の会話の発言は見せない。運営の社内メモ（visibility ops_only）は本人の会話でも読めない（K-949・ER 図 508 行）",
      "source": [
       "D-104",
-      "D-112"
+      "D-112",
+      "D-156.25"
      ]
     },
     {
@@ -7244,12 +7245,24 @@
      "note": null
     },
     {
-     "name": "kind_id",
-     "note": "howto ／ stuck ／ billing ／ request ／ other"
+     "name": "title",
+     "note": null
     },
     {
-     "name": "status_id",
-     "note": "waiting ／ answered ／ resolved"
+     "name": "topic_key",
+     "note": "usage ／ trouble ／ billing ／ other・K-949"
+    },
+    {
+     "name": "state",
+     "note": "open ／ waiting ／ later ／ done・K-949"
+    },
+    {
+     "name": "asker_read_at",
+     "note": null
+    },
+    {
+     "name": "last_message_at",
+     "note": null
     },
     {
      "name": "conversation_id",
@@ -7262,6 +7275,14 @@
     {
      "name": "ai_first_answered_at",
      "note": null
+    },
+    {
+     "name": "kind_id",
+     "note": "使わない・消さない"
+    },
+    {
+     "name": "status_id",
+     "note": "使わない・消さない"
     }
    ],
    "relations": [
@@ -7290,21 +7311,11 @@
      "operation": "select",
      "role": "member",
      "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND opened_by_member_id = current_setting('app.user_id', true)::uuid",
-     "rationale": "自分の問い合わせだけ（契約の権限の言葉 self・screen_api の listMyInquiries）",
+     "rationale": "自分の問い合わせだけ（契約の権限の言葉 self・D-156.25：見えるのは書いた本人だけ）",
      "source": [
       "D-128.88",
-      "D-125.24"
-     ]
-    },
-    {
-     "name": "inquiries_self_only_write",
-     "operation": "insert,update",
-     "role": "member",
-     "predicate": "tenant_id = current_setting('app.tenant_id', true)::uuid AND opened_by_member_id = current_setting('app.user_id', true)::uuid",
-     "rationale": "自分の問い合わせを出し・閉じる",
-     "source": [
-      "D-128.88",
-      "D-125.24"
+      "D-125.24",
+      "D-156.25"
      ]
     },
     {
@@ -7316,21 +7327,10 @@
      "source": [
       "D-128.68"
      ]
-    },
-    {
-     "name": "inquiries_ops_write",
-     "operation": "update",
-     "role": "ops",
-     "predicate": "current_setting('app.role', true) = 'ops' AND tenant_id = current_setting('app.tenant_id', true)::uuid",
-     "rationale": "運営が対応して書く行（assignee_ops_member_id）。会社の 1 社の中で・証跡に残す",
-     "source": [
-      "D-075",
-      "D-077.1"
-     ]
     }
    ],
    "legacy_drift_notes": null,
-   "note": "**★新設（D-075.1・D-077.1）。**まず自分のAIが答え、解けなければ運営へ。やりとりの本文は `conversations` / `messages`（同じ部品）。運営に届くのは構成と型だけで台帳の中身は送らない",
+   "note": "**★新設（D-075.1・D-077.1）。**見えるのは書いた本人だけ（行の守り `inquiries_self_read`・書く守りは置かず関数 `app.inquiry_create` などが書く・D-156.25・K-949）。顧客の状態は open・later → 返事を待っている／waiting → 返事あり／done → 済み に読み替える。まず自分のAIが答え、解けなければ運営へ。やりとりの本文は `conversations` / `messages`（同じ部品）。運営に届くのは構成と型だけで台帳の中身は送らない",
    "status": "decided",
    "decided_at": "2026-11-24",
    "source": [
@@ -7338,7 +7338,8 @@
     "D-075",
     "D-075.1",
     "D-076",
-    "D-077.1"
+    "D-077.1",
+    "D-156.25"
    ]
   },
   {
