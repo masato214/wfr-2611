@@ -247,8 +247,8 @@ API 359（作った 112・後のフェーズの行為だけ 20）・前の道す
 | `resolveMyInquiry` | POST /api/v1/inquiries/:id/resolve | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `uploadInquiryAttachment` | POST /api/v1/inquiries/attachments | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `downloadInvoicePdf` | GET /api/v1/invoices/:id/pdf | 取得（invoices）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72 |
-| `listNotices` | GET /api/v1/notices | 取得（notices）— お知らせを見る | F12 | 契約だけ（501） | K-72 |
-| `markNoticeRead` | POST /api/v1/notices/:id/read | 作成・実行（notices）— お知らせを見る | F12 | 契約だけ（501） | K-72 |
+| `listNotices` | GET /api/v1/notices | 取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障害の続報まで・1 件を開く口は無い） | F12 | 契約だけ（501） | K-72,K-954 |
+| `markNoticeRead` | POST /api/v1/notices/:id/read | 作成・実行（notices）— お知らせを見る | F12 | 契約だけ（501） | K-72,K-954 |
 | `listOpsInquiries` | GET /api/v1/ops/inquiries | 取得（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
 | `getOpsInquiry` | GET /api/v1/ops/inquiries/:id | 取得（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
 | `updateOpsInquiry` | PATCH /api/v1/ops/inquiries/:id | 更新（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
@@ -262,7 +262,7 @@ API 359（作った 112・後のフェーズの行為だけ 20）・前の道す
 | `addOpsMember` | POST /api/v1/ops/members | 作成・実行（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |
 | `updateOpsMemberCaps` | PATCH /api/v1/ops/members/:id | 更新（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |
 | `removeOpsMember` | DELETE /api/v1/ops/members/:id | 削除（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |
-| `listOpsNotices` | GET /api/v1/ops/notices | 取得（ops）— お知らせを出す | F12 | 契約だけ（501） |  |
+| `listOpsNotices` | GET /api/v1/ops/notices | 取得（notices）— 運営のお知らせを新しい順に見る（下書き・予定・出した・直った） | F12 | 契約だけ（501） |  |
 | `createOpsNotice` | POST /api/v1/ops/notices | 作成・実行（ops）— お知らせを出す | F12 | 契約だけ（501） |  |
 | `getOpsNotice` | GET /api/v1/ops/notices/:id | 取得（ops）— お知らせを出す | F12 | 契約だけ（501） |  |
 | `updateOpsNotice` | PATCH /api/v1/ops/notices/:id | 更新（ops）— お知らせを出す | F12 | 契約だけ（501） |  |

@@ -1155,7 +1155,11 @@ RESPONSES = {
     "getTicketShape": ("TicketShape", {"kinds": "array", "stages": "array", "axes": "array", "handover_rules": "array", "limits": "object", "template_updates": "integer"}),
     "previewTicketShapeChange": ("TicketShapeChangePreview", {"removed": "array", "needs_move_to": "array", "affected_tickets": "integer", "over_limits": "array"}),
     "getOpsInquiry": ("OpsInquiryDetail", {"inquiry": "object", "messages": "array", "context": "object", "workspace": "object"}),
-    "getOpsNotice": ("OpsNoticeDetail", {"notice": "object", "updates": "array", "affects": "object", "placements": "array"}),
+    # お知らせの 1 件（K-1004・D-156.5）：一覧の 1 行の 11 欄と本文・メンテ・影響・続報・届く数（16 欄）。作る・直す・出す・続報・1 社に送るも同じ形（断片 K-1004）
+    "getOpsNotice": ("OpsNoticeDetail", {"id": "uuid", "kind": "string", "title": "string", "audience": "object", "state": "string",
+                                         "placements": "string[]", "publish_at": "string?", "published_at": "string?", "author_name": "string?",
+                                         "incident_state": "string?", "admins_only": "boolean", "body": "string", "maintenance": "object?",
+                                         "impact": "string?", "updates": "array", "reach": "object"}),
     # いまの様子（K-307・誰でも）：直っていない障害（公開したお知らせに結んだもの）といま中のメンテナンスだけ。ログイン後の口の型 ServiceStatus とは分ける
     "getServiceStatus": ("PublicServiceStatus", {"incidents": "array", "maintenance": "object?"}),
     # 招待の下見（K-331）：表の写し（token_hash まで出る）でなく、画面が形を決める欄だけ。signed_in はログイン中だけ { email, email_matches, already_member }
@@ -1164,7 +1168,8 @@ RESPONSES = {
                                             "account_exists": "boolean", "signed_in": "object?"}),
     # 招待で参加した（K-332）：ログインの印（部品のセッションの token）・入ったワークスペース・次に移る画面（入った直後は /mfa-setup）
     "acceptInvitation": ("InvitationAccepted", {"token": "string", "workspace_id": "string", "next": "string", "state": "string?", "email": "string?"}),   # K-422：リンクの招待で新しく入る人の 202 は { state, email } だけ（確認のメールを送った・まだ参加していない）
-    "getServiceStatusForMember": ("ServiceStatus", {"components": "array", "banner": "object", "maintenance": "object"}),
+    # ログイン後の稼働状況（K-1004・D-156.10）：部分ごとの様子・上の帯（障害・メンテ・止める日・中を見られている間を 1 つの並びに）・いま中のメンテ。型の名前は ServiceStatus のまま（K307-API-016）
+    "getServiceStatusForMember": ("ServiceStatus", {"components": "array", "bands": "array", "maintenance_now": "object?"}),
 }
 # 一覧の答えの meta に足す数（数だけの API を作らず、一覧の 1 回目で返す・D-128.111）。値は型の名前か、型の決まりの辞書（null を返す欄・K-92）
 META = {

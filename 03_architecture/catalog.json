@@ -3450,7 +3450,7 @@
    "op": "listNotices",
    "method": "GET",
    "path": "/api/v1/notices",
-   "what": "取得（notices）— お知らせを見る",
+   "what": "取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障害の続報まで・1 件を開く口は無い）",
    "flows": [
     "F12"
    ],
@@ -3460,7 +3460,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-954"
    ]
   },
   {
@@ -3477,7 +3478,8 @@
    ],
    "status": "契約だけ（501）",
    "owner_tickets": [
-    "K-72"
+    "K-72",
+    "K-954"
    ]
   },
   {
@@ -3730,7 +3732,7 @@
    "op": "listOpsNotices",
    "method": "GET",
    "path": "/api/v1/ops/notices",
-   "what": "取得（ops）— お知らせを出す",
+   "what": "取得（notices）— 運営のお知らせを新しい順に見る（下書き・予定・出した・直った）",
    "flows": [
     "F12"
    ],

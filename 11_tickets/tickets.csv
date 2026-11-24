@@ -3437,12 +3437,31 @@ K-948,契約の作り直し 1：問い合わせ（利用者の 6 口・運営の
 - [ ] 契約の検査（`python3 scripts/ci/contract_shape_test.py`・`node scripts/ci/contract.mjs check`）・画面の導出の検査（`python3 scripts/ci/flow_gate.py --flow 05_flow/flow.json --choke 03_architecture/choke-points.json`）が緑
 - [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑
 - [ ] 手元の CI（このチケットの範囲）が緑"
+K-954,お知らせを読む（listNotices）と読んだ印（markNoticeRead）：届け先の決め（全部・プラン・ワークスペース・出したか）を DB の関数 1 か所に置き、本人の既読を notice_deliveries に 1 行で持つ。続報の置き場 notice_updates・列 target_tenant_ids・impact を足す（K-72 の葉・W2）,タスク,K-72,未着手,実装,2026-12-07,F12・お知らせ,"顧客（ワークスペースの人）が「右上の顔 › 困ったとき・お知らせ」で、運営からのお知らせ（リリース・障害・メンテ）を読み、開いたら読んだ印が付く口を作る（行為 A68・今は 501）。答えの形は K-1004 の「画面が使う答えの形」（`Notice` の 9 欄・`{ id, read_at }`）で、この葉は振る舞いだけを書く。
+
+- **届け先の決めを 1 か所に置く**：どのお知らせが、どの会社の人に見えるか（出したか・誰に）を、security definer の関数 `app.notice_for_tenant(p_notice, p_tenant)` に置く。一覧（この葉）・帯と様子（K-955）・運営が「出すと届く数」を数える葉（K-978）が同じ関数を使う（同じ決めを 2 つ作らない）
+- **読んだ印は本人だけ**：開いたときに読んだ印（ボタンは無い・D-156.27）。印は `notice_deliveries`（その会社・その人の 1 行）。同じ会社の別の人の印は自分に効かない
+- **続報の置き場と列を先に作る**：障害の続報の履歴の表 `notice_updates`・誰にの「ワークスペースを選ぶ」の列 `notices.target_tenant_ids`・メンテの影響の列 `notices.impact` を、この葉の migration が作る（読むのはこの葉、書くのは運営の葉 K-977・K-978・K-979）
+- **運営のお知らせは鈴に出さない**（D-156.28）：自分宛の知らせ（`notifications`）の行を作らない","- [ ] 下の表の 25 行（K954-API-001〜022・K954-DB-001〜003）が緑：`apps/api/test/features/F12/notices-read.test.ts`（土台 `notice.harness.ts`）
+- [ ] 契約の口 2 本が 501 でない。生成の試験 `get_notices.test.ts`・`post_notices_id_read.test.ts` の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-954.json` の covers）
+- [ ] 共有の試験 k144-contract.test.ts の回で、入口の uuid の行 K144-API-954（`markNoticeRead` の道の id）が通る
+- [ ] migration の lint（Squawk・G58）を作る段で出す前に流して緑
+- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑
+- [ ] 手元の CI（このチケットの範囲）が緑"
 K-1000,段 13 の流れと文書：flow.json の A80 を「操作の版を見る（読むだけ）」に・回収の行為 A138 を足す・配るもの（ops-skills）の目的と第 2 ナビ・運営の役と用事の文、親 K-72 の apis に利用者の口 14 本、文書 08_api/phase1/10 から上の数の 3 本を消す（流れの正本と文書だけ・K-940 から分けた・K-72 の葉・W0）,タスク,K-72,未着手,実装,2026-12-03,F12・文書,"段 13 の流れの正本 `05_flow/flow.json` と、親 K-72 の入れ物と、API の文書を、§156 の決めに合わせる（K-940 から分けた：決定ログ §156 は K-940 が先に依存なしで運ぶ）。後ろの画面の葉と口の葉の導線・持ち物はここから作る。
 
 - **flow.json（phase1.py と flows.json を直して作り手で作り直す）**：A80 を「操作の版を見る（読むだけ）」に（D-156.7・D-156.15）／回収の行為 A138 を足す（D-156.8・D-128.146）／配るもの（ops-skills）の目的・扱う物・第 2 ナビを 操作・ひな形・プラン に（D-156.21）／運営の役 R6 と用事 J12 の文から業務の型を外す
 - **親 K-72**：`apis:` に利用者の口 14 本（問い合わせ 6・お知らせ 3・請求 3・プラン 2）を足す（D-156.6・KN-30 から抜けていた）。回収の 2 本は契約に無いので、契約を足す葉（K-995）が足す
 - **文書 `08_api/phase1/10_運営と困ったとき.md`**：文書だけに在る上の数の 3 行（`GET /ops/workspaces/summary`・`GET /ops/inquiries/counts`・`GET /ops/invoices/summary`）を消し、上の数は `GET /ops/shell`（getOpsShell）の答えに寄せると 1 行書く（D-156.4）","- [ ] 下の表の 10 行（K1000-FL-001〜010）が緑：`scripts/ci/k1000_flow_test.py`
 - [ ] 画面の導出の検査 `python3 scripts/ci/flow_gate.py --flow 05_flow/flow.json --choke 03_architecture/choke-points.json`（G1〜G10・G17・G22）と `python3 scripts/ci/flow_db_gate.py` が緑（K1000-FL-009）
+- [ ] 手元の CI（このチケットの範囲）が緑"
+K-1004,契約の作り直し 2：お知らせ（利用者の一覧・読んだ印・ログイン後の稼働状況と上の帯）と運営のお知らせ（一覧・作る・1 件・直す・出す・障害の続報・1 社に送る）を画面が要る欄に作り直す（契約だけ・振る舞いは後の葉・K-948 から分けた・K-72 の葉・W0）,タスク,K-72,未着手,実装,2026-12-05,F12・契約,"お知らせのまとまりの契約を、画面（下絵 uh-help・uh-notice・uh-band-*・oq-notices・oq-notice-new・oq-notice・oq-notice-publish・op-ws-notice）が要る欄に作り直す（D-156.5）。後の葉（K-954〜K-957・K-977〜K-980・K-972 の 1 社に送る小窓）は振る舞いだけを書く。
+
+- 利用者の 3 口（listNotices・markNoticeRead・getServiceStatusForMember）：一覧の 1 行に本文と続報まで持たせ、1 件を開く口を作らない（開いた時に読んだ印・D-156.27）。上の帯は getServiceStatusForMember の `bands` の 1 つに並べる（障害・メンテ・止める日・中を見られている間・D-156.10）
+- 運営の 7 口（listOpsNotices・createOpsNotice・getOpsNotice・updateOpsNotice・publishOpsNotice・addIncidentUpdate・sendWorkspaceNotice）：誰に（全部・プランで選ぶ・ワークスペースを選ぶ・D-156.33）・出す場所（上の帯・一覧）・予定（出す日時）・メンテの時間と影響・障害の状態 4 つ
+- ログイン前の getServiceStatus（K-307）の形は変えない","- [ ] 下の表の 12 行（K1004-DC-001〜012）が緑：`scripts/ci/k1004_notice_contract_test.py`（G65 の段 `g65.d/K-1004.txt`）
+- [ ] 契約の検査（`python3 scripts/ci/contract_shape_test.py`・`node scripts/ci/contract.mjs check`）が緑
+- [ ] 前からの試験は「前からの試験を替えた所」のとおりで緑
 - [ ] 手元の CI（このチケットの範囲）が緑"
 K-1005,契約の作り直し 3：請求（利用者の請求書・請求先・選べるプラン・プランを変える）と運営の請求（一覧・まとめて出す・入金を記録・1 社のプランと請求・代わりにプランを変える）を画面が要る欄に作り直す（契約だけ・振る舞いは後の葉・K-948 から分けた・K-72 の葉・W0）,タスク,K-72,未着手,実装,2026-12-05,F12・契約,"請求とプランのまとまりの契約を、画面（下絵 ub-bills・ub-contact・ub-plan・ub-plan-confirm・ub-plan-blocked・oq-bills・oq-bills-issue・oq-pay・oq-pay-diff・op-ws-billing）が要る欄に作り直す（D-156.5）。後の葉（K-958〜K-962・K-968・K-981〜K-984）は振る舞いだけを書く。
 

@@ -36764,7 +36764,7 @@
    "list_ignores_scope": false,
    "outward_side_effects": [],
    "side_effect_ordering": null,
-   "description": "取得（notices）— お知らせを見る",
+   "description": "取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障害の続報まで・1 件を開く口は無い）",
    "implementation_path": "apps/api/src/routes/notices.ts::listNotices",
    "permission": {
     "who": "read",
@@ -36777,15 +36777,15 @@
     "path": [],
     "body": null,
     "query": [
-     "scope_id",
+     "kind",
+     "unread",
      "cursor",
-     "limit",
-     "sort"
+     "limit"
     ]
    },
    "outputs_2xx": {
     "status": 200,
-    "body": "{ data: Notices[], meta?: { cursor, limit, total } }"
+    "body": "{ data: Notices[] }"
    },
    "id": "EP-208",
    "feature_id": "F-015"
@@ -39762,7 +39762,7 @@
     "通知送出"
    ],
    "side_effect_ordering": null,
-   "description": "取得（ops）— お知らせを出す",
+   "description": "取得（notices）— 運営のお知らせを新しい順に見る（下書き・予定・出した・直った）",
    "implementation_path": "apps/api/src/routes/notices.ts::listOpsNotices",
    "permission": {
     "who": "ops:notice",
@@ -39775,15 +39775,15 @@
     "path": [],
     "body": null,
     "query": [
-     "scope_id",
+     "kind",
+     "state",
      "cursor",
-     "limit",
-     "sort"
+     "limit"
     ]
    },
    "outputs_2xx": {
     "status": 200,
-    "body": "{ data: Notices[], meta?: { cursor, limit, total } }"
+    "body": "{ data: Notices[] }"
    },
    "id": "EP-226",
    "feature_id": "F-016"
