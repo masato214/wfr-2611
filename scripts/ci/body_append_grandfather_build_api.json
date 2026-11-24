@@ -1,0 +1,19 @@
+{
+  "_doc": "K-1121：build_api.py の 3 つの表（INTERNAL_TABLES・INTERNAL・KEY_CURSOR_OPS）に足す分を build_api.d に書く決まりの前に始めていた葉と段の枝（2026-11-23 の段 write〜merge）が、その枝で既に build_api.py の本体に足していた鍵（entries）。G74 は entries の物を数えない。受けるのは 05_flow/build_api.py の鍵だけ。entries は body_append_gate.py --ledger-now --ledger scripts/ci/body_append_grandfather_build_api.json が枝から作った。減らすだけ（増やすと G74 が赤）。tickets はどの葉の枝（番号）・段の枝（名前）から作ったかの記録",
+  "tickets": [
+    "i/段6",
+    "K-754",
+    "K-757",
+    "K-758",
+    "K-759",
+    "K-760",
+    "K-763",
+    "K-774",
+    "K-776"
+  ],
+  "entries": [
+    "05_flow/build_api.py|KEY_CURSOR_OPS 'listCloneActivity'",
+    "05_flow/build_api.py|KEY_CURSOR_OPS 'listConversationMessages'",
+    "05_flow/build_api.py|KEY_CURSOR_OPS 'listConversations'"
+  ]
+}

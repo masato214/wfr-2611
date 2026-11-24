@@ -468,6 +468,8 @@ components:
     width: "30px"
   shell-bar:            # 外枠の上の帯の高さ（K-138・shell.css の .k-bar）。幅 767 以下も同じ高さで出す（D-147）。上に貼り付く物はこの下に置く（K-226）
     height: "48px"
+  kn-pane:              # ナレッジの画面の面（左の木と右のページを並べる面・features/F9/knowledge/knowledge.css の .k-f9-wrap・.k-f9-tree）の高さ。画面の高さちょうどで、上の帯 shell-bar を引いた残りを木とページが使う（K-670）
+    height: "100dvh"
   shell-bar-tool:       # スマホ（幅 767 以下）の上の帯の道具（探す・探すを閉じる・知らせ・右のパネルの開け閉め）の押せる大きさ。指で押せる 44px（D-147・shell.css の 767 以下の .k-bar-tools .k-icon-btn）
     width: "44px"
     height: "44px"

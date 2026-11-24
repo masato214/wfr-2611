@@ -50,14 +50,8 @@ const CONFLICT: Record<string, string> = {
 };
 
 function invalid(field: string): HookReply {
-  return {
-    status: 422,
-    body: {
-      error: "validation_failed",
-      code: "VALIDATION_ERROR",
-      details: [{ field, message: "入力内容を確認してください" }],
-    },
-  };
+  const details = [{ field, message: "入力内容を確認してください" }];
+  return { status: 422, body: { error: "validation_failed", code: "VALIDATION_ERROR", details } };
 }
 function notFound(): HookReply {
   return { status: 404, body: { error: "not_found", code: "E-PAGE-001" } };

@@ -54,6 +54,7 @@
   ],
   "paths": [
    "05_flow/*.py",
+   "05_flow/build_api.d/**",
    "05_flow/*.json",
    "05_flow/*.html",
    "04_design/**",
@@ -1726,6 +1727,32 @@
   },
   {
    "paths": [
+    "apps/web/features/F4/doc/editor/",
+    "apps/web/app/(dev)/dev/mock/f4v2-editor/",
+    "apps/web/features/F4/doc/bar-tools.tsx",
+    "apps/web/features/F4/doc/doc.css",
+    "apps/web/features/F4/doc/extra.css",
+    "apps/web/features/F4/doc/views.tsx",
+    "apps/web/features/F4/doc/editor-views.tsx"
+   ],
+   "tests": [
+    "apps/web/tests/k/k567-doc-editor.spec.ts",
+    "apps/web/test/k567-doc-convert.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/web/features/F4/doc/editor/",
+    "apps/web/app/(dev)/dev/mock/f4v2-editor/",
+    "apps/web/features/F4/doc/doc.css",
+    "apps/web/features/F4/doc/extra.css"
+   ],
+   "tests": [
+    "apps/web/tests/k/k577-doc-view.spec.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/api/src/features/F1/password-reset/**",
     "apps/api/src/hooks/password-reset.ts",
     "apps/api/src/features/F1/admin-recovery/**"
@@ -1767,6 +1794,28 @@
    ],
    "tests": [
     "apps/api/test/features/contract/k639-pm-fuzz.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "scripts/ci/design_gate.py",
+    "scripts/ci/canvas_field_gate.py",
+    "scripts/ci/gen_built_routes.py",
+    "04_design/DESIGN-kaname.md",
+    "apps/web/styles/k-tokens.css"
+   ],
+   "tests": [
+    "apps/web/tests/k/k670-f9-parts-1.spec.ts"
+   ]
+  },
+  {
+   "paths": [
+    "scripts/ci/design_gate.py",
+    "04_design/DESIGN-kaname.md",
+    "apps/web/styles/k-tokens.css"
+   ],
+   "tests": [
+    "apps/web/tests/k/k671-f9-parts-2.spec.ts"
    ]
   },
   {
@@ -2107,7 +2156,13 @@
   "apps/api/test/features/contract/k144.d/K-488.ts": "k144 の置き場の葉のファイル。準備の中で F3/leaf-hooks.ts を動的 import し、hooks のファイルを最初の要求のときに読む。ファイルは読まない（K-378）",
   "apps/api/test/features/F4/ticket-fields.test.ts": "読む口の hooks のファイル apps/api/src/hooks/ticket-fields-read.ts を動的 import で読む（最初の要求のときに 1 回）。読む物と使う試験は data_links で結ぶ・K-563",
   "apps/api/test/features/contract/k144.d/K-563.ts": "葉の hooks のファイルを F3/leaf-hooks.ts の動的 import で読む。読む物と使う試験は data_links で結ぶ・K-563",
+  "apps/web/test/k567-doc-convert.test.ts": "写した部品の関数の頭（apps/web/features/F4/doc/editor/bar/ の use-mark-button.ts・use-undo-redo.ts・use-link-popover.ts）を字で読み、出どころと MIT の表示を確かめる（K567-UN-008）。読む置き場は data_links で結ぶ",
+  "apps/web/features/F4/doc/editor/doc-editor.tsx": "編集の部品の本体 ./doc-editor-live を next/dynamic で遅く読む（同じ置き場の部品・ファイルは読まない）。置き場 apps/web/features/F4/doc/editor/ は data_links で結ぶ",
+  "apps/web/features/F4/doc/editor/doc-view-color.tsx": "色のある文書の読むだけの形の本体 ./doc-view-live を import() で遅く読む（同じ置き場の部品・ファイルは読まない）。置き場 apps/web/features/F4/doc/editor/ は data_links で結ぶ",
   "apps/web/tests/k/k630-request-ref.spec.ts": "K-630 の試験。画面の型を確かめるため子プロセスで apps/web の tsc を流す（読む物は apps/web の画面のコードと型。web の組が流す）",
+  "apps/web/tests/k/f9-mock-kit.ts": "段 10 の下絵の試験の共通の道具。read()（readFileSync）は、試験が渡した道（モックの置き場 apps/web/app/(dev)/dev/mock/f9/・F9 の部品 apps/web/features/F9/**・道の一覧）を字で読むだけで、どれも apps/web/**（jobs.web.paths）の中・K-670",
+  "apps/web/tests/k/k670-f9-parts-1.spec.ts": "モックの置き場 apps/web/app/(dev)/dev/mock/f9/（mocks.tsx・render*.tsx・[id]/page.tsx）・F9 の部品 apps/web/features/F9/**（.ts・.tsx・.css）・道の一覧 apps/web/lib/built-routes.ts を字で読み、scripts/ci/canvas_field_gate.py（11_tickets と置き場を読む）と scripts/ci/design_gate.py（正本 04_design/DESIGN-kaname.md・apps/web/styles/k-tokens.css・design-gate.json）を子プロセスで流す。検査の台本と正本は data_links で結ぶ（apps/web/** は jobs.web.paths に在る）・K-670",
+  "apps/web/tests/k/k671-f9-parts-2.spec.ts": "モックの置き場 apps/web/app/(dev)/dev/mock/f9/（render-admin.tsx・render.tsx）と F9 の部品 apps/web/features/F9/knowledge/（dialogs.tsx・admin-views.tsx）を字で読み、scripts/ci/design_gate.py（正本 04_design/DESIGN-kaname.md・apps/web/styles/k-tokens.css・design-gate.json）を子プロセスで流す。検査の台本と正本は data_links で結ぶ（apps/web/** は jobs.web.paths に在る）・K-671",
   "packages/db/test/knowledge_shelves.test.ts": "migration packages/db/migrations/20261125011400_knowledge_shelves.sql を readFileSync で読み、同じ文をもう 1 度当てても壊れないことを確かめる（K-674）",
   "apps/api/test/features/F9/knowledge.harness.ts": "入っている葉の hooks のファイル apps/api/src/hooks/f9-knowledge-*.ts を readdirSync と動的 import で読む（まだ入っていない葉の物は無いので、在る物だけを差す）。読む物と使う試験は data_links で結ぶ・K-675",
   "apps/api/test/features/F9/knowledge-base.test.ts": "契約の生成物 08_api/endpoints.json・07_qa/test-specs/errors.json を readFileSync で、置き場 k144.d の名前の一覧を readdirSync で読む。生成物と使う試験は同じ CI で作り直される・K-675",
