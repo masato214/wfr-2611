@@ -1,0 +1,25 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "packages/db/migrations/**",
+    "apps/api/src/features/F12/ops/**",
+    "apps/api/src/hooks/ops-inbox-read.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-inbox-read.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/ops-inbox-read.test.ts",
+    "apps/api/test/features/F12/ops-inbox.harness.ts",
+    "07_qa/test-plan/ears-elsewhere.d/K-973.json"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_ops_inquiries.test.ts",
+    "apps/api/test/generated/get_ops_inquiries_id.test.ts"
+   ]
+  }
+ ]
+}

@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 357（作った 115・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 322・部品 68・設定 41
+API 357（作った 117・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 322・部品 68・設定 41
 
 ## 共通の処理
 
@@ -249,8 +249,8 @@ API 357（作った 115・後のフェーズの行為だけ 20）・前の道す
 | `downloadInvoicePdf` | GET /api/v1/invoices/:id/pdf | 取得（invoices）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72,K-958 |
 | `listNotices` | GET /api/v1/notices | 取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障害の続報まで・1 件を開く口は無い） | F12 | 契約だけ（501） | K-72,K-954 |
 | `markNoticeRead` | POST /api/v1/notices/:id/read | 作成・実行（notices）— お知らせを見る | F12 | 契約だけ（501） | K-72,K-954 |
-| `listOpsInquiries` | GET /api/v1/ops/inquiries | 取得（inquiries）— 運営の受信箱（箱と何について で絞る・数は getOpsShell） | F12 | 契約だけ（501） | K-973 |
-| `getOpsInquiry` | GET /api/v1/ops/inquiries/:id | 取得（ops）— 問い合わせに答える | F12 | 契約だけ（501） | K-973 |
+| `listOpsInquiries` | GET /api/v1/ops/inquiries | 取得（inquiries）— 運営の受信箱（箱と何について で絞る・数は getOpsShell） | F12 | 作った | K-973 |
+| `getOpsInquiry` | GET /api/v1/ops/inquiries/:id | 取得（ops）— 問い合わせに答える | F12 | 作った | K-973 |
 | `updateOpsInquiry` | PATCH /api/v1/ops/inquiries/:id | 更新（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
 | `addOpsInquiryNote` | POST /api/v1/ops/inquiries/:id/notes | 作成・実行（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
 | `replyOpsInquiry` | POST /api/v1/ops/inquiries/:id/replies | 作成・実行（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
