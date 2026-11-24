@@ -3358,7 +3358,15 @@
     "getKnowledgeUsage",
     "verifyKnowledgePage",
     "listKnowledgeVersions",
-    "restoreKnowledgeVersion"
+    "restoreKnowledgeVersion",
+    "createKnowledgeFolder",
+    "updateKnowledgeFolder",
+    "deleteKnowledgeFolder",
+    "findSimilarKnowledge",
+    "deleteKnowledgePage",
+    "copyKnowledgePage",
+    "setKnowledgeMust",
+    "getKnowledgePageVersion"
    ],
    "tests": [
     "apps/api/test/generated/delete_knowledge_pages_id_draft.test.ts",
