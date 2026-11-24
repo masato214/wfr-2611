@@ -47,8 +47,11 @@ export interface MergedSlots {
   bands: BandActs;
 }
 
-/** 後ろの葉が 1 行ずつ足す（この葉の時点は空）。React の hook として毎回同じ順で呼ぶ */
-export const PAGE_SLOTS: readonly ((ctx: PageCtx) => PageSlot)[] = [];
+/** K-683 書く：「直す」で書いている画面にする（口は呼ばない・下書きは最初の保存でできる） */
+const useWriteSlot = (ctx: PageCtx): PageSlot => ({ acts: { edit: () => ctx.setEditing(true) } });
+
+/** 後ろの葉が 1 行ずつ足す。React の hook として毎回同じ順で呼ぶ */
+export const PAGE_SLOTS: readonly ((ctx: PageCtx) => PageSlot)[] = [useWriteSlot];
 
 const firstWins = <T extends object>(list: readonly (T | undefined)[]): T =>
   list.reduce<T>((acc, cur) => ({ ...(cur ?? {}), ...acc }), {} as T);

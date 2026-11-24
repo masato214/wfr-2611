@@ -693,3 +693,8 @@
   border: var(--k-c-detail-rule-border);
   border-radius: var(--k-r-md);
 }
+
+/* K-683 自動保存の印：保存できなかった */
+.k-f9-saved[data-kind="failed"] {
+  color: var(--k-st-danger);
+}

@@ -1,0 +1,9 @@
+{
+ "data_links": [
+  {"paths": ["apps/web/features/F9/knowledge/**"],
+   "tests": ["apps/web/tests/k/k683-knowledge-write.spec.ts"]}
+ ],
+ "reads_ok": {
+  "apps/web/tests/k/k683-knowledge-write.spec.ts": "K683-UI-011 が use-page-writing.ts と publish-gate.tsx を readFileSync で読む（書き終える手順が公開の口の前に差し込み口を呼ぶかを見る・ファイルは書かない）・K-683"
+ }
+}

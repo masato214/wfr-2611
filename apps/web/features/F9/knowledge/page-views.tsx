@@ -195,6 +195,9 @@ export function PageView({
 }
 
 // ---------------------------------------------------------------- ページ（書いている）
+/** 題名と 1 行の説明の上限（口も同じ・超えると 422） */
+export const EDIT_FIELD_MAX = 200;
+
 export interface PageEditProps {
   place: PagePlace;
   title: string;
@@ -202,35 +205,84 @@ export interface PageEditProps {
   saved: string;
   /** 本文（段 5 の文書の木。書く形は DocEditor） */
   doc: Doc;
+  /** 以下は画面の葉（K-683）が渡す。渡さなければ今の形（下絵＝欄は読むだけ） */
+  onTitle?: ((v: string) => void) | undefined;
+  onDesc?: ((v: string) => void) | undefined;
+  onDoc?: ((doc: Doc) => void) | undefined;
+  onCancel?: (() => void) | undefined;
+  onFinish?: (() => void) | undefined;
+  /** 書き終えるの答えを待つ間 */
+  busy?: boolean | undefined;
+  /** 印の形（failed＝保存できなかった） */
+  savedKind?: string | undefined;
+  /** 題名の欄の下の文 */
+  titleError?: string | null | undefined;
+  /** 書き終えるを押せない（別の人が下書き中） */
+  doneDisabled?: boolean | undefined;
+  /** 赤い箱・帯を入れる所（頭の下） */
+  notice?: ReactNode;
 }
 
 /** 書いている所。枠に色は付けない。道具の帯・自動保存・「やめる」「書き終える」だけ（段 5 の本文と同じ書き心地） */
-export function PageEdit({ place, title, desc, saved, doc }: PageEditProps) {
+export function PageEdit({
+  place,
+  title,
+  desc,
+  saved,
+  doc,
+  onTitle,
+  onDesc,
+  onDoc,
+  onCancel,
+  onFinish,
+  busy = false,
+  savedKind,
+  titleError,
+  doneDisabled = false,
+  notice,
+}: PageEditProps) {
+  const field = (on: ((v: string) => void) | undefined) =>
+    on
+      ? { onChange: (e: { target: { value: string } }) => on(e.target.value), maxLength: EDIT_FIELD_MAX }
+      : { readOnly: true };
   return (
     <article className="k-f9-card" aria-label="ページを書いている">
       <header className="k-f9-phead">
         <Place place={place} />
         <div className="k-f9-acts">
-          <span className="k-f9-saved" role="status">
+          <span className="k-f9-saved" role="status" {...(savedKind ? { "data-kind": savedKind } : {})}>
             {saved}
           </span>
-          <Button variant="outlined" size="sm">
+          <Button variant="outlined" size="sm" {...(onCancel ? { onClick: onCancel } : {})}>
             やめる
           </Button>
-          <Button size="sm">書き終える</Button>
+          <Button size="sm" loading={busy} disabled={doneDisabled} {...(onFinish ? { onClick: onFinish } : {})}>
+            書き終える
+          </Button>
         </div>
       </header>
+      {notice}
       <div className="k-f9-editfields">
-        <TextField label="題名" name="kn_title" value={title} readOnly required />
+        <TextField
+          label="題名"
+          name="kn_title"
+          aria-label="題名"
+          value={title}
+          required
+          error={titleError}
+          {...(titleError ? { "aria-invalid": true } : {})}
+          {...field(onTitle)}
+        />
         <TextField
           label="1 行の説明"
           name="kn_desc"
+          aria-label="1 行の説明"
           value={desc}
-          readOnly
+          {...field(onDesc)}
           description="AI は毎回、題名とこの 1 行だけを読み、要るときにページを開きます。何が書いてあるページかを 1 行で。"
         />
       </div>
-      <DocEditor doc={doc} onChange={noop} />
+      <DocEditor doc={doc} onChange={onDoc ?? noop} />
     </article>
   );
 }
