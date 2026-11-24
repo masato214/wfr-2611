@@ -2,7 +2,7 @@
 
 > 生成物（`python3 scripts/ci/build_catalog.py`）。手で直さない。チケットを切るときは、まずここを探す。使えるなら依存として書き、無いときだけ作る（D-128.125・D-128.129）。
 
-API 359（作った 114・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 321・部品 68・設定 41
+API 357（作った 115・後のフェーズの行為だけ 20）・前の道すじ 26・表 149・画面の部品 19・共通の処理 13・エラー 322・部品 68・設定 41
 
 ## 共通の処理
 
@@ -74,7 +74,7 @@ API 359（作った 114・後のフェーズの行為だけ 20）・前の道す
 | `custom_fields` | skeleton | F9 | F4 | ○ |
 | `distributions` | skeleton | F12 |  |  |
 | `error_events` | internal |  |  |  |
-| `export_jobs` | skeleton | F10,F12,F5 |  | ○ |
+| `export_jobs` | skeleton | F10,F5 |  | ○ |
 | `handover_rules` | skeleton |  | F8 |  |
 | `imports` | skeleton | F9 |  |  |
 | `inquiries` | skeleton | F12 |  |  |
@@ -240,8 +240,8 @@ API 359（作った 114・後のフェーズの行為だけ 20）・前の道す
 | `getPortalTicket` | GET /api/v1/portal/tickets/:id | 取得（portal）— 進みと成果物を見る | F11 | 契約だけ（501） |  |
 | `requestAcceptance` | POST /api/v1/tickets/:id/acceptances | 作成・実行（tickets）— 成果物を確認してもらう（検収を頼む） | F11 | 契約だけ（501） | K-71 |
 | `updateTicketClientShare` | PATCH /api/v1/tickets/:id/client-share | 更新（tickets）— 成果物を確認してもらう（検収を頼む） | F11 | 契約だけ（501） | K-71 |
-| `listMyInquiries` | GET /api/v1/inquiries | 取得（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
-| `createInquiry` | POST /api/v1/inquiries | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72,K-949 |
+| `listMyInquiries` | GET /api/v1/inquiries | 取得（inquiries）— 自分の問い合わせ（新しい順・返事ありの印つき） | F12 | 契約だけ（501） | K-72 |
+| `createInquiry` | POST /api/v1/inquiries | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 作った | K-72,K-949 |
 | `getMyInquiry` | GET /api/v1/inquiries/:id | 取得（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `postInquiryMessage` | POST /api/v1/inquiries/:id/messages | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `resolveMyInquiry` | POST /api/v1/inquiries/:id/resolve | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
@@ -249,14 +249,13 @@ API 359（作った 114・後のフェーズの行為だけ 20）・前の道す
 | `downloadInvoicePdf` | GET /api/v1/invoices/:id/pdf | 取得（invoices）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72,K-958 |
 | `listNotices` | GET /api/v1/notices | 取得（notices）— 自分に届いたお知らせを新しい順に読む（本文と障害の続報まで・1 件を開く口は無い） | F12 | 契約だけ（501） | K-72,K-954 |
 | `markNoticeRead` | POST /api/v1/notices/:id/read | 作成・実行（notices）— お知らせを見る | F12 | 契約だけ（501） | K-72,K-954 |
-| `listOpsInquiries` | GET /api/v1/ops/inquiries | 取得（ops）— 問い合わせに答える | F12 | 契約だけ（501） | K-973 |
+| `listOpsInquiries` | GET /api/v1/ops/inquiries | 取得（inquiries）— 運営の受信箱（箱と何について で絞る・数は getOpsShell） | F12 | 契約だけ（501） | K-973 |
 | `getOpsInquiry` | GET /api/v1/ops/inquiries/:id | 取得（ops）— 問い合わせに答える | F12 | 契約だけ（501） | K-973 |
 | `updateOpsInquiry` | PATCH /api/v1/ops/inquiries/:id | 更新（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
 | `addOpsInquiryNote` | POST /api/v1/ops/inquiries/:id/notes | 作成・実行（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
 | `replyOpsInquiry` | POST /api/v1/ops/inquiries/:id/replies | 作成・実行（ops）— 問い合わせに答える | F12 | 契約だけ（501） |  |
 | `listOpsInvoices` | GET /api/v1/ops/invoices | 取得（invoices）— 運営が月ごとの請求書を見る（お支払い待ち・払われた・期限を過ぎた・入金の並びつき） | F12 | 契約だけ（501） |  |
 | `recordPayment` | POST /api/v1/ops/invoices/:id/payments | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） |  |
-| `exportOpsInvoices` | POST /api/v1/ops/invoices/export | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） |  |
 | `issueOpsInvoices` | POST /api/v1/ops/invoices/issue | 作成・実行（ops）— 請求書を出し、入金を記録する | F12 | 契約だけ（501） |  |
 | `listOpsMembers` | GET /api/v1/ops/members | 取得（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |
 | `addOpsMember` | POST /api/v1/ops/members | 作成・実行（ops）— 運営の人を足し、できることを決める | F12 | 契約だけ（501） |  |
@@ -295,7 +294,6 @@ API 359（作った 114・後のフェーズの行為だけ 20）・前の道す
 | `changeOpsWorkspacePlan` | POST /api/v1/ops/workspaces/:id/plan | 作成・実行（ops）— ワークスペースの 1 社を扱う（いまの状態・メンバー・プ | F12 | 契約だけ（501） |  |
 | `resumeWorkspace` | POST /api/v1/ops/workspaces/:id/resume | 作成・実行（ops）— ワークスペースを止める・再開する（理由・先に知らせる） | F12 | 契約だけ（501） |  |
 | `stopWorkspace` | POST /api/v1/ops/workspaces/:id/stop | 作成・実行（ops）— ワークスペースを止める・再開する（理由・先に知らせる） | F12 | 契約だけ（501） |  |
-| `exportOpsWorkspaces` | POST /api/v1/ops/workspaces/export | 作成・実行（ops）— 各ワークスペースの様子を見る（気にかける） | F12 | 契約だけ（501） |  |
 | `getServiceStatusForMember` | GET /api/v1/service-status | 取得（service-status）— お知らせを見る | F12 | 契約だけ（501） | K-72 |
 | `getBilling` | GET /api/v1/workspace/billing | 取得（workspace）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72,K-958 |
 | `updateBillingContact` | PATCH /api/v1/workspace/billing-contact | 更新（workspace）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72 |

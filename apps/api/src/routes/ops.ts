@@ -10,7 +10,6 @@ export function register(app: Hono<Vars>, deps: ContractDeps): void {
   app.post("/api/v1/ops/inquiries/:id/notes", op(deps, "addOpsInquiryNote"));
   app.post("/api/v1/ops/inquiries/:id/replies", op(deps, "replyOpsInquiry"));
   app.get("/api/v1/ops/invoices", op(deps, "listOpsInvoices"));
-  app.post("/api/v1/ops/invoices/export", op(deps, "exportOpsInvoices"));
   app.post("/api/v1/ops/invoices/issue", op(deps, "issueOpsInvoices"));
   app.post("/api/v1/ops/invoices/:id/payments", op(deps, "recordPayment"));
   app.get("/api/v1/ops/members", op(deps, "listOpsMembers"));
@@ -39,7 +38,6 @@ export function register(app: Hono<Vars>, deps: ContractDeps): void {
   app.get("/api/v1/ops/templates/:id", op(deps, "getOpsTemplate"));
   app.post("/api/v1/ops/templates/:id/versions", op(deps, "releaseOpsTemplate"));
   app.get("/api/v1/ops/workspaces", op(deps, "listOpsWorkspaces"));
-  app.post("/api/v1/ops/workspaces/export", op(deps, "exportOpsWorkspaces"));
   app.get("/api/v1/ops/workspaces/:id", op(deps, "getOpsWorkspace"));
   app.get("/api/v1/ops/workspaces/:id/audit", op(deps, "listOpsWorkspaceAudit"));
   app.get("/api/v1/ops/workspaces/:id/billing", op(deps, "getOpsWorkspaceBilling"));

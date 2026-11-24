@@ -1,6 +1,6 @@
 # rls-matrix テスト仕様（L1・機械生成）
 
-> 05_flow/build_tasks.py がタスクと同時に生成。ID は変えない。途中変更は qa_delta.py で差分。結果列は staging で流した人が書く（再生成しても残る。今の行 259・結果あり 259 行）。
+> 05_flow/build_tasks.py がタスクと同時に生成。ID は変えない。途中変更は qa_delta.py で差分。結果列は staging で流した人が書く（再生成しても残る。今の行 258・結果あり 258 行）。
 
 | ID | 画面 | テスト観点 | テスト項目 | 前提条件 | 操作手順 | 期待結果 | 結果 | 備考 | タスク | 実行条件 |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -201,7 +201,6 @@
 | RLS-D10-015 | 11. 運営 | G-15 信号なし終了 | N/A：外部を呼ばない | 外部を故意に切る | 実行する | 成功扱いにせず、502 と次の一手（人へのハンドオフ） | PASS（該当なし：外部を呼ばない。2026-09-15） |  | T-D-10 | L1 |
 | RLS-D10-016 | 11. 運営 | G-16 有限資源 | 消費する資源：DB 接続（プール経由）・メモリ。1 要求あたり 1 接続以下・上限時は待機列 | 同時 50 要求 | 同時に叩く | ログインが落ちない・接続上限に張り付かない（関門 C2 のプール） | PASS（索引：tenant_id・scope_id・FK 列（gen_ddl）。接続は関門 C2 のプール・1 要求 1 接続以下。実測は L4。2026-09-15） | L4 で負荷試験 | T-D-10 | L1 |
 | RLS-D11-001 | inquiries | RLS 越境 | inquiries：他テナントの行を SELECT / UPDATE できない（SET LOCAL を正しく／飛ばして両方） | 2 テナントのデータ | 別テナントの id で要求 | 0 行・403（副作用なし） | PASS（G33 実行 866／通過 866／不合格 0／未 migration の表 7（その場合は担当 T-D-* で流す）：同じ会社・見える範囲 OK／他の会社 0 行／SET LOCAL 無し 0 行・エラー／権限なしの書き込みは denied／運営は許可の範囲だけ。migration migrations/0015_s12.sql・policies policies/0015_s12.sql（gen_rls）。2026-09-16） | G-02 | T-D-11 | L1 |
-| RLS-D11-002 | inquiries | 本人のもの | inquiries：自分の問い合わせだけ読めて直せる。他人の問い合わせは管理者でも読めない（契約の self） | 担当者と管理者でログイン | 自分の行と他人の行を読む・直す | 自分の行 200・他人の行は見えない（0 行） | まだ（policies/0084_private_rows.sql・本物の DB の試験は packages/db/test/self_only.test.ts と apps/api/test/authz_rows.test.ts。2026-11-03 に守りを直した） | D-128.88 | T-D-11 | L1 |
 | RLS-D11-003 | notices | RLS 越境 | notices：他テナントの行を SELECT / UPDATE できない（SET LOCAL を正しく／飛ばして両方） | 2 テナントのデータ | 別テナントの id で要求 | 0 行・403（副作用なし） | PASS（G33 実行 866／通過 866／不合格 0／未 migration の表 7（その場合は担当 T-D-* で流す）：同じ会社・見える範囲 OK／他の会社 0 行／SET LOCAL 無し 0 行・エラー／権限なしの書き込みは denied／運営は許可の範囲だけ。migration migrations/0015_s12.sql・policies policies/0015_s12.sql（gen_rls）。2026-09-16） | G-02 | T-D-11 | L1 |
 | RLS-D11-004 | notice_deliveries | RLS 越境 | notice_deliveries：他テナントの行を SELECT / UPDATE できない（SET LOCAL を正しく／飛ばして両方） | 2 テナントのデータ | 別テナントの id で要求 | 0 行・403（副作用なし） | PASS（G33 実行 866／通過 866／不合格 0／未 migration の表 7（その場合は担当 T-D-* で流す）：同じ会社・見える範囲 OK／他の会社 0 行／SET LOCAL 無し 0 行・エラー／権限なしの書き込みは denied／運営は許可の範囲だけ。migration migrations/0015_s12.sql・policies policies/0015_s12.sql（gen_rls）。2026-09-16） | G-02 | T-D-11 | L1 |
 | RLS-D11-005 | notice_deliveries | 本人のもの | notice_deliveries：本人の行は権限なしで直せ、他人の行は権限が要る | 担当者でログイン | 自分の行と他人の行を更新 | 自分の行 200・他人の行 403 | PASS（/Users/masato0420/Downloads/受託開発/自社事業/kaname/packages/db/test/self_only.test.ts・実 Chrome・2026-10-01） | D-073.1 | T-D-11 | L1 |
@@ -264,7 +263,7 @@
 | RLS-D14-013 | 15. 段階 2 で足す表 | G-15 信号なし終了 | N/A：外部を呼ばない | 外部を故意に切る | 実行する | 成功扱いにせず、502 と次の一手（人へのハンドオフ） | PASS（該当なし：外部を呼ばない。2026-09-16） |  | T-D-14 | L1 |
 | RLS-D14-014 | 15. 段階 2 で足す表 | G-16 有限資源 | 消費する資源：DB 接続（プール経由）・メモリ。1 要求あたり 1 接続以下・上限時は待機列 | 同時 50 要求 | 同時に叩く | ログインが落ちない・接続上限に張り付かない（関門 C2 のプール） | PASS（索引：tenant_id・scope_id・FK 列（gen_ddl）。接続は関門 C2 のプール・1 要求 1 接続以下。実測は L4。2026-09-16） | L4 で負荷試験 | T-D-14 | L1 |
 
-## もう無い行（2 行）
+## もう無い行（3 行）
 
 > モックや決定が変わって今の画面には無くなった行。ID と当時の結果を残すためだけに置く（同じ ID を二度使わない）。確かめる対象ではない。
 
@@ -272,3 +271,4 @@
 |---|---|---|---|---|---|---|---|---|---|---|
 | RLS-D11-027 | bridge_releases | RLS 越境 | bridge_releases：他テナントの行を SELECT / UPDATE できない（SET LOCAL を正しく／飛ばして両方） | 2 テナントのデータ | 別テナントの id で要求 | 0 行・403（副作用なし） | BLOCKED（決定どうしが食い違っている：D-015.7 は配布物を表 bridge_releases に置くと決め、D-109 は置き場の目録ファイル（kaname-bridge.json）にした。実装は目録ファイルで、表は作っていない。どちらを正にするか本人の決定待ち・2026-10-01） | G-02／削除（生成元から消えた・2026-10-01。結果は残す） | T-D-11 | L1 |
 | RLS-D05-013 | credentials | 本人のもの | credentials：本人の行は権限なしで直せ、他人の行は権限が要る | 担当者でログイン | 自分の行と他人の行を更新 | 自分の行 200・他人の行 403 | PASS（/Users/masato0420/Downloads/受託開発/自社事業/kaname/packages/db/test/self_only.test.ts・実 Chrome・2026-10-01） | D-073.1／削除（決定が変わった・2026-11-19・K-351：個人の物は持ち主だけが書く・ワークスペースの物は credentials の edit を持つ人だけ（D-128.57 ①）。前の「本人か権限のある人」はやめた。今の守りは 11_tickets/K-351.md の K351-API-014〜017 が受ける。結果は残す） | T-D-05 | L1 |
+| RLS-D11-002 | inquiries | 本人のもの | inquiries：自分の問い合わせだけ読めて直せる。他人の問い合わせは管理者でも読めない（契約の self） | 担当者と管理者でログイン | 自分の行と他人の行を読む・直す | 自分の行 200・他人の行は見えない（0 行） | まだ（policies/0084_private_rows.sql・本物の DB の試験は packages/db/test/self_only.test.ts と apps/api/test/authz_rows.test.ts。2026-11-03 に守りを直した） | D-128.88／削除（決定が変わった：D-156.25 で見えるのは書いた本人だけ・書く守りは置かず関数 app.inquiry_create が書く。守りの名前 inquiries_self_only_write が無くなり、本人のものの行の対象から外れた・K-949） | T-D-11 | L1 |

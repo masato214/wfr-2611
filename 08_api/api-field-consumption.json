@@ -6518,7 +6518,6 @@
     "disclosure",
     "account-close",
     "ops-support",
-    "ops-home",
     "ops-skills",
     "ops-notices",
     "ops-billing",
@@ -6545,7 +6544,6 @@
     "disclosure",
     "account-close",
     "ops-support",
-    "ops-home",
     "ops-skills",
     "ops-notices",
     "ops-billing",
@@ -6572,7 +6570,6 @@
     "disclosure",
     "account-close",
     "ops-support",
-    "ops-home",
     "ops-skills",
     "ops-notices",
     "ops-billing",
@@ -6599,7 +6596,6 @@
     "disclosure",
     "account-close",
     "ops-support",
-    "ops-home",
     "ops-skills",
     "ops-notices",
     "ops-billing",
@@ -6626,7 +6622,6 @@
     "disclosure",
     "account-close",
     "ops-support",
-    "ops-home",
     "ops-skills",
     "ops-notices",
     "ops-billing",
@@ -6653,7 +6648,6 @@
     "disclosure",
     "account-close",
     "ops-support",
-    "ops-home",
     "ops-skills",
     "ops-notices",
     "ops-billing",
@@ -6680,7 +6674,6 @@
     "disclosure",
     "account-close",
     "ops-support",
-    "ops-home",
     "ops-skills",
     "ops-notices",
     "ops-billing",
@@ -6707,7 +6700,6 @@
     "disclosure",
     "account-close",
     "ops-support",
-    "ops-home",
     "ops-skills",
     "ops-notices",
     "ops-billing",
@@ -6922,7 +6914,7 @@
   },
   {
    "entity": "inquiries",
-   "field": "kind_id",
+   "field": "title",
    "consumed_by_screens": [
     "ops-support",
     "ops-home",
@@ -6934,7 +6926,43 @@
   },
   {
    "entity": "inquiries",
-   "field": "status_id",
+   "field": "topic_key",
+   "consumed_by_screens": [
+    "ops-support",
+    "ops-home",
+    "inquiry",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "inquiries",
+   "field": "state",
+   "consumed_by_screens": [
+    "ops-support",
+    "ops-home",
+    "inquiry",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "inquiries",
+   "field": "asker_read_at",
+   "consumed_by_screens": [
+    "ops-support",
+    "ops-home",
+    "inquiry",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "inquiries",
+   "field": "last_message_at",
    "consumed_by_screens": [
     "ops-support",
     "ops-home",
@@ -6971,6 +6999,30 @@
   {
    "entity": "inquiries",
    "field": "ai_first_answered_at",
+   "consumed_by_screens": [
+    "ops-support",
+    "ops-home",
+    "inquiry",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "inquiries",
+   "field": "kind_id",
+   "consumed_by_screens": [
+    "ops-support",
+    "ops-home",
+    "inquiry",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "inquiries",
+   "field": "status_id",
    "consumed_by_screens": [
     "ops-support",
     "ops-home",
@@ -8718,9 +8770,7 @@
     "audit",
     "export",
     "account-close",
-    "ops-home",
-    "company-settings",
-    "ops-billing"
+    "company-settings"
    ],
    "internal": false,
    "reason": null
@@ -8733,9 +8783,7 @@
     "audit",
     "export",
     "account-close",
-    "ops-home",
-    "company-settings",
-    "ops-billing"
+    "company-settings"
    ],
    "internal": false,
    "reason": null
@@ -8755,9 +8803,7 @@
     "audit",
     "export",
     "account-close",
-    "ops-home",
-    "company-settings",
-    "ops-billing"
+    "company-settings"
    ],
    "internal": false,
    "reason": null
@@ -8770,9 +8816,7 @@
     "audit",
     "export",
     "account-close",
-    "ops-home",
-    "company-settings",
-    "ops-billing"
+    "company-settings"
    ],
    "internal": false,
    "reason": null
@@ -8785,9 +8829,7 @@
     "audit",
     "export",
     "account-close",
-    "ops-home",
-    "company-settings",
-    "ops-billing"
+    "company-settings"
    ],
    "internal": false,
    "reason": null

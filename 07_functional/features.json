@@ -6788,10 +6788,12 @@
     "E-ACT-037",
     "E-PAY-003",
     "E-PAY-004",
-    "E-PAY-006"
+    "E-PAY-006",
+    "E-INQ-001"
    ],
    "policies": [
     "C2",
+    "C4",
     "C6"
    ],
    "notifications": [
@@ -6844,6 +6846,7 @@
      ],
      "choke_points": [
       "C2",
+      "C4",
       "C6"
      ],
      "source": [
@@ -7085,7 +7088,6 @@
     "E-087",
     "E-088",
     "E-091",
-    "E-093",
     "E-094",
     "E-101",
     "E-104",
@@ -7211,8 +7213,8 @@
     {
      "act": "A70",
      "role": "action",
-     "method": "PATCH",
-     "path_draft": "/api/inquiries/:id",
+     "method": "POST",
+     "path_draft": "/api/inquiries",
      "auth": "session（会社・層・権限）",
      "related_entities": [
       "E-074",
@@ -10054,6 +10056,7 @@
     "A20",
     "A40",
     "A41",
+    "A67",
     "A76",
     "A84",
     "A86",
@@ -10096,6 +10099,7 @@
     "disclosure",
     "export",
     "import",
+    "inquiry",
     "ops-disclosure",
     "ops-skills",
     "ops-team"
