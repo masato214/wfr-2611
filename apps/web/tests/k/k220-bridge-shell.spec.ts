@@ -337,7 +337,8 @@ test("K220-UI-013 幅 375：本文の一番下まで送ると、本文の一番�
     ),
   );
   expect(bottom).toBeGreaterThan(0);
-  expect(bottom).toBeLessThanOrEqual(t.y);
+  // 文書の高さは整数に丸められ、本文の高さが端数だと最後の 1px 未満までは送れない。被りは 1px からを数える（K-1114・K138-SH-019 と同じ）
+  expect(bottom).toBeLessThan(t.y + 1);
 });
 
 interface Group {

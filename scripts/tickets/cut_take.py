@@ -23,6 +23,7 @@ import re
 import subprocess
 import sys
 import tempfile
+from collections import Counter
 
 SHARED = ["apps/api/test/features/contract/k144-contract.test.ts"]
 EARS = "07_qa/test-plan/ears-elsewhere.json"
@@ -119,6 +120,22 @@ def merge3(path: str, base: str | None, ours: str | None, theirs: str) -> str:
     return r.stdout
 
 
+def merge_own_only(path: str, fork_body: str | None, ours: str, theirs: str, own_free: str) -> str:
+    """分かれ目を元にするとぶつかるとき（分かれ目の後に本線へ入った別のチケット＝重ねた元の行のすぐ下に、自分の行を足す・K-581・K-1115）：
+    元の版を「切る段の版から自分の印を外した物」にして、自分の行だけを本線の版に足す（2 回目もぶつかれば merge3 が止める）。
+    theirs はまだのチケットの印と範囲を外した後の版なので、外した範囲の中身は数えない。
+    切る段で足した印の無い行が本線の版に無ければ、それを落とすことになるので止める。同じ字面の行（`});` など）を見落とさないよう、
+    行ごとの数で比べる：切る段の版での数が、分かれ目の数と合わせた結果の数の大きい方を超える行を「落ちた」とする（空行は数えない）"""
+    out = merge3(path, own_free, ours, theirs)
+    before = Counter((fork_body or "").split("\n"))
+    have = Counter(out.split("\n"))
+    lost = [ln for ln, n in Counter(theirs.split("\n")).items()
+            if ln.strip() and not MARK.search(ln) and n > max(before[ln], have[ln])]
+    if lost:
+        raise SystemExit(f"止めた — {path} が本線の後からの変更とぶつかる（切る段で足した印の無い行が本線に無い：{lost[0]}）")
+    return out
+
+
 def take(repo: pathlib.Path, tid: str, ref: str, shared: list[str] | None = None, regenerate: bool = True) -> list[str]:
     shared = SHARED if shared is None else shared
     if not re.fullmatch(r"[A-Z]+-\d+", tid) or ref.startswith("-") or not ref.strip():
@@ -146,10 +163,14 @@ def take(repo: pathlib.Path, tid: str, ref: str, shared: list[str] | None = None
     for f in shared:
         body = _show(repo, ref, f)
         if body is not None:
-            base = _show(repo, fork, f) if fork else None
+            fork_body = _show(repo, fork, f) if fork else None
             ours = _show(repo, "HEAD", f)
+            theirs = filter_marks(body, keep)
             # 印の無い行は分かれ目から変わらない前提。切る段の版から、まだのチケットの印を外したものを本線の版と合わせる
-            files[f] = merge3(f, filter_marks(base, keep) if base is not None else None, ours, filter_marks(body, keep))
+            try:
+                files[f] = merge3(f, filter_marks(fork_body, keep) if fork_body is not None else None, ours, theirs)
+            except SystemExit:
+                files[f] = merge_own_only(f, fork_body, ours, theirs, filter_marks(body, keep - {tid}))
     # .d/ のあるリポジトリでは ears-elsewhere.json は生成物：3 つの版の足し合わせをせず、carry: の断片から作り手が作る（K-325）
     ears = None if (repo / EARS_D).is_dir() else _show(repo, ref, EARS)
     if ears is not None:
