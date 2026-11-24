@@ -8124,6 +8124,70 @@
   },
   {
    "entity": "invoices",
+   "field": "plan_name",
+   "consumed_by_screens": [
+    "billing-setup",
+    "ops-support",
+    "ops-home",
+    "company-settings",
+    "billing",
+    "ops-billing",
+    "ops-llm",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "invoices",
+   "field": "price_amount",
+   "consumed_by_screens": [
+    "billing-setup",
+    "ops-support",
+    "ops-home",
+    "company-settings",
+    "billing",
+    "ops-billing",
+    "ops-llm",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "invoices",
+   "field": "tax_amount",
+   "consumed_by_screens": [
+    "billing-setup",
+    "ops-support",
+    "ops-home",
+    "company-settings",
+    "billing",
+    "ops-billing",
+    "ops-llm",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "invoices",
+   "field": "prorated_amount",
+   "consumed_by_screens": [
+    "billing-setup",
+    "ops-support",
+    "ops-home",
+    "company-settings",
+    "billing",
+    "ops-billing",
+    "ops-llm",
+    "ops-tenant"
+   ],
+   "internal": false,
+   "reason": null
+  },
+  {
+   "entity": "invoices",
    "field": "stripe_invoice_ref",
    "consumed_by_screens": [
     "billing-setup",

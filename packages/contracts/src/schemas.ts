@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:6994f5e355211a74
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:c22682d5db7e7633
 import { z } from "zod";
 
 export const Tenants = z.strictObject({
@@ -2028,6 +2028,10 @@ export const Invoices = z.strictObject({
   due_on: z.iso.date().nullable().optional(),
   status_id: z.string().nullable().optional(),
   pdf_ref: z.string().nullable().optional(),
+  plan_name: z.string().nullable().optional(),
+  price_amount: z.number().int().nullable().optional(),
+  tax_amount: z.number().int().nullable().optional(),
+  prorated_amount: z.number().int().nullable().optional(),
   stripe_invoice_ref: z.string().optional(),
   hosted_url: z.string().optional(),
   id: z.uuid(),
@@ -2047,6 +2051,10 @@ export const InvoicesInput = z.strictObject({
   due_on: z.iso.date().nullable().optional(),
   status_id: z.string().nullable().optional(),
   pdf_ref: z.string().nullable().optional(),
+  plan_name: z.string().nullable().optional(),
+  price_amount: z.number().int().nullable().optional(),
+  tax_amount: z.number().int().nullable().optional(),
+  prorated_amount: z.number().int().nullable().optional(),
   stripe_invoice_ref: z.string().optional(),
   hosted_url: z.string().optional(),
 });

@@ -8349,6 +8349,22 @@
      "note": null
     },
     {
+     "name": "plan_name",
+     "note": null
+    },
+    {
+     "name": "price_amount",
+     "note": "税別"
+    },
+    {
+     "name": "tax_amount",
+     "note": null
+    },
+    {
+     "name": "prorated_amount",
+     "note": "日割り・税込）（内訳・K-981"
+    },
+    {
      "name": "stripe_invoice_ref",
      "note": null
     },
@@ -8418,7 +8434,7 @@
     }
    ],
    "legacy_drift_notes": null,
-   "note": "**★新設（D-075.4）。段階 1 は請求書払い。**カードは段階 2（D-002）で `payments.method` が増えるだけ",
+   "note": "**★新設（D-075.4）。段階 1 は請求書払い。**会社と月で 1 枚（出した消していない行の一意の索引 `invoices_tenant_period_uq`・K-981）。カードは段階 2（D-002）で `payments.method` が増えるだけ",
    "status": "decided",
    "decided_at": "2026-11-24",
    "source": [
