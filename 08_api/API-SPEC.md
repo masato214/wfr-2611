@@ -121,7 +121,7 @@
 | EP-106 | GET | `/api/v1/exports/:id` | 取得（exports）— 記録を書き出す（本人確認） | A40 | 1 | member | C4 | 401 403 404 422 429 403 403 503 |
 | EP-107 | GET | `/api/v1/handover_rules` | 取得（handover_rules）— 渡すときに一緒に切り替えるものの | A110 | 1 | member |  | 401 403 422 429 403 403 503 |
 | EP-108 | GET | `/api/v1/inquiries` | 取得（inquiries）— 運営に問い合わせる | A67 | 1 | member |  | 401 403 422 429 403 403 503 |
-| EP-109 | POST | `/api/v1/inquiries` | 作成・実行（inquiries）— 運営に問い合わせる | A67 | 1 | member | C2 C6 | 401 403 409 422 413 429 403 403 503 |
+| EP-109 | POST | `/api/v1/inquiries` | 作成・実行（inquiries）— 運営に問い合わせる | A67 | 1 | member | C2 C6 | 401 403 409 422 404 413 429 403 403 503 |
 | EP-110 | GET | `/api/v1/inquiries/:id` | 取得（inquiries）— 運営に問い合わせる | A67 | 1 | member |  | 401 403 404 422 429 403 403 503 |
 | EP-111 | POST | `/api/v1/inquiries/:id/messages` | 作成・実行（inquiries）— 運営に問い合わせる | A67 | 1 | member | C2 C6 | 401 403 404 409 422 413 429 403 403 503 |
 | EP-112 | POST | `/api/v1/inquiries/:id/resolve` | 作成・実行（inquiries）— 運営に問い合わせる | A67 | 1 | member | C2 C6 | 401 403 404 409 422 413 429 403 403 503 |

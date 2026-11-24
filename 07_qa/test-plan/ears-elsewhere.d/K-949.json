@@ -1,0 +1,29 @@
+{
+ "ops": {
+  "createInquiry": {
+   "file": "apps/api/test/features/F12/inquiry-create.test.ts",
+   "reason": "問い合わせは本人の会社・本人の添付（検査済み・まだ使っていない）・行の守り（本人だけ）で答えが変わる。生成の試験の種では添付の行と本人を作れない（K-949）",
+   "covers": {
+    "test_post_inquiries_ok": "K949-API-001",
+    "test_post_inquiries_rejected_401": "K949-API-010",
+    "test_post_inquiries_rejected_403": "K949-API-009",
+    "test_post_inquiries_rejected_422": "K949-API-012",
+    "test_post_inquiries_not_found": "K949-API-005",
+    "test_post_inquiries_conflict": "K949-API-006",
+    "test_post_inquiries_rate_limited": "K949-API-011",
+    "test_post_inquiries_shape": "K949-API-001",
+    "test_post_inquiries_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_inquiries_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_inquiries_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）で、口ごとに変わらない"
+   }
+  }
+ }
+}
