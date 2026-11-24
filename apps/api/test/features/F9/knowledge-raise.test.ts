@@ -564,9 +564,10 @@ describe("K-687 上の棚に上げる", () => {
     const r = await raise(w.mem1, mine1, { group_id: w.g1 });
     expect(r.status).toBe(201);
     expect(((await h.json(r)).data as Json)["state"]).toBe("approved");
+    // 自分の棚のページは持ち主の主の所属に置く（K-674 の引き金）。抜ける前に作り、抜けた後に上げる
+    const mine2 = await mine(w.view1, { title: "抜けたあと" });
     await h.admin.query("delete from scope_memberships where member_id = $1 and scope_id = $2", [w.view1.id, w.g1]);
     await h.admin.query("update members set scope_id = $2 where id = $1", [w.view1.id, w.co.rootScope]);
-    const mine2 = await mine(w.view1, { title: "抜けたあと" });
     expect((await raise(w.view1, mine2, { group_id: w.g1 })).status).toBe(404);
   });
 
