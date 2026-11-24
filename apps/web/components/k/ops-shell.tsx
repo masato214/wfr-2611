@@ -4,7 +4,7 @@
 //  利用者の Shell は使わない：運営は顧客の画面とは別の場所（キャンバス OpList の左のバー・上の帯）。
 //   広い幅：左のバー（Kaname 運営・5 つの入口・下に 運営の人 と「別の場所」の注記）／768〜1023 は 56 のレール／767 以下は左のバーを出さず、
 //   帯の左のボタンから引き出しを開く。見た目の寸法は外枠の k-shell・k-nav・k-bar（components/k/shell.css）をそのまま使い、運営だけの所は ops-shell.css（k-op-）
-//   動きは持たない：行き先は OPS_NAV（本番では呼ぶ側が差し替える）。探す・知らせ・自分のメニューは出すが押せない形（D-145.9）
+//   動きは持たない：行き先は OPS_NAV（本番では呼ぶ側が hrefs で差し替える・K-946）。探す・知らせ・自分のメニューは出すが押せない形（D-145.9）
 import {
   Bell,
   Building2,
@@ -77,13 +77,25 @@ export interface OpsShellProps {
   banner?: ReactNode;
   /** 狭い幅の引き出しを最初から開いて描く（見本用） */
   drawerOpen?: boolean;
+  /** 左のバーの行き先（本番の入れ物が /ops の道を渡す・K-946）。無い項目は OPS_NAV の下絵の道のまま */
+  hrefs?: Partial<Record<OpsNavItem["key"], string>>;
   children: ReactNode;
 }
 
-function NavItem({ it, current, badge }: { it: OpsNavItem; current: boolean; badge?: number | undefined }) {
+function NavItem({
+  it,
+  href,
+  current,
+  badge,
+}: {
+  it: OpsNavItem;
+  href: string;
+  current: boolean;
+  badge?: number | undefined;
+}) {
   const Icon = it.icon;
   return (
-    <a className="k-nav-item k-op-nav-item" href={it.href} title={it.label} aria-current={current ? "page" : undefined}>
+    <a className="k-nav-item k-op-nav-item" href={href} title={it.label} aria-current={current ? "page" : undefined}>
       <Icon size={16} aria-hidden="true" />
       <span className="k-nav-label">{it.label}</span>
       {badge ? (
@@ -102,10 +114,20 @@ function NavList({ p }: { p: OpsShellProps }) {
     <>
       <div className="k-op-gap" />
       {OPS_NAV.map((it) => (
-        <NavItem key={it.key} it={it} current={it.screens.includes(p.screen)} badge={badgeOf(it.key)} />
+        <NavItem
+          key={it.key}
+          it={it}
+          href={p.hrefs?.[it.key] ?? it.href}
+          current={it.screens.includes(p.screen)}
+          badge={badgeOf(it.key)}
+        />
       ))}
       <div className="k-nav-fill" />
-      <NavItem it={OPS_TEAM_NAV} current={OPS_TEAM_NAV.screens.includes(p.screen)} />
+      <NavItem
+        it={OPS_TEAM_NAV}
+        href={p.hrefs?.team ?? OPS_TEAM_NAV.href}
+        current={OPS_TEAM_NAV.screens.includes(p.screen)}
+      />
       <p className="k-nav-label k-op-note">{NOTE}</p>
     </>
   );

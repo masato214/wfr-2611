@@ -182,7 +182,16 @@ export function TeamRemoveConfirm({
 }
 
 /** 運営のログイン（パスキーで入る・パスキーしか使えない）。運営の外枠は出さない */
-export function OpsLogin({ failed = false }: { failed?: boolean }): ReactNode {
+/** 運営のログイン。見本は押しても何もしない。本番の頁（app/(ops)/ops/login・K-946）が押したときの動きと押している間を渡す */
+export function OpsLogin({
+  failed = false,
+  busy = false,
+  onPasskey,
+}: {
+  failed?: boolean;
+  busy?: boolean;
+  onPasskey?: () => void;
+}): ReactNode {
   return (
     <div className="k-root k-auth">
       <div className="k-auth-logo">
@@ -197,7 +206,7 @@ export function OpsLogin({ failed = false }: { failed?: boolean }): ReactNode {
         <NoteBox>
           顧客の方は、こちらではなく Kaname のログインから入ってください。運営の場所は運営の人だけが入れます
         </NoteBox>
-        <Button size="lg" icon={<Fingerprint size={18} />}>
+        <Button size="lg" icon={<Fingerprint size={18} />} loading={busy} onClick={onPasskey}>
           パスキーで入る
         </Button>
         <p className="k-auth-note">
