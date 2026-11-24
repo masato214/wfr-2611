@@ -2926,12 +2926,28 @@
     "type": "date",
     "nullable": true
    },
+   "plan_name": {
+    "type": "text",
+    "nullable": true
+   },
+   "price_amount": {
+    "type": "integer",
+    "nullable": true
+   },
+   "prorated_amount": {
+    "type": "integer",
+    "nullable": true
+   },
    "status_id": {
     "type": "text",
     "nullable": true
    },
    "subscription_id": {
     "type": "uuid",
+    "nullable": true
+   },
+   "tax_amount": {
+    "type": "integer",
     "nullable": true
    },
    "tenant_id": {
