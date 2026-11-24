@@ -27697,6 +27697,89 @@
    "file": "11_tickets/K-973.md"
   },
   {
+   "id": "K-974",
+   "title": "運営が受信箱の問い合わせの担当・状態・後でを変える口（updateOpsInquiry：取る・外すは自分だけ・取り合いは 409・済みにする・開き直す・後で（日時））（K-72 の葉・W5）",
+   "kind": "タスク",
+   "stage": "未着手",
+   "parent": "K-72",
+   "milestone": "F12",
+   "area": "運営の受信箱",
+   "assignee": "実装",
+   "due": "2026-12-12",
+   "estimate_hours": "1",
+   "estimate_basis": "実測なし・仮。形の近い K-952（関数で状態を確かめて書く・試験 14 行・見込み 1）と K-969（運営の書く口・記録）から引いた：migration（関数 1 つ）15 分・口と契約の入力の決まり 10 分・登録先（hooks・.d・errors.d・ears・ci_scope）10 分・試験 14 行を流して直す 25 分",
+   "decisions": [
+    "D-156.3",
+    "D-156.12",
+    "D-156.17",
+    "D-156.25",
+    "D-125.129",
+    "D-128.108"
+   ],
+   "split": "",
+   "choke_points": [
+    "C2"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-inbox-update.test.ts",
+    "apps/api/test/generated/patch_ops_inquiries_id.test.ts"
+   ],
+   "carry": [],
+   "depends_on": [
+    "K-973",
+    "K-951"
+   ],
+   "acts": [
+    "A70"
+   ],
+   "screens": [
+    "ops-support"
+   ],
+   "apis": [
+    "updateOpsInquiry"
+   ],
+   "canvas": [],
+   "canvas_none": "口と DB の葉で見た目を変えない。担当・後で・済みのボタンと「ほかの人が担当」は K-976（oq-inbox-thread・oq-inbox-taken）",
+   "affects": [
+    "@kaname/api",
+    "@kaname/contracts",
+    "@kaname/db"
+   ],
+   "ci_wide": [
+    "db",
+    "shared"
+   ],
+   "changes": [
+    "packages/db/migrations/20261128011400_ops_inbox_update.sql",
+    "packages/db/src/migrations.generated.ts",
+    "05_flow/screen_api.d/K-974.py",
+    "scripts/ci/contract_shape.d/K-974.py",
+    "07_qa/test-specs/errors.d/K-974.json",
+    "07_qa/test-plan/ears-elsewhere.d/K-974.json",
+    "scripts/ci/ci_scope.d/K-974.json",
+    "apps/api/src/hooks/ops-inbox-update.ts",
+    "apps/api/src/features/F12/ops/inbox-update.ts"
+   ],
+   "flow": "運営が数社を 1 か所で回す",
+   "sections": {
+    "目的": "運営が受信箱の問い合わせを「自分が持つ」と決め、済みにし、すぐ答えられない物は「後で」に置けるようにする（行為 A70）。2 人が同じ問い合わせを取り合わない（D-156.25 の範囲・取り合いは 409）。\n\n- **updateOpsInquiry**（ops:inquiry）：入力は K-948 の `take`・`release`（真偽）・`state`（open／done）・`later_until`（日時か null）。答えは 1 行の 10 欄\n- 担当を取るのは自分だけ（人の id を受けない）。ほかの人が担当の問い合わせは見るだけ（取れない・外せない・状態を変えられない）",
+    "完了の条件": "- [ ] 下の表の 14 行（K974-API-001〜013・K974-DB-001）が緑：`apps/api/test/features/F12/ops-inbox-update.test.ts`（土台 `ops-inbox.harness.ts`・K-973 が運ぶ）\n- [ ] 契約の口が 501 でない。生成の試験の it.todo が、na（理由つき）を除いて 0（`07_qa/test-plan/ears-elsewhere.d/K-974.json`）\n- [ ] 運営の関数の検査（`ops_definer_gate.py`・K-947）と migration の lint（Squawk・G58）が緑\n- [ ] 手元の CI（このチケットの範囲）が緑",
+    "前提と制約": "分類: CRUD, PERM\n\n- **代表の答え 2026-11-23（D-156.25）**：顧客に見せる状態は 返事を待っている／返事あり／済み の 3 つ。運営の状態（open・waiting・later・done）は K-949 の読み替えで顧客の状態になる（open・later → 返事を待っている・done → 済み）\n- **生成の試験は作る段の最初に作る**：契約の断片（`05_flow/screen_api.d/K-974.py`・`scripts/ci/contract_shape.d/K-974.py`）を足して作り手で生成の試験を作り、**実装より先に 1 つのコミットにする**。先の葉の契約を前提にした前からの試験は carry に入れない\n- **組み合わせの決まりは契約に書く（422）**：`05_flow/screen_api.d/K-974.py` の INPUT_RULES に、体は 1 つ以上の欄（空の `{}` は 422）・`take` と `release` を両方 true にしない・`state` と `later_until` を一緒に送らない（`state` は open・done だけ＝K-948 の enum）\n- **取る**（take）：担当なし → 自分。自分 → 何もしない（200・記録も書かない）。ほかの人 → **409 E-OPS-005**（欄なし）。同時に 2 人が取るときは行を `for update` で取り、後の人は 409\n- **外す**（release）：自分の担当 → 担当なし。担当なし → 何もしない（200）。ほかの人の担当 → 409 E-OPS-005\n- **状態と後で**：変えられるのは担当が自分のときだけ（同じ体の take で先に自分になったときを含む）。担当なし・ほかの人 → 409 E-OPS-005。`state done`＝済み（`later_until` を空に）・`state open`＝開き直す（`later_until` を空に）・`later_until <日時>`＝`state later`（今より後だけ。今以前は **409 E-OPS-008**・欄なし・読むときの時刻で決まるので契約に書けない）・`later_until null`＝後でを外して `state open`\n- **記録**（運営の関数は書くなら必ず記録・K-947 の検査）：変えた分ごとに `app.record_ops_audit(<会社>, <操作>, 'inquiries', <問い合わせの id>::text, null, {target_label: <題>})`。操作は `inquiry.take`・`inquiry.release`・`inquiry.done`・`inquiry.reopen`・`inquiry.later`（何もしなかった分は書かない）\n- 顧客にお知らせは出さない（返事は K-975）。`last_message_at` は変えない\n- 断る番号（控え帳）：ログインなし 401・運営でない・inquiry を持たない 403（入口）・形と組み合わせ 422（入口・契約）・無い・消した問い合わせ 404（欄なし）・取り合い・担当でない 409 E-OPS-005・後での日時が今以前 409 E-OPS-008・DB の失敗 503 E-PAGE-003（何も残さない）・上限 429\n\n### 関数（migration `20261128011400_ops_inbox_update.sql`・K-974 → 74 分）\n\n- `app.ops_inquiry_update(p_id uuid, p_take boolean, p_release boolean, p_state text, p_set_later boolean, p_later timestamptz) returns jsonb`（security definer・volatile）：ⓐ `app.ops_require('inquiry')` ⓑ 問い合わせ（K-973 の条件）を `for update`・無ければ `no_data_found` ⓒ 取る・外す（上の決まり・断りは `{\"error\":\"taken\"}`）ⓓ 状態・後で（担当が自分でなければ `{\"error\":\"taken\"}`・日時が今以前は `{\"error\":\"later_past\"}`）ⓔ 変えた分ごとに `app.record_ops_audit` ⓕ `{\"data\": <K-973 の 1 行の 10 欄>}`（K-973 の行の形づくりを関数に分けて使う・同じ形を 2 つ書かない）\n- `p_set_later` は「later_until の欄が体に在ったか」（null を送って外すのと、送らないのを分ける）\n- `search_path = public, app, pg_temp`・`revoke … from public`・`grant execute … to kaname_app`",
+    "依存の理由": "- K-973: 要る — 受信箱の問い合わせの条件と 1 行の形（同じ関数で答える）・試験の土台 `ops-inbox.harness.ts`\n- K-951: 要る — 顧客の側の状態の読み替え（K974-API-005 が顧客の 1 件を読み直す・hooks `inquiry-read`）",
+    "目録で探した結果": "- 使う：`inquiries`（0015・0078 の later_until・K-949 の state）・`app.record_ops_audit`（0003）・K-973 の行の形・K-951 の顧客の読み替え・契約の INPUT_RULES（K-355 の screen_api.d）\n- 作る：関数 1 つ・hooks `ops-inbox-update.ts`・`features/F12/ops/inbox-update.ts`・番号 E-OPS-005・E-OPS-008。探したが問い合わせの担当を変える物は無かった",
+    "実施事項": "| 何を | どこ・どう |\n|---|---|\n| DB（migration 1 本） | `packages/db/migrations/20261128011400_ops_inbox_update.sql`（上の「関数」）。一覧は `python3 scripts/ci/gen_migrations.py`（生成物） |\n| 口 | `features/F12/ops/inbox-update.ts`：体（take・release・state・later_until の在る無し）→ `opsTx` で関数 → 断りの言葉 → 番号（`taken` 409 E-OPS-005・`later_past` 409 E-OPS-008）→ 200 `{ data }`。DB の断りは `opsErrorReply(e, \"inbox-update\")` |\n| 口の登録（K-326） | `apps/api/src/hooks/ops-inbox-update.ts`（updateOpsInquiry の before・`register`・fuzz `\"same\"`） |\n| 契約の断片 | `05_flow/screen_api.d/K-974.py`：INPUT_RULES（上の組み合わせ）・`ERRORS_4XX` に 404 NOT_FOUND・409 E-OPS-005・409 E-OPS-008。`scripts/ci/contract_shape.d/K-974.py`（空の表） |\n| 誤りの正本 | `07_qa/test-specs/errors.d/K-974.json`：E-OPS-005（class conflict・where ops-support の oq-inbox-taken・「ほかの人が担当しています」・action「担当の人に聞く」・layers API・DB・source D-156.25）・E-OPS-008（「後での日時は今より後にしてください」）。字は K-976 の画面の字と合わせる |\n| 登録先 | `07_qa/test-plan/ears-elsewhere.d/K-974.json`（下）・`scripts/ci/ci_scope.d/K-974.json`（data_links：hooks・features・migration → この葉の試験） |\n\n### 生成の試験（ears-elsewhere.d/K-974.json）\n\n```json\n{\"ops\": {\n \"updateOpsInquiry\": {\"file\": \"apps/api/test/features/F12/ops-inbox-update.test.ts\",\n  \"reason\": \"今の担当・状態・後での日時で答えが変わり、運営の記録を書く。種では作れない（K-974）\",\n  \"covers\": {\"test_patch_ops_inquiries_id_ok\": \"K974-API-001\", \"test_patch_ops_inquiries_id_shape\": \"K974-API-001\",\n             \"test_patch_ops_inquiries_id_not_found\": \"K974-API-008\", \"test_patch_ops_inquiries_id_rejected_401\": \"K974-API-009\",\n             \"test_patch_ops_inquiries_id_rejected_403\": \"K974-API-009\", \"test_patch_ops_inquiries_id_rejected_422\": \"K974-API-010\",\n             \"test_patch_ops_inquiries_id_rate_limited\": \"K974-API-013\",\n             \"test_patch_ops_inquiries_id_terms_pending\": {\"file\": \"apps/api/test/features/F1/terms.test.ts\", \"mark\": \"K53-API-005\"},\n             \"test_patch_ops_inquiries_id_session_unresolved\": {\"file\": \"apps/api/test/features/contract/k144-contract.test.ts\", \"mark\": \"K144-API-032\"}},\n  \"na\": {\"test_patch_ops_inquiries_id_too_large\": \"送る量の守り（1MB）は入口の共通（op.ts・K-144）\"}}}}\n```\n\n（作り手が出す名前が違えば、出た名前に合わせる）",
+    "外に影響する手順": "1. DB に書く（担当・状態・後で）［残る］— 失敗の行：K974-API-012（記録が書けなければ担当も状態も戻る・503）。後片付けの失敗の行：K974-API-012（同じ取引で戻るので片付けが要らない形）\n2. DB に書く（運営の記録と会社の記録）：`app.record_ops_audit`［残る］— 失敗の行：K974-API-012\n3. お知らせ：出さない — 失敗の行：K974-API-011（notifications が増えない）",
+    "テスト仕様と確認の結果": "`apps/api/test/features/F12/ops-inbox-update.test.ts`（本物の DB・本物の入口・偽のログイン。問い合わせは口で作り、担当は DB に直に置く）\n\n### 状態 × 入口 × 利用者の状態\n\n| 対象の状態 | 入口 | 利用者の状態 | 結果 | 受け持ち | テスト |\n|---|---|---|---|---|---|\n| 担当なし | ［自分が持つ］ | inquiry を持つ運営の人 | 自分・記録 | このチケット | K974-API-001 |\n| ほかの人が担当・同時に 2 人 | 同じ | 同じ | 409 E-OPS-005・片方だけ | このチケット | K974-API-002 |\n| 自分が担当 | 同じ（2 回目） | 同じ | 何もしない | このチケット | K974-API-003 |\n| 自分・ほかの人の担当 | ［外す］ | 同じ | 外れる・409 | このチケット | K974-API-004 |\n| 自分の担当・後で | ［済みにする］・［開き直す］ | 同じ | done・open・顧客の状態 | このチケット | K974-API-005 |\n| 自分の担当 | ［後で］ | 同じ | later・外す・過去は 409 E-OPS-008 | このチケット | K974-API-006 |\n| 担当なし・ほかの人 | ［済みにする］ | 同じ | 409 E-OPS-005・取ると一緒なら 200 | このチケット | K974-API-007 |\n| 無い・消した | 古いリンク | 同じ | 404 | このチケット | K974-API-008 |\n| どれでも | 同じ | ログインなし・会社の人・inquiry なし | 401・403 | このチケット | K974-API-009 |\n| 形・組み合わせの誤り | 直に口 | 同じ | 422 | このチケット | K974-API-010 |\n| 書けない | 押す | 同じ | 503・戻る | このチケット | K974-API-012 |\n| どれでも | 同じ | 同意し直しが要る | 403・E-AUTH-010 | 入口の共通（K-53） | K53-API-005 |\n\n### 行の表\n\n| 行 | 観点 | 分岐 | 期待結果 |\n|---|---|---|---|\n| K974-API-001 | 対象の状態 | 取る | 200・鍵はちょうど 10・owner は `{ member_id: 自分, name: 運営 高本 }`・担当の列が自分・運営の記録に inquiry.take が 1 行（target_label は題）・会社の記録にも在る |\n| K974-API-002 | 操作の揺れ | 取り合い | ほかの人の担当を取ると 409・E-OPS-005・欄なし・担当はほかの人のまま。担当なしを 2 人が同時に取ると 200 と 409・inquiry.take は 1 行 |\n| K974-API-003 | 操作の揺れ | 自分の担当をもう一度 | 2 回とも 200・inquiry.take は 1 行のまま |\n| K974-API-004 | 対象の状態 | 外す | 自分の担当は 200・owner null・inquiry.release 1 行。ほかの人の担当は 409・E-OPS-005・変わらない |\n| K974-API-005 | 対象の状態 | 済み・開き直す | 後での問い合わせを済みにすると done・later_until null・顧客の 1 件は done。開き直すと open・顧客の 1 件は waiting |\n| K974-API-006 | 時間の流れ | 後で | 1 時間後で later とその日時・null で open と空・今より前は 409・E-OPS-008・欄なし・open のまま |\n| K974-API-007 | 守り | 担当でない人 | ほかの人の担当・担当なしを済みにすると 409・E-OPS-005・open のまま。担当なしに取ると済みを一緒に送ると 200・担当は自分・done |\n| K974-API-008 | 守り | 無い・消した | 404・欄なし・担当が空のまま |\n| K974-API-009 | 利用者の状態 | 入口 | ログインなし 401・会社の人 403・inquiry を持たない運営の人 403・担当が空のまま |\n| K974-API-010 | 入力 | 形と組み合わせ | 空の体・取ると外すを両方・state waiting・state later・済みと後でを一緒・担当の人の id の欄・:id が uuid でないは 422・自分の担当で open のまま |\n| K974-API-011 | 守り | お知らせを出さない | 取って済みにしても、その会社の notifications が増えない |\n| K974-API-012 | 失敗 | 書けない | 503・E-PAGE-003・担当なし・open のまま |\n| K974-API-013 | 守り | 上限 | 上限の次が 429・retry_after_sec は 1〜60 の整数・担当が空のまま |\n| K974-DB-001 | 守り | 2 層目・関数の権限 | 会社の人の文脈で app.ops_inquiry_update を直に呼ぶと 42501・security definer で PUBLIC は呼べない |\n\n### テストの型の受け（分類 CRUD・PERM）\n\n| 型 | どこで受けるか |\n|---|---|\n| TP-CRUD-01 2 人が同時に直す | K974-API-002（行を for update で取り、後の人は 409） |\n| TP-CRUD-02 消したものを古いリンクで | K974-API-008 |\n| TP-CRUD-03 消す → 戻す・子のあるもの | K974-API-005（済み → 開き直す）。問い合わせは消さない |\n| TP-CRUD-04 2 回押し | K974-API-003 |\n| TP-CRUD-05 保存の途中で失敗 | K974-API-012 |\n| TP-CRUD-06 書きかけで戻る・再読み込み | 要らない：口だけ（画面の書きかけは K-976） |\n| TP-PERM-01 役が合わない人 | K974-API-009 |\n| TP-PERM-02 権限を外した直後 | 要らない：関数の頭の ops_require が呼ぶたびに引く（K947-API-004） |\n| TP-PERM-03 他の人の物を指す | K974-API-002・004・007（ほかの人の担当） |\n| TP-PERM-04 一覧・数に混ざらない | 要らない：一覧を持たない（箱は K-973） |\n| TP-PERM-05 権限を付けた直後 | 要らない：同上 |\n| G-11〜G-16 | G-11：N/A。G-12：K974-API-006（今の境目）。G-13：K974-API-002（2 人が同時に取る）・007（取る × 済み）。G-14：外した運営の人は K947-API-004（担当のまま残る問い合わせは担当なしと同じに取れない＝申し送り）。G-15：K974-API-012。G-16：1 回の口で関数 1 回・上限 60/分/人（K974-API-013） |",
+    "前からの試験を替えた所": "口の振る舞いを作り、関数を 1 つ足す。口の名前・道・問い合わせの担当の列を読む前からの試験を探した（2026-11-23）。\n\n```search\ngit grep -l -E \"updateOpsInquiry|ops_inquiry_update|assignee_ops_member_id\" -- 'apps/api/test' 'apps/api/src/**/*.test.ts' 'packages/db/test' 'scripts/ci/*_test.py' ':!apps/api/test/generated/*' ':!apps/api/test/features/F12/*'\n1\n```\n\n- scripts/ci/k948_inquiry_contract_test.py（K-948）: 替えない — 口の契約の欄を読むだけ（INPUT_RULES は欄の形でなく組み合わせ）",
+    "決定ログ（足す行）": "- なし（決めは K-940 が §156 に運ぶ：D-156.25）\n- 切る段の決め（作り方・この md に残す）：担当を取る・外すは自分だけ。ほかの人が担当の問い合わせは見るだけで、取る・外す・状態を変えると 409 E-OPS-005。後での日時が今以前は 409 E-OPS-008",
+    "リスク": "- 運営の人を外したとき、その人が担当の問い合わせは誰も取れない（担当がほかの人のまま）→ 運営の人を外す葉（K-1009・K-985 から分けた）が、外すときに担当を空にする（K1009-API-005）\n- 記録の操作の字（inquiry.take ほか 5 つ）は K-1011 の字の表に足した（D-156.48）",
+    "申し送り": "- K-1011：操作の字の表に inquiry の 5 つを足した（D-156.48・済み） (2) 番号 E-OPS-005・E-OPS-008 をこの葉が使う\n- K-1009（K-985 から分けた外す口）：運営の人を外すとき、その人が担当の問い合わせの担当を空にする（受信箱に取り残さない・K1009-API-005 で済み）\n- K-976：「ほかの人が担当」（oq-inbox-taken）は owner が自分でない行。押せるのは見るだけ（返す・メモ・済みは押せない形）",
+    "代表に聞くこと": "- なし（取り合いは 409 は範囲.md と D-156.25 のまま。ほかの人の担当を見るだけにするのは下絵 oq-inbox-taken の「見るだけ」のまま）",
+    "見込み": "1 時間（実測なし・仮）。試験の行は 14 行（上限 30）。"
+   },
+   "file": "11_tickets/K-974.md"
+  },
+  {
    "id": "K-1000",
    "title": "段 13 の流れと文書：flow.json の A80 を「操作の版を見る（読むだけ）」に・回収の行為 A138 を足す・配るもの（ops-skills）の目的と第 2 ナビ・運営の役と用事の文、親 K-72 の apis に利用者の口 14 本、文書 08_api/phase1/10 から上の数の 3 本を消す（流れの正本と文書だけ・K-940 から分けた・K-72 の葉・W0）",
    "kind": "タスク",
