@@ -2155,6 +2155,27 @@
   },
   {
    "paths": [
+    "packages/db/migrations/**",
+    "apps/api/src/features/F12/ops/**",
+    "apps/api/src/hooks/ops-workspaces.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-workspaces.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/ops-workspaces.test.ts",
+    "apps/api/test/features/F12/ops-ws.harness.ts",
+    "07_qa/test-plan/ears-elsewhere.d/K-963.json"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_ops_shell.test.ts",
+    "apps/api/test/generated/get_ops_workspaces.test.ts"
+   ]
+  },
+  {
+   "paths": [
     "apps/web/components/k/k.css"
    ],
    "tests": [
@@ -2372,6 +2393,7 @@
   "apps/web/test/k725-memory-ui-retire.test.ts": "apps/web の頁・部品・ext.ts・index.ts・conversation.tsx・markdown.tsx・built-routes.ts を readFileSync で読み、git grep で消した名前を探し、scripts/ci/raw_length_ledger.json・chat_one.mjs・07_qa/test-specs/screens/*.md の行を読む（K725-API-001〜010）",
   "apps/web/tests/k/k941-f12-ops-parts.spec.ts": "開発用の置き場 apps/web/app/(dev)/dev/mock/f12-ops の mocks.tsx・render.tsx・[id]/page.tsx と部品 apps/web/features/F12/ops・shared の .ts・.tsx・.css を読み、scripts/ci/canvas_field_gate.py と scripts/ci/design_gate.py を子プロセスで流す（K-941）",
   "apps/web/tests/k/f12-mock-kit.ts": "段 13 の下絵の試験の道具。開発用の置き場 apps/web/app/(dev)/dev/mock/f12-* の mocks.tsx と部品 apps/web/features/F12 のファイルを読む（K-941 が運ぶ・K-942・K-943 の試験も読む）",
+  "apps/api/test/features/F12/ops-ws.harness.ts": "葉の hooks のファイル apps/api/src/hooks/<名>.ts を動的 import で読む（register を試験の土台に足す・K-963）",
   "apps/web/tests/k/k964-table-wrap.spec.ts": "部品 apps/web/components/k/k.css を readFileSync で読み、.k-table-wrap の規則を見る（K-964）",
   "apps/web/tests/k/k965-ws-list.spec.ts": "stage2-match.ts を通してモックの頁 /dev/mock/f12-ops を開き scripts/ci/fidelity_compare.mjs を読む。答えの見本 ops-answers.ts を読む（実ブラウザの試験は web の組が流す）・K-965",
   "apps/web/test/k965-ws-list-shape.test.ts": "下絵の見本 apps/web/features/F12/ops/ops-sample.ts と答えの見本 apps/web/tests/k/ops-answers.ts を読む（画面の外の純粋な関数の試験）・K-965",

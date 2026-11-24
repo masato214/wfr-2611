@@ -1,0 +1,28 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "packages/db/migrations/**",
+    "apps/api/src/features/F12/ops/**",
+    "apps/api/src/hooks/ops-workspaces.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-workspaces.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/ops-workspaces.test.ts",
+    "apps/api/test/features/F12/ops-ws.harness.ts",
+    "07_qa/test-plan/ears-elsewhere.d/K-963.json"
+   ],
+   "tests": [
+    "apps/api/test/generated/get_ops_shell.test.ts",
+    "apps/api/test/generated/get_ops_workspaces.test.ts"
+   ]
+  }
+ ],
+ "reads_ok": {
+  "apps/api/test/features/F12/ops-ws.harness.ts": "葉の hooks のファイル apps/api/src/hooks/<名>.ts を動的 import で読む（register を試験の土台に足す・K-963）"
+ }
+}

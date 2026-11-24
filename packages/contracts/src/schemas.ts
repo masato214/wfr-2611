@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:9c5a3ff9813c2f22
+// 生成物（scripts/ci/contract.mjs gen ← openapi.yaml components）。手で直さない。openapi:890a998e143876be
 import { z } from "zod";
 
 export const Tenants = z.strictObject({
@@ -7,6 +7,10 @@ export const Tenants = z.strictObject({
   status_id: z.uuid().nullable().optional(),
   live_at: z.iso.datetime({ offset: true }).nullable().optional(),
   live_by: z.uuid().nullable().optional(),
+  stopped_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  stop_on: z.iso.date().nullable().optional(),
+  stop_reason_key: z.string().nullable().optional(),
+  stop_noticed_at: z.iso.datetime({ offset: true }).nullable().optional(),
   id: z.uuid(),
   tenant_id: z.uuid().optional(),
   created_at: z.iso.datetime({ offset: true }).optional(),
@@ -28,6 +32,10 @@ export const TenantsInput = z.strictObject({
   status_id: z.uuid().nullable().optional(),
   live_at: z.iso.datetime({ offset: true }).nullable().optional(),
   live_by: z.uuid().nullable().optional(),
+  stopped_at: z.iso.datetime({ offset: true }).nullable().optional(),
+  stop_on: z.iso.date().nullable().optional(),
+  stop_reason_key: z.string().nullable().optional(),
+  stop_noticed_at: z.iso.datetime({ offset: true }).nullable().optional(),
 });
 export const Scopes = z.strictObject({
   parent_id: z.uuid().nullable().optional(),
