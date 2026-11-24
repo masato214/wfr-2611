@@ -1,0 +1,25 @@
+/* 段 13（F12）の丸い選択・四角い選択の並べ方（運営の小窓・問い合わせる小窓で共通。段 12 の features/F11/choice.css と同じ作り）。
+   印を字の 1 行目の真ん中に合わせる（測り方は K-642 の tests/_lib/choice-align.mjs・ずれ 1px 以内）：
+   印の箱の高さを 1 行の高さ（字の大きさ × 行の高さの割合のトークン）にし、印はその箱の真ん中に描かれる。2 行目以降は印の下に回り込まない */
+.k-op-choice {
+  align-items: flex-start;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+}
+.k-op-choice > input {
+  flex: 0 0 auto;
+  height: calc(var(--k-text-body) * var(--k-lh-body));
+  margin-block: 0;
+}
+.k-op-choice-text > b {
+  line-height: var(--k-lh-body);
+}
+.k-uh-check {
+  align-items: start;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+}
+.k-uh-check > input {
+  height: calc(var(--k-text-body-sm) * var(--k-lh-body-sm));
+  margin-block: 0;
+}

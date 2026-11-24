@@ -309,6 +309,8 @@ textarea.k-input {
 
 /* ---- 表 ---- */
 .k-table-wrap {
+  /* 表の中の読み上げ用の字（sr-only・位置は absolute）が箱の外へ逃げて、狭い幅でページを広げないよう、箱を位置の基準にする（K-964） */
+  position: relative;
   overflow-x: auto;
   background: var(--k-card);
   border: 1px solid var(--k-line);

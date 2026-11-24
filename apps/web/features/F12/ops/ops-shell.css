@@ -1,0 +1,77 @@
+/* 運営の外枠（段 13・領域 ops）。寸法は外枠の k-shell・k-nav・k-bar（components/k/shell.css）が持つ。ここは運営だけの所で、名前は k-op- だけ（外枠の名前を本文の CSS に書かない・class_gate）。値は全部 --k-*。 */
+.k-op-mark {
+  background: var(--k-on-surface);
+  color: var(--k-surface);
+}
+.k-op-brand {
+  font-weight: var(--k-fw-h1);
+}
+.k-op-tag {
+  padding: 0 var(--k-s-sm);
+  border-radius: var(--k-r-sm);
+  background: var(--k-on-surface);
+  color: var(--k-surface);
+  font-size: var(--k-text-label-md);
+}
+.k-op-gap {
+  height: var(--k-s-sm);
+  flex: none;
+}
+.k-op-note {
+  margin: 0;
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  padding: var(--k-s-sm);
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-label-md);
+  line-height: var(--k-lh-body-sm);
+}
+/* 引き出しと帯の左のボタンは狭い幅（767 以下）だけ */
+.k-op-menu-btn,
+.k-op-drawer,
+.k-op-scrim {
+  display: none;
+}
+.k-op-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+@media (max-width: 767px) {
+  .k-op-menu-btn {
+    display: grid;
+  }
+  .k-op-shell .k-op-shell-body {
+    padding-bottom: 0;
+  }
+  .k-op-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 44;
+    background: var(--k-overlay-shadow);
+  }
+  .k-op-drawer {
+    position: fixed;
+    inset: 0 var(--k-s-xl) 0 0;
+    z-index: 45;
+    display: flex;
+    flex-direction: column;
+    max-width: calc(var(--k-s-xl) * 6);
+    padding: var(--k-s-sm);
+    overflow-y: auto;
+    background: var(--k-side-bg);
+    border-right: var(--k-c-detail-card-border);
+    box-sizing: border-box;
+  }
+  .k-op-drawer .k-op-nav-item {
+    min-height: var(--k-c-shell-bar-tool-height);
+  }
+}
+
+/* 上に出す帯（中を見ている間など）：画面の端にくっつけず、本文と同じ左右の余白の中に置く */
+.k-op-banner {
+  padding: var(--k-s-sm) var(--k-s-lg);
+  min-width: 0;
+}

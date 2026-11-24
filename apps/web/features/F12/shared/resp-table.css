@@ -1,0 +1,97 @@
+/* 幅で出し分ける表（resp-table.tsx）。値は正本のトークンだけ。
+   画面の幅ではなく表の置き場の幅で決める（左のメニューがある 768 では置き場が狭く、列の多い表は字が縦に折れるため） */
+.k-f12-rt {
+  container-type: inline-size;
+  min-width: 0;
+  max-width: 100%;
+}
+.k-f12-rt-table {
+  min-width: 0;
+  max-width: 100%;
+}
+.k-f12-rt-nw {
+  white-space: nowrap;
+}
+/* 2 行の中身（名前と下の小さい字）・ボタンが行の上下の線にくっつかないよう、上下に xs の余白 */
+.k-f12-rt-table .k-table td {
+  padding-block: var(--k-s-xs);
+}
+.k-f12-rt-cards {
+  display: none;
+}
+/* 組の形（出すかどうかは下の 2 つの置き場の幅の決めで切り替える） */
+/* 置き場が 2 枚ぶん（xl × 6 が 2 つ）あれば横に 2 枚並べる（タブレットで 1 列の長い縦積みにしない） */
+.k-f12-rt-cards {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, calc(var(--k-s-xl) * 6)), 1fr));
+  align-items: start;
+  gap: var(--k-s-sm);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.k-f12-rt-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  min-width: 0;
+  padding: var(--k-s-md);
+  border: var(--k-c-detail-card-border);
+  border-radius: var(--k-c-detail-card-radius);
+  background: var(--k-c-detail-card-bg);
+}
+.k-f12-rt-head {
+  min-width: 0;
+  font-size: var(--k-text-body-md);
+  font-weight: var(--k-fw-h3);
+  overflow-wrap: anywhere;
+}
+.k-f12-rt-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  margin: 0;
+}
+.k-f12-rt-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--k-s-md);
+  min-width: 0;
+  font-size: var(--k-text-body);
+}
+.k-f12-rt-row dt {
+  flex: none;
+  color: var(--k-on-surface-variant);
+  font-size: var(--k-text-body-sm);
+}
+.k-f12-rt-row dd {
+  min-width: 0;
+  margin: 0;
+  text-align: right;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.k-f12-rt-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-sm);
+}
+/* 置き場が 720 未満なら表をやめて組にする */
+@container (max-width: 719px) {
+  .k-f12-rt-table {
+    display: none;
+  }
+  .k-f12-rt-cards {
+    display: grid;
+  }
+}
+/* 列の多い表（stack="wide"）は置き場が 1024 未満でも組にする（タブレットの横・小さい PC で列が詰まり、字が縦に折れるため） */
+@container (max-width: 1023px) {
+  .k-f12-rt[data-stack="wide"] > .k-f12-rt-table {
+    display: none;
+  }
+  .k-f12-rt[data-stack="wide"] > .k-f12-rt-cards {
+    display: grid;
+  }
+}

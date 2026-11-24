@@ -1,0 +1,8 @@
+{
+ "data_links": [
+  {"paths": ["scripts/ci/design_gate.py", "scripts/ci/canvas_field_gate.py", "scripts/ci/gen_built_routes.py", "04_design/DESIGN-kaname.md", "apps/web/styles/k-tokens.css"], "tests": ["apps/web/tests/k/k943-f12-user-parts.spec.ts"]}
+ ],
+ "reads_ok": {
+  "apps/web/tests/k/k943-f12-user-parts.spec.ts": "開発用の置き場 apps/web/app/(dev)/dev/mock/f12-user の mocks.tsx・render.tsx・[id]/page.tsx と部品 apps/web/features/F12/help・billing の .ts・.tsx・.css を読み、scripts/ci/canvas_field_gate.py と scripts/ci/design_gate.py を子プロセスで流す（K-943）"
+ }
+}

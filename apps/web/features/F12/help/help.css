@@ -1,0 +1,400 @@
+/* 困ったとき・お知らせ・問い合わせ・障害とメンテの帯・止められた画面・運営が見ている間の帯（段 13・領域 user）。
+   値は --k-* だけ。線は小窓の枠線のトークン（--k-c-dialog-group-border）を借りる（専用の細い線のトークンは「まとめ役に頼むこと」） */
+
+/* ---- 一覧の行（お知らせ・問い合わせ・稼働状況） ---- */
+.k-uh-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.k-uh-list:has(> .k-uh-item) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+/* PC：札の列の幅を一覧の中でそろえ、題の頭を縦に並べる（行ごとに札の幅が違ってもずれない） */
+.k-uh-item {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  gap: var(--k-s-xs) var(--k-s-md);
+  align-items: start;
+  padding: var(--k-s-md) 0;
+  border-bottom: var(--k-c-page-head-border);
+  min-width: 0;
+}
+.k-uh-item-main {
+  min-width: 0;
+  display: grid;
+  gap: var(--k-s-xs);
+}
+.k-uh-item-title {
+  margin: 0;
+  font-size: var(--k-text-body-md);
+  line-height: var(--k-lh-body-md);
+  font-weight: var(--k-fw-h3);
+  color: var(--k-on-surface);
+  overflow-wrap: anywhere;
+}
+.k-uh-item-body {
+  margin: 0;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  color: var(--k-on-surface-variant);
+  overflow-wrap: anywhere;
+}
+.k-uh-item-when {
+  grid-row: 1;
+  grid-column: 3;
+  justify-self: end;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+  white-space: nowrap;
+}
+.k-uh-new {
+  display: inline-block;
+  width: var(--k-s-sm);
+  height: var(--k-s-sm);
+  margin-right: var(--k-s-xs);
+  border-radius: var(--k-r-full);
+  background: var(--k-primary);
+}
+.k-uh-item[data-unread="true"] .k-uh-item-title {
+  color: var(--k-primary);
+}
+
+/* ---- 稼働状況 ---- */
+.k-uh-status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.k-uh-status li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-s-sm);
+  flex: 1 1 0;
+  padding: var(--k-s-sm) var(--k-s-md);
+  border: var(--k-c-dialog-group-border);
+  border-radius: var(--k-r-field);
+  background: var(--k-card);
+  font-size: var(--k-text-body);
+  min-width: max-content;
+}
+
+/* ---- 小さな補足・使い方 ---- */
+.k-uh-tip {
+  display: grid;
+  gap: var(--k-s-xs);
+  padding: var(--k-s-md);
+  border-radius: var(--k-r-field);
+  background: var(--k-surface-variant);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  color: var(--k-on-surface-variant);
+}
+.k-uh-lead {
+  margin: 0;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  color: var(--k-on-surface-variant);
+}
+.k-uh-top {
+  display: grid;
+  gap: var(--k-s-md);
+  padding-top: var(--k-s-md);
+}
+
+/* ---- お知らせ 1 件 ---- */
+.k-uh-notice-meta {
+  display: grid;
+  gap: var(--k-s-sm);
+  margin: 0;
+  padding: var(--k-s-md);
+  border: var(--k-c-dialog-group-border);
+  border-radius: var(--k-r-card);
+  background: var(--k-card);
+}
+.k-uh-notice-meta > div {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: var(--k-s-sm);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+}
+.k-uh-notice-meta dt {
+  color: var(--k-on-surface-variant);
+}
+.k-uh-notice-meta dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.k-uh-read {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-st-success);
+}
+
+/* ---- 問い合わせの小窓 ---- */
+.k-uh-form {
+  display: grid;
+  gap: var(--k-s-md);
+  min-width: 0;
+}
+.k-uh-attach {
+  display: grid;
+  gap: var(--k-s-sm);
+}
+.k-uh-file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm) var(--k-s-md);
+  border: var(--k-c-dialog-group-border);
+  border-radius: var(--k-r-field);
+  font-size: var(--k-text-body);
+  min-width: 0;
+}
+.k-uh-file[data-bad="true"] {
+  border-color: var(--k-st-danger-line);
+  background: var(--k-st-danger-container);
+  color: var(--k-st-on-danger-container);
+}
+.k-uh-file-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.k-uh-check {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--k-s-sm);
+  align-items: start;
+  padding: var(--k-s-sm) var(--k-s-md);
+  border-radius: var(--k-r-field);
+  background: var(--k-surface-variant);
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-uh-check input {
+  accent-color: var(--k-primary);
+}
+.k-uh-check b {
+  display: block;
+  color: var(--k-on-surface);
+  font-weight: var(--k-fw-h3);
+}
+
+/* ---- やり取り ---- */
+.k-uh-msgs {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--k-s-md);
+}
+.k-uh-msg {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--k-s-sm) var(--k-s-md);
+  min-width: 0;
+}
+.k-uh-avatar {
+  display: grid;
+  place-items: center;
+  width: var(--k-s-lg);
+  height: var(--k-s-lg);
+  border-radius: var(--k-r-full);
+  background: var(--k-primary-container);
+  color: var(--k-on-primary-container);
+  font-size: var(--k-text-body-sm);
+  font-weight: var(--k-fw-h3);
+}
+.k-uh-msg[data-from="ops"] .k-uh-avatar {
+  background: var(--k-on-surface);
+  color: var(--k-card);
+}
+.k-uh-msg-box {
+  min-width: 0;
+  display: grid;
+  gap: var(--k-s-xs);
+  padding: var(--k-s-md);
+  border: var(--k-c-dialog-group-border);
+  border-radius: var(--k-r-card);
+  background: var(--k-card);
+}
+.k-uh-msg[data-from="ops"] .k-uh-msg-box {
+  background: var(--k-primary-soft);
+  border-color: var(--k-primary-line);
+}
+.k-uh-msg-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-sm);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-uh-msg-head b {
+  color: var(--k-on-surface);
+}
+.k-uh-msg-text {
+  margin: 0;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  overflow-wrap: anywhere;
+}
+.k-uh-msg-attach {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-uh-compose {
+  display: grid;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-md);
+  border: var(--k-c-dialog-group-border);
+  border-radius: var(--k-r-card);
+  background: var(--k-card);
+}
+.k-uh-compose-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--k-s-sm);
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-uh-thread-grid {
+  display: grid;
+  gap: var(--k-s-md);
+  padding-top: var(--k-s-md);
+  min-width: 0;
+}
+/* 横に並べるのは 1280 から（1024 では右の列が狭く、すぐできることのリンクが折れるため） */
+@media (min-width: 1280px) {
+  .k-uh-thread-grid {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+/* ---- 押せない（キャンバスに在るが、まだ使えない）物 ---- */
+.k-uh-inert[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* ---- 運営が中を見ている間の最上部の帯と枠（見るだけ） ---- */
+/* 帯は流れの中に置いて上に貼り付ける（狭い幅で 2 行になっても中身の上に重ならない） */
+.k-uh-peek-bar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-sm) var(--k-s-md);
+  padding: var(--k-s-xs) var(--k-s-md);
+  background: var(--k-on-surface);
+  color: var(--k-card);
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+}
+.k-uh-peek-tag {
+  padding: 0 var(--k-s-sm);
+  border-radius: var(--k-r-sm);
+  background: var(--k-st-warning);
+  color: var(--k-on-primary);
+  font-weight: var(--k-fw-h3);
+}
+.k-uh-peek-end {
+  margin-left: auto;
+  display: inline-flex;
+  gap: var(--k-s-md);
+  align-items: center;
+}
+.k-uh-peek-frame {
+  position: fixed;
+  inset: 0;
+  z-index: 39;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 var(--k-s-xs) var(--k-st-warning);
+}
+.k-uh-peek-row {
+  display: grid;
+  gap: var(--k-s-xs);
+  padding: var(--k-s-sm) 0;
+  border-bottom: var(--k-c-page-head-border);
+  font-size: var(--k-text-body);
+}
+
+/* ---- 止められた・メンテ・障害の画面 ---- */
+.k-uh-full {
+  display: grid;
+  gap: var(--k-s-md);
+  text-align: left;
+}
+.k-uh-full-list {
+  margin: 0;
+  padding-left: var(--k-s-lg);
+  display: grid;
+  gap: var(--k-s-xs);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  color: var(--k-on-surface-variant);
+}
+.k-uh-full-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-md);
+  justify-content: center;
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-uh-full-card {
+  display: grid;
+  gap: var(--k-s-md);
+  width: 100%;
+  max-width: 100%;
+}
+/* 画面いっぱいの札の頭の印（外枠の会社の印と同じ見た目。外枠の名前は components/k の外で使わない・G67） */
+.k-uh-full-mark {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--k-s-lg);
+  height: var(--k-s-lg);
+  border-radius: var(--k-r-md);
+  background: var(--k-primary);
+  color: var(--k-on-primary);
+  font-size: var(--k-text-body-sm);
+  font-weight: var(--k-fw-h1);
+}
+.k-uh-bands {
+  display: grid;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-md) var(--k-s-lg);
+}
+
+/* スマホ：札と日付を 1 行目に、題と本文を 2 行目に幅いっぱいで（PC の 3 列を縮めない） */
+@media (max-width: 767px) {
+  .k-uh-list:has(> .k-uh-item) {
+    display: block;
+  }
+  .k-uh-item {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .k-uh-item-when {
+    grid-column: 2;
+    justify-self: end;
+  }
+  .k-uh-item-main {
+    grid-column: 1 / -1;
+  }
+}

@@ -1,0 +1,9 @@
+{
+ "data_links": [
+  {"paths": ["scripts/ci/design_gate.py", "scripts/ci/canvas_field_gate.py", "scripts/ci/gen_built_routes.py", "04_design/DESIGN-kaname.md", "apps/web/styles/k-tokens.css"], "tests": ["apps/web/tests/k/k941-f12-ops-parts.spec.ts"]}
+ ],
+ "reads_ok": {
+  "apps/web/tests/k/k941-f12-ops-parts.spec.ts": "開発用の置き場 apps/web/app/(dev)/dev/mock/f12-ops の mocks.tsx・render.tsx・[id]/page.tsx と部品 apps/web/features/F12/ops・shared の .ts・.tsx・.css を読み、scripts/ci/canvas_field_gate.py と scripts/ci/design_gate.py を子プロセスで流す（K-941）",
+  "apps/web/tests/k/f12-mock-kit.ts": "段 13 の下絵の試験の道具。開発用の置き場 apps/web/app/(dev)/dev/mock/f12-* の mocks.tsx と部品 apps/web/features/F12 のファイルを読む（K-941 が運ぶ・K-942・K-943 の試験も読む）"
+ }
+}

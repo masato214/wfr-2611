@@ -1,0 +1,476 @@
+/* 運営の画面の本文（段 13・領域 ops・領域 ops2 も使う）。クラスは k-op-。値は全部 --k-*（色・字・角丸・余白・正本の部品の値）。生の長さは書かない */
+
+/* ---- 本文の並べ方 ---- */
+.k-op-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-md);
+  min-width: 0;
+}
+.k-op-ws-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: calc(var(--k-s-md) * 2);
+  height: calc(var(--k-s-md) * 2);
+  border-radius: var(--k-r-md);
+  background: var(--k-primary);
+  color: var(--k-on-primary);
+  font-weight: var(--k-fw-h1);
+}
+.k-op-more {
+  display: grid;
+  place-items: center;
+  min-width: var(--k-c-detail-more-width);
+  height: var(--k-c-button-outlined-height);
+  padding: 0;
+  border: var(--k-c-button-outlined-border);
+  border-radius: var(--k-c-button-outlined-radius);
+  background: var(--k-c-button-outlined-bg);
+  color: var(--k-c-button-outlined-fg);
+  font: inherit;
+  cursor: pointer;
+}
+.k-op-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--k-c-create-aside-width);
+  gap: var(--k-s-md);
+  align-items: start;
+}
+.k-op-main,
+.k-op-side {
+  min-width: 0;
+}
+.k-op-main .k-tab-panel:not([hidden]) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-md);
+}
+@media (max-width: 1279px) {
+  .k-op-cols {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ---- 数のカード ---- */
+.k-op-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--k-s-md);
+}
+@media (max-width: 1179px) {
+  .k-op-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.k-op-stat {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+  min-width: 0;
+  padding: var(--k-s-md);
+  border: var(--k-c-detail-card-border);
+  border-radius: var(--k-r-field);
+  background: var(--k-card);
+}
+.k-op-stat-label,
+.k-op-stat-sub {
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-op-stat-value {
+  font-size: var(--k-text-h1);
+  line-height: var(--k-lh-h1);
+  font-weight: var(--k-fw-h1);
+  color: var(--k-on-surface);
+}
+.k-op-stat[data-tone="warn"] .k-op-stat-value {
+  color: var(--k-st-warning);
+}
+.k-op-stat[data-tone="danger"] .k-op-stat-value {
+  color: var(--k-st-danger);
+}
+
+/* ---- 絞り込み・探す ---- */
+.k-op-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-sm) var(--k-s-lg);
+  align-items: center;
+}
+.k-op-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-c-approvals-chips-gap);
+  align-items: center;
+}
+.k-op-chips-label {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-op-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-s-xs);
+  min-height: var(--k-c-approvals-chip-height);
+  padding: var(--k-c-approvals-chip-pad);
+  border: var(--k-c-approvals-chip-border);
+  border-radius: var(--k-c-approvals-chip-radius);
+  background: var(--k-c-approvals-chip-bg);
+  color: var(--k-c-approvals-chip-fg);
+  font: inherit;
+  font-size: var(--k-c-approvals-chip-text);
+  line-height: var(--k-c-approvals-chip-lh);
+  cursor: pointer;
+}
+.k-op-chip[aria-pressed="true"] {
+  background: var(--k-c-approvals-chip-on-bg);
+  color: var(--k-c-approvals-chip-on-fg);
+  border: var(--k-c-approvals-chip-on-border);
+}
+.k-op-chip-n {
+  font-size: var(--k-text-label-md);
+  opacity: 0.8;
+}
+.k-op-find {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-md);
+  align-items: flex-end;
+}
+.k-op-find > * {
+  flex: 1 1 calc(var(--k-s-xl) * 4);
+  min-width: 0;
+}
+.k-op-name {
+  display: flex;
+  flex-direction: column;
+}
+.k-op-name span {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+
+/* ---- 白い箱 ---- */
+.k-op-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  min-width: 0;
+  padding: var(--k-s-md);
+  border: var(--k-c-detail-card-border);
+  border-radius: var(--k-r-field);
+  background: var(--k-card);
+}
+.k-op-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--k-s-xs) var(--k-s-md);
+}
+.k-op-card-head h3 {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-sm);
+  font-size: var(--k-text-body-md);
+  line-height: var(--k-lh-body-md);
+  font-weight: var(--k-fw-h3);
+}
+.k-op-card-aside {
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-op-note-text,
+.k-op-hint {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+/* 注記の頭の印（パスキーの指など）は字と同じ行に置く（全体の svg は塊になるため） */
+.k-op-note-text > svg {
+  display: inline-block;
+  height: calc(var(--k-text-body-sm) * var(--k-lh-body-sm));
+  vertical-align: top;
+}
+.k-op-facts {
+  margin: 0;
+}
+.k-op-facts > div {
+  display: grid;
+  gap: var(--k-s-xs);
+  padding: var(--k-s-sm) 0;
+  border-bottom: var(--k-c-detail-rule-border-bottom);
+}
+.k-op-facts dt {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-op-facts dd {
+  margin: 0;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  overflow-wrap: anywhere;
+}
+
+/* ---- 人・できる印 ---- */
+.k-op-person {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--k-s-sm);
+}
+.k-op-avatar {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: var(--k-c-detail-avatar-width);
+  height: var(--k-c-detail-avatar-height);
+  border-radius: var(--k-c-detail-avatar-radius);
+  background: var(--k-c-detail-avatar-bg);
+  color: var(--k-c-detail-avatar-fg);
+  font-size: var(--k-c-detail-avatar-text);
+  font-weight: var(--k-c-detail-avatar-fw);
+}
+.k-op-person-text {
+  display: flex;
+  flex-direction: column;
+}
+.k-op-person-text span {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-op-cap {
+  display: inline-block;
+  color: var(--k-on-surface-variant);
+}
+.k-op-cap[data-on] {
+  color: var(--k-st-success);
+  font-weight: var(--k-fw-h3);
+}
+.k-op-rowacts {
+  display: inline-flex;
+  gap: var(--k-s-xs);
+}
+
+/* ---- 日時つきの並び ---- */
+.k-op-feed {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.k-op-feed li {
+  display: grid;
+  grid-template-columns: calc(var(--k-s-xl) * 2) minmax(0, 1fr);
+  gap: var(--k-s-md);
+  padding: var(--k-s-sm) 0;
+  border-bottom: var(--k-c-detail-rule-border-bottom);
+}
+.k-op-feed-at {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-op-feed-main {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--k-s-xs) var(--k-s-sm);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  min-width: 0;
+}
+.k-op-feed-detail {
+  flex-basis: 100%;
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+@media (max-width: 575px) {
+  .k-op-feed li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--k-s-xs);
+  }
+}
+.k-op-reasons {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.k-op-reasons li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--k-s-md);
+  padding: var(--k-s-sm) 0;
+  border-bottom: var(--k-c-detail-rule-border-bottom);
+}
+.k-op-reason-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+}
+.k-op-reason-text span {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+
+/* ---- プランと使った量 ---- */
+.k-op-price {
+  margin: 0;
+  font-size: var(--k-text-body-md);
+  color: var(--k-on-surface-variant);
+}
+.k-op-price b {
+  font-size: var(--k-text-h1);
+  color: var(--k-on-surface);
+}
+.k-op-meters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--k-s-xl) * 4), 1fr));
+  gap: var(--k-s-md);
+}
+.k-op-meter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+}
+.k-op-meter-label {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-op-meter-bar {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: var(--k-s-sm);
+  border: 0;
+  border-radius: var(--k-r-full);
+  background: var(--k-surface-variant);
+  overflow: hidden;
+}
+.k-op-meter-bar::-webkit-progress-bar {
+  background: var(--k-surface-variant);
+}
+.k-op-meter-bar::-webkit-progress-value {
+  background: var(--k-primary);
+}
+.k-op-meter-bar::-moz-progress-bar {
+  background: var(--k-primary);
+}
+.k-op-inline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-sm);
+  margin: 0;
+}
+.k-op-pill-off {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--k-c-approvals-chip-height);
+  padding: var(--k-c-approvals-chip-pad);
+  border: var(--k-c-approvals-chip-border);
+  border-radius: var(--k-c-approvals-chip-radius);
+  font-size: var(--k-text-body-sm);
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* ---- 小窓の中 ---- */
+.k-op-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-md);
+  min-width: 0;
+}
+.k-op-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-xs);
+  font-size: var(--k-text-body);
+}
+.k-op-bullets {
+  margin: 0;
+  padding: var(--k-c-section-list-pad);
+  list-style: disc;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-op-fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--k-s-sm);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.k-op-fieldset legend {
+  padding: 0 0 var(--k-s-xs);
+  font-size: var(--k-text-body-sm);
+  font-weight: var(--k-fw-h3);
+  color: var(--k-on-surface);
+}
+.k-op-choice {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm) var(--k-s-md);
+  border: var(--k-c-detail-card-border);
+  border-radius: var(--k-r-field);
+  background: var(--k-card);
+  font-size: var(--k-text-body);
+  cursor: pointer;
+}
+.k-op-choice[data-disabled] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
+.k-op-choice-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.k-op-choice-text span {
+  font-size: var(--k-text-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-op-checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(calc(var(--k-s-xl) * 3), 1fr));
+  gap: var(--k-s-sm);
+}
+/* 長い字の選択（出す場所など）は 1 列に並べる（細い列で字が折れないように） */
+.k-op-checks[data-wide] {
+  grid-template-columns: minmax(0, 1fr);
+}
+.k-op-alert {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-error);
+}
+
+/* ---- 狭い幅ではみ出さない：表は外側の箱だけで横に送る（ページ全体は動かさない） ---- */
+.k-op-shell,
+.k-op-shell .k-op-shell-body,
+.k-op-shell .k-op-shell-work,
+.k-op-shell .k-op-shell-main,
+.k-op-shell .k-page,
+.k-op-body,
+.k-op-main,
+.k-op-card {
+  min-width: 0;
+  max-width: 100%;
+}
+.k-op-shell .k-table-wrap {
+  /* 位置の基準（position: relative）は共通の部品の .k-table-wrap が持つ（K-964）。ここは狭い置き場で縮むためだけ */
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+}

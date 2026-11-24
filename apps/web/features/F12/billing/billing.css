@@ -1,0 +1,155 @@
+/* 請求書・請求先・プランを変える・値段が変わる知らせ（段 13・領域 user）。値は --k-* だけ。
+   線は小窓の枠線のトークン（--k-c-dialog-group-border）を借りる */
+
+.k-ub-top {
+  display: grid;
+  gap: var(--k-s-md);
+  padding-top: var(--k-s-md);
+  min-width: 0;
+}
+.k-ub-terms {
+  display: grid;
+  gap: var(--k-s-sm);
+  margin: 0;
+  padding: var(--k-s-md);
+  border: var(--k-c-dialog-group-border);
+  border-radius: var(--k-r-card);
+  background: var(--k-card);
+}
+.k-ub-terms > div {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr) auto;
+  gap: var(--k-s-sm) var(--k-s-md);
+  align-items: start;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+}
+.k-ub-terms dt {
+  color: var(--k-on-surface-variant);
+}
+.k-ub-terms dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.k-ub-note {
+  margin: 0;
+  font-size: var(--k-text-body-sm);
+  line-height: var(--k-lh-body-sm);
+  color: var(--k-on-surface-variant);
+}
+.k-ub-note .k-link {
+  white-space: nowrap;
+}
+.k-ub-form {
+  display: grid;
+  gap: var(--k-s-md);
+  min-width: 0;
+}
+
+/* ---- プランを変える：3 つの箱 ---- */
+.k-ub-plans {
+  display: grid;
+  gap: var(--k-s-sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.k-ub-plan {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--k-s-xs) var(--k-s-md);
+  align-items: center;
+  padding: var(--k-s-md);
+  border: var(--k-c-dialog-group-border);
+  border-radius: var(--k-r-card);
+  background: var(--k-card);
+  min-width: 0;
+}
+.k-ub-plan[data-current="true"] {
+  border-color: var(--k-primary-line);
+  background: var(--k-primary-soft);
+}
+.k-ub-plan-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--k-s-sm);
+  margin: 0;
+  font-size: var(--k-text-body-md);
+  font-weight: var(--k-fw-h3);
+}
+.k-ub-plan-price {
+  font-weight: var(--k-fw-h2);
+}
+.k-ub-plan-limit {
+  grid-column: 1;
+  margin: 0;
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  color: var(--k-on-surface-variant);
+  overflow-wrap: anywhere;
+}
+.k-ub-plan-act {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+}
+@media (max-width: 480px) {
+  .k-ub-plan {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .k-ub-plan-act {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  .k-ub-terms > div {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.k-ub-steps {
+  margin: 0;
+  padding-left: var(--k-s-lg);
+  display: grid;
+  gap: var(--k-s-xs);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+}
+
+/* ---- 設定の「プランと支払い」：値段が変わる知らせ ---- */
+.k-ub-setting {
+  display: grid;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-md);
+  border: var(--k-c-dialog-group-border);
+  border-radius: var(--k-r-card);
+  background: var(--k-card);
+}
+.k-ub-setting-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--k-s-sm) var(--k-s-md);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+}
+.k-ub-setting-line > :first-child {
+  font-weight: var(--k-fw-h3);
+}
+.k-ub-change {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--k-s-sm);
+  padding: var(--k-s-sm) var(--k-s-md);
+  border-radius: var(--k-r-field);
+  background: var(--k-st-warning-soft);
+  border: var(--k-c-dialog-group-border);
+  border-color: var(--k-st-warning-line);
+  font-size: var(--k-text-body);
+  line-height: var(--k-lh-body);
+  color: var(--k-st-on-warning-container);
+}
+.k-ub-inert[aria-disabled="true"] {
+  opacity: var(--k-c-button-disabled-opacity);
+  cursor: not-allowed;
+}
