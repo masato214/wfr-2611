@@ -1,4 +1,4 @@
-// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。323 件
+// 生成物（scripts/ci/errors_used.mjs gen ← 07_qa/test-specs/errors.json）。手で直さない。325 件
 export interface CatalogEntry {
   id: string;
   cls: string;
@@ -5801,6 +5801,40 @@ export const CATALOG: Record<string, CatalogEntry> = {
     ],
     "where": {
       "screen": "company-settings"
+    }
+  },
+  "E-BILL-002": {
+    "id": "E-BILL-002",
+    "cls": "conflict",
+    "message": "この月はまだ締めていません",
+    "action": "月が終わってから出す",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-BILL-002",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "ops-billing"
+    }
+  },
+  "E-BILL-003": {
+    "id": "E-BILL-003",
+    "cls": "conflict",
+    "message": "この月の請求書はもう全部出しています",
+    "action": "一覧で確かめる",
+    "undo": false,
+    "severity": "low",
+    "support_code": "E-BILL-003",
+    "must_not": false,
+    "layers": [
+      "API",
+      "DB"
+    ],
+    "where": {
+      "screen": "ops-billing"
     }
   }
 };

@@ -7025,7 +7025,9 @@
     "E-ACT-039",
     "E-ACT-041",
     "E-PAY-005",
-    "E-DISC-002"
+    "E-DISC-002",
+    "E-BILL-002",
+    "E-BILL-003"
    ],
    "policies": [
     "C2",

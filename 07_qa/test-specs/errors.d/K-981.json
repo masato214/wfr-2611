@@ -1,0 +1,61 @@
+{
+ "errors": [
+  {
+   "id": "E-BILL-002",
+   "class": "conflict",
+   "where": {
+    "screen": "ops-billing"
+   },
+   "when": "運営が請求書をまとめて出す（下書きも）とき、選んだ月が日本の今月か、それより先の月（まだ締めていない）",
+   "false_when": "先月より前の月を選ぶ",
+   "message": "この月はまだ締めていません",
+   "action": "月が終わってから出す",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "お金を持つ運営の人で 運営 › 請求 を開く",
+    "steps": [
+     "今月を選んで「今月の請求書をまとめて出す」を押す（直に API）"
+    ],
+    "needs": "本人確認の取り直し（15 分の内）"
+   },
+   "severity": "low",
+   "source": [
+    "D-156.31"
+   ]
+  },
+  {
+   "id": "E-BILL-003",
+   "class": "conflict",
+   "where": {
+    "screen": "ops-billing"
+   },
+   "when": "運営が請求書をまとめて出すとき、その月の請求書がもう全部の会社に出ている（同時に 2 回押した後の 1 つも）",
+   "false_when": "まだその月の請求書が無い会社がある",
+   "message": "この月の請求書はもう全部出しています",
+   "action": "一覧で確かめる",
+   "undo": false,
+   "layers": [
+    "API",
+    "DB"
+   ],
+   "must_not": false,
+   "reproduce": {
+    "setup": "お金を持つ運営の人で 運営 › 請求 を開く",
+    "steps": [
+     "先月の請求書をまとめて出す",
+     "もう一度「まとめて出す」を押す"
+    ],
+    "needs": "本人確認の取り直し（15 分の内）"
+   },
+   "severity": "low",
+   "source": [
+    "D-156.31"
+   ]
+  }
+ ]
+}

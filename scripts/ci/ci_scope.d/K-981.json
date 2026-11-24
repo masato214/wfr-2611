@@ -1,0 +1,31 @@
+{
+ "data_links": [
+  {
+   "paths": [
+    "apps/api/src/hooks/ops-invoices-issue.ts",
+    "apps/api/src/features/F12/ops/invoices-issue.ts",
+    "packages/db/migrations/20261128012100_ops_invoice_issue.sql"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-invoices-issue.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/src/features/F7/notifications/kinds.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F7/notifications-list.test.ts",
+    "apps/api/test/features/F12/ops-invoices-issue.test.ts"
+   ]
+  },
+  {
+   "paths": [
+    "apps/api/test/features/F12/billing-ops.harness.ts"
+   ],
+   "tests": [
+    "apps/api/test/features/F12/ops-invoices-issue.test.ts"
+   ]
+  }
+ ]
+}

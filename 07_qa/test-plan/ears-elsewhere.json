@@ -2912,6 +2912,32 @@
    "na": {
     "test_post_workspace_plan_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）"
    }
+  },
+  "issueOpsInvoices": {
+   "file": "apps/api/test/features/F12/ops-invoices-issue.test.ts",
+   "reason": "契約・頼みの行・もう出した請求書・本人確認の取り直しで答えが変わり、請求書と記録と鈴を書く。種では作れない（K-981）",
+   "covers": {
+    "test_post_ops_invoices_issue_ok": "K981-API-006",
+    "test_post_ops_invoices_issue_shape": "K981-API-001",
+    "test_post_ops_invoices_issue_rejected_401": "K981-API-013",
+    "test_post_ops_invoices_issue_rejected_403": "K981-API-013",
+    "test_post_ops_invoices_issue_rejected_422": "K981-API-014",
+    "test_post_ops_invoices_issue_rejected_422_2": "K981-API-014",
+    "test_post_ops_invoices_issue_rate_limited": "K981-API-016",
+    "test_post_ops_invoices_issue_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_ops_invoices_issue_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_ops_invoices_issue_conflict": "K981-API-009"
+   },
+   "na": {
+    "test_post_ops_invoices_issue_too_large": "送る量の守り（1MB）は入口の共通（op.ts・K-144）",
+    "test_post_ops_invoices_issue_mfa_pending": "運営はパスキーだけで入る（K-944）。付けるまで進めないの印は会社の人のセッションの入口の共通（K-321）"
+   }
   }
  }
 }
