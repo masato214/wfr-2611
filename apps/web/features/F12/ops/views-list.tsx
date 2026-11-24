@@ -1,5 +1,6 @@
 "use client";
 // ワークスペースの一覧（段 13・領域 ops・キャンバス OpList）。値を受け取って描くだけ（口は呼ばない）。押す関数は props で受けるが下絵では渡さない
+import type { KeyboardEvent } from "react";
 import { Band, Button, Dialog, Empty, PageBody, PageHeader, Select, TextField } from "@/components/k";
 import { Chip, Note, Stat, StatGrid, StatusBadge } from "./ops-parts";
 import { PWNED_ROWS, WS_ROWS, type PwnedRow, type WsRow } from "./ops-sample";
@@ -17,13 +18,15 @@ function billTone(b: string) {
   return "danger" as const;
 }
 
-const COLUMNS: RespColumn<WsRow>[] = [
+const MOCK_HREF = "/dev/mock/f12-ops/op-ws";
+
+const columnsOf = (href: (r: WsRow) => string): RespColumn<WsRow>[] => [
   {
     key: "name",
     header: "ワークスペース",
     cell: (r) => (
       <span className="k-op-name">
-        <a className="k-link" href="/dev/mock/f12-ops/op-ws">
+        <a className="k-link" href={href(r)}>
           {r.name}
         </a>
         <span>{r.admin}</span>
@@ -46,6 +49,41 @@ const COLUMNS: RespColumn<WsRow>[] = [
   },
   { key: "status", header: "状態", cell: (r) => <StatusBadge tone={r.tone}>{r.status}</StatusBadge> },
 ];
+const COLUMNS = columnsOf(() => MOCK_HREF);
+
+/** 絞り込みの札 1 つ（数・押した印・押したとき） */
+export interface ListChip {
+  label: string;
+  count: number;
+  on: boolean;
+  onClick: () => void;
+}
+/** 上の数（渡さなければ下絵の見本） */
+export interface ListStatsView {
+  active: { value: string; sub: string };
+  attention: string;
+  runs: { value: string; sub: string | null };
+  overdue: { value: string; sub: string | null };
+}
+/** 部品の並びの値（入れ物が口の値に読み替える） */
+export type WsSort = "care" | "people" | "runs";
+const SORT_OPTIONS: { value: WsSort; label: string }[] = [
+  { value: "care", label: "気にかけるを上に" },
+  { value: "people", label: "人数" },
+  { value: "runs", label: "今月の実行" },
+];
+const SAMPLE_STATS: ListStatsView = {
+  active: { value: "46", sub: "止めている 1 ・ やめる手続き中 1" },
+  attention: "3",
+  runs: { value: "48,210", sub: "先月より 12% 多い" },
+  overdue: { value: "2 件", sub: "¥ 49,500（税込）" },
+};
+const SAMPLE_CHIPS = [
+  { label: "すべて", count: 48, on: true },
+  { label: "気にかける", count: 3, on: false },
+  { label: "止めている", count: 1, on: false },
+  { label: "やめる手続き中", count: 1, on: false },
+] as const;
 
 export interface WsListPageProps {
   rows?: readonly WsRow[];
@@ -54,13 +92,62 @@ export interface WsListPageProps {
   /** パスワードの照合が使えなかった登録の件数（0 か無しなら帯を出さない） */
   pwned?: number;
   onPwned?: () => void;
+  /** 見出しの下の全社の数（渡さなければ見本の 48） */
+  total?: number;
+  stats?: ListStatsView;
+  /** 絞り込みの札（すべて・気にかける・止めている・やめる手続き中） */
+  chips?: readonly ListChip[];
+  /** プランの札（無料・チーム・ビジネス） */
+  plans?: readonly ListChip[];
+  /** 探す欄の Enter（渡すと欄に書ける） */
+  onQuery?: (q: string) => void;
+  sort?: WsSort;
+  /** 並びを選んだとき（渡すと選べる） */
+  onSort?: (s: WsSort) => void;
+  /** 行の名前の行き先（既定は下絵の 1 社） */
+  rowHref?: (r: WsRow) => string;
+  /** 0 件の「探す欄を空にする」 */
+  onClear?: () => void;
+}
+
+function SortField({ sort, onSort }: { sort: WsSort; onSort?: ((s: WsSort) => void) | undefined }) {
+  if (!onSort) return <Select label="並び" name="sort" defaultValue={sort} options={SORT_OPTIONS} />;
+  return (
+    <label className="k-field">
+      <span className="k-label">並び</span>
+      <select className="k-input" name="sort" value={sort} onChange={(e) => onSort(e.target.value as WsSort)}>
+        {SORT_OPTIONS.map((o) => (
+          <option key={o.value} value={o.value}>
+            {o.label}
+          </option>
+        ))}
+      </select>
+    </label>
+  );
 }
 
 /** 一覧の本体。上の数・気にかけるを上に・探す。rows が空なら「探して 0 件」 */
-export function WsListPage({ rows = WS_ROWS, query = "", pwned = 0, onPwned }: WsListPageProps) {
+export function WsListPage({
+  rows = WS_ROWS,
+  query = "",
+  pwned = 0,
+  onPwned,
+  total = 48,
+  stats = SAMPLE_STATS,
+  chips = SAMPLE_CHIPS.map((c) => ({ ...c, onClick: () => undefined })),
+  plans = PLAN_CHIPS.map(([label, count]) => ({ label, count, on: false, onClick: () => undefined })),
+  onQuery,
+  sort = "care",
+  onSort,
+  rowHref,
+  onClear,
+}: WsListPageProps) {
+  const onKey = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && onQuery) onQuery(e.currentTarget.value);
+  };
   return (
     <PageBody labelledBy="op-list-title">
-      <PageHeader id="op-list-title" title="ワークスペース" sub="Kaname を使っているワークスペース ・ 48" />
+      <PageHeader id="op-list-title" title="ワークスペース" sub={`Kaname を使っているワークスペース ・ ${total}`} />
       <div className="k-op-body">
         {pwned > 0 ? (
           <Band
@@ -75,46 +162,53 @@ export function WsListPage({ rows = WS_ROWS, query = "", pwned = 0, onPwned }: W
           />
         ) : null}
         <StatGrid>
-          <Stat label="使っている" value="46" sub="止めている 1 ・ やめる手続き中 1" />
-          <Stat label="気にかける" value="3" sub="詰まり・未入金・PC がまだ" tone="warn" />
-          <Stat label="今月の実行" value="48,210" sub="先月より 12% 多い" />
-          <Stat label="期限を過ぎた請求" value="2 件" sub="¥ 49,500（税込）" tone="danger" />
+          <Stat label="使っている" value={stats.active.value} sub={stats.active.sub} />
+          <Stat label="気にかける" value={stats.attention} sub="詰まり・未入金・PC がまだ" tone="warn" />
+          <Stat label="今月の実行" value={stats.runs.value} sub={stats.runs.sub ?? undefined} />
+          <Stat
+            label="期限を過ぎた請求"
+            value={stats.overdue.value}
+            sub={stats.overdue.sub ?? undefined}
+            tone="danger"
+          />
         </StatGrid>
         <div className="k-op-tools">
           <div className="k-op-chips" role="group" aria-label="絞り込み">
-            <Chip on count={48}>
-              すべて
-            </Chip>
-            <Chip count={3}>気にかける</Chip>
-            <Chip count={1}>止めている</Chip>
-            <Chip count={1}>やめる手続き中</Chip>
+            {chips.map((c) => (
+              <Chip key={c.label} on={c.on} count={c.count} onClick={c.onClick}>
+                {c.label}
+              </Chip>
+            ))}
           </div>
           <div className="k-op-chips" role="group" aria-label="プラン（仮）">
             <span className="k-op-chips-label">プラン（仮）</span>
-            {PLAN_CHIPS.map(([p, n]) => (
-              <Chip key={p} count={n}>
-                {p}
+            {plans.map((c) => (
+              <Chip key={c.label} on={c.on} count={c.count} onClick={c.onClick}>
+                {c.label}
               </Chip>
             ))}
           </div>
         </div>
         <div className="k-op-find">
-          <TextField label="探す" name="q" placeholder="名前・管理者のメールで探す" defaultValue={query} readOnly />
-          <Select
-            label="並び"
-            name="sort"
-            defaultValue="care"
-            options={[
-              { value: "care", label: "気にかけるを上に" },
-              { value: "people", label: "人数" },
-              { value: "runs", label: "今月の実行" },
-            ]}
+          <TextField
+            key={query}
+            label="探す"
+            name="q"
+            placeholder="名前・管理者のメールで探す"
+            defaultValue={query}
+            readOnly={!onQuery}
+            onKeyDown={onKey}
           />
+          <SortField sort={sort} onSort={onSort} />
         </div>
         {rows.length === 0 ? (
           <Empty
             title={`「${query}」に合うワークスペースはありません`}
-            action={<Button variant="outlined">探す欄を空にする</Button>}
+            action={
+              <Button variant="outlined" onClick={onClear}>
+                探す欄を空にする
+              </Button>
+            }
           >
             名前か管理者のメールの一部で探せます。別の言い方で探すか、絞り込みを「すべて」に戻してください
           </Empty>
@@ -122,7 +216,7 @@ export function WsListPage({ rows = WS_ROWS, query = "", pwned = 0, onPwned }: W
           <RespTable
             stack="wide"
             caption="ワークスペースの一覧"
-            columns={COLUMNS}
+            columns={rowHref ? columnsOf(rowHref) : COLUMNS}
             rows={[...rows]}
             rowKey={(r) => r.id}
           />

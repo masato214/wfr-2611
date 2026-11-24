@@ -1,10 +1,11 @@
-import { PageBody, PageHeader } from "@/components/k/page";
+import { Suspense } from "react";
+import { WsListScreen } from "@/features/F12/ops/ws-list-screen";
 
-// 運営のワークスペース（K-946 は見出しだけの入れ物。本文の一覧は K-965）
+// 運営のワークスペースの一覧（K-965）。入れ物（layout・運営の外枠）は K-946。URL の絞り込みを読むので Suspense で包む
 export default function OpsHomePage() {
   return (
-    <PageBody labelledBy="ops-home-title">
-      <PageHeader id="ops-home-title" title="ワークスペース" />
-    </PageBody>
+    <Suspense fallback={null}>
+      <WsListScreen />
+    </Suspense>
   );
 }

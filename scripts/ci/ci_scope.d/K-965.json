@@ -1,0 +1,9 @@
+{
+ "data_links": [
+  {"paths": ["apps/web/features/F12/ops/ws-list-*", "apps/web/features/F12/ops/use-ops-workspaces.ts", "apps/web/features/F12/ops/views-list.tsx", "apps/web/app/(ops)/ops/page.tsx"], "tests": ["apps/web/tests/k/k965-ws-list.spec.ts", "apps/web/test/k965-ws-list-shape.test.ts"]}
+ ],
+ "reads_ok": {
+  "apps/web/tests/k/k965-ws-list.spec.ts": "stage2-match.ts を通してモックの頁 /dev/mock/f12-ops を開き scripts/ci/fidelity_compare.mjs を読む。答えの見本 ops-answers.ts を読む（実ブラウザの試験は web の組が流す）・K-965",
+  "apps/web/test/k965-ws-list-shape.test.ts": "下絵の見本 apps/web/features/F12/ops/ops-sample.ts と答えの見本 apps/web/tests/k/ops-answers.ts を読む（画面の外の純粋な関数の試験）・K-965"
+ }
+}
