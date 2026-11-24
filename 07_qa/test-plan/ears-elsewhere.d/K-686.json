@@ -1,0 +1,34 @@
+{
+ "ops": {
+  "findSimilarKnowledge": {
+   "file": "apps/api/test/features/F9/knowledge-similar.test.ts",
+   "reason": "似たページは見える棚（会社・入っているグループ・自分）と公開済みの本文で答えが変わる。生成の試験の偽のセッションでは棚も所属も版も作れない（K-686）",
+   "covers": {
+    "test_post_knowledge_similar_ok": "K686-API-001",
+    "test_post_knowledge_similar_shape": "K686-API-001",
+    "test_post_knowledge_similar_rejected_401": "K686-API-010",
+    "test_post_knowledge_similar_rejected_422": "K686-API-009",
+    "test_post_knowledge_similar_rate_limited": "K686-API-011",
+    "test_post_knowledge_similar_terms_pending": {
+     "file": "apps/api/test/features/F1/terms.test.ts",
+     "mark": "K53-API-005"
+    },
+    "test_post_knowledge_similar_session_unresolved": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    },
+    "test_post_knowledge_similar_too_large": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-042"
+    },
+    "test_post_knowledge_similar_session_unresolved_2": {
+     "file": "apps/api/test/features/contract/k144-contract.test.ts",
+     "mark": "K144-API-032"
+    }
+   },
+   "na": {
+    "test_post_knowledge_similar_rejected_403": "社内のログイン済みの人なら誰でも呼べる口で、見える物だけを返す（役ごとの違いは K686-API-005・012）"
+   }
+  }
+ }
+}
