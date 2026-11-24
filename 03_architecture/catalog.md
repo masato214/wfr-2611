@@ -245,7 +245,7 @@ API 359（作った 112・後のフェーズの行為だけ 20）・前の道す
 | `getMyInquiry` | GET /api/v1/inquiries/:id | 取得（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `postInquiryMessage` | POST /api/v1/inquiries/:id/messages | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
 | `resolveMyInquiry` | POST /api/v1/inquiries/:id/resolve | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
-| `uploadInquiryAttachment` | POST /api/v1/inquiries/attachments | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72 |
+| `uploadInquiryAttachment` | POST /api/v1/inquiries/attachments | 作成・実行（inquiries）— 運営に問い合わせる | F12 | 契約だけ（501） | K-72,K-950 |
 | `downloadInvoicePdf` | GET /api/v1/invoices/:id/pdf | 取得（invoices）— プラン・利用量・請求書を見る | F12 | 契約だけ（501） | K-72 |
 | `listNotices` | GET /api/v1/notices | 取得（notices）— お知らせを見る | F12 | 契約だけ（501） | K-72 |
 | `markNoticeRead` | POST /api/v1/notices/:id/read | 作成・実行（notices）— お知らせを見る | F12 | 契約だけ（501） | K-72 |
